@@ -1,0 +1,22 @@
+{
+  "version": "0.1.0",
+  "criteria": [
+    { "key": "goal_fit", "label": "目标贴合度", "default_weight": 0.18 },
+    { "key": "relationship_fit", "label": "关系适配度", "default_weight": 0.14 },
+    { "key": "event_evidence", "label": "事件证据强度", "default_weight": 0.12 },
+    { "key": "norm_compliance", "label": "行为准则符合度", "default_weight": 0.14 },
+    { "key": "risk_control", "label": "风险控制", "default_weight": 0.14 },
+    { "key": "cost_efficiency", "label": "成本效率", "default_weight": 0.08 },
+    { "key": "timing_fit", "label": "时机适配", "default_weight": 0.08 },
+    { "key": "user_preference_fit", "label": "用户偏好适配", "default_weight": 0.07 },
+    { "key": "feedback_observability", "label": "反馈可观测性", "default_weight": 0.05 }
+  ],
+  "preference_adjustments": {
+    "risk_tolerance.low": { "risk_control": 0.08, "norm_compliance": 0.04, "cost_efficiency": 0.02 },
+    "risk_tolerance.high": { "goal_fit": 0.05, "timing_fit": 0.03 },
+    "relationship_priority.high": { "relationship_fit": 0.08, "norm_compliance": 0.04 },
+    "goal_urgency.high": { "goal_fit": 0.06, "timing_fit": 0.06 },
+    "automation_comfort.low": { "risk_control": 0.05, "user_preference_fit": 0.04 },
+    "budget_sensitivity.high": { "cost_efficiency": 0.08, "risk_control": 0.02 }
+  }
+}

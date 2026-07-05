@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/read-only-expansion-targets.schema.json",
+  "title": "ReadOnlyExpansionTargets",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "target_plan_id",
+    "created_at",
+    "gate_decision",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "source",
+    "status_summary",
+    "weighting_policy",
+    "target_recommendations",
+    "blocking_target_ids",
+    "required_failures",
+    "warning_failures",
+    "next_actions"
+  ],
+  "properties": {
+    "schema_version": { "const": "read_only_expansion_targets.v1" },
+    "target_plan_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "enum": [
+        "read_only_expansion_targets_ready",
+        "read_only_expansion_targets_waiting_status_fixes"
+      ]
+    },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "source": {
+      "type": "object",
+      "required": ["root", "pilot_import_path", "status_id", "status_gate_decision"],
+      "additionalProperties": true
+    },
+    "status_summary": {
+      "type": "object",
+      "required": [
+        "real_observations",
+        "effective_observations",
+        "duplicate_suppressed_count",
+        "effective_non_wechat_real_observations",
+        "graph_loop_gate_decision",
+        "graph_loop_closed",
+        "generated_batch_ready_for_decision",
+        "generated_batch_ready_for_closed_loop",
+        "required_failures",
+        "warning_failures"
+      ],
+      "additionalProperties": true
+    },
+    "weighting_policy": {
+      "type": "object",
+      "required": ["policy_id", "principle", "dimensions", "score_range"],
+      "properties": {
+        "policy_id": { "const": "read_only_expansion_target_weighting.v1" },
+        "principle": { "type": "string", "minLength": 1 },
+        "dimensions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["dimension", "weight", "description"],
+            "properties": {
+              "dimension": { "type": "string", "minLength": 1 },
+              "weight": { "type": "number", "minimum": 0, "maximum": 1 },
+              "description": { "type": "string", "minLength": 1 }
+            },
+            "additionalProperties": false
+          }
+        },
+        "score_range": {
+          "type": "array",
+          "prefixItems": [
+            { "type": "number" },
+            { "type": "number" }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        }
+      },
+      "additionalProperties": false
+    },
+    "target_recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "target_id",
+          "rank",
+          "category",
+          "title",
+          "source_type",
+          "platform",
+          "objective",
+          "status",
+          "weighted_score",
+          "scores",
+          "evidence",
+          "commands",
+          "acceptance_gates",
+          "reusable_intake_contract",
+          "safety_gates",
+          "blocks_closure_until_done"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "blocking_target_ids": { "type": "array", "items": { "type": "string" } },
+    "required_failures": { "type": "array", "items": { "type": "string" } },
+    "warning_failures": { "type": "array", "items": { "type": "string" } },
+    "next_actions": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

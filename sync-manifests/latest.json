@@ -1,0 +1,250 @@
+{
+  "schema_version": "cloud_source_mirror.v1",
+  "mirror_id": "cloud_source_mirror_20260705135612",
+  "created_at": "2026-07-05T13:56:12.626Z",
+  "source_root": "D:\\zhineng",
+  "repository": {
+    "owner": "huay7380-beep",
+    "name": "zy",
+    "full_name": "huay7380-beep/zy",
+    "url": "https://github.com/huay7380-beep/zy.git",
+    "local_clone": "D:\\zbx\\zy"
+  },
+  "sync_policy": {
+    "mode": "source_first_git_mirror",
+    "included": [
+      "AGENTS.md",
+      "README.md",
+      "package.json",
+      "docs/**",
+      "examples/**",
+      "knowledge/**",
+      "packages/**",
+      "schemas/**",
+      "scripts/**",
+      "views/**",
+      "3d-particle-display-os/**",
+      "capability-upgrade-registry/**",
+      "cross-border-ecommerce-ai-route/**",
+      "dialogue-system-patrol/**",
+      "sightflow-desktop-agent-main/**",
+      "thread-requirements/**",
+      "tupu/**"
+    ],
+    "excluded": [
+      "third_party/**",
+      "**/node_modules/**",
+      "**/runtime/**",
+      "tmp/**",
+      ".git/**",
+      ".env*",
+      "*.log",
+      "*.tmp",
+      "*.pt",
+      "*.onnx",
+      "*.zip",
+      "*.7z",
+      "*.rar",
+      "*.exe",
+      "*.dll",
+      "*.lib"
+    ]
+  },
+  "counts": {
+    "candidate_files": 2806,
+    "candidate_bytes": 89921936,
+    "excluded_large_files": 37
+  },
+  "excluded_large_files": [
+    {
+      "path": "third_party/CosyVoice/pretrained_models/CosyVoice-300M-SFT/llm.llm.fp32.zip",
+      "bytes": 1577090487,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/CosyVoice/pretrained_models/CosyVoice-300M-SFT/llm.pt",
+      "bytes": 1242994835,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/torch_cuda.dll",
+      "bytes": 876310016,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/CosyVoice/pretrained_models/CosyVoice-300M-SFT/llm.llm.fp16.zip",
+      "bytes": 809092599,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/dnnl.lib",
+      "bytes": 635592728,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/cudnn_cnn_infer64_8.dll",
+      "bytes": 582690344,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/cublasLt64_12.dll",
+      "bytes": 538818048,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/CosyVoice/pretrained_models/CosyVoice-300M-SFT/speech_tokenizer_v1.onnx",
+      "bytes": 522624269,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/CosyVoice/pretrained_models/CosyVoice-300M-SFT/flow.pt",
+      "bytes": 419900943,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/CosyVoice/pretrained_models/CosyVoice-300M-SFT/llm.text_encoder.fp32.zip",
+      "bytes": 370650243,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/CosyVoice/pretrained_models/CosyVoice-300M-SFT/flow.decoder.estimator.fp32.onnx",
+      "bytes": 328628196,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/cusparse64_12.dll",
+      "bytes": 262348288,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "sightflow-desktop-agent-main/node_modules/electron/dist/electron.exe",
+      "bytes": 210889728,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/CosyVoice/pretrained_models/CosyVoice-300M-SFT/llm.text_encoder.fp16.zip",
+      "bytes": 205829319,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/cufft64_11.dll",
+      "bytes": 190346752,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/whisper-cache/base.pt",
+      "bytes": 145262807,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/torch_cpu.dll",
+      "bytes": 130929152,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/cudnn_adv_infer64_8.dll",
+      "bytes": 125217320,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/cudnn_cnn_train64_8.dll",
+      "bytes": 122242104,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/cudnn_adv_train64_8.dll",
+      "bytes": 116558888,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/cusolver64_11.dll",
+      "bytes": 110190080,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/llvmlite/binding/llvmlite.dll",
+      "bytes": 106602496,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/CosyVoice/pretrained_models/CosyVoice-300M-SFT/flow.encoder.fp32.zip",
+      "bytes": 103558995,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/cublas64_12.dll",
+      "bytes": 98058240,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/cudnn_ops_infer64_8.dll",
+      "bytes": 89759272,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/CosyVoice/pretrained_models/CosyVoice-300M-SFT/hift.pt",
+      "bytes": 81896716,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "sightflow-desktop-agent-main/runtime/verification-logs/electron-verify-20260625-102428.err.log",
+      "bytes": 81111389,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/Miniforge3-Windows-x86_64.exe",
+      "bytes": 78836352,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Library/bin/mkl_core.1.dll",
+      "bytes": 78281744,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/cusolverMg64_11.dll",
+      "bytes": 77008384,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/whisper-cache/tiny.pt",
+      "bytes": 75572083,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/cudnn_ops_train64_8.dll",
+      "bytes": 70162472,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Lib/site-packages/torch/lib/curand64_10.dll",
+      "bytes": 63505408,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/CosyVoice/pretrained_models/CosyVoice-300M-SFT/flow.encoder.fp16.zip",
+      "bytes": 62043033,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Library/bin/mkl_avx512.1.dll",
+      "bytes": 58468368,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Library/bin/mkl_intel_thread.1.dll",
+      "bytes": 54702096,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    },
+    {
+      "path": "third_party/envs/cosyvoice/Library/bin/mkl_pgi_thread.1.dll",
+      "bytes": 53484560,
+      "reason": "excluded_by_cloud_source_mirror_policy"
+    }
+  ],
+  "next_actions": [
+    "Prepare local source mirror in D:\\zbx\\zy.",
+    "Authenticate command-line Git for huay7380-beep.",
+    "Run git push -u origin main after credentials are available."
+  ]
+}

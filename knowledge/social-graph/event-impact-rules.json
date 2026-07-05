@@ -1,0 +1,34 @@
+{
+  "version": "0.1.0",
+  "rules": [
+    {
+      "rule_id": "rule_help_001",
+      "event_type_code": "help",
+      "relationship_types": ["normal_friend", "client", "neighbor", "regular_merchant"],
+      "delta": 0.05,
+      "description": "明确帮助事件轻度提升关系健康度。"
+    },
+    {
+      "rule_id": "rule_business_meeting_001",
+      "event_type_code": "business_meeting",
+      "relationship_types": ["client", "business_partner", "project_collaborator"],
+      "delta": 0.03,
+      "description": "有明确后续动作的商务会议提升推进动能。"
+    },
+    {
+      "rule_id": "rule_conflict_001",
+      "event_type_code": "conflict",
+      "relationship_types": ["*"],
+      "delta": -0.08,
+      "description": "冲突降低关系健康度，需根据严重程度确认。"
+    },
+    {
+      "rule_id": "rule_betrayal_001",
+      "event_type_code": "betrayal",
+      "relationship_types": ["*"],
+      "delta": -0.5,
+      "requires_confirmation": true,
+      "description": "背叛为 P1 高风险事件，必须用户确认后才能更新关系。"
+    }
+  ]
+}

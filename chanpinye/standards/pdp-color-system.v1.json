@@ -1,0 +1,77 @@
+{
+  "contract": "pdp_site_style_system.v1",
+  "version": "1.0.0",
+  "generated_at": "2026-07-04T00:00:00+08:00",
+  "style_system_id": "pdp-color-system.v1",
+  "visual_direction": "Industrial technical procurement, distinctive from blue-green reference sheets, suitable for B2B network connectivity products.",
+  "color_tokens": {
+    "graphite": {
+      "hex": "#151A1E",
+      "role": "Primary ink, headers, strong technical identity"
+    },
+    "deep_teal": {
+      "hex": "#006D77",
+      "role": "Module headers, section rules, category labels"
+    },
+    "copper_amber": {
+      "hex": "#B66A2C",
+      "role": "RFQ emphasis, part-number highlight, commercial action"
+    },
+    "ice_gray": {
+      "hex": "#F4F7F8",
+      "role": "Page background and calm technical surface"
+    },
+    "mist_gray": {
+      "hex": "#D8E1E3",
+      "role": "Borders, table lines, passive separators"
+    },
+    "verified_green": {
+      "hex": "#2F7D32",
+      "role": "Confirmed facts only"
+    },
+    "review_amber": {
+      "hex": "#B7791F",
+      "role": "Needs confirmation or source-listed claims"
+    },
+    "risk_red": {
+      "hex": "#B8322A",
+      "role": "Blocked claims, missing compliance, cannot publish"
+    }
+  },
+  "type_scale": {
+    "pdf_h1": "30-34px",
+    "pdf_h2": "18-22px",
+    "pdf_body": "13-15px",
+    "web_h1": "40-56px",
+    "web_h2": "24-34px",
+    "web_body": "15-17px"
+  },
+  "spacing_rules": {
+    "pdf_page_width": "1020px",
+    "pdf_page_height": "1320px",
+    "section_gap": "24-36px",
+    "table_row_padding": "7-10px"
+  },
+  "component_rules": {
+    "tables": "Dense but readable, left label and right value.",
+    "labels": "Use small technical status tags.",
+    "cta": "Copper amber for RFQ and purchase action only.",
+    "cards": "Use only for repeated product facts or evidence blocks."
+  },
+  "image_treatment": {
+    "background": "white or very light neutral",
+    "cropping": "complete product visible; no cut-off",
+    "watermark": "remove before public release",
+    "detail_views": "must match callout text"
+  },
+  "do_not_use": [
+    "Leviton brand colors as primary palette",
+    "protected brand assets",
+    "invented certificates",
+    "unconfirmed MOQ, price or lead time",
+    "one-hue monochrome palette"
+  ],
+  "human_review_required": true,
+  "real_external_actions_executed": false
+}
+

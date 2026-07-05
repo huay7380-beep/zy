@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/mvp-self-agent-preflight.schema.json",
+  "title": "MvpSelfAgentPreflight",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "preflight_id",
+    "created_at",
+    "objective_flow",
+    "gate_decision",
+    "current_cycle",
+    "checks",
+    "required_failures",
+    "external_inputs_required",
+    "next_self_agent_sequence",
+    "evidence"
+  ],
+  "properties": {
+    "schema_version": { "const": "mvp_self_agent_preflight.v1" },
+    "preflight_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "objective": { "type": "string" },
+    "objective_flow": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 9
+    },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "fix_required_before_user_testing",
+        "local_mvp_ready_waiting_external_inputs",
+        "ready_to_expand_sample_or_real_connector"
+      ]
+    },
+    "current_cycle": {
+      "type": "object",
+      "required": [
+        "workflow",
+        "run_id",
+        "report_path",
+        "audit_path",
+        "process_tree_validation_path",
+        "mvp_stress_path",
+        "external_input_kit_path",
+        "external_input_templates_path",
+        "external_input_readiness_path",
+        "objective_audit_path",
+        "ready_for_user_special_testing",
+        "ready_to_expand_sample_or_real_connector"
+      ],
+      "properties": {
+        "import_path": { "type": "string" },
+        "user_feedback_path": { "type": "string" },
+        "workflow": { "type": "string" },
+        "run_id": { "type": "string" },
+        "report_path": { "type": "string" },
+        "audit_path": { "type": "string" },
+        "process_tree_validation_path": { "type": "string" },
+        "mvp_stress_path": { "type": "string" },
+        "external_input_kit_path": { "type": "string" },
+        "external_input_templates_path": { "type": "string" },
+        "external_input_readiness_path": { "type": "string" },
+        "objective_audit_path": { "type": ["string", "null"] },
+        "ready_for_user_special_testing": { "type": "boolean" },
+        "ready_to_expand_sample_or_real_connector": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "status", "passed", "evidence"],
+        "properties": {
+          "check_id": { "type": "string" },
+          "status": { "type": "string", "enum": ["pass", "warn", "fail"] },
+          "passed": { "type": "boolean" },
+          "evidence": { "type": "array", "items": { "type": "string" } },
+          "next_action": { "type": ["string", "null"] }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "external_inputs_required": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "issue_id",
+          "node_id",
+          "external_input_required",
+          "required_materials",
+          "validation_command",
+          "continue_when",
+          "stop_or_adjust_when"
+        ],
+        "properties": {
+          "issue_id": { "type": "string" },
+          "node_id": { "type": "string" },
+          "external_input_required": { "type": "string" },
+          "required_materials": { "type": "array", "items": { "type": "string" } },
+          "validation_command": { "type": "string" },
+          "continue_when": { "type": "array", "items": { "type": "string" } },
+          "stop_or_adjust_when": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    },
+    "next_self_agent_sequence": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

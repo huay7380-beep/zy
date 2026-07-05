@@ -1,0 +1,20 @@
+{
+  "schema_version": "source_archive.v1",
+  "source_archive_id": "source_archive_sample",
+  "source_id": "sample_source",
+  "source_type": "manual",
+  "platform": "operator_note",
+  "adapter_id": "manual.operator_note",
+  "captured_at": "2026-07-01T20:00:00+08:00",
+  "archived_at": "2026-07-01T20:00:01+08:00",
+  "source_thread_id": "manual:sample",
+  "raw_text_ref": "runtime/source-archives/sample/raw.txt",
+  "raw_payload_ref": "runtime/source-archives/sample/raw.json",
+  "manifest_ref": "runtime/source-archives/sample/manifest.json",
+  "checksums_ref": "runtime/source-archives/sample/checksums.json",
+  "artifact_refs": [],
+  "content_hash": "sha256:sample",
+  "privacy_level": "redacted_text",
+  "delete_state": "active",
+  "metadata": {}
+}

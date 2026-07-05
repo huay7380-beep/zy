@@ -1,0 +1,17 @@
+{
+  "observation_id": "intake_obs_fake_adapter_001",
+  "source_adapter_id": "fake_test.adapter",
+  "source_type": "api",
+  "platform": "test",
+  "captured_at": "2026-06-10T08:32:00+08:00",
+  "content_summary": "测试适配器生成一条只含摘要的外部来源事件。",
+  "participants_hint": ["user", "fake_counterparty"],
+  "thread_hint": {
+    "thread_id": "fake-thread-001"
+  },
+  "privacy_level": "summary_only",
+  "confidence": 1,
+  "metadata": {
+    "sample_only": true
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ToolAdapterCapability",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "capability_id",
+    "provider",
+    "name",
+    "display_name",
+    "category",
+    "capabilities",
+    "risk_level",
+    "blocked_use_cases",
+    "safety_notes"
+  ],
+  "properties": {
+    "schema_version": { "const": "tool_adapter_capability.v1" },
+    "capability_id": { "type": "string", "minLength": 1 },
+    "provider": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "display_name": { "type": "string", "minLength": 1 },
+    "category": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "install": {
+      "type": "object",
+      "properties": {
+        "package_manager": { "type": ["string", "null"] },
+        "install_cmd": { "type": ["string", "null"] },
+        "npx_cmd": { "type": ["string", "null"] },
+        "detect_cmd": { "type": ["string", "null"] },
+        "entry_point": { "type": ["string", "null"] },
+        "skill_md": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "capabilities": {
+      "type": "object",
+      "required": [
+        "can_read_external_data",
+        "can_modify_external_state",
+        "can_send_message",
+        "can_generate_artifact",
+        "supports_dry_run",
+        "requires_credentials",
+        "requires_user_confirmation"
+      ],
+      "properties": {
+        "can_read_external_data": { "type": "boolean" },
+        "can_modify_external_state": { "type": "boolean" },
+        "can_send_message": { "type": "boolean" },
+        "can_generate_artifact": { "type": "boolean" },
+        "supports_dry_run": { "type": "boolean" },
+        "requires_credentials": { "type": "boolean" },
+        "requires_user_confirmation": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "allowed_use_cases": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "blocked_use_cases": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "safety_notes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "source_registry_ref": {
+      "type": ["object", "null"]
+    },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": false
+}

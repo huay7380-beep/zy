@@ -1,0 +1,107 @@
+{
+  "contract": "pdp_site_copy_pack.v1",
+  "generated_at": "2026-07-03T12:33:23+08:00",
+  "product_id": "QXKJ-1007",
+  "product_folder_id": "QXJ-1007",
+  "surface_type": "two_page_spec_sheet_layout_reference_clone",
+  "input_refs": {
+    "source_product_json": "cross-border-ecommerce-ai-route/runtime/product-automation/source-imports/qx-telecom/source-products.json",
+    "source_product_id": "1890",
+    "source_url": "http://www.qx-telecom.com/productshow-1890.html",
+    "local_image": "cross-border-ecommerce-ai-route/runtime/product-automation/source-imports/qx-telecom/assets/products/qxkj-1007-1890.jpg"
+  },
+  "reference_structure": {
+    "reference_name": "Leviton EXTREME Cat 6 Component-Rated UTP QUICKPORT Jack spec sheet",
+    "reference_url": "https://leviton.com/content/dam/leviton/network-solutions/product_documents/product_specification/Leviton-Spec-61110-EXTREME-Cat-6-UTP-Jacks.pdf",
+    "reused": [
+      "two-page product specification sheet structure",
+      "page-1 header, blue rule, product title, two-column technical narrative, product image position and vertical model marker",
+      "page-1 section sequence: Application, Specification, Features & Benefits, Design Considerations, Standards & Regulations, Country of Origin",
+      "page-2 header, mechanical specifications, warranty block, dimension drawing area, part-number table and regional contact footer",
+      "dense B2B spec-sheet typography and table logic"
+    ],
+    "not_reused": [
+      "Leviton protected long-form wording",
+      "Leviton product claims",
+      "Leviton brand names or assets",
+      "Leviton certificate status",
+      "Leviton contact information"
+    ]
+  },
+  "source_confirmed_fields": {
+    "product_code": "QXKJ-1007",
+    "product_name": "UTP Toolless Keystone Jack",
+    "grade": "CAT6A,CAT6,CAT5E",
+    "item_no": "QXKJ-1007C6A QXKJ-1007C6 QXKJ-1007C5E",
+    "idc": "Toolless",
+    "feature": "Toolless",
+    "current_rating": "1.5 Amps",
+    "insulation_resistance": ">= 500 MOhm",
+    "contact_resistance": "<= 10 mOhm",
+    "dc_resistance": "<= 0.1 Ohm",
+    "dc_ac_volt_endurance": "DC1000V/AC750V 1min",
+    "plug_retention_force": ">= 11 lbf",
+    "durability": "200 termination cycles",
+    "operating_temperature": "-10 to 60 deg C",
+    "operating_humidity": "10% to 90% RH",
+    "storage_temperature": "-40 to 68 deg C",
+    "plastic_parts": "High impact flame retardant plastic, UL 94V-0 rated",
+    "pcb": "FR-4, 1.2mm thickness",
+    "jack_wire": "0.35 mm phosphor bronze gold over nickel plating",
+    "idc_conductor": "0.5mm phosphor bronze, tin-plating",
+    "wire_range": "26 to 23 AWG solid",
+    "source_listed_standards": [
+      "ANSI/TIA-568-C.2",
+      "ISO/IEC 11801:2002/Amd.2:2010",
+      "YD/T 926.3-2009",
+      "ISO/IEC 60603-7 compliant",
+      "RoHS directive 2002/95/EC compliant"
+    ]
+  },
+  "distinctive_content_markers": [
+    {
+      "label": "private_label_rfq_flow",
+      "status": "commercial_distinctive_pending_order_confirmation",
+      "description": "Convert grade, logo, packaging and carton-mark requirements into RFQ inputs."
+    },
+    {
+      "label": "multi_grade_family_mapping",
+      "status": "source_confirmed",
+      "description": "Use one product family page to expose CAT6A, CAT6 and CAT5E item numbers."
+    },
+    {
+      "label": "source_truth_labeling",
+      "status": "system_distinctive",
+      "description": "Separate source-confirmed values from certificate-file-pending claims before publication."
+    }
+  ],
+  "missing_fields": [
+    "exact_dimensions",
+    "available_colors",
+    "packaging_quantity",
+    "MOQ",
+    "lead_time",
+    "country_of_origin",
+    "warranty_policy",
+    "certificate_pdf_files",
+    "test_reports",
+    "compatible_face_plate_or_patch_panel_series",
+    "final_brand_mark_position",
+    "watermark_free_product_image"
+  ],
+  "blocked_claims": [
+    "Do not claim UL, ETL, CE or other third-party certification until files are provided.",
+    "Do not publish RoHS as externally verified until certificate file is attached.",
+    "Do not state exact MOQ, lead time or warranty until user or factory confirms.",
+    "Do not reuse Leviton brand assets, trademarks, contact information or protected long-form body copy."
+  ],
+  "standard_refs": {
+    "layout_standard": "chanpinye/standards/pdp-layout-standard.v1.md",
+    "layout_contract": "chanpinye/standards/pdp-layout-standard.v1.json",
+    "color_system": "chanpinye/standards/pdp-color-system.v1.json"
+  },
+  "page_file": "chanpinye/products/QXJ-1007/index.html",
+  "human_review_required": true,
+  "real_external_actions_executed": false,
+  "publish_allowed": false
+}

@@ -1,0 +1,154 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "capability_upgrade_registry",
+  "display_name": "能力升级候选库",
+  "owner": "process_tree",
+  "source_dir": "capability-upgrade-registry",
+  "process_tree_node_id": "capability_upgrade_registry",
+  "registration_status": "process_tree_status:designed_boundary_with_read_only_patrol",
+  "gate": "system_patrol_coverage_gate",
+  "compass": "system_patrol.capability_upgrade_registry",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "ready",
+  "updated_at": "2026-07-01T11:39:08.902Z",
+  "ttl_ms": 604800000,
+  "change_session_id": "system_patrol_blocks_init_20260701",
+  "data_flow": {
+    "inputs": [
+      "capability-upgrade-registry/README.md",
+      "capability-upgrade-registry/module-contract.json",
+      "capability-upgrade-registry/os-particle-projection.json",
+      "capability-upgrade-registry/templates/project-card.template.json",
+      "capability-upgrade-registry/templates/evaluation-report.template.json",
+      "capability-upgrade-registry/templates/replacement-plan.template.json",
+      "capability-upgrade-registry/templates/patrol-report.template.json",
+      "capability-upgrade-registry/templates/skill-creation-gate.template.json",
+      "scripts/run-capability-upgrade-patrol.mjs",
+      "runtime/capability-upgrade-patrols/**",
+      "capability-upgrade-registry/projects/**",
+      "capability-upgrade-registry/downloads/**",
+      "capability-upgrade-registry/manifests/**",
+      "capability-upgrade-registry/evaluations/**",
+      "capability-upgrade-registry/replacement-plans/**",
+      "capability-upgrade-registry/evidence/**",
+      "capability-upgrade-registry/adapters/**",
+      "3d-particle-display-os/original-system-region-map.json",
+      "3d-particle-display-os/README.md"
+    ],
+    "processing": [
+      "Store excellent external projects, compare them against current algorithms/code/software modules, and produce audited enhance/wrap/replace plans for the do-not-reinvent-wheels principle."
+    ],
+    "outputs": [
+      "CapabilityProjectCard",
+      "CapabilityEvaluationReport",
+      "CapabilityReplacementPlan",
+      "CapabilityPatrolReport",
+      "CapabilityAnalogicalSearchTask",
+      "SkillCreationGate",
+      "capability_upgrade_os_projection",
+      "capability_upgrade_intent"
+    ],
+    "dependencies": [
+      "examples/system-process-tree.json",
+      "dialogue-system-patrol/registry/system-patrol-registry.json"
+    ]
+  },
+  "state": {
+    "headline": "能力升级候选库: patrol block initialized from process tree status designed_boundary_with_read_only_patrol.",
+    "current_task": "Maintain summary-only patrol coverage and expose dialogue-readable state.",
+    "progress": 0.8,
+    "blockers": [],
+    "risks": [
+      "Read-only capability patrol is now available through npm run capability:patrol; next step is to turn selected analogical_search_tasks into project cards and evaluation reports.",
+      "Skill creation now requires a reuse-search gate before creating new Skill files; use skill_creation_gate.v1 to record searched sources, candidates, rejection reasons and final create/reuse decision.",
+      "Implement an evaluator that compares candidates against packages/scripts/schemas/GUI/3D OS modules with repeatable scorecards.",
+      "Keep the real replacement executor blocked until license, security, dry-run, tests, rollback and human confirmation all pass."
+    ],
+    "next": [
+      "Review this generated patrol block before treating it as a deep module interpretation.",
+      "Refresh validation with npm.cmd run system-patrol:validate.",
+      "Publish dialogue-readable output with npm.cmd run system-patrol:publish."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "examples/system-process-tree.json",
+      "capability-upgrade-registry/README.md",
+      "capability-upgrade-registry/module-contract.json",
+      "capability-upgrade-registry/os-particle-projection.json",
+      "capability-upgrade-registry/templates/project-card.template.json",
+      "capability-upgrade-registry/templates/evaluation-report.template.json",
+      "capability-upgrade-registry/templates/replacement-plan.template.json",
+      "capability-upgrade-registry/templates/patrol-report.template.json",
+      "capability-upgrade-registry/templates/skill-creation-gate.template.json"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:publish",
+      "npm.cmd run process-tree:validate"
+    ],
+    "latest_validation_refs": [
+      "runtime/dialogue-system-patrol-validations/latest.json"
+    ]
+  },
+  "boundaries": {
+    "mode": "controlled_write_runtime_summary",
+    "allowed_reads": [
+      "examples/system-process-tree.json",
+      "capability-upgrade-registry/README.md",
+      "capability-upgrade-registry/module-contract.json",
+      "capability-upgrade-registry/os-particle-projection.json",
+      "capability-upgrade-registry/templates/project-card.template.json",
+      "capability-upgrade-registry/templates/evaluation-report.template.json",
+      "capability-upgrade-registry/templates/replacement-plan.template.json",
+      "capability-upgrade-registry/templates/patrol-report.template.json",
+      "capability-upgrade-registry/templates/skill-creation-gate.template.json"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/capability_upgrade_registry.json",
+      "runtime/status-events/capability_upgrade_registry.json",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**"
+    ],
+    "forbidden_actions": [
+      "no business module rewrite from patrol initialization",
+      "no dialogue reader rewrite from patrol initialization",
+      "no external platform action",
+      "no raw private payload publication"
+    ],
+    "confirmation_gates": [
+      "user confirmation required before protocol migration",
+      "user confirmation required before process-tree and Obsidian registration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The module is represented in the process tree.",
+      "The patrol block was initialized from process-tree summary evidence.",
+      "Current status is summary-only and should cite source refs."
+    ],
+    "must_not_infer": [
+      "Do not infer raw runtime facts that are not present in evidence refs.",
+      "Do not treat generated patrol text as a full source-code review.",
+      "Do not claim external actions or business outcomes from patrol coverage alone."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "sha256:12ef0d010b15969500fc4b757835b9eee778ba752dc84e78e672743fc7773156",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-05T13:12:46.780Z",
+    "source_hash_refs": [
+      "capability-upgrade-registry/README.md",
+      "capability-upgrade-registry/module-contract.json",
+      "capability-upgrade-registry/os-particle-projection.json",
+      "capability-upgrade-registry/templates/evaluation-report.template.json",
+      "capability-upgrade-registry/templates/patrol-report.template.json",
+      "capability-upgrade-registry/templates/project-card.template.json",
+      "capability-upgrade-registry/templates/replacement-plan.template.json",
+      "capability-upgrade-registry/templates/skill-creation-gate.template.json",
+      "examples/system-process-tree.json"
+    ],
+    "source_hash_excluded_refs": []
+  }
+}

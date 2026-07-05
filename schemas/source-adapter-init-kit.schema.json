@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SourceAdapterInitKit",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "kit_id",
+    "generated_at",
+    "adapter_id",
+    "source_type",
+    "platform",
+    "can_send_requested",
+    "capability_template_path",
+    "observation_template_path",
+    "validation_command",
+    "safety_defaults"
+  ],
+  "properties": {
+    "schema_version": { "const": "source_adapter_init_kit.v1" },
+    "kit_id": { "type": "string", "minLength": 1 },
+    "generated_at": { "type": "string", "minLength": 1 },
+    "generated_by": { "type": "string" },
+    "adapter_id": { "type": "string", "minLength": 1 },
+    "source_type": {
+      "type": "string",
+      "enum": ["desktop", "browser", "api", "file", "ocr", "webhook"]
+    },
+    "platform": { "type": "string", "minLength": 1 },
+    "can_send_requested": { "type": "boolean" },
+    "templates": { "type": "object" },
+    "capability_template_path": { "type": "string", "minLength": 1 },
+    "observation_template_path": { "type": "string", "minLength": 1 },
+    "validation_command": { "type": "string", "minLength": 1 },
+    "safety_defaults": {
+      "type": "object",
+      "required": [
+        "real_execution_default",
+        "observation_real_execution_allowed",
+        "requires_user_confirmation",
+        "template_only"
+      ],
+      "properties": {
+        "real_execution_default": { "const": false },
+        "observation_real_execution_allowed": { "const": false },
+        "requires_user_confirmation": { "const": true },
+        "template_only": { "const": true }
+      },
+      "additionalProperties": false
+    },
+    "next_steps": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "template_payloads": { "type": "object" }
+  },
+  "additionalProperties": true
+}

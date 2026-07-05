@@ -1,0 +1,45 @@
+{
+  "schema": "module_build_timeline_event.v1",
+  "event_id": "build_timeline_example_module_20260705T000000_1",
+  "generated_at": "2026-07-05T00:00:00.000Z",
+  "module_id": "example_module_id",
+  "operation_id": "example_change_session",
+  "sequence": 1,
+  "phase": "contract_declared",
+  "status": "completed",
+  "summary": "Declare what changed, what was validated, and what the dialogue module may read.",
+  "construction_depth": {
+    "level": "contract",
+    "patrol_block_updated": true,
+    "data_flow_updated": true,
+    "status_surface_updated": false,
+    "validation_run": false,
+    "dialogue_index_updated": false
+  },
+  "source_refs": [
+    "relative/path/to/source-or-doc"
+  ],
+  "evidence_refs": [
+    "dialogue-system-patrol/blocks/example_module_id.patrol.json"
+  ],
+  "validation_refs": [],
+  "source_hash": {
+    "status": "unknown",
+    "hash": null,
+    "report_ref": null
+  },
+  "module_gate": {
+    "decision": "not_run",
+    "report_ref": null
+  },
+  "dialogue_visibility": {
+    "index_ref": "runtime/dialogue-system-patrol/dialogue-read-index.json",
+    "included": false
+  },
+  "boundaries": [
+    "append-only construction status",
+    "summary-only evidence refs",
+    "no raw private payload",
+    "no external action"
+  ]
+}

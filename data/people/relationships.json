@@ -1,0 +1,32 @@
+{
+  "schema_version": "0.1.0",
+  "relationships": [
+    {
+      "phase": "confirmed_romantic",
+      "trust_level": "medium",
+      "health_score": 0.72,
+      "recent_event_ids": [],
+      "created_at": "2026-06-18T08:39:24.149Z",
+      "updated_at": "2026-06-18T08:39:24.149Z",
+      "relationship_id": "rel_user_xiyan_romantic_partner",
+      "from_person_id": "user",
+      "to_person_id": "person_xiyan_romantic_partner",
+      "type_code": "romantic_partner",
+      "tags": [
+        "confirmed_romantic_relationship",
+        "user_confirmed_relationship",
+        "wechat_active_contact"
+      ],
+      "metadata": {
+        "relationship_fact_status": "confirmed",
+        "confirmed_by": "user",
+        "confirmation_source": "user_message",
+        "confirmed_at": "2026-06-18T08:39:24.147Z",
+        "previous_candidate_relationship_id": "candidate_intimacy_rel_user_person_desktop_contact_5h7ef6",
+        "previous_candidate_status": "candidate_unconfirmed",
+        "real_execution_allowed": false,
+        "real_send_attempted": false
+      }
+    }
+  ]
+}

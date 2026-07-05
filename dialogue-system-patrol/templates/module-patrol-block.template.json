@@ -1,0 +1,91 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "example_module_id",
+  "display_name": "Example Module",
+  "owner": "module_owner",
+  "source_dir": "relative/source/path",
+  "process_tree_node_id": "example_module_id",
+  "registration_status": "process_tree_registered",
+  "gate": "example_module_patrol_gate",
+  "compass": "system_patrol.example_module_id",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "planned",
+  "updated_at": "2026-07-01T00:00:00.000Z",
+  "ttl_ms": 300000,
+  "change_session_id": "example_change_session",
+  "data_flow": {
+    "inputs": [
+      "Describe summary-only input contracts or source refs."
+    ],
+    "processing": [
+      "Describe the processing surface without duplicating source code."
+    ],
+    "outputs": [
+      "Describe summary outputs and runtime artifact refs.",
+      "runtime/module-build-timelines/<module_id>.jsonl"
+    ],
+    "dependencies": [
+      "Describe upstream modules, commands, or evidence refs."
+    ]
+  },
+  "state": {
+    "headline": "Replace with the current module state.",
+    "current_task": "Replace with current task.",
+    "progress": 0,
+    "blockers": [],
+    "risks": [],
+    "next": [
+      "Replace with next validation or construction action."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "relative/path/to/source-or-doc"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:timeline -- --module-id=<module_id> --phase=implementation_changed --status=in_progress --summary=<summary>"
+    ],
+    "latest_validation_refs": []
+  },
+  "boundaries": {
+    "mode": "read_only_summary",
+    "allowed_reads": [
+      "module source summary refs",
+      "module runtime report refs"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/<module_id>.json",
+      "runtime/status-events/<module_id>.json",
+      "runtime/module-build-timelines/<module_id>.jsonl"
+    ],
+    "forbidden_actions": [
+      "no raw private payload publication",
+      "no business data mutation",
+      "no external platform action"
+    ],
+    "confirmation_gates": [
+      "user confirmation required for protocol migration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The dialogue module may report only summary state backed by evidence refs.",
+      "The dialogue module may report the latest build timeline phase/status when the timeline is valid and fresh."
+    ],
+    "must_not_infer": [
+      "Do not infer raw business facts or hidden runtime state from missing evidence.",
+      "Do not infer construction progress when module_build_timeline_event.v1 is missing or stale."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-01T00:00:00.000Z",
+    "source_hash_refs": [
+      "relative/path/to/source-or-doc"
+    ],
+    "source_hash_excluded_refs": []
+  }
+}

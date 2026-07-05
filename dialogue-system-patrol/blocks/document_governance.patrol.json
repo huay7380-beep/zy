@@ -1,0 +1,142 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "document_governance",
+  "display_name": "文档治理",
+  "owner": "process_tree",
+  "source_dir": ".",
+  "process_tree_node_id": "document_governance",
+  "registration_status": "process_tree_status:implemented_skeleton",
+  "gate": "system_patrol_coverage_gate",
+  "compass": "system_patrol.document_governance",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "validated",
+  "updated_at": "2026-07-01T11:39:08.902Z",
+  "ttl_ms": 604800000,
+  "change_session_id": "system_patrol_blocks_init_20260701",
+  "data_flow": {
+    "inputs": [
+      "AGENTS.md",
+      "docs/13-文档互证审计与修复清单.md",
+      "docs/15-系统流程树与扩展问题台账.md",
+      "examples/system-process-tree.json",
+      "views/obsidian/system-process-tree.md",
+      "views/obsidian/system-process-tree.canvas",
+      "schemas/process-tree-validation.schema.json",
+      "packages/mvp-runtime/src/process-tree-validation.mjs",
+      "scripts/validate-process-tree.mjs",
+      "runtime/process-tree-validations/**",
+      "docs/17-目标流程代码一致性与专家评估矩阵材料.md",
+      "专项方案-分层规格驱动Agent系统/项目方案.md"
+    ],
+    "processing": [
+      "控制文档新增、归并、互证、问题登记和文件功能登记。"
+    ],
+    "outputs": [
+      "document_rules",
+      "artifact_registry",
+      "issue_register",
+      "ProcessTreeValidation",
+      "process_tree_validation"
+    ],
+    "dependencies": [
+      "examples/system-process-tree.json",
+      "dialogue-system-patrol/registry/system-patrol-registry.json"
+    ]
+  },
+  "state": {
+    "headline": "文档治理: patrol block initialized from process tree status implemented_skeleton.",
+    "current_task": "Maintain summary-only patrol coverage and expose dialogue-readable state.",
+    "progress": 1,
+    "blockers": [],
+    "risks": [
+      "后续可增加自动检查脚本，验证新增文件是否进入 artifact_registry。",
+      "Process tree sync validation is now available through npm run process-tree:validate; required_failures must stay empty after process-tree or Obsidian changes.",
+      "Self-agent preflight now runs process-tree validation automatically, reducing the chance that Obsidian sync is forgotten after MVP changes."
+    ],
+    "next": [
+      "Review this generated patrol block before treating it as a deep module interpretation.",
+      "Refresh validation with npm.cmd run system-patrol:validate.",
+      "Publish dialogue-readable output with npm.cmd run system-patrol:publish."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "examples/system-process-tree.json",
+      "AGENTS.md",
+      "docs/13-文档互证审计与修复清单.md",
+      "docs/15-系统流程树与扩展问题台账.md",
+      "examples/system-process-tree.json",
+      "views/obsidian/system-process-tree.md",
+      "views/obsidian/system-process-tree.canvas",
+      "schemas/process-tree-validation.schema.json",
+      "packages/mvp-runtime/src/process-tree-validation.mjs"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:publish",
+      "npm.cmd run process-tree:validate"
+    ],
+    "latest_validation_refs": [
+      "runtime/dialogue-system-patrol-validations/latest.json"
+    ]
+  },
+  "boundaries": {
+    "mode": "controlled_write_runtime_summary",
+    "allowed_reads": [
+      "examples/system-process-tree.json",
+      "AGENTS.md",
+      "docs/13-文档互证审计与修复清单.md",
+      "docs/15-系统流程树与扩展问题台账.md",
+      "examples/system-process-tree.json",
+      "views/obsidian/system-process-tree.md",
+      "views/obsidian/system-process-tree.canvas",
+      "schemas/process-tree-validation.schema.json",
+      "packages/mvp-runtime/src/process-tree-validation.mjs"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/document_governance.json",
+      "runtime/status-events/document_governance.json",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**"
+    ],
+    "forbidden_actions": [
+      "no business module rewrite from patrol initialization",
+      "no dialogue reader rewrite from patrol initialization",
+      "no external platform action",
+      "no raw private payload publication"
+    ],
+    "confirmation_gates": [
+      "user confirmation required before protocol migration",
+      "user confirmation required before process-tree and Obsidian registration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The module is represented in the process tree.",
+      "The patrol block was initialized from process-tree summary evidence.",
+      "Current status is summary-only and should cite source refs."
+    ],
+    "must_not_infer": [
+      "Do not infer raw runtime facts that are not present in evidence refs.",
+      "Do not treat generated patrol text as a full source-code review.",
+      "Do not claim external actions or business outcomes from patrol coverage alone."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "sha256:2cdac611fa48f3c20151d0eaf6b06dcbbcd84f362eb8b81634c0434a2cdb7a06",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-05T13:12:46.780Z",
+    "source_hash_refs": [
+      "AGENTS.md",
+      "docs/13-文档互证审计与修复清单.md",
+      "docs/15-系统流程树与扩展问题台账.md",
+      "examples/system-process-tree.json",
+      "packages/mvp-runtime/src/process-tree-validation.mjs",
+      "schemas/process-tree-validation.schema.json",
+      "views/obsidian/system-process-tree.canvas",
+      "views/obsidian/system-process-tree.md"
+    ],
+    "source_hash_excluded_refs": []
+  }
+}

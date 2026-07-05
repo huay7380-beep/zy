@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-final-special-acceptance.schema.json",
+  "title": "pt028_final_special_acceptance.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "acceptance_id",
+    "created_at",
+    "gate_decision",
+    "pt028_fully_accepted_for_production",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "checks",
+    "required_failures",
+    "linked_artifacts"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_final_special_acceptance.v1" },
+    "acceptance_id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "gate_decision": { "type": "string" },
+    "pt028_fully_accepted_for_production": { "type": "boolean" },
+    "real_execution_allowed": { "type": "boolean" },
+    "real_send_attempted": { "type": "boolean" },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "label", "status", "evidence", "notes"],
+        "properties": {
+          "check_id": { "type": "string" },
+          "label": { "type": "string" },
+          "status": { "enum": ["passed", "open"] },
+          "evidence": { "type": "string" },
+          "notes": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "label", "evidence", "notes"],
+        "properties": {
+          "check_id": { "type": "string" },
+          "label": { "type": "string" },
+          "evidence": { "type": "string" },
+          "notes": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "linked_artifacts": { "type": "object" },
+    "supporting_artifacts": {
+      "type": "object",
+      "properties": {
+        "event_stream_used_path": { "type": "string" },
+        "real_feedback_readiness_used_path": { "type": "string" },
+        "feedback_calibration_used_path": { "type": "string" },
+        "event_stream_input_mode": { "type": "string" },
+        "readiness_input_mode": { "type": "string" },
+        "calibration_input_mode": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

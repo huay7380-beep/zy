@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Docs16ImplementationStatus",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status_id",
+    "gate_decision",
+    "automated_requirements_ready",
+    "real_send_verified",
+    "simulated_send_verified",
+    "runner_environment_contract_ready",
+    "goal_complete",
+    "simulation_goal_complete",
+    "completed_count",
+    "incomplete_count",
+    "requirements",
+    "external_pending",
+    "operator_next_actions",
+    "latest_artifacts",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "docs16_implementation_status.v1" },
+    "status_id": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "docs16_implementation_incomplete",
+        "docs16_waiting_for_real_controlled_send",
+        "docs16_simulated_controlled_send_verified",
+        "docs16_implementation_complete"
+      ]
+    },
+    "automated_requirements_ready": { "type": "boolean" },
+    "real_send_verified": { "type": "boolean" },
+    "simulated_send_verified": { "type": "boolean" },
+    "runner_environment_contract_ready": { "type": "boolean" },
+    "goal_complete": { "type": "boolean" },
+    "simulation_goal_complete": { "type": "boolean" },
+    "completed_count": { "type": "integer", "minimum": 0 },
+    "incomplete_count": { "type": "integer", "minimum": 0 },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "requirement_id",
+          "description",
+          "status",
+          "evidence_refs",
+          "missing"
+        ],
+        "properties": {
+          "requirement_id": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 },
+          "status": {
+            "type": "string",
+            "enum": ["complete", "incomplete"]
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "missing": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "external_pending": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "operator_next_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "status",
+          "description",
+          "target_path",
+          "template_path",
+          "command",
+          "evidence_refs",
+          "blockers"
+        ],
+        "properties": {
+          "action_id": { "type": "string", "minLength": 1 },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "blocked", "ready", "complete"]
+          },
+          "description": { "type": "string", "minLength": 1 },
+          "target_path": { "type": ["string", "null"] },
+          "template_path": { "type": ["string", "null"] },
+          "command": { "type": ["string", "null"] },
+          "evidence_refs": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "blockers": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "latest_artifacts": {
+      "type": "object",
+      "required": [
+        "intake_implementation_audit",
+        "controlled_send_material_kit",
+        "controlled_send_command_draft",
+        "controlled_send_command_confirmation",
+        "controlled_send_operator_pack",
+        "controlled_send_real_window_readiness",
+        "controlled_send_command_preflight",
+        "desktop_controlled_send_handoff",
+        "desktop_controlled_send_completion",
+        "process_tree_validation"
+      ],
+      "properties": {
+        "intake_implementation_audit": { "type": ["string", "null"] },
+        "controlled_send_material_kit": { "type": ["string", "null"] },
+        "controlled_send_command_draft": { "type": ["string", "null"] },
+        "controlled_send_command_confirmation": { "type": ["string", "null"] },
+        "controlled_send_operator_pack": { "type": ["string", "null"] },
+        "controlled_send_real_window_readiness": { "type": ["string", "null"] },
+        "controlled_send_command_preflight": { "type": ["string", "null"] },
+        "desktop_controlled_send_handoff": { "type": ["string", "null"] },
+        "desktop_controlled_send_completion": { "type": ["string", "null"] },
+        "process_tree_validation": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "created_at": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}

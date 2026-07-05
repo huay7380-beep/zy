@@ -1,0 +1,15 @@
+{
+  "schema_version": "summary_shard.v1",
+  "summary_shard_id": "summary_shard_sample",
+  "shard_type": "goal_domain_summary",
+  "source_refs": ["runtime/source-archives/sample/raw.txt"],
+  "subject_refs": ["nested_event_sample"],
+  "time_window": {
+    "start_at": "2026-07-01T20:00:00+08:00",
+    "end_at": "2026-07-01T20:00:00+08:00"
+  },
+  "summary_text": "Relationship label probe requires confirmation and does not replace original source text.",
+  "tags": ["goal_domain:romance_relationship_maintenance", "confirmation:required"],
+  "replaces_original": false,
+  "created_at": "2026-07-01T20:00:01+08:00"
+}

@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/learning-weight-promotion-confirmation.schema.json",
+  "title": "LearningWeightPromotionConfirmation",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "confirmation_id",
+    "created_at",
+    "source_phase_run_id",
+    "shadow_report_id",
+    "promotion_gate_id",
+    "gate_decision",
+    "requested_transition",
+    "confirmation_scope",
+    "checks",
+    "required_failures",
+    "warning_failures",
+    "shadow_summary",
+    "approval_boundary",
+    "decision_template",
+    "operator_next_actions",
+    "next_commands"
+  ],
+  "properties": {
+    "schema_version": { "const": "learning_weight_promotion_confirmation.v1" },
+    "confirmation_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string" },
+    "source_phase_run_id": { "type": ["string", "null"] },
+    "shadow_report_id": { "type": ["string", "null"] },
+    "promotion_gate_id": { "type": ["string", "null"] },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "learning_weight_promotion_confirmation_pending_user_decision",
+        "learning_weight_promotion_confirmation_blocked"
+      ]
+    },
+    "requested_transition": { "const": "shadow_to_limited_trial" },
+    "confirmation_scope": {
+      "type": "object",
+      "required": [
+        "current_scope",
+        "requested_scope",
+        "full_promotion_allowed",
+        "current_learning_weight_promotion_allowed",
+        "current_write_allowed",
+        "decision_template_required",
+        "user_final_confirmation_required"
+      ],
+      "properties": {
+        "current_scope": { "const": "shadow_report_only" },
+        "requested_scope": { "const": "limited_trial_only" },
+        "full_promotion_allowed": { "const": false },
+        "current_learning_weight_promotion_allowed": { "const": false },
+        "current_write_allowed": { "const": false },
+        "decision_template_required": { "const": true },
+        "user_final_confirmation_required": { "const": true }
+      },
+      "additionalProperties": true
+    },
+    "checks": { "type": "array", "items": { "type": "object" } },
+    "required_failures": { "type": "array", "items": { "type": "string" } },
+    "warning_failures": { "type": "array", "items": { "type": "string" } },
+    "shadow_summary": { "type": "object" },
+    "approval_boundary": {
+      "type": "object",
+      "required": [
+        "this_artifact_approves_nothing",
+        "writes_fact_state",
+        "relationship_state_write_allowed",
+        "identity_merge_allowed",
+        "external_action_allowed",
+        "learning_weight_promotion_allowed",
+        "limited_trial_execution_allowed",
+        "approval_requires_decision_template"
+      ],
+      "properties": {
+        "this_artifact_approves_nothing": { "const": true },
+        "writes_fact_state": { "const": false },
+        "relationship_state_write_allowed": { "const": false },
+        "identity_merge_allowed": { "const": false },
+        "external_action_allowed": { "const": false },
+        "learning_weight_promotion_allowed": { "const": false },
+        "limited_trial_execution_allowed": { "const": false },
+        "approval_requires_decision_template": { "const": true }
+      },
+      "additionalProperties": true
+    },
+    "decision_template": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "confirmation_id",
+        "selected_decision",
+        "allowed_decisions",
+        "requested_scope",
+        "full_promotion_allowed",
+        "approval_flags",
+        "limited_trial_bounds"
+      ],
+      "properties": {
+        "schema_version": { "const": "learning_weight_promotion_decision.v1" },
+        "selected_decision": { "const": "pending" },
+        "requested_scope": { "const": "limited_trial_only" },
+        "full_promotion_allowed": { "const": false }
+      },
+      "additionalProperties": true
+    },
+    "operator_next_actions": { "type": "array", "items": { "type": "string" } },
+    "next_commands": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

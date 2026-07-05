@@ -1,0 +1,139 @@
+{
+  "contract": "pdp_site_design_qa_report.v1",
+  "generated_at": "2026-07-04T12:05:30+08:00",
+  "product_folder_id": "QXJ-1007",
+  "check": "new_color_pdf_pixel_check",
+  "targets": {
+    "deep_teal": "#006d77",
+    "copper_amber": "#b66a2c",
+    "old_reference_blue": "#0a3b78",
+    "old_reference_green": "#8cc63e"
+  },
+  "threshold_rgb_distance": 20,
+  "summary": {
+    "deep_teal": {
+      "approx_pixel_count_step2": 12098,
+      "samples": [
+        {
+          "page": "page-1.png",
+          "x": 144,
+          "y": 144,
+          "rgb": [
+            2,
+            110,
+            120
+          ]
+        },
+        {
+          "page": "page-1.png",
+          "x": 210,
+          "y": 144,
+          "rgb": [
+            15,
+            117,
+            127
+          ]
+        },
+        {
+          "page": "page-1.png",
+          "x": 212,
+          "y": 144,
+          "rgb": [
+            9,
+            114,
+            123
+          ]
+        },
+        {
+          "page": "page-1.png",
+          "x": 260,
+          "y": 144,
+          "rgb": [
+            0,
+            109,
+            119
+          ]
+        },
+        {
+          "page": "page-1.png",
+          "x": 320,
+          "y": 144,
+          "rgb": [
+            15,
+            117,
+            127
+          ]
+        }
+      ]
+    },
+    "copper_amber": {
+      "approx_pixel_count_step2": 12570,
+      "samples": [
+        {
+          "page": "page-1.png",
+          "x": 1216,
+          "y": 366,
+          "rgb": [
+            182,
+            106,
+            44
+          ]
+        },
+        {
+          "page": "page-1.png",
+          "x": 1218,
+          "y": 366,
+          "rgb": [
+            182,
+            106,
+            44
+          ]
+        },
+        {
+          "page": "page-1.png",
+          "x": 1220,
+          "y": 366,
+          "rgb": [
+            182,
+            106,
+            44
+          ]
+        },
+        {
+          "page": "page-1.png",
+          "x": 1222,
+          "y": 366,
+          "rgb": [
+            182,
+            106,
+            44
+          ]
+        },
+        {
+          "page": "page-1.png",
+          "x": 1212,
+          "y": 368,
+          "rgb": [
+            182,
+            106,
+            44
+          ]
+        }
+      ]
+    },
+    "old_reference_blue": {
+      "approx_pixel_count_step2": 0,
+      "samples": []
+    },
+    "old_reference_green": {
+      "approx_pixel_count_step2": 0,
+      "samples": []
+    }
+  },
+  "passed": true,
+  "rendered_pages": [
+    "D:/zhineng/chanpinye/products/QXJ-1007/qa/pdf-new-color-export/page-1.png",
+    "D:/zhineng/chanpinye/products/QXJ-1007/qa/pdf-new-color-export/page-2.png"
+  ],
+  "real_external_actions_executed": false
+}

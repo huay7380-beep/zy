@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/theory-code-alignment-audit-agents.schema.json",
+  "title": "TheoryCodeAlignmentAuditAgents",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "goal",
+    "layers",
+    "agents",
+    "project_gap_review"
+  ],
+  "properties": {
+    "schema_version": { "const": "theory_code_alignment_audit_agents.v1" },
+    "goal": { "type": "string", "minLength": 1 },
+    "layers": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["layer_id", "label", "purpose", "required_evidence", "pass_gate"],
+        "properties": {
+          "layer_id": { "type": "string" },
+          "label": { "type": "string" },
+          "purpose": { "type": "string" },
+          "required_evidence": { "type": "array", "items": { "type": "string" } },
+          "pass_gate": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    },
+    "agents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "agent_id",
+          "layer_id",
+          "role",
+          "reads",
+          "checks",
+          "outputs",
+          "hard_fail_when"
+        ],
+        "properties": {
+          "agent_id": { "type": "string" },
+          "layer_id": { "type": "string" },
+          "role": { "type": "string" },
+          "reads": { "type": "array", "items": { "type": "string" } },
+          "checks": { "type": "array", "items": { "type": "string" } },
+          "outputs": { "type": "array", "items": { "type": "string" } },
+          "hard_fail_when": { "type": "array", "items": { "type": "string" } },
+          "open_gap_tags": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    },
+    "project_gap_review": {
+      "type": "object",
+      "required": ["current_missing_parts", "not_missing_but_incomplete", "next_build_order"],
+      "properties": {
+        "current_missing_parts": { "type": "array", "items": { "type": "string" } },
+        "not_missing_but_incomplete": { "type": "array", "items": { "type": "string" } },
+        "next_build_order": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

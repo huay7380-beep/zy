@@ -1,0 +1,240 @@
+{
+  "main": {
+    "id": "0ec288424f39c5c5",
+    "type": "split",
+    "children": [
+      {
+        "id": "4999fa52a2e8ff0a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5ebf0135a4919dee",
+            "type": "leaf",
+            "state": {
+              "type": "canvas",
+              "state": {
+                "file": "views/obsidian/system-process-tree.canvas",
+                "viewState": {
+                  "x": 5500.476493536124,
+                  "y": 1164.2561287555125,
+                  "zoom": -1.5221284196025469
+                }
+              },
+              "icon": "lucide-layout-dashboard",
+              "title": "system-process-tree"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "e78babe5bda96498",
+    "type": "split",
+    "children": [
+      {
+        "id": "40ce496eb32f7a02",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "213b387d099068b5",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "80ce4d9945541b9f",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "c369f01f11a1ea00",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "right": {
+    "id": "78f15ba41ae4555b",
+    "type": "split",
+    "children": [
+      {
+        "id": "eab453e2edc6260e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ff77af292719d79e",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "views/obsidian/system-process-tree.canvas",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "system-process-tree 的反向链接列表"
+            }
+          },
+          {
+            "id": "2a61868f9fecb7a4",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "views/obsidian/system-process-tree.canvas",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "system-process-tree 的出链列表"
+            }
+          },
+          {
+            "id": "40c25306cf376419",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "5c85e6a84577725e",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "06c6d9058c8ca381",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "views/obsidian/system-process-tree.canvas",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "system-process-tree 的大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false
+    }
+  },
+  "active": "5ebf0135a4919dee",
+  "lastOpenFiles": [
+    "sightflow-desktop-agent-main/out/renderer/assets/index-qLj9HkY2.js",
+    "sightflow-desktop-agent-main/electron.vite.config.1781709289892.mjs",
+    "sightflow-desktop-agent-main/electron.vite.config.1781709073299.mjs",
+    "runtime/visual-checks/graph-centered-expanded-particle-orb-denser-final.png",
+    "sightflow-desktop-agent-main/out/renderer/assets/index-BZQCYLZ9.js",
+    "sightflow-desktop-agent-main/out/renderer/assets/index-BEDqnHPO.css",
+    "sightflow-desktop-agent-main/electron.vite.config.1781708713702.mjs",
+    "runtime/visual-checks/graph-centered-expanded-particle-orb-final.png",
+    "sightflow-desktop-agent-main/out/renderer/assets/index-tt9kUUYu.js",
+    "sightflow-desktop-agent-main/out/renderer/assets/index-BdzV1nVg.css",
+    "sightflow-desktop-agent-main/electron.vite.config.1781708498029.mjs",
+    "runtime/visual-checks/graph-centered-expanded-particle-orb.png",
+    "sightflow-desktop-agent-main/out/renderer/assets/index-C_1PBHrS.js",
+    "sightflow-desktop-agent-main/out/renderer/assets/index-kEp2FBkP.css",
+    "runtime/visual-checks/graph-opened-after-particle-click.png",
+    "runtime/visual-checks/dock-buttons-fixed-before-click.png",
+    "runtime/visual-checks/dock-particle-frame-2-final.png",
+    "runtime/visual-checks/dock-particle-frame-1-final.png",
+    "runtime/visual-checks/dock-particle-frame-2-v2.png",
+    "runtime/visual-checks/dock-particle-frame-1-v2.png",
+    "runtime/visual-checks/dock-particle-frame-2.png",
+    "runtime/process-tree-validations/process_tree_validation_20260617131440/process-tree-validation.md",
+    "runtime/gui-control-panel-validations/gui_control_panel_report_20260617131439/gui-control-panel-report.md",
+    "runtime/process-tree-validations/process_tree_validation_20260617131019/process-tree-validation.md",
+    "runtime/gui-control-panel-validations/gui_control_panel_report_20260617131018/gui-control-panel-report.md",
+    "runtime/gui-control-panel-validations/gui_control_panel_report_20260617130414/gui-control-panel-report.md",
+    "runtime/process-tree-validations/process_tree_validation_20260617130355/process-tree-validation.md",
+    "runtime/gui-control-panel-validations/gui_control_panel_report_20260617125947/gui-control-panel-report.md",
+    "runtime/process-tree-validations/process_tree_validation_20260617125939/process-tree-validation.md",
+    "sightflow-desktop-agent-main/node_modules/three/README.md",
+    "sightflow-desktop-agent-main/node_modules/three/examples/jsm/libs/draco/README.md",
+    "sightflow-desktop-agent-main/node_modules/three/examples/jsm/libs/basis/README.md",
+    "sightflow-desktop-agent-main/node_modules/three/examples/fonts/ttf/README.md",
+    "sightflow-desktop-agent-main/node_modules/three/examples/fonts/README.md",
+    "sightflow-desktop-agent-main/node_modules/three/src/nodes/materialx/DISCLAIMER.md",
+    "runtime/status-dashboards/mvp_status_dashboard_20260617120903/mvp-status-dashboard.md",
+    "runtime/process-tree-validations/process_tree_validation_20260617120849/process-tree-validation.md",
+    "runtime/goal-oriented-backtests/goal_oriented_backtest_20260617120835/goal-oriented-interaction-backtest.md",
+    "runtime/status-dashboards/mvp_status_dashboard_20260616203225/mvp-status-dashboard.md",
+    "runtime/process-tree-validations/process_tree_validation_20260616203218/process-tree-validation.md",
+    "runtime/status-dashboards/mvp_status_dashboard_20260616203134/mvp-status-dashboard.md",
+    "runtime/process-tree-validations/process_tree_validation_20260616203127/process-tree-validation.md",
+    "runtime/goal-oriented-backtests/goal_oriented_backtest_20260616203120/goal-oriented-interaction-backtest.md",
+    "runtime/status-dashboards/mvp_status_dashboard_20260616202926/mvp-status-dashboard.md",
+    "runtime/process-tree-validations/process_tree_validation_20260616202918/process-tree-validation.md",
+    "runtime/goal-oriented-backtests/goal_oriented_backtest_20260616202910/goal-oriented-interaction-backtest.md",
+    "views/obsidian/system-process-tree.canvas"
+  ]
+}

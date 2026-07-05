@@ -1,0 +1,126 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "index_rebuild",
+  "display_name": "索引",
+  "owner": "process_tree",
+  "source_dir": "schemas",
+  "process_tree_node_id": "index_rebuild",
+  "registration_status": "process_tree_status:implemented_skeleton",
+  "gate": "system_patrol_coverage_gate",
+  "compass": "system_patrol.index_rebuild",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "validated",
+  "updated_at": "2026-07-01T11:39:08.902Z",
+  "ttl_ms": 604800000,
+  "change_session_id": "system_patrol_blocks_init_20260701",
+  "data_flow": {
+    "inputs": [
+      "schemas/storage-index.schema.json",
+      "data/indexes/person-event-index.json",
+      "data/indexes/relationship-event-index.json",
+      "data/indexes/tag-event-index.json",
+      "data/indexes/time-event-index.json",
+      "packages/storage-runtime/src/storage-runtime.mjs"
+    ],
+    "processing": [
+      "从源数据重建人物、关系、标签和时间索引，支持未来检索线索。"
+    ],
+    "outputs": [
+      "EventIndex"
+    ],
+    "dependencies": [
+      "examples/system-process-tree.json",
+      "dialogue-system-patrol/registry/system-patrol-registry.json"
+    ]
+  },
+  "state": {
+    "headline": "索引: patrol block initialized from process tree status implemented_skeleton.",
+    "current_task": "Maintain summary-only patrol coverage and expose dialogue-readable state.",
+    "progress": 1,
+    "blockers": [],
+    "risks": [
+      "大数据量下的索引性能和检索策略还未压测。",
+      "复杂语义检索和多条件检索还未实现。"
+    ],
+    "next": [
+      "Review this generated patrol block before treating it as a deep module interpretation.",
+      "Refresh validation with npm.cmd run system-patrol:validate.",
+      "Publish dialogue-readable output with npm.cmd run system-patrol:publish."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "examples/system-process-tree.json",
+      "schemas/storage-index.schema.json",
+      "data/indexes/person-event-index.json",
+      "data/indexes/relationship-event-index.json",
+      "data/indexes/tag-event-index.json",
+      "data/indexes/time-event-index.json",
+      "packages/storage-runtime/src/storage-runtime.mjs"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:publish",
+      "npm.cmd run process-tree:validate"
+    ],
+    "latest_validation_refs": [
+      "runtime/dialogue-system-patrol-validations/latest.json"
+    ]
+  },
+  "boundaries": {
+    "mode": "controlled_write_runtime_summary",
+    "allowed_reads": [
+      "examples/system-process-tree.json",
+      "schemas/storage-index.schema.json",
+      "data/indexes/person-event-index.json",
+      "data/indexes/relationship-event-index.json",
+      "data/indexes/tag-event-index.json",
+      "data/indexes/time-event-index.json",
+      "packages/storage-runtime/src/storage-runtime.mjs"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/index_rebuild.json",
+      "runtime/status-events/index_rebuild.json",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**"
+    ],
+    "forbidden_actions": [
+      "no business module rewrite from patrol initialization",
+      "no dialogue reader rewrite from patrol initialization",
+      "no external platform action",
+      "no raw private payload publication"
+    ],
+    "confirmation_gates": [
+      "user confirmation required before protocol migration",
+      "user confirmation required before process-tree and Obsidian registration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The module is represented in the process tree.",
+      "The patrol block was initialized from process-tree summary evidence.",
+      "Current status is summary-only and should cite source refs."
+    ],
+    "must_not_infer": [
+      "Do not infer raw runtime facts that are not present in evidence refs.",
+      "Do not treat generated patrol text as a full source-code review.",
+      "Do not claim external actions or business outcomes from patrol coverage alone."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "sha256:8fc3027764d3accd14c4dd7fdc710f8c544d0bbe9bc444ca47906963be9fe72d",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-05T13:12:46.780Z",
+    "source_hash_refs": [
+      "data/indexes/person-event-index.json",
+      "data/indexes/relationship-event-index.json",
+      "data/indexes/tag-event-index.json",
+      "data/indexes/time-event-index.json",
+      "examples/system-process-tree.json",
+      "packages/storage-runtime/src/storage-runtime.mjs",
+      "schemas/storage-index.schema.json"
+    ],
+    "source_hash_excluded_refs": []
+  }
+}

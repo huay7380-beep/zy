@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OutboundSendCommand",
+  "type": "object",
+  "required": [
+    "send_command_id",
+    "event_id",
+    "decision_id",
+    "trigger_id",
+    "target_platform",
+    "target_thread_hint",
+    "message_draft",
+    "requires_user_confirmation",
+    "user_confirmed",
+    "real_execution_allowed",
+    "safety_checks",
+    "created_at"
+  ],
+  "properties": {
+    "send_command_id": { "type": "string", "minLength": 1 },
+    "event_id": { "type": "string", "minLength": 1 },
+    "decision_id": { "type": "string", "minLength": 1 },
+    "trigger_id": { "type": "string", "minLength": 1 },
+    "target_platform": { "type": "string", "minLength": 1 },
+    "target_person_id": { "type": "string" },
+    "target_thread_hint": { "type": "object" },
+    "message_draft": { "type": "string", "minLength": 1 },
+    "requires_user_confirmation": { "type": "boolean" },
+    "user_confirmed": { "type": "boolean" },
+    "real_execution_allowed": { "type": "boolean" },
+    "safety_checks": {
+      "type": "object",
+      "properties": {
+        "window_matches": { "type": "boolean" },
+        "thread_matches": { "type": "boolean" },
+        "draft_matches": { "type": "boolean" },
+        "permission_granted": { "type": "boolean" },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "created_at": { "type": "string", "minLength": 1 },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": false
+}

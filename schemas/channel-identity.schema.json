@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/channel-identity.schema.json",
+  "title": "ChannelIdentity",
+  "type": "object",
+  "required": [
+    "channel_identity_id",
+    "platform",
+    "identity_type",
+    "verification_status",
+    "confidence",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "channel_identity_id": { "type": "string", "minLength": 1 },
+    "platform": { "type": "string", "minLength": 1 },
+    "identity_type": {
+      "type": "string",
+      "enum": ["display_name", "remark_name", "handle", "platform_user_id", "phone_hash", "email_hash", "web_profile", "group_member", "thread", "unknown"]
+    },
+    "display_name": { "type": ["string", "null"] },
+    "normalized_display_name": { "type": ["string", "null"] },
+    "handle": { "type": ["string", "null"] },
+    "normalized_handle": { "type": ["string", "null"] },
+    "value_hash": { "type": ["string", "null"] },
+    "organization_hint": { "type": ["string", "null"] },
+    "thread_key": { "type": ["string", "null"] },
+    "source_observation_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": ["unverified", "candidate", "confirmed", "rejected"]
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "updated_at": { "type": "string", "minLength": 1 },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": true
+}

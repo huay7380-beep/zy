@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/read-only-duplicate-observation-review.schema.json",
+  "title": "ReadOnlyDuplicateObservationReview",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "review_id",
+    "created_at",
+    "gate_decision",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "source",
+    "summary",
+    "groups",
+    "checks",
+    "required_failures",
+    "warning_failures",
+    "next_actions"
+  ],
+  "properties": {
+    "schema_version": { "const": "read_only_duplicate_observation_review.v1" },
+    "review_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "enum": [
+        "duplicate_observation_review_ready_for_operator_confirmation",
+        "duplicate_observation_review_needs_attention"
+      ]
+    },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "source": {
+      "type": "object",
+      "required": ["root", "read_only_expansion_status_path"],
+      "additionalProperties": true
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "duplicate_group_count",
+        "duplicate_observation_count",
+        "deterministic_suppression_ready_groups",
+        "operator_confirmation_required"
+      ],
+      "properties": {
+        "duplicate_group_count": { "type": "integer", "minimum": 0 },
+        "duplicate_observation_count": { "type": "integer", "minimum": 0 },
+        "deterministic_suppression_ready_groups": { "type": "integer", "minimum": 0 },
+        "operator_confirmation_required": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "observation_id",
+          "count",
+          "paths",
+          "observations",
+          "evidence_summary",
+          "recommended_action",
+          "operator_confirmation_required",
+          "deterministic_suppression_ready"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "severity", "status", "passed", "evidence"],
+        "additionalProperties": true
+      }
+    },
+    "required_failures": { "type": "array", "items": { "type": "string" } },
+    "warning_failures": { "type": "array", "items": { "type": "string" } },
+    "next_actions": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

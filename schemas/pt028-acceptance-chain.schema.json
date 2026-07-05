@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-acceptance-chain.schema.json",
+  "title": "pt028_acceptance_chain.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "chain_id",
+    "created_at",
+    "gate_decision",
+    "pt028_fully_accepted_for_production",
+    "feedback_path",
+    "feedback_exists",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "required_failures",
+    "steps"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_acceptance_chain.v1" },
+    "chain_id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "root": { "type": "string" },
+    "feedback_path": { "type": ["string", "null"] },
+    "feedback_exists": { "type": "boolean" },
+    "decision_path": { "type": ["string", "null"] },
+    "audit_path": { "type": ["string", "null"] },
+    "gate_decision": {
+      "enum": [
+        "pt028_acceptance_chain_passed",
+        "pt028_acceptance_chain_blocked"
+      ]
+    },
+    "pt028_fully_accepted_for_production": { "type": "boolean" },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "final_acceptance_gate_decision": { "type": ["string", "null"] },
+    "final_acceptance_path": { "type": ["string", "null"] },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step_id", "script", "exit_status", "ok"],
+        "properties": {
+          "step_id": { "type": "string" },
+          "script": { "type": "string" },
+          "exit_status": { "type": ["number", "null"] },
+          "ok": { "type": "boolean" },
+          "gate_decision": { "type": ["string", "null"] },
+          "required_failures": {
+            "type": "array"
+          },
+          "json_path": { "type": ["string", "null"] },
+          "markdown_path": { "type": ["string", "null"] },
+          "latest_path": { "type": ["string", "null"] },
+          "stdout_json": { "type": ["object", "null"] }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

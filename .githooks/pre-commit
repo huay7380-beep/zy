@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+if command -v npm.cmd >/dev/null 2>&1; then
+  npm.cmd run system-patrol:enforce
+else
+  npm run system-patrol:enforce
+fi

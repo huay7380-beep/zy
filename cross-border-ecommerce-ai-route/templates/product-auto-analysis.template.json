@@ -1,0 +1,156 @@
+{
+  "contract": "product_auto_analysis.v1",
+  "analysis_id": "{{analysis_id}}",
+  "source_intake_id": "{{intake_id}}",
+  "analysis_status": "draft",
+  "classification": {
+    "category_candidates": [
+      {
+        "category_path": ["{{level_1}}", "{{level_2}}", "{{level_3}}"],
+        "confidence": 0.0,
+        "reason": "{{evidence_from_description_specs_images}}"
+      }
+    ],
+    "recommended_category": ["{{level_1}}", "{{level_2}}", "{{level_3}}"],
+    "confidence": 0.0,
+    "missing_fields": ["{{field_needed_to_improve_classification}}"]
+  },
+  "standard_and_market_analysis": {
+    "regulated_flags": [
+      "{{electrical|battery|wireless|food_contact|children|medical|chemical|textile|cosmetic|none}}"
+    ],
+    "hs_code_candidates": ["{{candidate_hs_code}}"],
+    "certificate_matrix": [
+      {
+        "market": "{{EU|US|UK|Middle East|Africa|Southeast Asia|other}}",
+        "required_or_expected_documents": ["{{certificate_or_test_report}}"],
+        "provided_documents": ["{{provided_document}}"],
+        "status": "{{ready|conditional|blocked|unknown}}",
+        "notes": "{{why_this_market_is_or_is_not_ready}}"
+      }
+    ],
+    "market_recommendations": [
+      {
+        "market": "{{country_or_region}}",
+        "recommendation": "{{priority|test|conditional|blocked|unknown}}",
+        "reason": "{{market_fit_and_compliance_reason}}",
+        "evidence_needed": ["{{missing_certificate|missing_label|missing_hs_review|missing_packaging_data}}"],
+        "sales_audience": ["{{distributor|installer|retailer|brand_owner|project_contractor|system_integrator}}"]
+      }
+    ],
+    "human_review_required": true
+  },
+  "media_plan": {
+    "image_actions": [
+      "remove_background",
+      "clean_old_brand",
+      "normalize_shadow",
+      "generate_white_background_set",
+      "generate_detail_crop_set",
+      "generate_application_scene_draft"
+    ],
+    "labeling_plan": [
+      "public_sku_label",
+      "brand_corner_mark",
+      "packaging_sticker_mockup"
+    ],
+    "output_sets": ["print", "web", "thumb", "ad", "rfq"],
+    "quality_gates": [
+      "do_not_change_product_shape",
+      "do_not_add_unverified_certification_marks",
+      "no_old_brand_visible",
+      "human_visual_review_required"
+    ]
+  },
+  "product_page_plan": {
+    "url_slug": "{{brand-product-category-sku}}",
+    "page_type": "product_detail",
+    "required_sections": [
+      "hero",
+      "key_specs",
+      "application",
+      "options",
+      "packaging",
+      "certificate_request",
+      "faq",
+      "rfq"
+    ],
+    "seo_keywords": ["{{keyword}}"],
+    "geo_answer_assets": [
+      "what_is_this_product",
+      "how_to_choose",
+      "market_certificate_notes",
+      "buyer_faq"
+    ],
+    "rfq_fields": [
+      "quantity",
+      "destination_country",
+      "target_buyer_type",
+      "certificate_request",
+      "packaging_requirement",
+      "target_delivery_date"
+    ]
+  },
+  "pricing_plan": {
+    "pricing_status": "{{ready_for_draft|needs_cost|needs_market_benchmark|blocked}}",
+    "price_inputs_needed": [
+      "unit_cost",
+      "moq",
+      "carton_qty",
+      "carton_size",
+      "gross_weight",
+      "target_margin_floor"
+    ],
+    "quote_modes": ["sample_quote", "standard_sku_quote", "tiered_bulk_quote", "private_label_quote"],
+    "margin_rules": [
+      "do_not_quote_below_margin_floor",
+      "sample_fee_must_be_confirmed",
+      "private_label_cost_must_be_separated"
+    ],
+    "human_gate": "price_owner_approval_required"
+  },
+  "logistics_plan": {
+    "logistics_status": "{{ready_for_comparison|needs_packaging_data|blocked}}",
+    "shipping_modes": ["express", "air_freight", "sea_freight_LCL", "sea_freight_FCL", "rail_if_available"],
+    "comparison_fields": [
+      "destination_country",
+      "incoterms",
+      "carton_count",
+      "chargeable_weight",
+      "volume_cbm",
+      "estimated_transit_time",
+      "estimated_freight_cost",
+      "customs_risk",
+      "insurance"
+    ],
+    "restricted_transport_flags": [
+      "{{battery|magnet|liquid|oversize|dangerous_goods|none|unknown}}"
+    ],
+    "missing_inputs": ["{{missing_logistics_input}}"]
+  },
+  "sales_route_plan": {
+    "target_buyers": ["{{buyer_segment}}"],
+    "channels": ["independent_site", "Google Search", "LinkedIn", "B2B platform", "direct_email_after_confirmed_opt_in"],
+    "lead_capture_plan": [
+      "product_page_rfq",
+      "download_datasheet_form",
+      "sample_request_form",
+      "BOM_upload_form"
+    ]
+  },
+  "automation_gates": {
+    "local_draft_allowed": true,
+    "publish_allowed": false,
+    "send_allowed": false,
+    "ad_spend_allowed": false,
+    "real_trade_execution_allowed": false,
+    "required_human_reviews": [
+      "classification_review",
+      "compliance_review",
+      "visual_review",
+      "price_review",
+      "logistics_review",
+      "publish_review"
+    ]
+  }
+}

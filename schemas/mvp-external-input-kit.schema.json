@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/mvp-external-input-kit.schema.json",
+  "title": "MvpExternalInputKit",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "kit_id",
+    "created_at",
+    "source_preflight_id",
+    "purpose",
+    "open_items",
+    "files_to_prepare",
+    "acceptance_gates",
+    "handoff_sequence",
+    "source"
+  ],
+  "properties": {
+    "schema_version": { "const": "mvp_external_input_kit.v1" },
+    "kit_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "source_preflight_id": { "type": "string", "minLength": 1 },
+    "purpose": { "type": "string", "minLength": 1 },
+    "open_items": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "files_to_prepare": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "issue_id",
+          "target_path",
+          "required_content",
+          "validation_command",
+          "continue_when",
+          "stop_or_adjust_when"
+        ],
+        "properties": {
+          "issue_id": { "type": "string" },
+          "target_path": { "type": "string" },
+          "companion_preview_path": { "type": "string" },
+          "source_template": { "type": "string" },
+          "companion_preview_template": { "type": "string" },
+          "schema_path": { "type": "string" },
+          "required_content": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "validation_command": { "type": "string" },
+          "continue_when": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "stop_or_adjust_when": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "acceptance_gates": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "handoff_sequence": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

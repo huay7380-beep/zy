@@ -1,0 +1,90 @@
+{
+  "schema_version": "learning_weight_promotion_confirmation.v1",
+  "confirmation_id": "learning_weight_promotion_confirmation_sample",
+  "created_at": "2026-07-01T00:00:00.000Z",
+  "source_phase_run_id": "relationship_event_graph_phase_run_sample",
+  "source_phase_run_ref": "runtime/relationship-event-graph-phase-runs/sample/relationship-event-graph-phase-run.json",
+  "shadow_report_id": "learning_weight_shadow_report_sample",
+  "promotion_gate_id": "confirmation_gate_learning_weight_promotion_sample",
+  "gate_decision": "learning_weight_promotion_confirmation_pending_user_decision",
+  "requested_transition": "shadow_to_limited_trial",
+  "confirmation_scope": {
+    "current_scope": "shadow_report_only",
+    "requested_scope": "limited_trial_only",
+    "full_promotion_allowed": false,
+    "current_learning_weight_promotion_allowed": false,
+    "current_write_allowed": false,
+    "decision_template_required": true,
+    "user_final_confirmation_required": true
+  },
+  "checks": [
+    {
+      "check_id": "source_phase_run_p10_shadow_ready",
+      "label": "Source phase run is P10 shadow ready",
+      "severity": "required",
+      "status": "pass",
+      "passed": true,
+      "evidence": ["gate_decision=relationship_event_graph_p10_shadow_ready"],
+      "fix": null
+    }
+  ],
+  "required_failures": [],
+  "warning_failures": [],
+  "shadow_summary": {
+    "comparison_count": 1,
+    "max_abs_delta": 0.005,
+    "changed_level_count": 0,
+    "high_delta_count": 0,
+    "review_subject_refs": []
+  },
+  "approval_boundary": {
+    "this_artifact_approves_nothing": true,
+    "writes_fact_state": false,
+    "relationship_state_write_allowed": false,
+    "identity_merge_allowed": false,
+    "external_action_allowed": false,
+    "learning_weight_promotion_allowed": false,
+    "limited_trial_execution_allowed": false,
+    "approval_requires_decision_template": true
+  },
+  "decision_template": {
+    "schema_version": "learning_weight_promotion_decision.v1",
+    "confirmation_id": "learning_weight_promotion_confirmation_sample",
+    "promotion_gate_id": "confirmation_gate_learning_weight_promotion_sample",
+    "source_phase_run_id": "relationship_event_graph_phase_run_sample",
+    "shadow_report_id": "learning_weight_shadow_report_sample",
+    "selected_decision": "pending",
+    "allowed_decisions": ["approve_limited_trial", "reject", "request_changes"],
+    "requested_scope": "limited_trial_only",
+    "full_promotion_allowed": false,
+    "approval_flags": {
+      "user_final_confirmation": false,
+      "approve_limited_trial_only": false,
+      "reviewed_shadow_report": false,
+      "reviewed_rule_vs_shadow_delta": false,
+      "reviewed_rollback_plan": false,
+      "accepts_no_relationship_state_write": false,
+      "accepts_no_identity_merge": false,
+      "accepts_no_external_action": false
+    },
+    "limited_trial_bounds": {
+      "can_rank_retrieval_candidates": false,
+      "can_generate_review_suggestions": false,
+      "can_modify_weight_profile": false,
+      "can_affect_context_snapshot_selection": false,
+      "can_affect_nebula_visual_weight": false,
+      "max_trial_scope": "future_explicit_trial_only"
+    },
+    "operator_notes": "",
+    "decided_by": null,
+    "decided_at": null
+  },
+  "operator_next_actions": [
+    "Review the source P10 shadow report and rollback plan.",
+    "If approval is intended, fill a separate decision file from the decision template.",
+    "Do not treat this confirmation pack as approval; it only opens the review process."
+  ],
+  "next_commands": [
+    "npm.cmd run relationship-event:promotion-confirmation:validate"
+  ]
+}

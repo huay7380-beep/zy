@@ -1,0 +1,150 @@
+{
+  "contract": "product_page_build_pack.v1",
+  "product_id": "{{product_id}}",
+  "source_intake_id": "{{intake_id}}",
+  "created_at": "{{iso_datetime}}",
+  "automation_goal": {
+    "validate_cross_border_module": true,
+    "validate_current_product_production_flow": true,
+    "build_product_page_and_downstream_ai_chain": true
+  },
+  "input_contract": {
+    "required": [
+      "product_identity",
+      "product_description",
+      "source_assets",
+      "basic_specs",
+      "brand_policy",
+      "human_goal"
+    ],
+    "optional": [
+      "target_market_preference",
+      "target_buyer_type",
+      "certificates",
+      "cost_moq_lead_time",
+      "packaging_logistics",
+      "reference_page",
+      "brand_visual_system"
+    ],
+    "missing_inputs": ["{{field_name}}"]
+  },
+  "ai_execution_chain": [
+    "intake_normalization",
+    "product_classification",
+    "feature_analysis",
+    "market_and_buyer_fit",
+    "page_strategy_branch",
+    "trust_strategy",
+    "visual_direction",
+    "copy_and_structure",
+    "rfq_and_sales_hooks",
+    "page_draft_build",
+    "qa_and_human_review"
+  ],
+  "classification": {
+    "category_path": ["{{level_1}}", "{{level_2}}", "{{level_3}}"],
+    "confidence": 0.0,
+    "reason": "{{classification_reason}}",
+    "human_review_required": true
+  },
+  "feature_analysis": {
+    "primary_features": ["{{feature}}"],
+    "visual_features": ["{{visual_feature}}"],
+    "buyer_decision_points": ["{{decision_point}}"],
+    "unverified_claims": ["{{claim_to_verify}}"]
+  },
+  "market_buyer_fit": {
+    "recommended_markets": [
+      {
+        "market": "{{country_or_region}}",
+        "recommendation": "{{priority|test|conditional|blocked|unknown}}",
+        "reason": "{{reason}}",
+        "evidence_needed": ["{{evidence}}"]
+      }
+    ],
+    "target_buyers": ["{{distributor|installer|OEM buyer|project procurement|system integrator}}"]
+  },
+  "page_strategy": {
+    "page_type": "{{technical|distribution|oem_private_label|project_procurement|solution}}",
+    "section_order": [
+      "hero",
+      "procurement_validation",
+      "feature_detail",
+      "specifications",
+      "packaging_logistics",
+      "certificate_request",
+      "faq",
+      "rfq"
+    ],
+    "cta_strategy": ["request_quote", "request_sample", "check_compatibility"]
+  },
+  "trust_strategy": {
+    "case_studies_available": false,
+    "replacement_trust_system": "procurement_validation",
+    "trust_blocks": [
+      "product_evidence",
+      "sample_process",
+      "compliance_status",
+      "quality_process",
+      "supply_readiness",
+      "rfq_decision_fields"
+    ]
+  },
+  "visual_direction": {
+    "image_tasks": [
+      "crop_or_extract_source_product",
+      "repair_truncated_product_edges",
+      "generate_directional_multi_view_drafts",
+      "create_white_background_set",
+      "create_detail_callout_set",
+      "create_private_label_tagging_mockup"
+    ],
+    "quality_gates": [
+      "do_not_change_product_structure",
+      "do_not_add_unverified_certification_marks",
+      "ai_generated_images_need_human_review",
+      "technical_details_need_factory_or_operator_confirmation"
+    ]
+  },
+  "page_content": {
+    "title": "{{english_product_title}}",
+    "short_value_proposition": "{{short_value_proposition}}",
+    "spec_table": [],
+    "faq": [],
+    "seo_keywords": [],
+    "geo_answer_blocks": []
+  },
+  "rfq_and_sales_hooks": {
+    "rfq_fields": [
+      "quantity",
+      "destination_country",
+      "target_buyer_type",
+      "certificate_request",
+      "packaging_requirement",
+      "sample_request",
+      "target_delivery_date"
+    ],
+    "missing_questions": [],
+    "quote_prerequisites": []
+  },
+  "page_draft_artifacts": [
+    "{{runtime/product-automation/pages/product_id/index.html}}"
+  ],
+  "downstream_routes": [
+    "cbx_04_independent_site",
+    "cbx_07_acquisition",
+    "cbx_08_lead_capture",
+    "cbx_09_inquiry_reception",
+    "cbx_10_quote_engine"
+  ],
+  "qa_report": {
+    "visual_passed": false,
+    "copy_passed": false,
+    "compliance_passed": false,
+    "mobile_layout_passed": false,
+    "rfq_flow_passed": false
+  },
+  "human_review_required": true,
+  "publish_allowed": false,
+  "real_external_action_allowed": false
+}

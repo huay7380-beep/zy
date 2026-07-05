@@ -1,0 +1,153 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "relationship_context",
+  "display_name": "人物关系",
+  "owner": "process_tree",
+  "source_dir": "docs",
+  "process_tree_node_id": "relationship_context",
+  "registration_status": "process_tree_status:implemented_skeleton",
+  "gate": "system_patrol_coverage_gate",
+  "compass": "system_patrol.relationship_context",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "validated",
+  "updated_at": "2026-07-01T11:39:08.902Z",
+  "ttl_ms": 604800000,
+  "change_session_id": "system_patrol_blocks_init_20260701",
+  "data_flow": {
+    "inputs": [
+      "docs/06-图谱数据结构与接口.md",
+      "docs/12-人物与事件存储方案.md",
+      "schemas/social-graph.schema.json",
+      "data/people/people.json",
+      "data/people/relationships.json",
+      "packages/social-graph/src/social-graph.mjs",
+      "packages/storage-runtime/src/storage-runtime.mjs",
+      "schemas/channel-identity.schema.json",
+      "schemas/person-identity-link.schema.json",
+      "packages/identity-resolution/src/identity-resolution.mjs",
+      "schemas/candidate-person.schema.json",
+      "schemas/person-role-binding.schema.json",
+      "schemas/scene-relationship-weight.schema.json",
+      "schemas/graph-memory-database.schema.json",
+      "packages/identity-resolution/src/cold-start-person-introduction.mjs"
+    ],
+    "processing": [
+      "记录对象、关系边、关系类型、阶段、健康度和行为准则。"
+    ],
+    "outputs": [
+      "Person",
+      "RelationshipEdge",
+      "relationship_summary",
+      "ConversationThread",
+      "ConversationState",
+      "ChannelIdentity",
+      "PersonIdentityLink",
+      "CandidatePerson",
+      "PersonRoleBinding",
+      "SceneRelationshipWeight",
+      "GraphMemoryDatabase"
+    ],
+    "dependencies": [
+      "examples/system-process-tree.json",
+      "dialogue-system-patrol/registry/system-patrol-registry.json"
+    ]
+  },
+  "state": {
+    "headline": "人物关系: patrol block initialized from process tree status implemented_skeleton.",
+    "current_task": "Maintain summary-only patrol coverage and expose dialogue-readable state.",
+    "progress": 1,
+    "blockers": [],
+    "risks": [
+      "人物合并和多身份处理还没有正式规则。",
+      "关系健康度更新仍需更多反馈样本校准。",
+      "ConversationState 已在 docs/12 设计为目标对象动态状态，后续需要落地存储和更新规则。",
+      "Identity resolution v1 is now available for confirmed channel identity links; real-source extraction and in-app confirmation UI remain future work."
+    ],
+    "next": [
+      "Review this generated patrol block before treating it as a deep module interpretation.",
+      "Refresh validation with npm.cmd run system-patrol:validate.",
+      "Publish dialogue-readable output with npm.cmd run system-patrol:publish."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "examples/system-process-tree.json",
+      "docs/06-图谱数据结构与接口.md",
+      "docs/12-人物与事件存储方案.md",
+      "schemas/social-graph.schema.json",
+      "data/people/people.json",
+      "data/people/relationships.json",
+      "packages/social-graph/src/social-graph.mjs",
+      "packages/storage-runtime/src/storage-runtime.mjs",
+      "schemas/channel-identity.schema.json"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:publish",
+      "npm.cmd run process-tree:validate"
+    ],
+    "latest_validation_refs": [
+      "runtime/dialogue-system-patrol-validations/latest.json"
+    ]
+  },
+  "boundaries": {
+    "mode": "controlled_write_runtime_summary",
+    "allowed_reads": [
+      "examples/system-process-tree.json",
+      "docs/06-图谱数据结构与接口.md",
+      "docs/12-人物与事件存储方案.md",
+      "schemas/social-graph.schema.json",
+      "data/people/people.json",
+      "data/people/relationships.json",
+      "packages/social-graph/src/social-graph.mjs",
+      "packages/storage-runtime/src/storage-runtime.mjs",
+      "schemas/channel-identity.schema.json"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/relationship_context.json",
+      "runtime/status-events/relationship_context.json",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**"
+    ],
+    "forbidden_actions": [
+      "no business module rewrite from patrol initialization",
+      "no dialogue reader rewrite from patrol initialization",
+      "no external platform action",
+      "no raw private payload publication"
+    ],
+    "confirmation_gates": [
+      "user confirmation required before protocol migration",
+      "user confirmation required before process-tree and Obsidian registration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The module is represented in the process tree.",
+      "The patrol block was initialized from process-tree summary evidence.",
+      "Current status is summary-only and should cite source refs."
+    ],
+    "must_not_infer": [
+      "Do not infer raw runtime facts that are not present in evidence refs.",
+      "Do not treat generated patrol text as a full source-code review.",
+      "Do not claim external actions or business outcomes from patrol coverage alone."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "sha256:1aadebb4e187873b2dfa2388acfc9ed08438bb47a04ba704a602e099f318ddc6",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-05T13:12:46.780Z",
+    "source_hash_refs": [
+      "data/people/people.json",
+      "data/people/relationships.json",
+      "docs/06-图谱数据结构与接口.md",
+      "docs/12-人物与事件存储方案.md",
+      "examples/system-process-tree.json",
+      "packages/social-graph/src/social-graph.mjs",
+      "packages/storage-runtime/src/storage-runtime.mjs",
+      "schemas/channel-identity.schema.json",
+      "schemas/social-graph.schema.json"
+    ],
+    "source_hash_excluded_refs": []
+  }
+}

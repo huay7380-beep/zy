@@ -1,0 +1,107 @@
+{
+  "version": "0.1.0",
+  "skills": [
+    {
+      "skill_id": "communication.message.draft",
+      "name": "起草消息",
+      "layer": "direct_execution",
+      "status": "implemented",
+      "requires_user_confirmation": false,
+      "requires_external_connector": false,
+      "dry_run_default": true,
+      "evidence_required": ["用户目标", "关系类型", "近期事件线索"],
+      "feedback_metrics": ["是否复制", "是否修改", "是否收到回复"]
+    },
+    {
+      "skill_id": "platform.message.send",
+      "name": "通过平台发送消息",
+      "layer": "direct_execution",
+      "status": "stub",
+      "requires_user_confirmation": true,
+      "requires_external_connector": true,
+      "dry_run_default": true,
+      "evidence_required": ["用户明确授权", "发送内容预览", "目标对象确认", "平台权限"],
+      "feedback_metrics": ["发送是否成功", "是否已读", "是否回复"],
+      "risk_controls": ["默认不开启", "必须执行前确认", "保留审计日志"]
+    },
+    {
+      "skill_id": "platform.web.open",
+      "name": "打开网页或平台页面",
+      "layer": "direct_execution",
+      "status": "stub",
+      "requires_user_confirmation": true,
+      "requires_external_connector": true,
+      "dry_run_default": true,
+      "evidence_required": ["URL 或平台对象", "用户授权"],
+      "feedback_metrics": ["页面是否打开", "是否找到目标信息"]
+    },
+    {
+      "skill_id": "reminder.create",
+      "name": "创建跟进提醒",
+      "layer": "direct_execution",
+      "status": "stub",
+      "requires_user_confirmation": true,
+      "requires_external_connector": true,
+      "dry_run_default": true,
+      "evidence_required": ["跟进时间", "跟进目标", "关系对象"],
+      "feedback_metrics": ["提醒是否触发", "是否完成跟进"]
+    },
+    {
+      "skill_id": "notification.user.send",
+      "name": "通知使用者",
+      "layer": "direct_execution",
+      "status": "stub",
+      "requires_user_confirmation": false,
+      "requires_external_connector": true,
+      "dry_run_default": true,
+      "evidence_required": ["通知渠道", "通知内容", "关联事件或决策"],
+      "feedback_metrics": ["通知是否送达", "用户是否确认收到"],
+      "risk_controls": ["不向目标对象发送", "仅通知使用者", "默认 dry-run"]
+    },
+    {
+      "skill_id": "calendar.appointment.create",
+      "name": "创建预约或拜访日程",
+      "layer": "direct_execution",
+      "status": "stub",
+      "requires_user_confirmation": true,
+      "requires_external_connector": true,
+      "dry_run_default": true,
+      "evidence_required": ["预约对象", "时间", "地点或会议方式", "用户确认"],
+      "feedback_metrics": ["预约是否创建", "是否被接受", "是否完成拜访"],
+      "risk_controls": ["必须确认时间和对象", "默认 dry-run", "保留审计日志"]
+    },
+    {
+      "skill_id": "human_process.gift.roi_analysis",
+      "name": "小礼物 ROI 分析",
+      "layer": "human_assisted_process",
+      "status": "implemented",
+      "requires_user_confirmation": true,
+      "requires_external_connector": false,
+      "dry_run_default": true,
+      "evidence_required": ["关系类型", "目标", "预算", "对方偏好", "禁忌和合规边界"],
+      "feedback_metrics": ["是否接受", "是否有正向回应", "是否推动目标", "是否产生负面压力"]
+    },
+    {
+      "skill_id": "human_process.meeting_path",
+      "name": "见面或会议流程设计",
+      "layer": "human_assisted_process",
+      "status": "implemented",
+      "requires_user_confirmation": true,
+      "requires_external_connector": false,
+      "dry_run_default": true,
+      "evidence_required": ["目标", "参与人", "时间约束", "近期事件"],
+      "feedback_metrics": ["是否约成", "是否参加", "是否达成下一步"]
+    },
+    {
+      "skill_id": "human_process.conflict_repair",
+      "name": "冲突修复流程",
+      "layer": "human_assisted_process",
+      "status": "implemented",
+      "requires_user_confirmation": true,
+      "requires_external_connector": false,
+      "dry_run_default": true,
+      "evidence_required": ["冲突事件", "双方角色", "敏感话题", "用户底线"],
+      "feedback_metrics": ["对方是否降温", "是否澄清事实", "关系阶段是否改善"]
+    }
+  ]
+}

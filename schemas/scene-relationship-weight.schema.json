@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SceneRelationshipWeight",
+  "type": "object",
+  "required": [
+    "relationship_id",
+    "from_person_id",
+    "scene",
+    "type_code",
+    "distance_tier",
+    "status",
+    "confidence",
+    "weight",
+    "components",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "relationship_id": { "type": "string", "minLength": 1 },
+    "from_person_id": { "type": "string", "minLength": 1 },
+    "to_person_id": { "type": ["string", "null"] },
+    "candidate_person_id": { "type": ["string", "null"] },
+    "scene": { "type": "string", "minLength": 1 },
+    "type_code": { "type": "string", "minLength": 1 },
+    "distance_tier": {
+      "type": "string",
+      "enum": ["unknown", "weak_tie", "normal_contact", "active_contact", "close", "core"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["candidate", "confirmed", "rejected", "archived"]
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "weight": { "type": "number", "minimum": 0, "maximum": 1 },
+    "components": { "type": "object" },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "source_observation_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "metadata": { "type": "object" },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}

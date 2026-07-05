@@ -1,0 +1,192 @@
+{
+  "schema_version": "0.1.0",
+  "project_id": "cross_border_ecommerce_ai_route",
+  "title": "跨境电商 AI 自动化通路",
+  "status": "local_control_plane_ready",
+  "generated_at": "2026-06-26",
+  "updated_at": "2026-07-04",
+  "timezone": "Asia/Shanghai",
+  "root_goal": "把中国大陆产品源头转化为可由主系统调度的跨境电商全流程：合规、建站、内容、获客、询盘、报价、订单、收款、履约、报关、税务、售后、复购和审计。",
+  "node_catalog_path": "cross-border-ecommerce-ai-route/nodes/node-catalog.json",
+  "runtime_output_root": "cross-border-ecommerce-ai-route/runtime",
+  "canonical_flow": [
+    "cbx_00_strategy_scope",
+    "cbx_01_entity_compliance",
+    "cbx_02_product_compliance",
+    "cbx_03_market_selection",
+    "cbx_04_independent_site",
+    "cbx_05_content_assets",
+    "cbx_06_catalog_pricing",
+    "cbx_07_acquisition",
+    "cbx_08_lead_capture",
+    "cbx_09_inquiry_reception",
+    "cbx_10_quote_engine",
+    "cbx_11_contract_payment",
+    "cbx_12_order_fulfillment",
+    "cbx_13_customs_tax_fx",
+    "cbx_14_after_sales_retention",
+    "cbx_15_audit_learning"
+  ],
+  "docs": [
+    "cross-border-ecommerce-ai-route/README.md",
+    "cross-border-ecommerce-ai-route/AGENTS.md",
+    "cross-border-ecommerce-ai-route/docs/00-overview.md",
+    "cross-border-ecommerce-ai-route/docs/01-mainland-compliance.md",
+    "cross-border-ecommerce-ai-route/docs/02-independent-site-and-data.md",
+    "cross-border-ecommerce-ai-route/docs/03-product-content-photo.md",
+    "cross-border-ecommerce-ai-route/docs/04-acquisition-and-promotion.md",
+    "cross-border-ecommerce-ai-route/docs/05-inquiry-quote-sales.md",
+    "cross-border-ecommerce-ai-route/docs/06-fulfillment-finance-after-sales.md",
+    "cross-border-ecommerce-ai-route/docs/07-ai-orchestration.md",
+    "cross-border-ecommerce-ai-route/docs/08-customer-ai-examples.md",
+    "cross-border-ecommerce-ai-route/docs/09-roadmap-acceptance.md",
+    "cross-border-ecommerce-ai-route/docs/10-structured-cabling-product-deepening.md",
+    "cross-border-ecommerce-ai-route/docs/11-standardized-product-operations.md",
+    "cross-border-ecommerce-ai-route/docs/12-brand-replacement-private-label-playbook.md",
+    "cross-border-ecommerce-ai-route/docs/13-execution-responsibility-matrix.md",
+    "cross-border-ecommerce-ai-route/docs/14-storage-boundary-and-artifact-index.md",
+    "cross-border-ecommerce-ai-route/docs/15-rfq-quote-site-implementation.md",
+    "cross-border-ecommerce-ai-route/docs/16-overseas-seo-geo-ads-plan.md",
+    "cross-border-ecommerce-ai-route/docs/17-brand-catalogue-visual-rebuild-plan.md",
+    "cross-border-ecommerce-ai-route/docs/18-full-chain-implementation-checklist.md",
+    "cross-border-ecommerce-ai-route/docs/19-universal-product-autopilot-blueprint.md",
+    "cross-border-ecommerce-ai-route/docs/20-main-system-control-integration-plan.md",
+    "cross-border-ecommerce-ai-route/docs/21-ai-driven-product-page-branch.md",
+    "cross-border-ecommerce-ai-route/docs/22-ai-foreign-trade-flowchart-alignment.md",
+    "cross-border-ecommerce-ai-route/docs/23-foreign-trade-orchestration-rules-v2.md",
+    "cross-border-ecommerce-ai-route/docs/sources.md"
+  ],
+  "product_data": [
+    "cross-border-ecommerce-ai-route/products/structured-cabling-catalogue-seed.json"
+  ],
+  "schemas": [
+    "cross-border-ecommerce-ai-route/schemas/commerce-node.schema.json",
+    "cross-border-ecommerce-ai-route/schemas/rfq-intake.schema.json",
+    "cross-border-ecommerce-ai-route/schemas/quote-draft.schema.json",
+    "cross-border-ecommerce-ai-route/schemas/site-ia.schema.json",
+    "cross-border-ecommerce-ai-route/schemas/growth-plan.schema.json",
+    "cross-border-ecommerce-ai-route/schemas/universal-product-intake.schema.json",
+    "cross-border-ecommerce-ai-route/schemas/product-auto-analysis.schema.json",
+    "cross-border-ecommerce-ai-route/schemas/product-page-build-pack.schema.json",
+    "cross-border-ecommerce-ai-route/schemas/stage-control-surface.schema.json",
+    "cross-border-ecommerce-ai-route/schemas/growth-sales-automation-branch.schema.json",
+    "cross-border-ecommerce-ai-route/schemas/build-vs-buy-decision.schema.json"
+  ],
+  "templates": [
+    "cross-border-ecommerce-ai-route/templates/product-master-record.template.json",
+    "cross-border-ecommerce-ai-route/templates/structured-cabling-product-master.template.json",
+    "cross-border-ecommerce-ai-route/templates/standard-product-onboarding-checklist.md",
+    "cross-border-ecommerce-ai-route/templates/inquiry-intake.template.json",
+    "cross-border-ecommerce-ai-route/templates/quotation.template.md",
+    "cross-border-ecommerce-ai-route/templates/product-shot-list.md",
+    "cross-border-ecommerce-ai-route/templates/customer-maintenance-playbook.md",
+    "cross-border-ecommerce-ai-route/templates/rfq-field-map.structured-cabling.template.json",
+    "cross-border-ecommerce-ai-route/templates/quote-draft.structured-cabling.template.json",
+    "cross-border-ecommerce-ai-route/templates/site-information-architecture.template.json",
+    "cross-border-ecommerce-ai-route/templates/overseas-seo-geo-ads-plan.template.json",
+    "cross-border-ecommerce-ai-route/templates/customer-message-playbook.structured-cabling.md",
+    "cross-border-ecommerce-ai-route/templates/universal-product-intake.template.json",
+    "cross-border-ecommerce-ai-route/templates/product-auto-analysis.template.json",
+    "cross-border-ecommerce-ai-route/templates/ai-product-page-build-branch.template.json",
+    "cross-border-ecommerce-ai-route/templates/stage-control-surface.template.json",
+    "cross-border-ecommerce-ai-route/templates/growth-sales-automation-branch.template.json",
+    "cross-border-ecommerce-ai-route/templates/build-vs-buy-decision.template.json"
+  ],
+  "scripts": [
+    "cross-border-ecommerce-ai-route/scripts/validate-cross-border-project.mjs",
+    "cross-border-ecommerce-ai-route/scripts/cross-border-stage-control-lib.mjs",
+    "cross-border-ecommerce-ai-route/scripts/build-stage-control-surfaces.mjs",
+    "cross-border-ecommerce-ai-route/scripts/run-cross-border-stage.mjs",
+    "cross-border-ecommerce-ai-route/scripts/run-product-page-branch.mjs",
+    "cross-border-ecommerce-ai-route/scripts/import-qx-telecom-catalog.mjs",
+    "cross-border-ecommerce-ai-route/scripts/run-product-web-intake.mjs",
+    "cross-border-ecommerce-ai-route/scripts/write-cross-border-status.mjs",
+    "cross-border-ecommerce-ai-route/scripts/build-growth-sales-automation-branch.mjs"
+  ],
+  "branch_flows": [
+    {
+      "branch_id": "growth_sales_automation_branch",
+      "label": "AI外贸增长销售自动化分支",
+      "contract": "growth_sales_automation_branch.v1",
+      "mode": "overlay_branch",
+      "preserve_canonical_flow": true,
+      "control_pack": "cross-border-ecommerce-ai-route/runtime/growth-sales-automation/branch-control-pack.json",
+      "dashboard": "cross-border-ecommerce-ai-route/runtime/growth-sales-automation/dashboard/index.html",
+      "mapped_stage_ids": [
+        "cbx_03_market_selection",
+        "cbx_06_catalog_pricing",
+        "cbx_07_acquisition",
+        "cbx_08_lead_capture",
+        "cbx_09_inquiry_reception",
+        "cbx_10_quote_engine",
+        "cbx_11_contract_payment",
+        "cbx_12_order_fulfillment",
+        "cbx_14_after_sales_retention",
+        "cbx_15_audit_learning"
+      ],
+      "real_external_actions_allowed": false,
+      "software_actions_enabled_by_default": false
+    }
+  ],
+  "orchestration_rules": {
+    "contract": "foreign_trade_orchestration_rules.v2",
+    "source_doc": "cross-border-ecommerce-ai-route/docs/23-foreign-trade-orchestration-rules-v2.md",
+    "runtime_policy": "cross-border-ecommerce-ai-route/runtime/control-plane/orchestration-rules-v2.json",
+    "tool_first_policy_required": true,
+    "build_vs_buy_decision_required": true,
+    "build_vs_buy_schema": "cross-border-ecommerce-ai-route/schemas/build-vs-buy-decision.schema.json",
+    "build_vs_buy_template": "cross-border-ecommerce-ai-route/templates/build-vs-buy-decision.template.json",
+    "custom_code_default": "forbidden_until_tool_search_and_decision_record",
+    "real_external_actions_allowed": false,
+    "external_software_enabled": false
+  },
+  "safety_policy": {
+    "real_external_send_allowed": false,
+    "real_quote_send_allowed": false,
+    "real_payment_instruction_send_allowed": false,
+    "real_customs_or_tax_filing_allowed": false,
+    "tool_first_policy_required": true,
+    "build_vs_buy_decision_required": true,
+    "custom_code_default": "forbidden_until_tool_search_and_decision_record",
+    "human_confirmation_required_for": [
+      "customer_message",
+      "ad_budget_change",
+      "quotation",
+      "proforma_invoice",
+      "sales_contract",
+      "payment_instruction",
+      "shipment_booking",
+      "customs_declaration",
+      "tax_or_fx_filing",
+      "refund_or_compensation"
+    ]
+  },
+  "parent_system_mapping": {
+    "intake": [
+      "IntakeObservation",
+      "RawEvent",
+      "SemanticEvent"
+    ],
+    "context": [
+      "ContextSnapshot",
+      "CustomerAccount",
+      "ProductMaster",
+      "QuoteContext"
+    ],
+    "decision": [
+      "NodeDecision",
+      "QuoteDraft",
+      "OutboundSendCommand"
+    ],
+    "execution": [
+      "ControlledSendCompletion",
+      "OrderLifecycleEvent",
+      "AuditReport"
+    ]
+  },
+  "implementation_after_confirmation": [
+    "Add scripts/run-cross-border-route-demo.mjs",
+    "Add packages/cross-border-ecommerce-runtime tests",
+    "Add a draft process-tree extension for parent system validation"
+  ]
+}

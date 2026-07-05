@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TriggerRequest",
+  "type": "object",
+  "required": ["trigger_type", "goal_input", "social_graph"],
+  "properties": {
+    "trigger_type": {
+      "type": "string",
+      "enum": ["user_initiated", "scheduled", "profession_routine", "preference_routine", "graph_signal"]
+    },
+    "goal_input": { "$ref": "./social-goal-input.schema.json" },
+    "social_graph": { "$ref": "./social-graph.schema.json" },
+    "user_preferences": { "type": "object" },
+    "activation": {
+      "type": "object",
+      "properties": {
+        "mode": { "type": "string", "enum": ["immediate", "scheduled", "recurring", "conditional"] },
+        "run_at": { "type": "string" },
+        "recurrence": { "type": "string" },
+        "timezone": { "type": "string" }
+      }
+    },
+    "profession": { "type": "string" },
+    "routine_id": { "type": "string" },
+    "notification_preferences": {
+      "type": "object",
+      "properties": {
+        "channels": { "type": "array", "items": { "type": "string" } },
+        "notify_on": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ControlledSendCommandDraft",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "draft_id",
+    "gate_decision",
+    "real_send_attempted",
+    "target_command_path",
+    "draft_command_path",
+    "source",
+    "command",
+    "command_summary",
+    "next_commands",
+    "operator_checklist",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "controlled_send_command_draft.v1" },
+    "draft_id": { "type": "string", "minLength": 1 },
+    "gate_decision": { "const": "controlled_send_command_draft_waiting_operator_confirmation" },
+    "real_send_attempted": { "const": false },
+    "target_command_path": { "type": "string", "minLength": 1 },
+    "box_regions_path": { "type": "string", "minLength": 1 },
+    "draft_command_path": { "type": "string", "minLength": 1 },
+    "draft_markdown_path": { "type": "string", "minLength": 1 },
+    "draft_report_path": { "type": "string", "minLength": 1 },
+    "source": {
+      "type": "object",
+      "required": ["decision_id", "trigger_id"],
+      "properties": {
+        "workflow": { "type": ["string", "null"] },
+        "import_id": { "type": ["string", "null"] },
+        "run_id": { "type": ["string", "null"] },
+        "decision_id": { "type": "string", "minLength": 1 },
+        "trigger_id": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "command": { "$ref": "outbound-send-command.schema.json" },
+    "command_summary": {
+      "type": "object",
+      "required": [
+        "send_command_id",
+        "event_id",
+        "decision_id",
+        "trigger_id",
+        "target_platform",
+        "message_draft_length",
+        "message_draft_sha256",
+        "user_confirmed",
+        "real_execution_allowed"
+      ],
+      "properties": {
+        "send_command_id": { "type": "string", "minLength": 1 },
+        "event_id": { "type": "string", "minLength": 1 },
+        "decision_id": { "type": "string", "minLength": 1 },
+        "trigger_id": { "type": "string", "minLength": 1 },
+        "target_platform": { "type": "string", "minLength": 1 },
+        "target_person_id": { "type": ["string", "null"] },
+        "target_thread_hint": { "type": "object" },
+        "message_draft_length": { "type": "integer", "minimum": 1 },
+        "message_draft_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "user_confirmed": { "const": false },
+        "real_execution_allowed": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "next_commands": { "type": "object" },
+    "operator_checklist": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "created_at": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/read-only-source-collection-manifest-kit.schema.json",
+  "title": "ReadOnlySourceCollectionManifestKit",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "kit_id",
+    "created_at",
+    "collection_id",
+    "template_only",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "target_manifest_path",
+    "target_manifest_intentionally_not_written",
+    "recommended_source_dir",
+    "recommended_sources",
+    "templates",
+    "next_commands",
+    "continue_when",
+    "stop_or_adjust_when"
+  ],
+  "properties": {
+    "schema_version": { "const": "read_only_source_collection_manifest_kit.v1" },
+    "kit_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "generated_by": { "type": "string" },
+    "collection_id": { "type": "string", "minLength": 1 },
+    "template_only": { "const": true },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "target_manifest_path": { "type": "string", "minLength": 1 },
+    "target_manifest_intentionally_not_written": { "const": true },
+    "target_manifest_exists": { "type": "boolean" },
+    "recommended_source_dir": { "type": "string", "minLength": 1 },
+    "recommended_sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "read-only-source-collection-manifest.schema.json#/properties/sources/items" }
+    },
+    "templates": {
+      "type": "object",
+      "required": ["manifest_template_file", "readme_file"],
+      "properties": {
+        "manifest_template_file": { "type": "string" },
+        "readme_file": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "template_payloads": {
+      "type": "object",
+      "properties": {
+        "manifest": { "$ref": "read-only-source-collection-manifest.schema.json" }
+      },
+      "additionalProperties": true
+    },
+    "output_dir": { "type": "string" },
+    "template_path": { "type": "string" },
+    "readme_path": { "type": "string" },
+    "next_commands": { "type": "array", "items": { "type": "string" } },
+    "continue_when": { "type": "array", "items": { "type": "string" } },
+    "stop_or_adjust_when": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

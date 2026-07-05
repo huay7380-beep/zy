@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RawEvent",
+  "type": "object",
+  "required": [
+    "event_id",
+    "event_kind",
+    "source",
+    "occurred_at",
+    "participants",
+    "content_summary",
+    "linked_person_ids",
+    "created_at"
+  ],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 1 },
+    "event_kind": {
+      "type": "string",
+      "enum": [
+        "raw_interaction",
+        "web_observation",
+        "manual_note",
+        "notification_result",
+        "imported_record"
+      ]
+    },
+    "source": { "type": "string", "minLength": 1 },
+    "source_ref": { "type": "object" },
+    "occurred_at": { "type": "string" },
+    "participants": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "content": { "type": "string" },
+    "content_summary": { "type": "string", "minLength": 1 },
+    "linked_person_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "linked_relationship_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "decision_id": { "type": "string" },
+    "trigger_id": { "type": "string" },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "metadata": { "type": "object" },
+    "created_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}

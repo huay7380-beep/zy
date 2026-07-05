@@ -1,0 +1,28 @@
+{
+  "schema_version": "read_only_source_collection_manifest.v1",
+  "collection_id": "read_only_source_collection_sample",
+  "sources": [
+    {
+      "source_id": "sample_external_chat_export",
+      "source_kind": "external_chat_export",
+      "file": "examples/read-only-chat-export.sample.txt",
+      "thread_title": "Sample Customer Chat",
+      "participants": ["user", "sample_customer"]
+    },
+    {
+      "source_id": "sample_browser_page",
+      "source_kind": "browser_html",
+      "file": "examples/read-only-page.sample.html",
+      "url": "https://example.test/customer/project"
+    },
+    {
+      "source_id": "sample_business_snapshot",
+      "source_kind": "business_api_snapshot",
+      "file": "examples/read-only-business-snapshot.sample.json",
+      "endpoint": "crm.project_status",
+      "record_id": "acct_sample_001",
+      "thread_title": "Sample CRM Project Status",
+      "participants": ["user", "crm"]
+    }
+  ]
+}

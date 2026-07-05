@@ -1,0 +1,67 @@
+{
+  "user_id": "user",
+  "people": [
+    {
+      "person_id": "person_client_a",
+      "display_name": "张总",
+      "aliases": ["张经理"],
+      "tags": ["客户", "采购负责人"],
+      "visibility": "private",
+      "notes": "企业服务客户采购负责人"
+    },
+    {
+      "person_id": "person_tech_lead",
+      "display_name": "李工",
+      "aliases": ["技术负责人"],
+      "tags": ["客户技术负责人"],
+      "visibility": "private",
+      "notes": "尚未参与技术评审"
+    }
+  ],
+  "relationships": [
+    {
+      "relationship_id": "rel_user_client_a",
+      "from_person_id": "user",
+      "to_person_id": "person_client_a",
+      "type_code": "client",
+      "dimension": 4,
+      "weights": {
+        "from_to": 0.6,
+        "to_from": 0.45
+      },
+      "phase": "exploring",
+      "trust_level": "low",
+      "sentiment_trend": "stable",
+      "health_score": 0.58,
+      "recent_interactions": ["event_biz_001"],
+      "visibility": "private"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "event_biz_001",
+      "start_at": "2026-06-03T10:00:00Z",
+      "status": "completed",
+      "event_level": "P2",
+      "event_type_code": "business_meeting",
+      "title": "客户初步产品沟通",
+      "description": "客户表示感兴趣，但预算和技术评审未确认。",
+      "importance": 0.65,
+      "sentiment_score": 0.25,
+      "source": "user_input",
+      "confidence": 0.9,
+      "visibility": {
+        "level": "private",
+        "shared_with": []
+      },
+      "participants": [
+        {
+          "person_id": "person_client_a",
+          "role": "target",
+          "impact_factor": 0.8
+        }
+      ],
+      "clues": []
+    }
+  ]
+}

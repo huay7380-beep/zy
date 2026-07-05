@@ -1,0 +1,23 @@
+{
+  "preview_id": "automation_preview_snapshot_sample",
+  "trigger_id": "trigger_snapshot_sample",
+  "decision_id": "decision_snapshot_sample",
+  "platform": "wechat_web_test",
+  "target": {
+    "display_name": "Zhang",
+    "platform_handle": "test_wechat_contact_client_a",
+    "channel": "wechat"
+  },
+  "message_preview": {
+    "draft": "Hi Zhang, I prepared a low-commitment review agenda and will wait for your confirmation before sending anything.",
+    "send_allowed": false,
+    "requires_user_confirmation": true
+  },
+  "blocked_actions": [
+    {
+      "action": "send_message",
+      "blocked_until": "user_confirmation_and_connector_authorization",
+      "reason": "dry-run snapshot validation must not send real messages"
+    }
+  ]
+}

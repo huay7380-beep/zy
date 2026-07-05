@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SocialToolCallResult",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "result_id",
+    "plan_id",
+    "checked_at",
+    "operator",
+    "capability_id",
+    "provider",
+    "tool_name",
+    "execution_mode",
+    "command_executed",
+    "real_execution_allowed",
+    "status",
+    "blocked_actions",
+    "required_before_real_execution",
+    "evidence_refs",
+    "audit_event"
+  ],
+  "properties": {
+    "schema_version": { "const": "social_tool_call_result.v1" },
+    "result_id": { "type": "string", "minLength": 1 },
+    "plan_id": { "type": "string", "minLength": 1 },
+    "checked_at": { "type": "string" },
+    "operator": { "type": "string" },
+    "capability_id": { "type": "string", "minLength": 1 },
+    "provider": { "type": "string", "minLength": 1 },
+    "tool_name": { "type": "string", "minLength": 1 },
+    "execution_mode": { "const": "dry_run" },
+    "command_executed": { "const": false },
+    "real_execution_allowed": { "const": false },
+    "status": {
+      "type": "string",
+      "enum": [
+        "previewed_blocked_before_execution",
+        "preview_ready_no_external_execution"
+      ]
+    },
+    "proposed_command": { "type": ["string", "null"] },
+    "observed_output": {},
+    "blocked_actions": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "required_before_real_execution": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "audit_event": { "type": "object" }
+  },
+  "additionalProperties": false
+}

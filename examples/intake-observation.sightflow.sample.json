@@ -1,0 +1,45 @@
+{
+  "observation_id": "intake_obs_sightflow_wechat_001",
+  "source_adapter_id": "sightflow_desktop.wechat",
+  "source_type": "desktop",
+  "platform": "wechat",
+  "source_actor_type": "human_contact",
+  "captured_at": "2026-06-10T08:30:00+08:00",
+  "content_text": "张总：预算这周还在内部确认，技术负责人明天下午有空，可以先看接口清单。",
+  "content_summary": "张总表示预算仍在内部确认，技术负责人明天下午可先看接口清单。",
+  "participants_hint": [
+    "user",
+    "张总"
+  ],
+  "thread_hint": {
+    "channel": "wechat",
+    "conversation_title": "张总",
+    "target_display_name": "张总"
+  },
+  "window_ref": {
+    "app_type": "wechat",
+    "window_title": "微信",
+    "capture_strategy": "box_select"
+  },
+  "raw_artifact_refs": [
+    "runtime/desktop-inbox/sample/sightflow-chat-main.png"
+  ],
+  "screenshot_hash": "sha256:sightflow_sample_hash",
+  "privacy_level": "redacted_text",
+  "confidence": 0.86,
+  "metadata": {
+    "bridge_mode": "zhineng_bridge",
+    "real_execution_allowed": false
+  },
+  "source_identity_hints": [
+    {
+      "identity_type": "handle",
+      "source_actor_type": "human_contact",
+      "display_name": "wechat_contact_sample",
+      "handle": "wxid_sample_contact",
+      "thread_key": "wechat:sample-thread",
+      "evidence_ref": "runtime/desktop-inbox/sample/sightflow-chat-main.png",
+      "confidence": 0.82
+    }
+  ]
+}

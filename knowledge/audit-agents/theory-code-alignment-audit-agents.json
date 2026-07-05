@@ -1,0 +1,263 @@
+{
+  "schema_version": "theory_code_alignment_audit_agents.v1",
+  "goal": "把项目实现规则固定为三层：理论层负责定义目标、概念、边界、跨学科审视和回测场景；代码层负责把理论落成 schema、runtime、script、test 和运行产物；对齐层负责证明理论签名、代码签名、流程树、Obsidian 视图和审计产物没有分叉。",
+  "layers": [
+    {
+      "layer_id": "theory_layer",
+      "label": "理论层",
+      "purpose": "定义目标导向人际交互辅助系统的概念、分层、场景、事件、关系、策略、风险、能力边界和理论回测。",
+      "required_evidence": [
+        "tupu/00-问答记录整理归纳.md",
+        "tupu/01-人际关系图谱理论篇.md",
+        "tupu/04-当前目标架构树.md",
+        "tupu/05-三类真实事件逐轮回测结果.md",
+        "docs/15-系统流程树与扩展问题台账.md"
+      ],
+      "pass_gate": [
+        "理论目标、对象、事件、关系、上下文、策略、风险、反馈和回写均有定义",
+        "三类回测场景和十二轮理论上下文完整",
+        "复杂群体场景和专业能力库只预留接口时必须写明暂不实现边界"
+      ]
+    },
+    {
+      "layer_id": "code_layer",
+      "label": "代码层",
+      "purpose": "把理论概念落成可运行、可测试、可审计的 schema、runtime、script、测试和 runtime 产物。",
+      "required_evidence": [
+        "schemas/goal-oriented-interaction-backtest.schema.json",
+        "packages/mvp-runtime/src/goal-oriented-interaction-backtest.mjs",
+        "scripts/run-goal-oriented-backtest.mjs",
+        "packages/mvp-runtime/tests/goal-oriented-interaction-backtest.test.mjs",
+        "runtime/goal-oriented-backtests/**"
+      ],
+      "pass_gate": [
+        "代码层能解析理论回测并生成结构化 ContextSnapshot、策略状态、message_draft 和 writeback_plan",
+        "测试覆盖理论解析、签名一致性、草稿完整性和回写完整性",
+        "任何外部执行默认 dry-run 且保留人工确认和审计门禁"
+      ]
+    },
+    {
+      "layer_id": "alignment_layer",
+      "label": "理论/代码对齐层",
+      "purpose": "检查理论层与代码层是否语义一致、字段一致、流程一致、证据一致，并把缺口回写到流程树和问题台账。",
+      "required_evidence": [
+        "tupu/03-理论与工程实现代码对齐篇.md",
+        "tupu/06-代码层工程实现与理论对齐说明.md",
+        "tupu/07-理论与代码工程回测一致性结果.md",
+        "examples/system-process-tree.json",
+        "views/obsidian/system-process-tree.md",
+        "views/obsidian/system-process-tree.canvas",
+        "runtime/process-tree-validations/**"
+      ],
+      "pass_gate": [
+        "goal_oriented_interaction_backtest.v1.gate_decision=goal_oriented_backtest_passed",
+        "theory_code_match_rate=1",
+        "hard_exit_signals=[]",
+        "process_tree_validation.v1.required_failures=[]",
+        "新增文件、节点和问题台账均已登记"
+      ]
+    }
+  ],
+  "agents": [
+    {
+      "agent_id": "theory_goal_boundary_auditor",
+      "layer_id": "theory_layer",
+      "role": "审计理论层是否把总目标、阶段目标、对象范围、复杂场景边界和暂不实现项说清楚。",
+      "reads": [
+        "tupu/01-人际关系图谱理论篇.md",
+        "tupu/04-当前目标架构树.md",
+        "docs/15-系统流程树与扩展问题台账.md"
+      ],
+      "checks": [
+        "总目标是否仍聚焦目标导向社交辅助闭环",
+        "B2B 第一阶段是否与未来多来源、能力库、思维图谱、心跳调度边界兼容",
+        "暂不实现项是否写明原因、接口预留和停止标准"
+      ],
+      "outputs": [
+        "theory_goal_scope_status",
+        "boundary_gap_list",
+        "defer_or_implement_recommendation"
+      ],
+      "hard_fail_when": [
+        "理论层新增目标但没有归入流程树节点",
+        "复杂群体场景被写成当前实现项却没有输入、识别、确认和审计边界"
+      ],
+      "open_gap_tags": [
+        "mind_graph_schema_missing",
+        "heartbeat_runtime_missing",
+        "complex_group_scene_reserved_only"
+      ]
+    },
+    {
+      "agent_id": "theory_context_event_auditor",
+      "layer_id": "theory_layer",
+      "role": "审计理论层是否覆盖人物、组织、事件、关系、上下文、证据、风险和回写的概念闭环。",
+      "reads": [
+        "tupu/01-人际关系图谱理论篇.md",
+        "tupu/05-三类真实事件逐轮回测结果.md",
+        "docs/12-人物与事件存储方案.md"
+      ],
+      "checks": [
+        "每轮理论上下文是否包含目标、关系阶段、当前焦点、对方情绪、动态策略和回写计划",
+        "事件分类和风险标签是否能映射到存储与检索",
+        "事实、推断、建议和未确认候选是否区分"
+      ],
+      "outputs": [
+        "theory_context_completion_status",
+        "event_taxonomy_gap_list",
+        "risk_boundary_gap_list"
+      ],
+      "hard_fail_when": [
+        "理论回测缺少必要上下文字段",
+        "高风险事件没有人工确认门槛"
+      ],
+      "open_gap_tags": [
+        "dialogue_act_schema_missing",
+        "relationship_metric_formula_missing",
+        "person_matching_runtime_missing"
+      ]
+    },
+    {
+      "agent_id": "code_contract_runtime_auditor",
+      "layer_id": "code_layer",
+      "role": "审计代码层是否把理论概念落成 schema、runtime、script、测试和运行产物。",
+      "reads": [
+        "schemas/*.schema.json",
+        "packages/*/src/**",
+        "scripts/*.mjs",
+        "packages/*/tests/*.test.mjs"
+      ],
+      "checks": [
+        "理论关键对象是否有 schema 或明确落点",
+        "runtime 是否能生成可审计产物而不是只打印文本",
+        "测试是否覆盖正向、阻断和缺字段路径"
+      ],
+      "outputs": [
+        "code_contract_status",
+        "runtime_gap_list",
+        "test_gap_list"
+      ],
+      "hard_fail_when": [
+        "新增理论概念没有 schema、运行时落点或文档化暂缓理由",
+        "发送、外部命令或高风险动作绕过 dry-run 与确认门禁"
+      ],
+      "open_gap_tags": [
+        "context_orchestrator_runtime_missing",
+        "target_state_machine_missing",
+        "capability_library_runtime_missing"
+      ]
+    },
+    {
+      "agent_id": "code_storage_index_auditor",
+      "layer_id": "code_layer",
+      "role": "审计代码层的数据写入、索引、状态、审计和可重建性。",
+      "reads": [
+        "packages/storage-runtime/src/storage-runtime.mjs",
+        "data/**",
+        "runtime/state/**",
+        "runtime/goal-oriented-backtests/**"
+      ],
+      "checks": [
+        "业务数据是否写入 data 而不是 runtime/state",
+        "索引是否可从源数据重建",
+        "状态笔记和审计产物是否能外部读取"
+      ],
+      "outputs": [
+        "storage_boundary_status",
+        "index_rebuild_status",
+        "auditability_gap_list"
+      ],
+      "hard_fail_when": [
+        "业务存储和运行状态混放",
+        "索引产物不能从源事件重建",
+        "状态更新缺少 current-status、operator-note 或 run-events 同步"
+      ],
+      "open_gap_tags": [
+        "self_graph_storage_missing",
+        "metric_snapshot_store_missing",
+        "evidence_store_partial"
+      ]
+    },
+    {
+      "agent_id": "alignment_signature_auditor",
+      "layer_id": "alignment_layer",
+      "role": "审计理论回测与代码工程回测的签名、指标、草稿和回写是否一致。",
+      "reads": [
+        "tupu/05-三类真实事件逐轮回测结果.md",
+        "runtime/goal-oriented-backtests/**/goal-oriented-interaction-backtest.json",
+        "tupu/07-理论与代码工程回测一致性结果.md"
+      ],
+      "checks": [
+        "理论签名和代码签名是否一致",
+        "三类场景十二轮是否完整",
+        "message_draft 和 writeback_plan 是否每轮完整",
+        "hard_exit_signals 是否为空"
+      ],
+      "outputs": [
+        "theory_code_match_status",
+        "alignment_required_failures",
+        "drift_report"
+      ],
+      "hard_fail_when": [
+        "theory_code_match_rate < 1",
+        "hard_exit_signals 非空",
+        "任一轮缺少具体 message_draft 或 writeback_plan"
+      ],
+      "open_gap_tags": [
+        "production_dialogue_act_schema_missing",
+        "real_time_alignment_runtime_missing"
+      ]
+    },
+    {
+      "agent_id": "alignment_process_tree_auditor",
+      "layer_id": "alignment_layer",
+      "role": "审计理论、代码和对齐产物是否都登记到流程树、Obsidian 和文件功能登记。",
+      "reads": [
+        "examples/system-process-tree.json",
+        "docs/15-系统流程树与扩展问题台账.md",
+        "views/obsidian/system-process-tree.md",
+        "views/obsidian/system-process-tree.canvas",
+        "runtime/process-tree-validations/**"
+      ],
+      "checks": [
+        "新增文件是否进入 artifact_registry 或 flow_artifacts",
+        "流程树节点是否能覆盖新增能力",
+        "Obsidian Markdown 和 Canvas 是否能看到对应节点",
+        "process_tree_validation.required_failures 是否为空"
+      ],
+      "outputs": [
+        "process_tree_sync_status",
+        "unregistered_artifacts",
+        "obsidian_gap_list"
+      ],
+      "hard_fail_when": [
+        "新增文件没有登记",
+        "问题台账只留在对话中",
+        "process_tree_validation.required_failures 非空"
+      ],
+      "open_gap_tags": [
+        "audit_agent_runtime_missing",
+        "automated_gap_report_missing"
+      ]
+    }
+  ],
+  "project_gap_review": {
+    "current_missing_parts": [
+      "三层审计代理目前已形成配置，但还没有专门 runtime 自动执行这些代理并输出独立的 theory_code_alignment_audit_report.v1。",
+      "理论层新增的思维图谱、能力库、心跳调度、复杂群体场景仍是边界和接口预留，缺少 schema、runtime、样例和测试。",
+      "代码层缺少实时 person matching、ContextSnapshot 编排器、目标状态机、专家模型选择器和能力库执行注册表。",
+      "对齐层已有 deterministic backtest，但尚未覆盖实时输入链路、真实图谱存储回写、专家权重变化和心跳调度行为。"
+    ],
+    "not_missing_but_incomplete": [
+      "tupu/00-07 已覆盖理论、工程和一致性产物，但代理责任此前没有机器可读配置。",
+      "goal_oriented_interaction_backtest.v1 已能证明三类场景十二轮理论/代码一致，但仍是回测层，不是生产级实时 agent。",
+      "process-tree validation 已能检查流程树、Obsidian 和登记同步，但还不理解理论/代码语义差异。"
+    ],
+    "next_build_order": [
+      "先实现三层审计 runtime，读取本配置并输出 theory_code_alignment_audit_report.v1。",
+      "再补 person matching 与 ContextSnapshot 编排器，解决实时聊天对象归类和记忆读取。",
+      "再补目标状态机、专家选择器和能力库 schema/runtime。",
+      "最后把心跳调度纳入 dry-run 审计，验证实时检查不会绕过确认门禁。"
+    ]
+  }
+}

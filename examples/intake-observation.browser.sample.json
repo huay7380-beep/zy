@@ -1,0 +1,23 @@
+{
+  "observation_id": "intake_obs_browser_dom_001",
+  "source_adapter_id": "browser_dom.sample",
+  "source_type": "browser",
+  "platform": "web",
+  "captured_at": "2026-06-10T08:31:00+08:00",
+  "content_text": "客户门户显示：项目接口评审状态更新为待客户确认，负责人备注需要补充安全白名单。",
+  "content_summary": "客户门户中的接口评审状态变为待客户确认，并要求补充安全白名单。",
+  "participants_hint": ["user", "客户门户"],
+  "thread_hint": {
+    "url": "https://example.internal/customer/project-a",
+    "page_title": "项目 A 客户门户"
+  },
+  "raw_artifact_refs": [
+    "runtime/browser-intake/sample/project-a.html"
+  ],
+  "privacy_level": "redacted_text",
+  "confidence": 0.9,
+  "metadata": {
+    "sample_only": true,
+    "dom_selector": "#project-status"
+  }
+}

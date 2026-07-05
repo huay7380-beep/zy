@@ -1,0 +1,35 @@
+# dependency and build outputs
+node_modules/
+dist/
+build/
+out/
+.vite/
+.next/
+
+# local/runtime artifacts
+.env
+.env.*
+!.env.example
+runtime/
+tmp/
+*.log
+*.tmp
+*.lnk
+*.pyc
+__pycache__/
+
+# local tool caches and large downloaded assets
+third_party/
+downloads/
+pretrained_models/
+*.pt
+*.onnx
+*.zip
+*.7z
+*.rar
+*.exe
+*.dll
+*.lib
+
+# repository metadata must not be mirrored as source files
+.git/

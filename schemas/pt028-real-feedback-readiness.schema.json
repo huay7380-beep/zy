@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-real-feedback-readiness.schema.json",
+  "title": "pt028_real_feedback_readiness.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "readiness_id",
+    "created_at",
+    "gate_decision",
+    "calibration_ready",
+    "final_acceptance_ready",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "feedback_schema_valid",
+    "placeholder_values_present",
+    "required_window_count",
+    "required_unique_target_count",
+    "window_count",
+    "unique_window_count",
+    "unique_target_count",
+    "human_special_review_ready",
+    "window_rows",
+    "required_failures",
+    "next_commands"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_real_feedback_readiness.v1" },
+    "readiness_id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "gate_decision": { "type": "string" },
+    "calibration_ready": { "type": "boolean" },
+    "final_acceptance_ready": { "type": "boolean" },
+    "real_execution_allowed": { "type": "boolean" },
+    "real_send_attempted": { "type": "boolean" },
+    "feedback_schema_valid": { "type": "boolean" },
+    "placeholder_values_present": { "type": "boolean" },
+    "required_window_count": { "type": "integer", "minimum": 1 },
+    "required_unique_target_count": { "type": "integer", "minimum": 1 },
+    "window_count": { "type": "integer", "minimum": 0 },
+    "unique_window_count": { "type": "integer", "minimum": 0 },
+    "unique_target_count": { "type": "integer", "minimum": 0 },
+    "human_special_review_ready": { "type": "boolean" },
+    "window_rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "row_index",
+          "window_id",
+          "target_person_id",
+          "state_path",
+          "send_gate_mode",
+          "feedback_requirement_status",
+          "evidence_ref_status",
+          "row_failures",
+          "ready_for_calibration"
+        ],
+        "properties": {
+          "row_index": { "type": "integer", "minimum": 1 },
+          "window_id": { "type": ["string", "null"] },
+          "target_person_id": { "type": ["string", "null"] },
+          "state_path": { "type": ["string", "null"] },
+          "send_gate_mode": { "type": ["string", "null"] },
+          "feedback_requirement_status": { "type": "object" },
+          "evidence_ref_status": { "type": "array" },
+          "row_failures": { "type": "array", "items": { "type": "string" } },
+          "ready_for_calibration": { "type": "boolean" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["failure_id", "severity"],
+        "properties": {
+          "failure_id": { "type": "string" },
+          "severity": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "next_commands": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

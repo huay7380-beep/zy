@@ -1,0 +1,111 @@
+{
+  "contract": "overseas_seo_geo_ads_growth_plan.v1",
+  "markets": ["pending_user_confirmation"],
+  "seo": {
+    "keyword_clusters": [
+      {
+        "cluster": "keystone jack manufacturer",
+        "intent": "supplier_rfq",
+        "example_keywords": ["cat6 keystone jack manufacturer", "cat6a keystone jack supplier", "toolless keystone jack factory"],
+        "target_pages": ["/products/keystone-jacks", "/solutions/oem-odm-private-label"]
+      },
+      {
+        "cluster": "patch panel supplier",
+        "intent": "project_bom_quote",
+        "example_keywords": ["24 port patch panel supplier", "cat6 patch panel manufacturer", "blank patch panel OEM"],
+        "target_pages": ["/products/patch-panels", "/solutions/data-center-cabling"]
+      },
+      {
+        "cluster": "structured cabling OEM",
+        "intent": "private_label",
+        "example_keywords": ["structured cabling OEM factory", "network cabling private label", "low voltage cabling products supplier"],
+        "target_pages": ["/factory-oem", "/solutions/oem-odm-private-label"]
+      }
+    ],
+    "content_pages": [
+      { "type": "category", "path": "/products/keystone-jacks", "goal": "rank and convert RFQ for keystone jack suppliers" },
+      { "type": "solution", "path": "/solutions/data-center-cabling", "goal": "capture project BOM demand" },
+      { "type": "resource", "path": "/resources/faq", "goal": "support SEO and GEO answer extraction" }
+    ],
+    "technical_requirements": [
+      "indexable HTML product content",
+      "unique title and meta description",
+      "Product structured data where appropriate",
+      "FAQPage structured data for FAQ pages",
+      "fast mobile rendering",
+      "canonical URLs",
+      "hreflang when localized pages exist",
+      "image alt text and descriptive file names"
+    ]
+  },
+  "geo": {
+    "definition": "Overseas GEO covers generative engine optimization for AI answer engines and market geo-localization for target countries. It aims to make pages quotable, factual, well-structured, localized and easy for search/AI systems and buyers to understand.",
+    "answer_engine_assets": [
+      {
+        "asset": "entity_definition_pages",
+        "purpose": "Define brand, product families, OEM capability, factory process and RFQ workflow in clear factual language."
+      },
+      {
+        "asset": "comparison_and_selection_guides",
+        "purpose": "Answer buyer questions such as CAT6 vs CAT6A, UTP vs STP, loaded vs blank patch panel."
+      },
+      {
+        "asset": "FAQ_and_QA_blocks",
+        "purpose": "Provide concise answers for AI snippets and sales reuse."
+      },
+      {
+        "asset": "downloadable_datasheets",
+        "purpose": "Create reliable source references for product specs and buyer validation."
+      },
+      {
+        "asset": "regional_pages",
+        "purpose": "Localize language, spelling, plug types, standards concerns, shipping assumptions and RFQ prompts by market."
+      }
+    ],
+    "market_localization": [
+      { "market": "EU", "focus": ["RoHS/REACH request language", "LSZH/CPR caution for cables", "English plus optional local-language pages"] },
+      { "market": "US", "focus": ["origin marking", "UL/ETL caution for PDU", "installer/distributor terminology"] },
+      { "market": "Middle East", "focus": ["project BOM", "distributor stocking", "WhatsApp-first contact"] },
+      { "market": "Africa", "focus": ["price tiers", "mixed carton", "project supply and replacement stock"] }
+    ]
+  },
+  "ads": {
+    "channels": ["Google Search Ads", "LinkedIn Lead Gen", "B2B platform ads", "retargeting after site traffic exists"],
+    "campaigns": [
+      {
+        "channel": "Google Search Ads",
+        "campaign": "structured_cabling_rfq",
+        "ad_groups": ["keystone_jack", "patch_panel", "structured_cabling_oem"],
+        "conversion": "rfq_submit"
+      },
+      {
+        "channel": "LinkedIn Lead Gen",
+        "campaign": "installer_distributor_oem",
+        "target_roles": ["procurement", "project manager", "system integrator", "low voltage contractor"],
+        "conversion": "lead_form_submit"
+      }
+    ],
+    "budget_gate": "No real ad spend until the user confirms market, product scope, budget and landing pages."
+  },
+  "measurement": [
+    "organic impressions",
+    "organic clicks",
+    "AI answer/referral mentions where observable",
+    "RFQ conversion rate",
+    "qualified lead rate",
+    "quote conversion rate",
+    "cost per qualified RFQ",
+    "country and product family performance"
+  ],
+  "human_gate": {
+    "real_ads_spend_allowed": false,
+    "approval_required_for": [
+      "ad budget",
+      "real campaign launch",
+      "certification claims",
+      "price claims",
+      "landing page publish",
+      "cold outreach"
+    ]
+  }
+}

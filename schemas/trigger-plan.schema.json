@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TriggerPlan",
+  "type": "object",
+  "required": ["trigger_id", "trigger_type", "status", "skill_steps"],
+  "properties": {
+    "trigger_id": { "type": "string" },
+    "trigger_type": { "type": "string" },
+    "status": { "type": "string", "enum": ["planned", "waiting_confirmation", "ready", "completed", "cancelled"] },
+    "activation": { "type": "object" },
+    "source_event_id": { "type": ["string", "null"] },
+    "decision_id": { "type": "string" },
+    "message_draft": {
+      "type": "object",
+      "properties": {
+        "channel": { "type": "string" },
+        "tone": { "type": "string" },
+        "target_person_id": { "type": ["string", "null"] },
+        "target_display_name": { "type": "string" },
+        "draft": { "type": "string" },
+        "editable": { "type": "boolean" },
+        "must_confirm_before_send": { "type": "boolean" },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "rationale": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "send_before_check": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "skill_steps": { "type": "array" },
+    "confirmation_gates": { "type": "array" },
+    "manual_execution_checklist": { "type": "array" },
+    "notification_plan": { "type": "object" },
+    "evidence_pack": { "type": "array" },
+    "feedback_plan": { "type": "object" },
+    "event_writeback": { "type": "object" }
+  }
+}

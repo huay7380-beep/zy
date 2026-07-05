@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/source-intake-matrix.schema.json",
+  "title": "SourceIntakeMatrix",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "matrix_id",
+    "created_at",
+    "gate_decision",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "source",
+    "summary",
+    "reusable_gate_sequence",
+    "lanes",
+    "checks",
+    "required_failures",
+    "warning_failures",
+    "next_actions",
+    "stop_or_adjust_when"
+  ],
+  "properties": {
+    "schema_version": { "const": "source_intake_matrix.v1" },
+    "matrix_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "source_intake_matrix_ready_waiting_real_samples",
+        "source_intake_matrix_needs_attention"
+      ]
+    },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "source": {
+      "type": "object",
+      "required": ["root", "latest_generated_pilot_import_path"],
+      "additionalProperties": true
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "lane_count",
+        "conformance_ready_lanes",
+        "lanes_with_real_samples",
+        "required_goal_lanes",
+        "required_goal_lanes_with_real_samples",
+        "total_effective_observations",
+        "total_duplicate_suppressed",
+        "latest_generated_pilot_import_records",
+        "latest_generated_pilot_import_feedback_records",
+        "all_real_send_blocked",
+        "all_required_goal_lanes_have_real_samples",
+        "ready_for_new_adapter_without_main_flow_change"
+      ],
+      "additionalProperties": true
+    },
+    "reusable_gate_sequence": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "lanes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "lane_id",
+          "label",
+          "source_type",
+          "platform",
+          "required_for_current_goal",
+          "gate_decision",
+          "sample_conformance",
+          "runtime_conformance",
+          "conformance_ready",
+          "observations",
+          "latest_generated_pilot_import",
+          "required_failures",
+          "warning_failures",
+          "next_action"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "severity", "status", "passed", "evidence"],
+        "additionalProperties": true
+      }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "warning_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "stop_or_adjust_when": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

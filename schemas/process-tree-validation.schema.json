@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/process-tree-validation.schema.json",
+  "title": "ProcessTreeValidation",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "validation_id",
+    "created_at",
+    "gate_decision",
+    "source",
+    "expected_objective_flow",
+    "checks",
+    "required_failures",
+    "warning_failures",
+    "continue_when",
+    "stop_or_adjust_when"
+  ],
+  "properties": {
+    "schema_version": { "const": "process_tree_validation.v1" },
+    "validation_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "process_tree_synced",
+        "process_tree_sync_failed"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "process_tree_path",
+        "docs_main_path",
+        "obsidian_markdown_path",
+        "obsidian_canvas_path"
+      ],
+      "properties": {
+        "root": { "type": "string" },
+        "process_tree_path": { "type": "string" },
+        "docs_main_path": { "type": "string" },
+        "obsidian_markdown_path": { "type": "string" },
+        "obsidian_canvas_path": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "expected_objective_flow": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 9
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "label", "severity", "status", "passed", "evidence"],
+        "properties": {
+          "check_id": { "type": "string" },
+          "label": { "type": "string" },
+          "severity": { "type": "string", "enum": ["required", "warning"] },
+          "status": { "type": "string", "enum": ["pass", "fail"] },
+          "passed": { "type": "boolean" },
+          "evidence": { "type": "array", "items": { "type": "string" } },
+          "fix": { "type": ["string", "null"] }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "warning_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "continue_when": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "stop_or_adjust_when": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

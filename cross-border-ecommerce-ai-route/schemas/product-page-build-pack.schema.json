@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "cross-border-ecommerce-ai-route/schemas/product-page-build-pack.schema.json",
+  "title": "Product Page Build Pack",
+  "type": "object",
+  "required": [
+    "contract",
+    "product_id",
+    "source_intake_id",
+    "automation_goal",
+    "classification",
+    "feature_analysis",
+    "market_buyer_fit",
+    "page_strategy",
+    "trust_strategy",
+    "visual_direction",
+    "page_content",
+    "rfq_and_sales_hooks",
+    "page_draft_artifacts",
+    "qa_report",
+    "human_review_required",
+    "publish_allowed",
+    "real_external_action_allowed"
+  ],
+  "properties": {
+    "contract": { "const": "product_page_build_pack.v1" },
+    "product_id": { "type": "string" },
+    "source_intake_id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "automation_goal": {
+      "type": "object",
+      "required": [
+        "validate_cross_border_module",
+        "validate_current_product_production_flow",
+        "build_product_page_and_downstream_ai_chain"
+      ],
+      "properties": {
+        "validate_cross_border_module": { "type": "boolean" },
+        "validate_current_product_production_flow": { "type": "boolean" },
+        "build_product_page_and_downstream_ai_chain": { "type": "boolean" }
+      }
+    },
+    "classification": {
+      "type": "object",
+      "required": ["category_path", "confidence", "reason", "human_review_required"],
+      "properties": {
+        "category_path": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "type": "number" },
+        "reason": { "type": "string" },
+        "human_review_required": { "type": "boolean" }
+      }
+    },
+    "feature_analysis": {
+      "type": "object",
+      "required": ["primary_features", "visual_features", "buyer_decision_points", "unverified_claims"],
+      "properties": {
+        "primary_features": { "type": "array", "items": { "type": "string" } },
+        "visual_features": { "type": "array", "items": { "type": "string" } },
+        "buyer_decision_points": { "type": "array", "items": { "type": "string" } },
+        "unverified_claims": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "market_buyer_fit": {
+      "type": "object",
+      "required": ["recommended_markets", "target_buyers"],
+      "properties": {
+        "recommended_markets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["market", "recommendation", "reason", "evidence_needed"],
+            "properties": {
+              "market": { "type": "string" },
+              "recommendation": { "enum": ["priority", "test", "conditional", "blocked", "unknown"] },
+              "reason": { "type": "string" },
+              "evidence_needed": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "target_buyers": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "page_strategy": {
+      "type": "object",
+      "required": ["page_type", "section_order", "cta_strategy"],
+      "properties": {
+        "page_type": { "enum": ["technical", "distribution", "oem_private_label", "project_procurement", "solution"] },
+        "section_order": { "type": "array", "items": { "type": "string" } },
+        "cta_strategy": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "trust_strategy": {
+      "type": "object",
+      "required": ["case_studies_available", "replacement_trust_system", "trust_blocks"],
+      "properties": {
+        "case_studies_available": { "type": "boolean" },
+        "replacement_trust_system": { "type": "string" },
+        "trust_blocks": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "visual_direction": {
+      "type": "object",
+      "required": ["image_tasks", "callout_labels", "quality_gates"],
+      "properties": {
+        "image_tasks": { "type": "array", "items": { "type": "string" } },
+        "callout_labels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["label", "targets"],
+            "properties": {
+              "label": { "type": "string" },
+              "targets": { "type": "string" }
+            }
+          }
+        },
+        "quality_gates": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "page_content": { "type": "object" },
+    "rfq_and_sales_hooks": { "type": "object" },
+    "page_draft_artifacts": { "type": "array", "items": { "type": "string" } },
+    "downstream_routes": { "type": "array", "items": { "type": "string" } },
+    "qa_report": { "type": "object" },
+    "human_review_required": { "type": "boolean" },
+    "publish_allowed": { "type": "boolean" },
+    "real_external_action_allowed": { "type": "boolean" }
+  }
+}

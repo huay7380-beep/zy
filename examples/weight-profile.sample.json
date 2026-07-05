@@ -1,0 +1,22 @@
+{
+  "schema_version": "weight_profile.v1",
+  "weight_profile_id": "weight_profile_sample",
+  "subject_ref": "nested_event_sample",
+  "subject_type": "nested_event",
+  "rule_version": "relationship_event_graph_rules.v1",
+  "intrinsic_weight": 0.74,
+  "contextual_weight": 0.82,
+  "visual_weight": 0.86,
+  "weight_level": "V5",
+  "evidence_strength": 0.82,
+  "source_reliability": 0.68,
+  "event_impact": 0.82,
+  "goal_relevance": 0.78,
+  "relationship_impact": 0.76,
+  "risk_priority": 0.62,
+  "recency": 0.75,
+  "confirmation_need": 0.92,
+  "calculation_basis": ["confirmation_need=0.92", "level=V5"],
+  "writes_fact_state": false,
+  "created_at": "2026-07-01T20:00:01+08:00"
+}

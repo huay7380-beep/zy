@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RomanticExpertSentenceReview",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "review_id",
+    "romantic_goal_analysis_id",
+    "active_input_blocked_display_policy",
+    "gate_decision",
+    "required_expert_ids",
+    "target_sentence_reviews",
+    "romantic_weight_integration",
+    "safety_module_reviews",
+    "separation_policy"
+  ],
+  "properties": {
+    "schema_version": { "const": "romantic_expert_sentence_review.v1" },
+    "review_id": { "type": "string", "minLength": 1 },
+    "romantic_goal_analysis_id": { "type": "string", "minLength": 1 },
+    "active_input_blocked_display_policy": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "active_input_blocked_by_default",
+        "display_for_each_target_reply",
+        "target_visible"
+      ],
+      "properties": {
+        "schema_version": { "const": "active_input_blocked_display_policy.v1" },
+        "active_input_blocked_by_default": { "const": true },
+        "display_for_each_target_reply": { "const": true },
+        "target_visible": { "const": false }
+      },
+      "additionalProperties": true
+    },
+    "gate_decision": {
+      "enum": [
+        "sentence_expert_review_completed",
+        "no_target_utterance_available_for_sentence_review",
+        "pt028_closure_incomplete_no_sentence_review"
+      ]
+    },
+    "closure_required_before_sentence_review": { "type": "boolean" },
+    "required_expert_ids": {
+      "type": "array",
+      "contains": { "const": "coercion_and_pua_risk_expert" },
+      "items": { "type": "string" }
+    },
+    "target_sentence_reviews": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["utterance_id", "text", "third_party_prompt_analysis", "expert_reviews"],
+        "properties": {
+          "utterance_id": { "type": "string", "minLength": 1 },
+          "target_person_id": { "type": ["string", "null"] },
+          "target_display_name": { "type": ["string", "null"] },
+          "text": { "type": "string", "minLength": 1 },
+          "third_party_prompt_analysis": {
+            "type": "object",
+            "required": [
+              "schema_version",
+              "display_mode",
+              "active_input_blocked_by_default",
+              "prompt",
+              "not_sent_to_target"
+            ],
+            "properties": {
+              "schema_version": { "const": "third_party_target_reply_prompt.v1" },
+              "display_mode": { "const": "user_visible_third_party_prompt_not_sent_to_target" },
+              "active_input_blocked_by_default": { "const": true },
+              "prompt": { "type": "string", "minLength": 1 },
+              "not_sent_to_target": { "const": true }
+            },
+            "additionalProperties": true
+          },
+          "expert_reviews": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "review_id",
+                "utterance_id",
+                "expert_id",
+                "scope",
+                "context_policy",
+                "gradient_stage_id",
+                "stage_transition_view",
+                "finding",
+                "confidence",
+                "weight_delta",
+                "progression_gradient_advice",
+                "user_prompt_hint",
+                "review_recommendation"
+              ],
+              "properties": {
+                "review_id": { "type": "string", "minLength": 1 },
+                "utterance_id": { "type": "string", "minLength": 1 },
+                "expert_id": { "type": "string", "minLength": 1 },
+                "scope": { "type": "string" },
+                "context_policy": {
+                  "type": "object",
+                  "required": [
+                    "reads_today_week_month_and_historical_windows",
+                    "latest_message_only_allowed",
+                    "independent_before_merge"
+                  ],
+                  "properties": {
+                    "reads_today_week_month_and_historical_windows": { "const": true },
+                    "latest_message_only_allowed": { "const": false },
+                    "independent_before_merge": { "const": true }
+                  },
+                  "additionalProperties": true
+                },
+                "window_status": {
+                  "type": "array",
+                  "items": { "type": "object", "additionalProperties": true }
+                },
+                "gradient_stage_id": { "type": "string" },
+                "stage_transition_view": {
+                  "type": "object",
+                  "required": ["transition_decision", "current_turn_action_intensity"],
+                  "properties": {
+                    "transition_decision": { "type": "string" },
+                    "next_stage_candidate": { "type": ["string", "null"] },
+                    "current_turn_action_intensity": { "type": "string" }
+                  },
+                  "additionalProperties": true
+                },
+                "finding": { "type": "string" },
+                "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+                "weight_delta": {
+                  "type": "object",
+                  "additionalProperties": { "type": "number" }
+                },
+                "risk_level": { "enum": ["low", "watch", "warning", "critical"] },
+                "progression_gradient_advice": {
+                  "type": "object",
+                  "required": ["advice_id", "advice", "user_prompt_hint"],
+                  "properties": {
+                    "advice_id": { "type": "string" },
+                    "advice": { "type": "string" },
+                    "user_prompt_hint": { "type": "string" }
+                  },
+                  "additionalProperties": true
+                },
+                "user_prompt_hint": { "type": "string" },
+                "review_recommendation": { "type": "string" },
+                "evidence_refs": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "romantic_weight_integration": {
+      "type": "object",
+      "required": ["schema_version", "mechanism", "factors", "expert_signals", "rule"],
+      "properties": {
+        "schema_version": { "const": "romantic_expert_weight_integration.v1" },
+        "mechanism": { "const": "deterministic_human_like_multi_factor_weighting" },
+        "factors": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "expert_signals": {
+          "type": "array",
+          "items": { "type": "object", "additionalProperties": true }
+        },
+        "rule": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "safety_module_reviews": {
+      "type": "array",
+      "contains": {
+        "type": "object",
+        "properties": {
+          "reviewer_id": { "const": "user_side_manipulation_reviewer" },
+          "separate_from_romantic_expert_matrix": { "const": true }
+        },
+        "required": ["reviewer_id", "separate_from_romantic_expert_matrix"]
+      },
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "separation_policy": {
+      "type": "object",
+      "required": [
+        "coercion_and_pua_risk_expert_scope",
+        "user_side_manipulation_reviewer_scope",
+        "user_side_reviewer_separate_from_romantic_expert_matrix"
+      ],
+      "properties": {
+        "coercion_and_pua_risk_expert_scope": { "const": "target_to_user_only" },
+        "user_side_manipulation_reviewer_scope": { "const": "user_draft_goal_and_send_action_safety_review" },
+        "user_side_reviewer_separate_from_romantic_expert_matrix": { "const": true }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

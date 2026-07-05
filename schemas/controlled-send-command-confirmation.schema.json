@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ControlledSendCommandConfirmation",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "confirmation_id",
+    "created_at",
+    "gate_decision",
+    "real_send_attempted",
+    "target_written",
+    "source",
+    "target_command_path",
+    "reviewed_decision_target_path",
+    "decision_template_path",
+    "user_input_decision_template_path",
+    "decision_template",
+    "required_failures",
+    "next_actions"
+  ],
+  "properties": {
+    "schema_version": { "const": "controlled_send_command_confirmation.v1" },
+    "confirmation_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "controlled_send_command_confirmation_template_written",
+        "controlled_send_command_confirmation_needs_attention",
+        "controlled_send_command_confirmation_validated_without_write",
+        "controlled_send_command_confirmed_for_preflight"
+      ]
+    },
+    "real_send_attempted": { "const": false },
+    "validate_only": { "type": "boolean" },
+    "would_write_target": { "type": "boolean" },
+    "target_written": { "type": "boolean" },
+    "source": {
+      "type": "object",
+      "required": ["root", "draft_path"],
+      "properties": {
+        "root": { "type": "string", "minLength": 1 },
+        "draft_path": { "type": "string", "minLength": 1 },
+        "decision_path": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "target_command_path": { "type": "string", "minLength": 1 },
+    "reviewed_decision_target_path": { "type": "string", "minLength": 1 },
+    "decision_template_path": { "type": "string", "minLength": 1 },
+    "user_input_decision_template_path": { "type": "string", "minLength": 1 },
+    "confirmed_command_path": { "type": ["string", "null"] },
+    "decision_template": { "$ref": "controlled-send-command-confirmation-decision.schema.json" },
+    "confirmed_command": {
+      "anyOf": [
+        { "$ref": "outbound-send-command.schema.json" },
+        { "type": "null" }
+      ]
+    },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "output_dir": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}

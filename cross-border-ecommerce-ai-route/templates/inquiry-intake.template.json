@@ -1,0 +1,41 @@
+{
+  "contract": "inquiry_intake.template.v1",
+  "inquiry_id": "{{inquiry_id}}",
+  "received_at": "{{iso_datetime}}",
+  "source": "{{site_rfq|email|whatsapp|linkedin|b2b_platform|trade_show}}",
+  "raw_message_ref": "{{path_or_message_id}}",
+  "customer": {
+    "name": "{{name}}",
+    "email": "{{email}}",
+    "company": "{{company}}",
+    "country": "{{country}}",
+    "phone_or_whatsapp": "{{phone}}",
+    "website": "{{website}}"
+  },
+  "request": {
+    "products": [
+      {
+        "sku_or_model": "{{sku}}",
+        "quantity": "{{quantity}}",
+        "customization": "{{customization}}"
+      }
+    ],
+    "destination": "{{destination}}",
+    "preferred_incoterms": "{{incoterms}}",
+    "target_price": "{{target_price}}",
+    "target_delivery_date": "{{date}}",
+    "message_summary": "{{summary}}"
+  },
+  "ai_extraction": {
+    "language": "{{language}}",
+    "lead_grade": "{{A|B|C|D}}",
+    "missing_fields": [],
+    "risk_flags": [],
+    "recommended_next_action": "{{next_action}}"
+  },
+  "human_gate": {
+    "first_reply_approved": false,
+    "quote_allowed": false,
+    "notes": ""
+  }
+}

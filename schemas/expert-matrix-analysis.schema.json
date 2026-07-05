@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExpertMatrixAnalysis",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "execution_mode",
+    "context_snapshot_id",
+    "parallel_analysis",
+    "system_goal_policy",
+    "selected_expert_ids",
+    "expert_opinions",
+    "independent_context_analysis",
+    "weight_integration",
+    "theoretical_prediction",
+    "independent_review",
+    "message_draft"
+  ],
+  "properties": {
+    "schema_version": { "const": "expert_matrix_analysis.v2" },
+    "execution_mode": {
+      "const": "parallel_llm_orchestration_contract_with_deterministic_fallback.v1"
+    },
+    "context_snapshot_id": { "type": "string", "minLength": 1 },
+    "parallel_analysis": {
+      "type": "object",
+      "required": ["schema_version", "parallelizable", "completed_expert_count"],
+      "properties": {
+        "schema_version": { "const": "parallel_expert_matrix_execution.v1" },
+        "parallelizable": { "type": "boolean" },
+        "completed_expert_count": { "type": "integer", "minimum": 1 },
+        "fan_out": {
+          "type": "array",
+          "items": { "type": "object", "additionalProperties": true }
+        },
+        "merge_policy": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "layer_policy": { "type": "object", "additionalProperties": true },
+    "llm_orchestration_contract": { "type": "object", "additionalProperties": true },
+    "system_goal_policy": {
+      "type": "object",
+      "required": ["append_only", "rule"],
+      "properties": {
+        "append_only": { "const": true },
+        "rule": { "type": "string", "minLength": 1 },
+        "current_goal_ref": { "type": ["string", "null"] },
+        "target_person_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "selected_expert_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "expert_opinions": {
+      "type": "array",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "independent_context_analysis": {
+      "type": "array",
+      "description": "Each selected expert independently analyzes target temporal windows before merge.",
+      "items": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "analysis_id",
+          "expert_id",
+          "latest_message_only_allowed",
+          "target_analyses"
+        ],
+        "properties": {
+          "schema_version": { "const": "expert_independent_context_analysis.v1" },
+          "analysis_id": { "type": "string", "minLength": 1 },
+          "expert_id": { "type": "string", "minLength": 1 },
+          "discipline": { "type": "string" },
+          "latest_message_only_allowed": { "const": false },
+          "target_analyses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["target_person_id", "window_analyses"],
+              "properties": {
+                "target_person_id": { "type": ["string", "null"] },
+                "target_display_name": { "type": ["string", "null"] },
+                "goal_ref": { "type": ["string", "null"] },
+                "window_analyses": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["window_id", "signal_count", "finding"],
+                    "properties": {
+                      "window_id": {
+                        "type": "string",
+                        "enum": ["today", "last_7_days", "last_30_days", "historical"]
+                      },
+                      "signal_count": { "type": "integer", "minimum": 0 },
+                      "finding": { "type": "string" },
+                      "evidence_refs": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                      }
+                    },
+                    "additionalProperties": true
+                  }
+                },
+                "expert_weight_focus": {
+                  "type": "object",
+                  "additionalProperties": { "type": "number" }
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "weight_integration": {
+      "type": "object",
+      "required": ["schema_version", "criterion_adjustments", "expert_adjustments"],
+      "properties": {
+        "schema_version": { "const": "expert_weight_integration.v1" },
+        "criterion_adjustments": {
+          "type": "object",
+          "additionalProperties": { "type": "number" }
+        },
+        "expert_adjustments": {
+          "type": "array",
+          "items": { "type": "object", "additionalProperties": true }
+        },
+        "base_weights_ref": {
+          "type": ["object", "null"],
+          "additionalProperties": { "type": "number" }
+        },
+        "integrated_weight_preview": {
+          "type": ["object", "null"],
+          "additionalProperties": { "type": "number" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "theoretical_prediction": { "type": "object", "additionalProperties": true },
+    "independent_review": { "type": "object", "additionalProperties": true },
+    "message_draft": { "type": "object", "additionalProperties": true }
+  },
+  "additionalProperties": true
+}

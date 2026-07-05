@@ -1,0 +1,2 @@
+{"case_id":"b2b_delay_001","input":{"user_role":"销售负责人","audience_role":"客户采购负责人","final_goal":"推动客户进入技术评审","context_input":"客户上周说对方案感兴趣，但这周又说内部再看看。对方提到预算需要财务确认，技术负责人还没参与。"},"expected":{"sub_scenario":"客户内部推进慢","primary_obstacle_any":["价格阻力","权限或内部协同阻力"],"must_include_technique":"低承诺推进"}}
+{"case_id":"b2b_price_001","input":{"user_role":"创始人","audience_role":"客户老板","final_goal":"推动客户继续评估","context_input":"客户说你们这个价格有点高，现在预算不一定够，想和竞品再比较一下。"},"expected":{"sub_scenario":"客户比较竞品","primary_obstacle_any":["价格阻力","竞品阻力"],"must_include_technique":"ROI 重构"}}

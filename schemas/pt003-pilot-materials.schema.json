@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/pt003-pilot-materials.schema.json",
+  "title": "Pt003PilotMaterials",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "material_id",
+    "created_at",
+    "gate_decision",
+    "target_file",
+    "current_readiness",
+    "available_evidence",
+    "minimum_dataset_requirements",
+    "blockers",
+    "worksheet",
+    "draft_pilot_import",
+    "validation_commands",
+    "acceptance_gates",
+    "next_actions",
+    "real_send_attempted"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt003_pilot_materials.v1" },
+    "material_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "pt003_materials_need_real_input",
+        "pt003_materials_ready_for_validation"
+      ]
+    },
+    "target_file": {
+      "type": "object",
+      "required": ["path", "exists", "write_policy"],
+      "properties": {
+        "path": { "type": "string" },
+        "exists": { "type": "boolean" },
+        "write_policy": { "const": "not_written_by_this_command" }
+      },
+      "additionalProperties": true
+    },
+    "current_readiness": {
+      "type": "object",
+      "required": ["path", "gate_decision", "pt003_status", "required_failures"],
+      "properties": {
+        "path": { "type": ["string", "null"] },
+        "gate_decision": { "type": ["string", "null"] },
+        "pt003_status": { "type": ["string", "null"] },
+        "required_failures": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "available_evidence": {
+      "type": "object",
+      "required": ["usable_for_pt003"],
+      "properties": {
+        "latest_desktop_observation": { "type": ["object", "null"] },
+        "usable_for_pt003": {
+          "type": "object",
+          "required": ["can_seed_evidence_refs", "can_satisfy_record_text", "can_confirm_identity"],
+          "properties": {
+            "can_seed_evidence_refs": { "type": "boolean" },
+            "can_satisfy_record_text": { "type": "boolean" },
+            "can_confirm_identity": { "type": "boolean" }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "minimum_dataset_requirements": {
+      "type": "object",
+      "required": [
+        "record_count_min",
+        "record_count_max",
+        "one_target_contact",
+        "people_and_relationship_edges_required",
+        "feedback_records_min_for_closed_loop_mvp",
+        "semantic_coverage_min",
+        "copied_sample_or_template_rejected"
+      ],
+      "properties": {
+        "record_count_min": { "type": "integer", "minimum": 1 },
+        "record_count_max": { "type": "integer", "minimum": 1 },
+        "one_target_contact": { "type": "boolean" },
+        "people_and_relationship_edges_required": { "type": "boolean" },
+        "feedback_records_min_for_closed_loop_mvp": { "type": "integer", "minimum": 1 },
+        "semantic_coverage_min": { "type": "number", "minimum": 0, "maximum": 1 },
+        "copied_sample_or_template_rejected": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "blockers": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "worksheet": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "draft_pilot_import": {
+      "type": "object",
+      "required": ["schema_version", "import_id", "goal", "people", "relationships", "records", "semantic_hints", "feedback_records"],
+      "properties": {
+        "schema_version": { "const": "pilot_import_batch.v1" },
+        "records": {
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 30
+        }
+      },
+      "additionalProperties": true
+    },
+    "draft_path": { "type": ["string", "null"] },
+    "validation_commands": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "acceptance_gates": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "real_send_attempted": { "const": false }
+  },
+  "additionalProperties": true
+}

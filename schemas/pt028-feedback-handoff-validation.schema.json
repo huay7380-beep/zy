@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-feedback-handoff-validation.schema.json",
+  "title": "pt028_feedback_handoff_validation.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "validation_id",
+    "created_at",
+    "gate_decision",
+    "ready_for_operator_feedback_collection",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "writes_real_feedback_target",
+    "source",
+    "linked_pack",
+    "checklist_summary",
+    "checks",
+    "required_failures",
+    "boundary_policy"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_feedback_handoff_validation.v1" },
+    "validation_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "enum": [
+        "ready_for_operator_feedback_collection",
+        "feedback_handoff_needs_attention"
+      ]
+    },
+    "ready_for_operator_feedback_collection": { "type": "boolean" },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "writes_real_feedback_target": { "const": false },
+    "source": {
+      "type": "object",
+      "required": ["root", "pack_path", "output_dir"],
+      "properties": {
+        "root": { "type": "string" },
+        "pack_path": { "type": "string" },
+        "output_dir": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "linked_pack": {
+      "type": "object",
+      "properties": {
+        "pack_id": { "type": ["string", "null"] },
+        "gate_decision": { "type": ["string", "null"] },
+        "target_feedback_path": { "type": ["string", "null"] },
+        "target_feedback_exists": { "type": "boolean" },
+        "decision_template_path": { "type": ["string", "null"] },
+        "html_path": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "checklist_summary": {
+      "type": "object",
+      "required": [
+        "row_count",
+        "distinct_target_count",
+        "all_candidate_prefill_only",
+        "all_real_send_disallowed",
+        "missing_operator_fields",
+        "rows_ready_for_target_write"
+      ],
+      "properties": {
+        "row_count": { "type": "integer" },
+        "distinct_target_count": { "type": "integer" },
+        "all_candidate_prefill_only": { "type": "boolean" },
+        "all_real_send_disallowed": { "type": "boolean" },
+        "missing_operator_fields": { "type": "array", "items": { "type": "string" } },
+        "rows_ready_for_target_write": { "type": "integer" }
+      },
+      "additionalProperties": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "status", "required", "evidence"],
+        "properties": {
+          "check_id": { "type": "string" },
+          "status": { "enum": ["passed", "failed"] },
+          "required": { "type": "boolean" },
+          "evidence": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": { "type": "array", "items": { "type": "string" } },
+    "warning_failures": { "type": "array", "items": { "type": "string" } },
+    "next_commands": { "type": "array", "items": { "type": "string" } },
+    "boundary_policy": {
+      "type": "object",
+      "required": [
+        "validation_is_read_only",
+        "real_feedback_target_writer",
+        "real_execution_allowed",
+        "real_send_attempted",
+        "writes_real_feedback_target"
+      ],
+      "properties": {
+        "validation_is_read_only": { "const": true },
+        "real_feedback_target_writer": { "type": "string" },
+        "real_execution_allowed": { "const": false },
+        "real_send_attempted": { "const": false },
+        "writes_real_feedback_target": { "const": false }
+      },
+      "additionalProperties": true
+    },
+    "output_paths": {
+      "type": "object",
+      "properties": {
+        "json_path": { "type": "string" },
+        "markdown_path": { "type": "string" },
+        "latest_path": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

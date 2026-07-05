@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OutboundSendResult",
+  "type": "object",
+  "required": [
+    "send_result_id",
+    "send_command_id",
+    "status",
+    "target_verification",
+    "executed_at",
+    "evidence_refs"
+  ],
+  "properties": {
+    "send_result_id": { "type": "string", "minLength": 1 },
+    "send_command_id": { "type": "string", "minLength": 1 },
+    "status": {
+      "type": "string",
+      "enum": ["blocked", "previewed", "sent", "failed"]
+    },
+    "blocked_reason": { "type": "string" },
+    "target_verification": { "type": "object" },
+    "executed_at": { "type": "string", "minLength": 1 },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": false
+}

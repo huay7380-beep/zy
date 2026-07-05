@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-multi-window-feedback-calibration.schema.json",
+  "title": "pt028_multi_window_feedback_calibration.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "calibration_id",
+    "created_at",
+    "gate_decision",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "required_window_count",
+    "required_unique_target_count",
+    "window_count",
+    "target_count",
+    "multi_target_feedback_ready",
+    "real_feedback_record_count",
+    "state_binding_complete",
+    "no_cross_target_state_reuse",
+    "prompt_only_all_windows",
+    "calibration_rows",
+    "aggregate_adjustment",
+    "required_open_items"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_multi_window_feedback_calibration.v1" },
+    "calibration_id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "gate_decision": { "type": "string" },
+    "real_execution_allowed": { "type": "boolean" },
+    "real_send_attempted": { "type": "boolean" },
+    "required_window_count": { "type": "integer", "minimum": 1 },
+    "required_unique_target_count": { "type": "integer", "minimum": 1 },
+    "window_count": { "type": "integer", "minimum": 0 },
+    "target_count": { "type": "integer", "minimum": 0 },
+    "multi_target_feedback_ready": { "type": "boolean" },
+    "real_feedback_record_count": { "type": "integer", "minimum": 0 },
+    "state_binding_complete": { "type": "boolean" },
+    "no_cross_target_state_reuse": { "type": "boolean" },
+    "prompt_only_all_windows": { "type": "boolean" },
+    "calibration_rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "window_id",
+          "target_person_id",
+          "state_id",
+          "send_gate_mode",
+          "feedback",
+          "calibration_result",
+          "isolation_check",
+          "real_feedback"
+        ],
+        "properties": {
+          "window_id": { "type": "string" },
+          "target_person_id": { "type": ["string", "null"] },
+          "state_id": { "type": ["string", "null"] },
+          "send_gate_mode": { "type": ["string", "null"] },
+          "feedback": { "type": "object" },
+          "calibration_result": { "type": "object" },
+          "isolation_check": {
+            "type": "object",
+            "required": [
+              "state_target_matches_window_target",
+              "target_context_reused_across_windows",
+              "state_reused_across_windows"
+            ],
+            "properties": {
+              "state_target_matches_window_target": { "type": "boolean" },
+              "target_context_reused_across_windows": { "type": "boolean" },
+              "state_reused_across_windows": { "type": "boolean" }
+            },
+            "additionalProperties": true
+          },
+          "real_feedback": { "type": "boolean" }
+          ,
+          "real_feedback_requirements": {
+            "type": "object",
+            "properties": {
+              "source_type_real": { "type": "boolean" },
+              "real_window_observed": { "type": "boolean" },
+              "state_target_verified": { "type": "boolean" },
+              "prompt_only_confirmed": { "type": "boolean" },
+              "no_real_send_attempted": { "type": "boolean" },
+              "privacy_boundary_confirmed": { "type": "boolean" },
+              "has_reviewed_at": { "type": "boolean" },
+              "has_evidence_refs": { "type": "boolean" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "aggregate_adjustment": { "type": "object" },
+    "required_open_items": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

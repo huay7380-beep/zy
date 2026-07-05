@@ -1,0 +1,123 @@
+{
+  "contract": "cross_border_stage_control_surface.v1",
+  "project_id": "cross_border_ecommerce_ai_route",
+  "stage_id": "{{cbx_stage_id}}",
+  "stage_label": "{{stage_label}}",
+  "stage_layer": "{{strategy|compliance|site|content|commercial|growth|sales|finance|fulfillment|audit|autopilot}}",
+  "state": {
+    "status": "{{not_started|draft_ready|needs_user_input|needs_external_review|blocked|ready_for_local_execution|running|review_pack_ready|completed_draft|controlled_execution_ready|completed_controlled}}",
+    "execution_mode": "{{inspect_only|validate_only|draft_local|simulate|review_pack|controlled_real_execution_blocked|controlled_real_execution_allowed}}",
+    "progress": 0,
+    "blockers": ["{{missing_input_or_gate}}"],
+    "next_actions": ["{{next_action}}"],
+    "updated_at": "{{yyyy-mm-ddThh:mm:ss+08:00}}"
+  },
+  "view": {
+    "summary": "{{what_the_main_system_should_show}}",
+    "source_refs": ["{{doc_or_schema_ref}}"],
+    "runtime_refs": ["{{runtime_artifact_ref}}"],
+    "graph_node_id": "{{entity_work.cross_border.stage_id}}",
+    "lens_tags": ["system", "decision", "self"]
+  },
+  "actions": [
+    {
+      "action_id": "inspect_stage",
+      "label": "查看阶段资料",
+      "kind": "inspect",
+      "allowed": true,
+      "requires_user_confirmation": false,
+      "risk_level": "low",
+      "command": {
+        "runner": "node",
+        "args": ["cross-border-ecommerce-ai-route/scripts/run-cross-border-stage.mjs", "--stage={{cbx_stage_id}}", "--action=inspect"],
+        "writes_to": ["cross-border-ecommerce-ai-route/runtime/control-plane/stages/{{cbx_stage_id}}/**"]
+      },
+      "blocked_until": [],
+      "expected_output_contracts": ["cross_border_stage_control_surface.v1"]
+    },
+    {
+      "action_id": "validate_stage",
+      "label": "校验阶段输入",
+      "kind": "validate",
+      "allowed": true,
+      "requires_user_confirmation": false,
+      "risk_level": "low",
+      "command": {
+        "runner": "node",
+        "args": ["cross-border-ecommerce-ai-route/scripts/run-cross-border-stage.mjs", "--stage={{cbx_stage_id}}", "--action=validate"],
+        "writes_to": ["cross-border-ecommerce-ai-route/runtime/control-plane/stages/{{cbx_stage_id}}/**"]
+      },
+      "blocked_until": [],
+      "expected_output_contracts": ["stage_validation_report.v1"]
+    },
+    {
+      "action_id": "generate_local_draft",
+      "label": "生成本地草案",
+      "kind": "generate_draft",
+      "allowed": true,
+      "requires_user_confirmation": false,
+      "risk_level": "medium",
+      "command": {
+        "runner": "node",
+        "args": ["cross-border-ecommerce-ai-route/scripts/run-cross-border-stage.mjs", "--stage={{cbx_stage_id}}", "--action=generate-draft"],
+        "writes_to": ["cross-border-ecommerce-ai-route/runtime/{{stage_runtime_folder}}/**"]
+      },
+      "blocked_until": ["required_inputs_present"],
+      "expected_output_contracts": ["{{stage_output_contract}}"]
+    },
+    {
+      "action_id": "build_human_review_pack",
+      "label": "生成人工确认包",
+      "kind": "build_review_pack",
+      "allowed": true,
+      "requires_user_confirmation": false,
+      "risk_level": "medium",
+      "command": {
+        "runner": "node",
+        "args": ["cross-border-ecommerce-ai-route/scripts/run-cross-border-stage.mjs", "--stage={{cbx_stage_id}}", "--action=review-pack"],
+        "writes_to": ["cross-border-ecommerce-ai-route/runtime/control-plane/review-packs/{{cbx_stage_id}}/**"]
+      },
+      "blocked_until": ["local_draft_exists"],
+      "expected_output_contracts": ["human_review_pack.v1"]
+    },
+    {
+      "action_id": "prepare_controlled_execution",
+      "label": "准备受控执行",
+      "kind": "prepare_controlled_execution",
+      "allowed": false,
+      "requires_user_confirmation": true,
+      "risk_level": "high",
+      "command": {
+        "runner": "node",
+        "args": ["cross-border-ecommerce-ai-route/scripts/run-cross-border-stage.mjs", "--stage={{cbx_stage_id}}", "--action=prepare-controlled"],
+        "writes_to": ["cross-border-ecommerce-ai-route/runtime/control-plane/controlled-execution/{{cbx_stage_id}}/**"]
+      },
+      "blocked_until": ["human_review_approved", "safety_gate_passed", "real_execution_policy_allows"],
+      "expected_output_contracts": ["controlled_execution_preflight.v1"]
+    }
+  ],
+  "gates": [
+    {
+      "gate_id": "{{stage_gate_id}}",
+      "status": "pending_user",
+      "owner": "{{operator|finance_compliance|sales_ops|growth_operator|site_operator|operations}}",
+      "required_for": ["generate_local_draft", "prepare_controlled_execution"],
+      "evidence_refs": ["{{evidence_ref}}"]
+    }
+  ],
+  "artifacts": {
+    "input_contracts": ["{{input_contract}}"],
+    "output_contracts": ["{{output_contract}}"],
+    "runtime_output_root": "cross-border-ecommerce-ai-route/runtime",
+    "latest_report": "{{runtime_report_path}}"
+  },
+  "audit": {
+    "event_contracts": ["RawEvent", "SemanticEvent", "cross_border_stage_event.v1"],
+    "writeback_required": true,
+    "real_execution_allowed": false,
+    "notes": [
+      "All local draft actions write inside cross-border-ecommerce-ai-route/runtime/**.",
+      "Any real customer, quote, payment, ad, shipping, customs, tax or FX action requires human confirmation."
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "adapter_id": "external_chat_export.sample",
+  "adapter_version": "0.1.0",
+  "source_type": "file",
+  "platform": "external_chat_export",
+  "capabilities": {
+    "can_receive": true,
+    "can_send": false,
+    "can_capture_screenshot": false,
+    "can_read_dom": false,
+    "can_identify_thread": true,
+    "can_verify_target": false,
+    "requires_user_confirmation": true
+  },
+  "metadata": {
+    "sample_only": true,
+    "real_execution_default": false,
+    "allowed_artifact_types": ["txt", "csv", "json", "html_export"],
+    "input_mode": "saved_export_file"
+  }
+}

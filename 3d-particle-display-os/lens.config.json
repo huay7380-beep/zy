@@ -1,0 +1,202 @@
+{
+  "schema_version": "particle_os_lens_config.v1",
+  "scope": "isolated_display_lab",
+  "surface": "3d_particle_display_os",
+  "runtime_policy": {
+    "mode": "read_only_static_prototype",
+    "mutates_original_system": false,
+    "uses_ipc": false,
+    "reads_fact_sources": false,
+    "writes_fact_sources": false,
+    "triggers_external_actions": false
+  },
+  "composition_model": {
+    "model": "rotatable_3d_static_base_map_with_dynamic_overlays",
+    "static_base_lens": "system",
+    "dynamic_overlay_lenses": [
+      "thinking",
+      "decision"
+    ],
+    "mixed_overlay_lenses": [
+      "memory",
+      "self"
+    ],
+    "module_regions": [
+      "input_perception",
+      "memory_evidence",
+      "reasoning_planning",
+      "decision_risk",
+      "execution_feedback",
+      "self_boundary"
+    ],
+    "source_mapping": "original-system-region-map.json",
+    "interaction": {
+      "camera_rotation": true,
+      "camera_zoom": true,
+      "selection_only": true,
+      "ipc_enabled": false
+    },
+    "rule": "Lens switches control overlay visibility; they do not create separate coordinate systems."
+  },
+  "visual_encoding": {
+    "particle_size": "importance_or_impact",
+    "particle_brightness": "activation_or_current_relevance",
+    "particle_opacity": "confidence_or_fact_status",
+    "particle_distance_to_core": "goal_contribution",
+    "default_z_axis": "cognitive_layer",
+    "memory_lens_z_axis": "time_past_present_future",
+    "line_motion": "flow_or_causal_direction",
+    "line_style": "relationship_type"
+  },
+  "edge_types": {
+    "causal": {
+      "label": "因果",
+      "style": "directed_flow",
+      "meaning": "A leads to B"
+    },
+    "association": {
+      "label": "关联",
+      "style": "soft_curve",
+      "meaning": "related but not causal"
+    },
+    "conflict": {
+      "label": "冲突",
+      "style": "red_dashed_pulse",
+      "meaning": "goal, logic, or resource conflict"
+    },
+    "evidence": {
+      "label": "证据",
+      "style": "thin_reference_line",
+      "meaning": "source or support relation"
+    },
+    "feedback": {
+      "label": "反馈",
+      "style": "return_flow",
+      "meaning": "result updates the model"
+    }
+  },
+  "lenses": [
+    {
+      "id": "system",
+      "label": "系统 Lens",
+      "enabled_by_default": true,
+      "color": "#49b6a8",
+      "cognitive_goal": "看见世界系统模块、边界、输入输出端口",
+      "node_roles": [
+        "goal_core",
+        "domain",
+        "module",
+        "input_port",
+        "output_port",
+        "boundary"
+      ],
+      "edge_rules": [
+        "association",
+        "dependency",
+        "boundary"
+      ],
+      "layout_rule": "goal_core_center_with_module_rings",
+      "input_contract": "graph_projection_vnext.v1.domains_and_clusters",
+      "output_contract": "display_selection_only"
+    },
+    {
+      "id": "thinking",
+      "label": "思维流 Lens",
+      "enabled_by_default": true,
+      "color": "#f2b84b",
+      "cognitive_goal": "看见当前目标如何扩散为推理路径",
+      "node_roles": [
+        "current_goal",
+        "active_node",
+        "reasoning_step",
+        "next_focus"
+      ],
+      "edge_rules": [
+        "causal",
+        "activation_flow"
+      ],
+      "layout_rule": "active_path_near_core_with_pulse_order",
+      "input_contract": "graph_projection_vnext.v1.runtime_overlays.active_trace",
+      "output_contract": "visual_operation_intent.v1.inspect_or_drill_down"
+    },
+    {
+      "id": "memory",
+      "label": "记忆 Lens",
+      "enabled_by_default": false,
+      "color": "#7aa7ff",
+      "cognitive_goal": "看见过去、现在、未来的时间关系",
+      "node_roles": [
+        "past_event",
+        "current_state",
+        "future_plan",
+        "source_ref",
+        "forecast_branch"
+      ],
+      "edge_rules": [
+        "evidence",
+        "sequence",
+        "feedback"
+      ],
+      "layout_rule": "z_axis_as_time",
+      "input_contract": "graph_projection_vnext.v1.source_refs_and_time_overlays",
+      "output_contract": "visual_operation_intent.v1.inspect_or_compare"
+    },
+    {
+      "id": "decision",
+      "label": "决策 Lens",
+      "enabled_by_default": false,
+      "color": "#ee6b62",
+      "cognitive_goal": "看见候选方案、风险、冲突、权重",
+      "node_roles": [
+        "candidate",
+        "risk",
+        "constraint",
+        "tradeoff",
+        "action_intent"
+      ],
+      "edge_rules": [
+        "conflict",
+        "causal",
+        "dependency"
+      ],
+      "layout_rule": "candidate_distance_by_goal_contribution",
+      "input_contract": "graph_projection_vnext.v1.decision_overlays",
+      "output_contract": "visual_operation_intent.v1.preview_dry_run_or_requires_confirmation"
+    },
+    {
+      "id": "self",
+      "label": "自我状态 Lens",
+      "enabled_by_default": false,
+      "color": "#b58cff",
+      "cognitive_goal": "看见系统当前目标、约束、权限、能力边界",
+      "node_roles": [
+        "self_core",
+        "policy",
+        "capability",
+        "blocked_action",
+        "audit_gate"
+      ],
+      "edge_rules": [
+        "boundary",
+        "dependency",
+        "feedback"
+      ],
+      "layout_rule": "constraint_ring_around_core",
+      "input_contract": "status_snapshot_and_runtime_policy_projection",
+      "output_contract": "visual_operation_intent.v1.reviewable_intent_only"
+    }
+  ],
+  "integration_contract": {
+    "future_input": "graph_projection_vnext.v1",
+    "future_output": "visual_operation_intent.v1",
+    "must_keep_existing_ports": true,
+    "direct_runtime_mutation_allowed": false,
+    "direct_fact_source_mutation_allowed": false,
+    "requires_review_gate_for_actions": true,
+    "capability_upgrade_projection": "capability-upgrade-registry/os-particle-projection.json",
+    "entity_work_nodes_projection": "cross-border-ecommerce-ai-route/os-particle-projection.json",
+    "direct_capability_replacement_allowed": false,
+    "direct_entity_work_execution_allowed": false,
+    "requires_replacement_plan_for_upgrade": true
+  }
+}

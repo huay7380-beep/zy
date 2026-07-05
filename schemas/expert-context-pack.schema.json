@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExpertContextPack",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "context_pack_id",
+    "expert_id",
+    "discipline",
+    "source_context_id",
+    "readable_context",
+    "context_policy",
+    "boundaries",
+    "evidence_refs"
+  ],
+  "properties": {
+    "schema_version": { "const": "expert_context_pack.v1" },
+    "context_pack_id": { "type": "string", "minLength": 1 },
+    "expert_id": { "type": "string", "minLength": 1 },
+    "discipline": { "type": "string", "minLength": 1 },
+    "role": { "type": ["string", "null"] },
+    "source_context_id": { "type": "string", "minLength": 1 },
+    "readable_context": {
+      "type": "object",
+      "required": [
+        "system_goal",
+        "user_goal",
+        "scene",
+        "relationship_summary",
+        "target_context_briefs",
+        "event_summary"
+      ],
+      "properties": {
+        "system_goal": { "type": "string", "minLength": 1 },
+        "user_goal": { "type": ["string", "null"] },
+        "scene": { "type": ["string", "null"] },
+        "recommended_option": { "type": ["string", "null"] },
+        "recommended_action_type": { "type": ["string", "null"] },
+        "draft_preview": { "type": ["string", "null"] },
+        "relationship_summary": { "type": ["object", "null"], "additionalProperties": true },
+        "target_context_briefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["target_person_id", "temporal_coverage_score", "windows"],
+            "properties": {
+              "target_person_id": { "type": "string", "minLength": 1 },
+              "display_name": { "type": ["string", "null"] },
+              "goal_relevance": { "type": "string" },
+              "temporal_coverage_score": { "type": "number" },
+              "active_windows": { "type": "array", "items": { "type": "string" } },
+              "missing_windows": { "type": "array", "items": { "type": "string" } },
+              "windows": { "type": "array", "items": { "type": "object", "additionalProperties": true } }
+            },
+            "additionalProperties": true
+          }
+        },
+        "event_summary": { "type": "object", "additionalProperties": true },
+        "constraints": { "type": "array" },
+        "risk_controls": { "type": "array" }
+      },
+      "additionalProperties": true
+    },
+    "context_policy": {
+      "type": "object",
+      "required": [
+        "reads_today_week_month_and_historical_windows",
+        "latest_message_only_allowed",
+        "no_cross_expert_dependency_before_merge",
+        "can_run_in_parallel",
+        "context_must_be_human_readable"
+      ],
+      "properties": {
+        "reads_today_week_month_and_historical_windows": { "const": true },
+        "latest_message_only_allowed": { "const": false },
+        "no_cross_expert_dependency_before_merge": { "const": true },
+        "can_run_in_parallel": { "const": true },
+        "context_must_be_human_readable": { "const": true }
+      },
+      "additionalProperties": true
+    },
+    "boundaries": { "type": "object", "additionalProperties": true },
+    "evidence_refs": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

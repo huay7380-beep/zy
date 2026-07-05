@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FeedbackRecord",
+  "type": "object",
+  "anyOf": [
+    {
+      "required": [
+        "feedback_id",
+        "decision_id",
+        "executed",
+        "reply_received",
+        "goal_progress",
+        "user_rating"
+      ]
+    },
+    {
+      "required": ["decision_id", "option_id", "outcome"]
+    }
+  ],
+  "properties": {
+    "feedback_id": { "type": "string" },
+    "decision_id": { "type": "string" },
+    "trigger_id": { "type": "string" },
+    "option_id": { "type": "string" },
+    "executed": { "type": "boolean" },
+    "reply_received": { "type": "boolean" },
+    "goal_progress": { "type": "number", "minimum": 0, "maximum": 1 },
+    "relationship_change": { "type": "number", "minimum": -1, "maximum": 1 },
+    "cost": { "type": "number", "minimum": 0 },
+    "user_rating": { "type": "number", "minimum": 1, "maximum": 5 },
+    "new_event_candidate_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "notes": { "type": "string" },
+    "outcome": {
+      "type": "object",
+      "properties": {
+        "executed": { "type": "boolean" },
+        "reply_received": { "type": "boolean" },
+        "goal_progress": { "type": "number", "minimum": 0, "maximum": 1 },
+        "relationship_change": { "type": "number", "minimum": -1, "maximum": 1 },
+        "cost": { "type": "number", "minimum": 0 },
+        "user_rating": { "type": "number", "minimum": 1, "maximum": 5 },
+        "notes": { "type": "string" }
+      }
+    },
+    "created_at": { "type": "string" }
+  }
+}

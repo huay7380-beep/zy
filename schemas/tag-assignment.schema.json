@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zhineng.local/schemas/tag-assignment.schema.json",
+  "title": "TagAssignment",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "assignment_id",
+    "tag_value",
+    "subject_type",
+    "subject_ref",
+    "assigned_by",
+    "assigned_at",
+    "evidence_refs",
+    "confidence",
+    "status",
+    "review_state",
+    "created_from"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "tag_assignment.v1"
+    },
+    "assignment_id": {
+      "type": "string",
+      "minLength": 3
+    },
+    "tag_id": {
+      "type": "string"
+    },
+    "tag_value": {
+      "type": "string",
+      "minLength": 3
+    },
+    "subject_type": {
+      "enum": [
+        "TaggedEvent",
+        "RawEvent",
+        "SemanticEvent",
+        "NestedEvent",
+        "SummaryShard",
+        "ContextSnapshot"
+      ]
+    },
+    "subject_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "assigned_by": {
+      "enum": [
+        "rule",
+        "model",
+        "manual",
+        "sensor"
+      ]
+    },
+    "assigned_at": {
+      "type": "string"
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "status": {
+      "enum": [
+        "active",
+        "inactive",
+        "replaced"
+      ]
+    },
+    "review_state": {
+      "enum": [
+        "accepted",
+        "needs_review",
+        "rejected"
+      ]
+    },
+    "created_from": {
+      "type": "string",
+      "minLength": 1
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/read-only-expansion-status.schema.json",
+  "title": "ReadOnlyExpansionStatus",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status_id",
+    "created_at",
+    "gate_decision",
+    "goal_complete",
+    "goal_status",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "current_samples",
+    "graph_loop",
+    "duplicate_confirmation",
+    "future_intake",
+    "checks",
+    "required_failures",
+    "warning_failures",
+    "next_actions"
+  ],
+  "properties": {
+    "schema_version": { "const": "read_only_expansion_status.v1" },
+    "status_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": { "type": "string", "minLength": 1 },
+    "goal_complete": { "type": "boolean" },
+    "goal_status": { "type": "string", "minLength": 1 },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "current_samples": {
+      "type": "object",
+      "required": ["real_observations", "current_pilot_import", "latest_generated_pilot_import"],
+      "additionalProperties": true
+    },
+    "graph_loop": { "type": "object" },
+    "duplicate_confirmation": {
+      "type": "object",
+      "required": [
+        "exists",
+        "gate_decision",
+        "duplicate_suppression_confirmed",
+        "current_duplicate_groups_confirmed",
+        "current_duplicate_observation_ids",
+        "accepted_observation_ids"
+      ],
+      "additionalProperties": true
+    },
+    "future_intake": {
+      "type": "object",
+      "required": ["source_adapter_kits", "source_adapter_conformance", "required_future_sources", "reusable_gate_sequence"],
+      "additionalProperties": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "severity", "status", "passed", "evidence"],
+        "additionalProperties": true
+      }
+    },
+    "required_failures": { "type": "array", "items": { "type": "string" } },
+    "warning_failures": { "type": "array", "items": { "type": "string" } },
+    "next_actions": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "cross-border-ecommerce-ai-route/schemas/product-auto-analysis.schema.json",
+  "title": "Product Auto Analysis",
+  "type": "object",
+  "required": [
+    "contract",
+    "analysis_id",
+    "source_intake_id",
+    "classification",
+    "standard_and_market_analysis",
+    "media_plan",
+    "product_page_plan",
+    "pricing_plan",
+    "logistics_plan",
+    "sales_route_plan",
+    "automation_gates"
+  ],
+  "properties": {
+    "contract": { "const": "product_auto_analysis.v1" },
+    "analysis_id": { "type": "string" },
+    "source_intake_id": { "type": "string" },
+    "analysis_status": { "enum": ["draft", "needs_user_input", "needs_external_review", "approved_for_local_execution", "blocked"] },
+    "classification": {
+      "type": "object",
+      "required": ["category_candidates", "recommended_category", "confidence", "missing_fields"],
+      "properties": {
+        "category_candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["category_path", "confidence", "reason"],
+            "properties": {
+              "category_path": { "type": "array", "items": { "type": "string" } },
+              "confidence": { "type": "number" },
+              "reason": { "type": "string" }
+            }
+          }
+        },
+        "recommended_category": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "type": "number" },
+        "missing_fields": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "standard_and_market_analysis": {
+      "type": "object",
+      "required": ["regulated_flags", "certificate_matrix", "market_recommendations", "human_review_required"],
+      "properties": {
+        "regulated_flags": { "type": "array", "items": { "type": "string" } },
+        "hs_code_candidates": { "type": "array", "items": { "type": "string" } },
+        "certificate_matrix": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["market", "required_or_expected_documents", "provided_documents", "status"],
+            "properties": {
+              "market": { "type": "string" },
+              "required_or_expected_documents": { "type": "array", "items": { "type": "string" } },
+              "provided_documents": { "type": "array", "items": { "type": "string" } },
+              "status": { "enum": ["ready", "conditional", "blocked", "unknown"] },
+              "notes": { "type": "string" }
+            }
+          }
+        },
+        "market_recommendations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["market", "recommendation", "reason", "evidence_needed", "sales_audience"],
+            "properties": {
+              "market": { "type": "string" },
+              "recommendation": { "enum": ["priority", "test", "conditional", "blocked", "unknown"] },
+              "reason": { "type": "string" },
+              "evidence_needed": { "type": "array", "items": { "type": "string" } },
+              "sales_audience": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "human_review_required": { "type": "boolean" }
+      }
+    },
+    "media_plan": {
+      "type": "object",
+      "required": ["image_actions", "labeling_plan", "quality_gates"],
+      "properties": {
+        "image_actions": { "type": "array", "items": { "type": "string" } },
+        "labeling_plan": { "type": "array", "items": { "type": "string" } },
+        "output_sets": { "type": "array", "items": { "type": "string" } },
+        "quality_gates": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "product_page_plan": {
+      "type": "object",
+      "required": ["url_slug", "page_type", "required_sections", "rfq_fields"],
+      "properties": {
+        "url_slug": { "type": "string" },
+        "page_type": { "enum": ["product_detail", "category_landing", "solution_page", "oem_page"] },
+        "required_sections": { "type": "array", "items": { "type": "string" } },
+        "seo_keywords": { "type": "array", "items": { "type": "string" } },
+        "geo_answer_assets": { "type": "array", "items": { "type": "string" } },
+        "rfq_fields": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "pricing_plan": {
+      "type": "object",
+      "required": ["pricing_status", "price_inputs_needed", "quote_modes", "human_gate"],
+      "properties": {
+        "pricing_status": { "enum": ["ready_for_draft", "needs_cost", "needs_market_benchmark", "blocked"] },
+        "price_inputs_needed": { "type": "array", "items": { "type": "string" } },
+        "quote_modes": { "type": "array", "items": { "type": "string" } },
+        "margin_rules": { "type": "array", "items": { "type": "string" } },
+        "human_gate": { "type": "string" }
+      }
+    },
+    "logistics_plan": {
+      "type": "object",
+      "required": ["logistics_status", "shipping_modes", "comparison_fields", "missing_inputs"],
+      "properties": {
+        "logistics_status": { "enum": ["ready_for_comparison", "needs_packaging_data", "blocked"] },
+        "shipping_modes": { "type": "array", "items": { "type": "string" } },
+        "comparison_fields": { "type": "array", "items": { "type": "string" } },
+        "restricted_transport_flags": { "type": "array", "items": { "type": "string" } },
+        "missing_inputs": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "sales_route_plan": {
+      "type": "object",
+      "required": ["target_buyers", "channels", "lead_capture_plan"],
+      "properties": {
+        "target_buyers": { "type": "array", "items": { "type": "string" } },
+        "channels": { "type": "array", "items": { "type": "string" } },
+        "lead_capture_plan": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "automation_gates": {
+      "type": "object",
+      "required": ["local_draft_allowed", "publish_allowed", "send_allowed", "ad_spend_allowed", "real_trade_execution_allowed"],
+      "properties": {
+        "local_draft_allowed": { "type": "boolean" },
+        "publish_allowed": { "type": "boolean" },
+        "send_allowed": { "type": "boolean" },
+        "ad_spend_allowed": { "type": "boolean" },
+        "real_trade_execution_allowed": { "type": "boolean" },
+        "required_human_reviews": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/confirmation-gate.schema.json",
+  "title": "ConfirmationGate",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "gate_id",
+    "gate_type",
+    "subject_ref",
+    "proposed_change",
+    "evidence_refs",
+    "required_confirmations",
+    "status",
+    "allowed_operations",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "confirmation_gate.v1" },
+    "gate_id": { "type": "string", "minLength": 1 },
+    "gate_type": {
+      "type": "string",
+      "enum": ["relationship_state_write", "identity_merge", "external_action", "learning_weight_promotion", "event_confirmation"]
+    },
+    "subject_ref": { "type": "string", "minLength": 1 },
+    "proposed_change": { "type": "object" },
+    "evidence_refs": { "type": "array", "items": { "type": "string" } },
+    "verification_refs": { "type": "array", "items": { "type": "string" } },
+    "required_confirmations": { "type": "array", "items": { "type": "string" } },
+    "status": {
+      "type": "string",
+      "enum": [
+        "detected",
+        "evidence_collecting",
+        "verification_partial",
+        "ready_for_user_review",
+        "blocked_pending_user_confirmation",
+        "user_approved",
+        "user_rejected",
+        "expired",
+        "superseded",
+        "applied",
+        "rolled_back"
+      ]
+    },
+    "allowed_operations": { "type": "array", "items": { "type": "string" } },
+    "created_at": { "type": "string" },
+    "expires_at": { "type": ["string", "null"] },
+    "decided_by": { "type": ["string", "null"] },
+    "decision": { "type": ["string", "null"] },
+    "apply_once_token": { "type": ["string", "null"] },
+    "audit_refs": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

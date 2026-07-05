@@ -1,0 +1,183 @@
+{
+  "schema_version": "original_system_3d_region_projection.v1",
+  "source_only": true,
+  "source_files": [
+    "D:/zhineng/sightflow-desktop-agent-main/src/renderer/src/zhineng-console/ZhinengConsole.tsx",
+    "D:/zhineng/sightflow-desktop-agent-main/src/main/index.ts",
+    "D:/zhineng/sightflow-desktop-agent-main/src/core/status-dialogue/contracts.ts",
+    "D:/zhineng/capability-upgrade-registry/os-particle-projection.json",
+    "D:/zhineng/cross-border-ecommerce-ai-route/os-particle-projection.json",
+    "D:/zhineng/dialogue-system-patrol/os-particle-projection.json"
+  ],
+  "projection_rule": "Existing WORLD_SYSTEM_NEBULAE modules are projected into six cognitive regions. This file does not modify or connect to the original system.",
+  "regions": [
+    {
+      "id": "perception",
+      "label": "输入 / 感知区",
+      "modules": [
+        {
+          "id": "external-world",
+          "label": "外部世界来源",
+          "kind": "perception"
+        },
+        {
+          "id": "perception-fusion",
+          "label": "感知与融合",
+          "kind": "perception"
+        },
+        {
+          "id": "event-extraction",
+          "label": "事件抽取层",
+          "kind": "event"
+        }
+      ]
+    },
+    {
+      "id": "memory",
+      "label": "记忆 / 证据区",
+      "modules": [
+        {
+          "id": "global-events",
+          "label": "全域事件图谱",
+          "kind": "event"
+        },
+        {
+          "id": "world-state",
+          "label": "世界状态模型",
+          "kind": "state"
+        },
+        {
+          "id": "world-model",
+          "label": "多域世界图谱",
+          "kind": "world_model"
+        },
+        {
+          "id": "learning-engine",
+          "label": "学习引擎",
+          "kind": "learning"
+        },
+        {
+          "id": "feedback-memory",
+          "label": "反馈与记忆",
+          "kind": "feedback"
+        }
+      ]
+    },
+    {
+      "id": "reasoning",
+      "label": "推理 / 规划区",
+      "modules": [
+        {
+          "id": "social-cognition",
+          "label": "人际辅助接入位",
+          "kind": "social"
+        },
+        {
+          "id": "relationship-policy",
+          "label": "关系策略层",
+          "kind": "social"
+        },
+        {
+          "id": "forecast-simulation",
+          "label": "可能性预测",
+          "kind": "forecast"
+        }
+      ]
+    },
+    {
+      "id": "decision",
+      "label": "决策 / 风险区",
+      "modules": [
+        {
+          "id": "decision-governance",
+          "label": "决策与意志治理",
+          "kind": "decision"
+        },
+        {
+          "id": "safety-scope",
+          "label": "安全范围治理",
+          "kind": "safety"
+        }
+      ]
+    },
+    {
+      "id": "execution",
+      "label": "执行 / 反馈区",
+      "modules": [
+        {
+          "id": "capability-composition",
+          "label": "能力拼接与沙盒",
+          "kind": "capability"
+        },
+        {
+          "id": "action-layer",
+          "label": "行动与工具",
+          "kind": "action"
+        },
+        {
+          "id": "capability-upgrade-registry",
+          "label": "能力升级候选库",
+          "kind": "capability_governance",
+          "source_ref": "capability-upgrade-registry/os-particle-projection.json"
+        },
+        {
+          "id": "entity-work-nodes",
+          "label": "实体工作节点",
+          "kind": "entity_work_nebula",
+          "source_ref": "cross-border-ecommerce-ai-route/os-particle-projection.json",
+          "child_projects": [
+            {
+              "id": "cross_border_ecommerce_ai_route",
+              "label": "跨境电商通路",
+              "status": "theory_design_only",
+              "manifest": "cross-border-ecommerce-ai-route/nodes/process-manifest.json"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "self",
+      "label": "自我 / 边界区",
+      "modules": [
+        {
+          "id": "status-dialogue-system",
+          "label": "系统主体状态对话系统",
+          "kind": "dialogue"
+        },
+        {
+          "id": "visual-os",
+          "label": "三维粒子操作层",
+          "kind": "visual"
+        },
+        {
+          "id": "projection-contracts",
+          "label": "投影与意图契约",
+          "kind": "visual"
+        },
+        {
+          "id": "dialogue-system-patrol",
+          "label": "Dialogue System Patrol",
+          "kind": "patrol_governance",
+          "source_ref": "dialogue-system-patrol/os-particle-projection.json",
+          "status_ref": "runtime/dialogue-system-patrol/dialogue-read-index.json"
+        }
+      ]
+    }
+  ],
+  "preserved_boundaries": [
+    "no_original_code_change",
+    "no_ipc_connection",
+    "no_world_model_write",
+    "no_social_or_event_graph_read",
+    "no_external_action",
+    "display_projection_only",
+    "capability_registry_source_only",
+    "entity_work_nodes_source_only",
+    "cross_border_ecommerce_projection_only",
+    "no_direct_replacement_without_confirmation",
+    "dialogue_system_patrol_source_only",
+    "patrol_status_projection_only",
+    "no_patrol_projection_writeback"
+  ]
+}

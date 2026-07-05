@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>3D Particle Display OS - Zhineng Graph Mirror</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="zg-graph-window">
+      <header class="zg-graph-header">
+        <div>
+          <strong>世界系统三维粒子 OS</strong>
+          <span>zhineng-graph 母版迁移 · 隔离显示投影</span>
+        </div>
+        <nav class="zg-graph-actions" aria-label="graph view actions">
+          <button id="pulseFlow" class="zg-graph-icon-button" type="button" title="播放认知流">flow</button>
+          <button id="viewHome" class="zg-graph-icon-button" type="button" title="复位视角">home</button>
+          <button id="viewTop" class="zg-graph-icon-button" type="button" title="俯视">top</button>
+          <button id="resetView" class="zg-graph-close-button" type="button" title="重置 Lens">reset</button>
+        </nav>
+      </header>
+
+      <main class="zg-graph-stage" aria-label="world system 3d particle stage">
+        <section class="zg-graph-canvas-host" id="stage" tabindex="0" aria-label="rotatable 3d particle graph">
+          <svg id="regionLayer" class="region-layer" aria-hidden="true"></svg>
+          <svg id="edgeLayer" class="edge-layer" aria-hidden="true"></svg>
+          <div id="nodeLayer" class="node-layer"></div>
+          <div id="cameraState" class="camera-state">Yaw -28° · Pitch 24° · Zoom 1.00x</div>
+        </section>
+
+        <aside class="zg-graph-inspector" aria-label="focused particle cloud state">
+          <header>
+            <span>global layer</span>
+            <strong>世界系统核心</strong>
+          </header>
+          <p>以原 `zhineng-graph` 页面为主展示方式，将 19 个星云模块投射到可旋转三维分类区域中。</p>
+          <dl>
+            <div>
+              <dt>status</dt>
+              <dd>中心模型</dd>
+            </div>
+            <div>
+              <dt>owner</dt>
+              <dd>World System Architecture</dd>
+            </div>
+            <div>
+              <dt>gate</dt>
+              <dd>core_alignment_gate</dd>
+            </div>
+            <div>
+              <dt>compass</dt>
+              <dd>core.world-core</dd>
+            </div>
+          </dl>
+          <details class="zg-nebula-directory" open>
+            <summary>
+              <strong>星云目录</strong>
+              <span>19 nebulae</span>
+            </summary>
+            <div class="zg-nebula-list">
+              <button type="button"><strong>外部世界来源</strong><span>世界输入层</span></button>
+              <button type="button"><strong>感知与融合</strong><span>观测对齐层</span></button>
+              <button type="button"><strong>事件抽取层</strong><span>事件结构化</span></button>
+              <button type="button"><strong>全域事件图谱</strong><span>变化记录层</span></button>
+              <button type="button"><strong>世界状态模型</strong><span>核心状态层</span></button>
+              <button type="button"><strong>多域世界图谱</strong><span>事实组织层</span></button>
+              <button type="button"><strong>人际辅助接入位</strong><span>未来真实子系统</span></button>
+              <button type="button"><strong>关系策略层</strong><span>策略分配器</span></button>
+              <button type="button"><strong>学习引擎</strong><span>规则内化层</span></button>
+              <button type="button"><strong>可能性预测</strong><span>未来分支层</span></button>
+              <button type="button"><strong>能力拼接与沙盒</strong><span>外部能力层</span></button>
+              <button type="button"><strong>决策与意志治理</strong><span>目标选择层</span></button>
+              <button type="button"><strong>安全范围治理</strong><span>范围版本层</span></button>
+              <button type="button"><strong>行动与工具</strong><span>执行候选层</span></button>
+              <button type="button"><strong>反馈与记忆</strong><span>校准回路</span></button>
+              <button type="button"><strong>系统主体状态对话系统</strong><span>全局状态只读问答</span></button>
+              <button type="button"><strong>三维粒子操作层</strong><span>视觉操作面</span></button>
+              <button type="button"><strong>投影与意图契约</strong><span>接口契约层</span></button>
+              <button type="button"><strong>实体工作节点</strong><span>实体业务项目目录</span></button>
+            </div>
+          </details>
+          <div class="zg-graph-child-cloud">
+            <section class="zg-star-group">
+              <button class="zg-star-group-toggle" type="button">
+                <strong>Lens overlays</strong>
+                <span id="visibleCount">0 nodes</span>
+              </button>
+              <div id="lensControls" class="lens-controls"></div>
+            </section>
+          </div>
+        </aside>
+
+        <aside class="zg-status-dialogue zg-patrol-window" aria-label="subject status patrol window">
+          <header class="zg-patrol-titlebar">
+            <div>
+              <strong>Subject Status Dialogue</strong>
+              <span>read-only / efficiency-first</span>
+            </div>
+            <div class="zg-patrol-actions">
+              <button type="button">voice off</button>
+              <button type="button">⚙</button>
+            </div>
+          </header>
+          <div class="zg-dialogue-perspective" role="group" aria-label="output perspective">
+            <button type="button" class="active">first person</button>
+            <button type="button">third person</button>
+          </div>
+          <div class="zg-dialogue-snapshot warn">
+            <span>warn</span>
+            <strong>世界系统核心</strong>
+            <small>core_alignment_gate</small>
+          </div>
+          <div class="zg-conversation-memory-panel" aria-label="conversation memory goal state">
+            <div class="zg-conversation-memory-head">
+              <span>memory</span>
+              <strong>将 zhineng-graph 转为主展示母版</strong>
+              <small>mirror mode</small>
+            </div>
+            <div class="zg-conversation-memory-line">
+              <span>intent</span>
+              <strong>优先迁移视觉结构，再迁移数据契约</strong>
+            </div>
+            <div class="zg-conversation-memory-line">
+              <span>focus</span>
+              <strong>三维粒子操作层 / 投影与意图契约</strong>
+            </div>
+            <div class="zg-conversation-memory-chips">
+              <span>结果优先</span>
+              <span>目标优先</span>
+              <span class="fact">只读映射</span>
+              <span class="open">不改原系统</span>
+            </div>
+          </div>
+          <div id="inspector" class="zg-dialogue-log" aria-live="polite">
+            <article class="assistant">
+              <span>runtime ready</span>
+              <p>选择粒子后，这里显示原系统模块来源、分类区域、边界和 Lens 状态。</p>
+            </article>
+          </div>
+          <form class="zg-dialogue-form">
+            <button class="zg-dialogue-stt-button" type="button">STT</button>
+            <input aria-label="status query" placeholder="status, interface, risk, current focus" />
+            <button type="button">send</button>
+          </form>
+        </aside>
+
+        <section class="zg-expanded-particle-stage" aria-label="expanded particle state">
+          <div class="zg-expanded-particle-meta">
+            <span>中心模型</span>
+            <strong>世界系统核心</strong>
+            <span>19 nebulae / 258 content stars</span>
+          </div>
+          <div class="zg-expanded-particle-tags" aria-hidden="true">
+            <span>global layer</span>
+            <span>静态世界系统主方案映射</span>
+            <span>projection only</span>
+          </div>
+        </section>
+
+        <div class="zg-graph-legend" aria-hidden="true">
+          <span class="zg-legend-core">核心</span>
+          <span class="zg-legend-world">世界</span>
+          <span class="zg-legend-social">人际</span>
+          <span class="zg-legend-forecast">预测</span>
+          <span class="zg-legend-safety">治理</span>
+        </div>
+      </main>
+
+      <footer class="zg-graph-footer">
+        <span>静态世界系统主方案映射</span>
+        <span>19 个星云模块 · 258 个内容星点</span>
+        <span>逐步迁移到 3d-particle-display-os，当前不读取真实图谱</span>
+      </footer>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/read-only-source-collection-manifest-readiness.schema.json",
+  "title": "ReadOnlySourceCollectionManifestReadiness",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "readiness_id",
+    "created_at",
+    "gate_decision",
+    "ready_for_collection",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "source",
+    "summary",
+    "source_results",
+    "checks",
+    "required_failures",
+    "warning_failures",
+    "next_commands",
+    "continue_when",
+    "stop_or_adjust_when"
+  ],
+  "properties": {
+    "schema_version": { "const": "read_only_source_collection_manifest_readiness.v1" },
+    "readiness_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": { "type": "string", "minLength": 1 },
+    "ready_for_collection": { "type": "boolean" },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "source": {
+      "type": "object",
+      "required": ["root", "manifest_path"],
+      "properties": {
+        "root": { "type": "string" },
+        "manifest_path": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "manifest_sources",
+        "ready_sources",
+        "missing_source_files",
+        "source_kind_counts",
+        "missing_recommended_source_kinds",
+        "duplicate_source_ids"
+      ],
+      "properties": {
+        "manifest_sources": { "type": "integer", "minimum": 0 },
+        "ready_sources": { "type": "integer", "minimum": 0 },
+        "missing_source_files": { "type": "integer", "minimum": 0 },
+        "source_kind_counts": { "type": "object" },
+        "missing_recommended_source_kinds": { "type": "array", "items": { "type": "string" } },
+        "duplicate_source_ids": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "source_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_id",
+          "normalized_source_kind",
+          "source_exists",
+          "source_is_file",
+          "ready_for_collection",
+          "required_failures",
+          "warning_failures"
+        ],
+        "properties": {
+          "source_id": { "type": "string" },
+          "source_kind": { "type": ["string", "null"] },
+          "normalized_source_kind": { "type": "string" },
+          "source_path": { "type": ["string", "null"] },
+          "source_exists": { "type": "boolean" },
+          "source_is_file": { "type": "boolean" },
+          "source_size_bytes": { "type": "integer", "minimum": 0 },
+          "ready_for_collection": { "type": "boolean" },
+          "required_failures": { "type": "array", "items": { "type": "string" } },
+          "warning_failures": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    },
+    "checks": { "type": "array", "items": { "type": "object" } },
+    "required_failures": { "type": "array", "items": { "type": "string" } },
+    "warning_failures": { "type": "array", "items": { "type": "string" } },
+    "next_commands": { "type": "array", "items": { "type": "string" } },
+    "continue_when": { "type": "array", "items": { "type": "string" } },
+    "stop_or_adjust_when": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

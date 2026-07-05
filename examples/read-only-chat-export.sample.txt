@@ -1,0 +1,3 @@
+2026-06-16 09:00 User: Can we confirm next week's project review window?
+2026-06-16 09:02 Customer: Please send the security whitelist evidence before we schedule the review.
+2026-06-16 09:05 User: I will prepare the whitelist evidence and avoid pushing for a meeting before you review it.

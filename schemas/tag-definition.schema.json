@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zhineng.local/schemas/tag-definition.schema.json",
+  "title": "TagDefinition",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "tag_id",
+    "namespace",
+    "dimension",
+    "label_zh",
+    "value_type",
+    "applies_to",
+    "allowed_assignment_methods",
+    "precision_level",
+    "conflict_policy",
+    "version"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "tag_definition.v1"
+    },
+    "tag_id": {
+      "type": "string",
+      "minLength": 3
+    },
+    "tag_value": {
+      "type": "string",
+      "minLength": 3
+    },
+    "tag_pattern": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Prefix pattern ending with * for generated references, for example person:*."
+    },
+    "namespace": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dimension": {
+      "type": "string",
+      "minLength": 1
+    },
+    "allowed_values": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "label_zh": {
+      "type": "string",
+      "minLength": 1
+    },
+    "label_en": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "applies_to": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "parent_tag_id": {
+      "type": "string"
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "value_type": {
+      "enum": [
+        "controlled_value",
+        "identity_ref",
+        "time_ref",
+        "object_ref",
+        "location_ref",
+        "quantity_ref",
+        "evidence_ref",
+        "source_ref",
+        "state_ref"
+      ]
+    },
+    "precision_level": {
+      "enum": [
+        "routing",
+        "semantic_signature",
+        "state_boundary",
+        "evidence_locator",
+        "projection"
+      ]
+    },
+    "privacy_level": {
+      "enum": [
+        "public",
+        "private",
+        "sensitive",
+        "secret"
+      ]
+    },
+    "source_of_authority": {
+      "type": "string"
+    },
+    "allowed_assignment_methods": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "rule",
+          "model",
+          "manual",
+          "sensor"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "conflict_policy": {
+      "enum": [
+        "allow",
+        "allow_conflict_group",
+        "requires_confirmation",
+        "block_external_action",
+        "identity_projection_only"
+      ]
+    },
+    "deprecated": {
+      "type": "boolean"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "tag_value"
+      ],
+      "not": {
+        "required": [
+          "tag_pattern"
+        ]
+      }
+    },
+    {
+      "required": [
+        "tag_pattern"
+      ],
+      "not": {
+        "required": [
+          "tag_value"
+        ]
+      }
+    }
+  ],
+  "additionalProperties": false
+}

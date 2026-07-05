@@ -1,0 +1,175 @@
+{
+  "schema_version": "capability_upgrade_registry.module.v1",
+  "module_id": "capability_upgrade_registry",
+  "status": "designed_boundary_with_read_only_patrol",
+  "root_dir": "capability-upgrade-registry",
+  "purpose": "Store excellent external projects, compare them against current system modules, and produce audited upgrade or replacement plans without mutating production modules by default.",
+  "principles": [
+    "do_not_reinvent_wheels",
+    "evidence_before_replacement",
+    "read_only_by_default",
+    "license_and_security_first",
+    "skill_discovery_before_skill_creation",
+    "io_contract_consistency_before_replacement",
+    "latency_and_effectiveness_evidence_before_replacement",
+    "analogical_pattern_discovery_before_candidate_selection",
+    "dry_run_before_write",
+    "human_confirmation_before_production_change",
+    "rollback_required_for_replacement",
+    "previous_requirements_alignment_before_replacement"
+  ],
+  "directories": {
+    "projects": "External project source trees or unpacked candidate projects.",
+    "downloads": "Original archives, release packages or immutable downloaded materials.",
+    "manifests": "Project cards with source, version, license, candidate module mapping and provenance.",
+    "evaluations": "Comparison reports, scorecards, process decomposition and practical evidence.",
+    "replacement_plans": "Controlled replacement plans with migration, tests, rollback and confirmation gates.",
+    "evidence": "Benchmarks, logs, screenshots, compatibility checks and security scan outputs.",
+    "adapters": "Draft adapters that can wrap external capabilities without replacing current modules.",
+    "patrols": "Read-only patrol reports that decompose current processes and identify optimization signals.",
+    "templates": "Copyable JSON templates for new records."
+  },
+  "contracts": {
+    "project_card": "capability_project_card.v1",
+    "evaluation_report": "capability_evaluation_report.v1",
+    "replacement_plan": "capability_replacement_plan.v1",
+    "patrol_report": "capability_patrol_report.v1",
+    "analogical_search_task": "capability_analogical_search_task.v1",
+    "skill_creation_gate": "skill_creation_gate.v1",
+    "os_projection": "capability_upgrade_os_projection.v1"
+  },
+  "default_policy": {
+    "can_read_local_candidates": true,
+    "can_download_after_user_request": true,
+    "can_run_external_code_by_default": false,
+    "can_modify_main_system_by_default": false,
+    "can_write_runtime_state_by_default": false,
+    "can_create_new_skill_without_reuse_search": false,
+    "requires_license_review": true,
+    "requires_security_review": true,
+    "requires_skill_reuse_search_before_skill_creation": true,
+    "requires_skill_creation_gate_record": true,
+    "requires_human_confirmation_for_replacement": true
+  },
+  "skill_creation_gate": {
+    "schema": "skill_creation_gate.v1",
+    "trigger": "Any request to create a new Skill, plugin-facing workflow, or mandatory reusable capability guide.",
+    "default_decision_order": [
+      "reuse_existing_skill_or_tool",
+      "wrap_or_adapt_existing_capability",
+      "install_or_request_existing_plugin_or_connector_when_explicitly_requested",
+      "create_new_skill_only_after_reuse_search_fails"
+    ],
+    "required_search_sources": [
+      "available_session_skills",
+      "local_codex_skills",
+      "installed_plugins_and_connectors",
+      "tool_search_when_available",
+      "repository_modules_and_scripts",
+      "capability-upgrade-registry",
+      "local_tool_catalogs_such_as_cli_anything",
+      "reputable_external_software_or_open_source_projects_when_network_research_is_appropriate"
+    ],
+    "required_record_fields": [
+      "requested_goal",
+      "must_execute_capabilities",
+      "searched_sources",
+      "candidate_findings",
+      "reuse_or_adapt_decision",
+      "why_existing_candidates_are_insufficient",
+      "license_and_security_notes_for_external_candidates",
+      "final_decision",
+      "validation_plan",
+      "human_confirmation_status"
+    ],
+    "creation_allowed_when": [
+      "no_existing_skill_or_software_satisfies_the_required_goal",
+      "existing_candidate_cannot_be_safely_adapted",
+      "adaptation_cost_or_risk_exceeds_a_small_purpose_built_skill",
+      "the_needed_workflow_is_private_project_specific_and_requires_local_instructions",
+      "the_gate_record_is_written_before_skill_files_are_created"
+    ],
+    "creation_blocked_when": [
+      "reuse_search_not_performed",
+      "existing_skill_or_software_can_reasonably_satisfy_the_goal",
+      "candidate_rejection_has_no_evidence",
+      "license_or_security_risk_is_unknown_for_external_software",
+      "trigger_condition_for_the_new_skill_is_unclear"
+    ],
+    "record_storage": [
+      "capability-upgrade-registry/evaluations/**",
+      "capability-upgrade-registry/evidence/**",
+      "runtime/capability-upgrade-patrols/**"
+    ]
+  },
+  "patrol_policy": {
+    "mode": "read_only",
+    "recommended_cadence": "periodic_or_before_large_module_changes",
+    "reads": [
+      "examples/system-process-tree.json",
+      "package.json",
+      "capability-upgrade-registry/manifests/**",
+      "capability-upgrade-registry/evaluations/**"
+    ],
+    "writes": [
+      "runtime/capability-upgrade-patrols/**"
+    ],
+    "network_allowed_by_default": false,
+    "external_code_execution_allowed_by_default": false,
+    "main_system_mutation_allowed": false
+  },
+  "optimization_signals": [
+    "open_issue_or_in_progress_issue",
+    "open_questions_or_designed_boundary_status",
+    "missing_or_weak_io_contract",
+    "latency_or_throughput_gap",
+    "effectiveness_gap_from_tests_runtime_or_feedback",
+    "manual_or_demo_or_sample_only_process",
+    "high_replacement_value_problem_family",
+    "high_maintenance_or_integration_friction"
+  ],
+  "required_evaluation_dimensions": [
+    "io_contract_consistency",
+    "event_latency_fit",
+    "effectiveness_gain",
+    "replacement_complexity_inverse",
+    "usefulness",
+    "module_fit",
+    "maintenance_health",
+    "license_fit",
+    "security_risk_inverse",
+    "integration_cost_inverse",
+    "replacement_value",
+    "reversibility"
+  ],
+  "replacement_gates": [
+    "source_and_license_recorded",
+    "target_module_mapping_recorded",
+    "process_decomposition_recorded",
+    "io_contract_consistency_checked",
+    "latency_and_effectiveness_evidence_recorded",
+    "analogical_candidates_confirmed",
+    "evaluation_report_written",
+    "security_risk_reviewed",
+    "dry_run_or_adapter_path_proven",
+    "tests_defined_and_passed",
+    "replacement_complexity_reviewed",
+    "previous_requirements_alignment_checked",
+    "rollback_plan_written",
+    "human_confirmation_recorded"
+  ],
+  "system_integration": {
+    "process_tree_node_id": "capability_upgrade_registry",
+    "particle_os_node_id": "capability-upgrade-registry",
+    "particle_os_projection": "capability-upgrade-registry/os-particle-projection.json",
+    "related_existing_dirs": [
+      "third_party/**",
+      "packages/**",
+      "scripts/**",
+      "schemas/**",
+      "3d-particle-display-os/**"
+    ],
+    "write_boundary": "Keep module-specific materials in capability-upgrade-registry unless an approved replacement plan explicitly moves code into the main system.",
+    "patrol_command": "npm run capability:patrol"
+  }
+}

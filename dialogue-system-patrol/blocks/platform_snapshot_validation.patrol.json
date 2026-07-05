@@ -1,0 +1,138 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "platform_snapshot_validation",
+  "display_name": "平台快照验证",
+  "owner": "process_tree",
+  "source_dir": "docs",
+  "process_tree_node_id": "platform_snapshot_validation",
+  "registration_status": "process_tree_status:implemented_dry_run_gate_real_snapshot_pending",
+  "gate": "system_patrol_coverage_gate",
+  "compass": "system_patrol.platform_snapshot_validation",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "validated",
+  "updated_at": "2026-07-01T11:39:08.902Z",
+  "ttl_ms": 604800000,
+  "change_session_id": "system_patrol_blocks_init_20260701",
+  "data_flow": {
+    "inputs": [
+      "docs/09-触发引擎与预约通知接口.md",
+      "schemas/platform-dry-run-connector.schema.json",
+      "schemas/platform-snapshot-validation.schema.json",
+      "examples/platform-snapshot.sample.html",
+      "examples/platform-snapshot-preview.sample.json",
+      "scripts/validate-platform-snapshot.mjs",
+      "packages/trigger-engine/src/trigger-engine.mjs",
+      "packages/trigger-engine/tests/trigger-engine.test.mjs",
+      "runtime/platform-snapshot-validations/**",
+      "scripts/prepare-controlled-platform-snapshot.mjs"
+    ],
+    "processing": [
+      "Validate saved platform test pages or real test-account page snapshots before automation preview expansion, while proving preview reached, draft present and real send remains blocked."
+    ],
+    "outputs": [
+      "PlatformDryRunConnector",
+      "platform_dry_run_connector_check",
+      "PlatformSnapshotValidation",
+      "platform_snapshot_validation"
+    ],
+    "dependencies": [
+      "examples/system-process-tree.json",
+      "dialogue-system-patrol/registry/system-patrol-registry.json"
+    ]
+  },
+  "state": {
+    "headline": "平台快照验证: patrol block initialized from process tree status implemented_dry_run_gate_real_snapshot_pending.",
+    "current_task": "Maintain summary-only patrol coverage and expose dialogue-readable state.",
+    "progress": 1,
+    "blockers": [],
+    "risks": [
+      "The sample snapshot passes the dry-run gate. PT-004 still needs a real user test-account platform snapshot before expanding automation preview samples."
+    ],
+    "next": [
+      "Review this generated patrol block before treating it as a deep module interpretation.",
+      "Refresh validation with npm.cmd run system-patrol:validate.",
+      "Publish dialogue-readable output with npm.cmd run system-patrol:publish."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "examples/system-process-tree.json",
+      "docs/09-触发引擎与预约通知接口.md",
+      "schemas/platform-dry-run-connector.schema.json",
+      "schemas/platform-snapshot-validation.schema.json",
+      "examples/platform-snapshot.sample.html",
+      "examples/platform-snapshot-preview.sample.json",
+      "scripts/validate-platform-snapshot.mjs",
+      "packages/trigger-engine/src/trigger-engine.mjs",
+      "packages/trigger-engine/tests/trigger-engine.test.mjs"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:publish",
+      "npm.cmd run process-tree:validate"
+    ],
+    "latest_validation_refs": [
+      "runtime/dialogue-system-patrol-validations/latest.json"
+    ]
+  },
+  "boundaries": {
+    "mode": "controlled_write_runtime_summary",
+    "allowed_reads": [
+      "examples/system-process-tree.json",
+      "docs/09-触发引擎与预约通知接口.md",
+      "schemas/platform-dry-run-connector.schema.json",
+      "schemas/platform-snapshot-validation.schema.json",
+      "examples/platform-snapshot.sample.html",
+      "examples/platform-snapshot-preview.sample.json",
+      "scripts/validate-platform-snapshot.mjs",
+      "packages/trigger-engine/src/trigger-engine.mjs",
+      "packages/trigger-engine/tests/trigger-engine.test.mjs"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/platform_snapshot_validation.json",
+      "runtime/status-events/platform_snapshot_validation.json",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**"
+    ],
+    "forbidden_actions": [
+      "no business module rewrite from patrol initialization",
+      "no dialogue reader rewrite from patrol initialization",
+      "no external platform action",
+      "no raw private payload publication"
+    ],
+    "confirmation_gates": [
+      "user confirmation required before protocol migration",
+      "user confirmation required before process-tree and Obsidian registration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The module is represented in the process tree.",
+      "The patrol block was initialized from process-tree summary evidence.",
+      "Current status is summary-only and should cite source refs."
+    ],
+    "must_not_infer": [
+      "Do not infer raw runtime facts that are not present in evidence refs.",
+      "Do not treat generated patrol text as a full source-code review.",
+      "Do not claim external actions or business outcomes from patrol coverage alone."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "sha256:69b495e402fd29e6c6a3885e18ef6460747087788cba999ea0063c2f77e20dd6",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-05T13:12:46.780Z",
+    "source_hash_refs": [
+      "docs/09-触发引擎与预约通知接口.md",
+      "examples/platform-snapshot-preview.sample.json",
+      "examples/platform-snapshot.sample.html",
+      "examples/system-process-tree.json",
+      "packages/trigger-engine/src/trigger-engine.mjs",
+      "packages/trigger-engine/tests/trigger-engine.test.mjs",
+      "schemas/platform-dry-run-connector.schema.json",
+      "schemas/platform-snapshot-validation.schema.json",
+      "scripts/validate-platform-snapshot.mjs"
+    ],
+    "source_hash_excluded_refs": []
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SocialToolCallPlan",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "plan_id",
+    "created_at",
+    "operator",
+    "capability_id",
+    "provider",
+    "tool_name",
+    "purpose",
+    "requested_action",
+    "execution_mode",
+    "real_execution_allowed",
+    "requires_user_confirmation",
+    "user_confirmed",
+    "connector_authorized",
+    "target_verified",
+    "risk_level",
+    "safety_checks",
+    "blocked_actions",
+    "audit_event"
+  ],
+  "properties": {
+    "schema_version": { "const": "social_tool_call_plan.v1" },
+    "plan_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string" },
+    "operator": { "type": "string" },
+    "capability_id": { "type": "string", "minLength": 1 },
+    "provider": { "type": "string", "minLength": 1 },
+    "tool_name": { "type": "string", "minLength": 1 },
+    "tool_display_name": { "type": "string" },
+    "purpose": { "type": "string", "minLength": 1 },
+    "requested_action": {
+      "type": "object",
+      "required": ["action", "proposed_command", "expected_output"],
+      "properties": {
+        "action": { "type": "string", "minLength": 1 },
+        "input_summary": { "type": "string" },
+        "proposed_command": { "type": ["string", "null"] },
+        "expected_output": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "source": { "type": "object" },
+    "target_context": { "type": "object" },
+    "execution_mode": {
+      "type": "string",
+      "enum": ["dry_run", "controlled_real_execution"]
+    },
+    "real_execution_allowed": { "type": "boolean" },
+    "requires_user_confirmation": { "type": "boolean" },
+    "user_confirmed": { "type": "boolean" },
+    "connector_authorized": { "type": "boolean" },
+    "target_verified": { "type": "boolean" },
+    "risk_level": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "safety_checks": {
+      "type": "array",
+      "items": { "type": "object" },
+      "minItems": 1
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "audit_event": { "type": "object" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StorageAudit",
+  "type": "object",
+  "required": [
+    "audit_id",
+    "action",
+    "entity_type",
+    "entity_id",
+    "occurred_at",
+    "result"
+  ],
+  "properties": {
+    "audit_id": { "type": "string", "minLength": 1 },
+    "action": {
+      "type": "string",
+      "enum": [
+        "init_store",
+        "upsert_people",
+        "upsert_relationships",
+        "append_raw_event",
+        "append_semantic_event",
+        "append_feedback",
+        "rebuild_indexes",
+        "error"
+      ]
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "store",
+        "person",
+        "relationship",
+        "raw_event",
+        "semantic_event",
+        "feedback_record",
+        "index"
+      ]
+    },
+    "entity_id": { "type": "string", "minLength": 1 },
+    "actor": { "type": "string" },
+    "occurred_at": { "type": "string" },
+    "result": { "type": "string", "enum": ["success", "failure", "skipped"] },
+    "reason": { "type": "string" },
+    "source_file": { "type": "string" },
+    "before_hash": { "type": "string" },
+    "after_hash": { "type": "string" },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": false
+}

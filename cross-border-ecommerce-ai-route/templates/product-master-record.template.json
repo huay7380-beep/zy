@@ -1,0 +1,49 @@
+{
+  "contract": "product_master_record.template.v1",
+  "sku": "{{sku}}",
+  "model": "{{model}}",
+  "zh_name": "{{zh_name}}",
+  "en_name": "{{en_name}}",
+  "category": "{{category}}",
+  "target_markets": ["{{country_or_region}}"],
+  "specifications": {
+    "material": "{{material}}",
+    "size": "{{size}}",
+    "weight": "{{weight}}",
+    "color_options": ["{{color}}"],
+    "functional_features": ["{{feature}}"]
+  },
+  "commercial": {
+    "moq": "{{moq}}",
+    "sample_available": true,
+    "sample_lead_time": "{{sample_lead_time}}",
+    "bulk_lead_time": "{{bulk_lead_time}}",
+    "cost_currency": "CNY",
+    "unit_cost": "{{unit_cost}}",
+    "target_margin_floor": "{{target_margin_floor}}"
+  },
+  "packaging": {
+    "unit_pack": "{{unit_pack}}",
+    "carton_size": "{{carton_size}}",
+    "carton_gw": "{{carton_gw}}",
+    "carton_qty": "{{carton_qty}}"
+  },
+  "compliance": {
+    "hs_code_candidates": [],
+    "certificates": [],
+    "restricted_flags": [],
+    "label_requirements": []
+  },
+  "media": {
+    "main_image": "{{path}}",
+    "detail_images": [],
+    "scene_images": [],
+    "videos": [],
+    "spec_sheet": "{{path}}"
+  },
+  "audit": {
+    "source_files": [],
+    "last_reviewed_at": "{{yyyy-mm-dd}}",
+    "reviewer": "{{name}}"
+  }
+}

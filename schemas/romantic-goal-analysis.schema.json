@@ -1,0 +1,680 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RomanticGoalAnalysis",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "analysis_id",
+    "target_person_id",
+    "identity_label_policy",
+    "test_fixture_policy",
+    "primary_relationship_stage",
+    "primary_relationship_stage_id",
+    "physical_intimacy_state",
+    "physical_intimacy_goal_state",
+    "relationship_gradient_framework",
+    "romantic_stage_gradient",
+    "semantic_feature_assessment",
+    "relationship_goal_contract",
+    "psychological_comfort_model",
+    "stage_transition_assessment",
+    "online_offline_progression_track",
+    "date_transition_readiness",
+    "romantic_progression_cadence",
+    "consent_readiness",
+    "context_gap_diagnosis",
+    "output_delivery_policy",
+    "user_visible_reasoning_log",
+    "target_utterances",
+    "pua_or_coercion_risk",
+    "allowed_output_level",
+    "send_gate_precondition",
+    "upstream_downstream_closure"
+  ],
+  "properties": {
+    "schema_version": { "const": "romantic_goal_analysis.v1" },
+    "analysis_id": { "type": "string", "minLength": 1 },
+    "target_person_id": { "type": ["string", "null"] },
+    "target_display_name": { "type": ["string", "null"] },
+    "source_context_id": { "type": "string", "minLength": 1 },
+    "identity_label_policy": {
+      "type": "object",
+      "required": [
+        "identity_labels_are_optional_inputs",
+        "multiple_identity_labels_allowed",
+        "pt028_consumes_romantic_labels_only"
+      ],
+      "properties": {
+        "identity_labels_are_optional_inputs": { "const": true },
+        "absence_behavior": { "type": "string" },
+        "multiple_identity_labels_allowed": { "const": true },
+        "template_priority_owned_by_identity_resolution_module": { "type": "boolean" },
+        "pt028_consumes_romantic_labels_only": { "const": true }
+      },
+      "additionalProperties": true
+    },
+    "test_fixture_policy": {
+      "type": "object",
+      "required": [
+        "specific_person_name_hardcoded",
+        "generic_runtime_uses_target_person_id_and_identity_labels",
+        "fixture_names_are_test_data_only"
+      ],
+      "properties": {
+        "specific_person_name_hardcoded": { "const": false },
+        "generic_runtime_uses_target_person_id_and_identity_labels": { "const": true },
+        "fixture_names_are_test_data_only": { "const": true },
+        "fixture_default_stage_does_not_apply_to_other_targets": { "const": true }
+      },
+      "additionalProperties": true
+    },
+    "primary_relationship_identity": { "type": "string" },
+    "primary_relationship_stage": {
+      "type": "string",
+      "enum": ["R0", "R1", "R2", "R3", "R4", "R5", "R6", "RX"]
+    },
+    "primary_relationship_stage_id": {
+      "type": "string",
+      "enum": [
+        "unconfirmed_person_or_context",
+        "candidate_romantic_interest",
+        "confirmed_romantic_no_physical_intimacy",
+        "early_physical_affection",
+        "romantic_kissing_or_stronger_affection",
+        "explicit_intimacy_boundary_discussion",
+        "physical_intimacy_confirmed_relationship_goal_state",
+        "review_or_risk_exception"
+      ]
+    },
+    "stage_evidence": { "type": "object", "additionalProperties": true },
+    "stage_missing_evidence": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "physical_intimacy_state": {
+      "type": "string",
+      "enum": [
+        "none_or_unknown",
+        "nonsexual_affection",
+        "kissing_or_stronger_affection",
+        "confirmed_by_mutual_consent",
+        "blocked_or_unsafe"
+      ]
+    },
+    "physical_intimacy_goal_state": {
+      "type": "object",
+      "required": [
+        "relationship_goal_state",
+        "current_status",
+        "optimization_kpi",
+        "forced_action_metric",
+        "automatic_send_metric",
+        "future_exception_interface"
+      ],
+      "properties": {
+        "relationship_goal_state": { "const": true },
+        "current_status": { "type": "string" },
+        "optimization_kpi": { "const": false },
+        "forced_action_metric": { "const": false },
+        "automatic_send_metric": { "const": false },
+        "future_exception_interface": {
+          "type": "object",
+          "required": ["supported"],
+          "properties": {
+            "supported": { "const": true },
+            "current_exception_reason": { "type": ["string", "null"] },
+            "allowed_reason_families": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "relationship_gradient_framework": {
+      "type": "object",
+      "required": ["schema_version", "framework_id", "applies_to_relationship_types", "reusable_dimensions"],
+      "properties": {
+        "schema_version": { "const": "relationship_gradient_framework.v1" },
+        "framework_id": { "const": "stage_progression_strategy_framework.v1" },
+        "applies_to_relationship_types": {
+          "type": "array",
+          "contains": { "const": "romantic" },
+          "items": { "type": "string" }
+        },
+        "reusable_dimensions": {
+          "type": "array",
+          "contains": { "const": "reciprocity_and_responsiveness" },
+          "items": { "type": "string" }
+        },
+        "scientific_basis": {
+          "type": "array",
+          "items": { "type": "object", "additionalProperties": true }
+        }
+      },
+      "additionalProperties": true
+    },
+    "romantic_stage_gradient": {
+      "type": "object",
+      "required": ["schema_version", "stage_catalog", "stage_upgrade_policy"],
+      "properties": {
+        "schema_version": { "const": "romantic_stage_gradient.v1" },
+        "stage_catalog": {
+          "type": "array",
+          "contains": {
+            "type": "object",
+            "properties": { "stage": { "const": "R2" } },
+            "required": ["stage"]
+          },
+          "items": { "type": "object", "additionalProperties": true }
+        },
+        "stage_upgrade_policy": {
+          "type": "object",
+          "required": ["dynamic_feature_based", "fixed_phrase_matching_is_only_rule_based_evidence"],
+          "properties": {
+            "dynamic_feature_based": { "const": true },
+            "fixed_phrase_matching_is_only_rule_based_evidence": { "const": true }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "semantic_feature_assessment": {
+      "type": "object",
+      "required": ["schema_version", "dynamic_feature_based", "fixed_phrase_matching_is_only_rule_based_evidence", "features"],
+      "properties": {
+        "schema_version": { "const": "romantic_semantic_feature_assessment.v1" },
+        "dynamic_feature_based": { "const": true },
+        "fixed_phrase_matching_is_only_rule_based_evidence": { "const": true },
+        "features": {
+          "type": "array",
+          "contains": {
+            "type": "object",
+            "properties": { "feature_id": { "const": "affective_heat" } },
+            "required": ["feature_id"]
+          },
+          "items": {
+            "type": "object",
+            "required": ["feature_id", "value", "status", "interpretation"],
+            "properties": {
+              "feature_id": { "type": "string" },
+              "value": { "type": "number", "minimum": 0, "maximum": 1 },
+              "status": { "enum": ["strong", "present", "weak", "missing"] },
+              "interpretation": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "relationship_goal_contract": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "final_goal_state",
+        "current_stage",
+        "current_turn_goal",
+        "active_progression_allowed",
+        "direct_progression_policy",
+        "next_step_recommendations",
+        "missing_progression_evidence",
+        "feedback_to_record"
+      ],
+      "properties": {
+        "schema_version": { "const": "romantic_relationship_goal_contract.v1" },
+        "final_goal_state": { "const": "R6_physical_intimacy_confirmed_relationship_goal_state" },
+        "final_goal_definition": { "type": "string" },
+        "current_stage": { "enum": ["R0", "R1", "R2", "R3", "R4", "R5", "R6", "RX"] },
+        "stage_gap_to_final_goal": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "current_turn_goal": { "type": "string" },
+        "active_progression_allowed": { "type": "boolean" },
+        "direct_progression_policy": {
+          "type": "object",
+          "required": ["direct_progression_allowed", "meaning", "forbids"],
+          "properties": {
+            "direct_progression_allowed": { "type": "boolean" },
+            "meaning": { "type": "string" },
+            "forbids": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "additionalProperties": true
+        },
+        "next_step_recommendations": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "missing_progression_evidence": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "feedback_to_record": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "psychological_comfort_model": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "current_stage",
+        "heat_score",
+        "comfort_score",
+        "progression_intensity",
+        "recommended_dialogue_act_ids",
+        "comfort_guardrails"
+      ],
+      "properties": {
+        "schema_version": { "const": "psychological_comfort_model.v1" },
+        "current_stage": { "enum": ["R0", "R1", "R2", "R3", "R4", "R5", "R6", "RX"] },
+        "heat_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "comfort_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "progression_intensity": {
+          "enum": [
+            "hold",
+            "context_capture",
+            "manual_review_or_safety_hint",
+            "repair_or_boundary_first",
+            "warm_hold",
+            "micro_warmth",
+            "soft_invitation",
+            "closeness_check",
+            "manual_review_before_stronger_intimacy"
+          ]
+        },
+        "recommended_dialogue_act_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "comfort_guardrails": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "stage_transition_assessment": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "current_stage",
+        "dynamic_feature_policy",
+        "next_stage_feature_readiness_score",
+        "transition_decision",
+        "allowed_current_turn"
+      ],
+      "properties": {
+        "schema_version": { "const": "romantic_stage_transition_assessment.v1" },
+        "current_stage": { "enum": ["R0", "R1", "R2", "R3", "R4", "R5", "R6", "RX"] },
+        "next_stage_candidate": { "type": ["string", "null"] },
+        "dynamic_feature_policy": {
+          "type": "object",
+          "required": ["features_are_semantic_families_not_fixed_phrases"],
+          "properties": {
+            "features_are_semantic_families_not_fixed_phrases": { "const": true }
+          },
+          "additionalProperties": true
+        },
+        "next_stage_feature_readiness_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "transition_decision": { "type": "string" },
+        "allowed_current_turn": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "online_offline_progression_track": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "active_track",
+        "online_track",
+        "offline_track",
+        "progression_policy"
+      ],
+      "properties": {
+        "schema_version": { "const": "online_offline_progression_track.v1" },
+        "active_track": {
+          "enum": [
+            "online",
+            "offline",
+            "online_to_offline_transition",
+            "post_meet_feedback",
+            "risk_review"
+          ]
+        },
+        "online_track": {
+          "type": "object",
+          "required": ["stage", "stage_id", "label", "goal"],
+          "properties": {
+            "stage": {
+              "enum": ["O0", "O1", "O2", "O3", "O4", "O5", "O6", "O7", "OX"]
+            },
+            "stage_id": { "type": "string" },
+            "label": { "type": "string" },
+            "goal": { "type": "string" },
+            "evidence_signals": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "additionalProperties": true
+        },
+        "offline_track": {
+          "type": "object",
+          "required": ["stage", "stage_id", "label", "goal"],
+          "properties": {
+            "stage": {
+              "enum": ["F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "FX"]
+            },
+            "stage_id": { "type": "string" },
+            "label": { "type": "string" },
+            "goal": { "type": "string" },
+            "evidence_signals": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "additionalProperties": true
+        },
+        "signal_summary": { "type": "object", "additionalProperties": true },
+        "progression_policy": {
+          "type": "object",
+          "required": [
+            "online_lacks_nonverbal_feedback",
+            "offline_requires_context_and_exit_space",
+            "no_stage_skip",
+            "one_reversible_step_per_turn"
+          ],
+          "properties": {
+            "online_lacks_nonverbal_feedback": { "const": true },
+            "offline_requires_context_and_exit_space": { "const": true },
+            "no_stage_skip": { "const": true },
+            "one_reversible_step_per_turn": { "const": true }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "date_transition_readiness": {
+      "type": "object",
+      "required": ["schema_version", "status", "readiness_score", "recommended_transition_action", "gates"],
+      "properties": {
+        "schema_version": { "const": "date_transition_readiness.v1" },
+        "status": {
+          "enum": [
+            "not_ready",
+            "context_capture_required",
+            "candidate_for_future_invitation",
+            "ready_for_low_pressure_invitation",
+            "pre_meet_confirmation",
+            "post_meet_feedback_required",
+            "blocked_for_risk_review"
+          ]
+        },
+        "readiness_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "online_stage": { "type": "string" },
+        "offline_stage": { "type": "string" },
+        "recommended_transition_action": { "type": "string" },
+        "gates": {
+          "type": "object",
+          "required": ["risk_review_clear", "low_pressure_and_refusable", "no_automatic_send"],
+          "properties": {
+            "target_identity_confirmed": { "type": "boolean" },
+            "risk_review_clear": { "type": "boolean" },
+            "low_pressure_and_refusable": { "const": true },
+            "public_or_safe_meeting_context_required": { "type": "boolean" },
+            "no_automatic_send": { "const": true }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "romantic_progression_cadence": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "current_turn_intent",
+        "cadence_decision",
+        "stage_delta_policy",
+        "no_fixed_day_count_progression",
+        "evidence_window_policy"
+      ],
+      "properties": {
+        "schema_version": { "const": "romantic_progression_cadence.v1" },
+        "current_turn_intent": {
+          "enum": [
+            "observe_or_hold",
+            "warm_response",
+            "small_reversible_probe",
+            "micro_progression",
+            "soft_invitation",
+            "boundary_review",
+            "repair_or_downshift",
+            "maintenance",
+            "risk_review"
+          ]
+        },
+        "cadence_decision": { "type": "string" },
+        "stage_delta_policy": { "const": "one_reversible_stage_bounded_step_per_turn" },
+        "no_fixed_day_count_progression": { "const": true },
+        "evidence_window_policy": {
+          "type": "object",
+          "required": [
+            "today_sets_tone",
+            "last_7_days_sets_rhythm",
+            "last_30_days_sets_stability",
+            "historical_sets_identity_and_commitment"
+          ],
+          "properties": {
+            "today_sets_tone": { "const": true },
+            "last_7_days_sets_rhythm": { "const": true },
+            "last_30_days_sets_stability": { "const": true },
+            "historical_sets_identity_and_commitment": { "const": true },
+            "missing_windows_reduce_upgrade_confidence": { "type": "boolean" }
+          },
+          "additionalProperties": true
+        },
+        "pacing_factors": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "consent_readiness": { "type": "object", "additionalProperties": true },
+    "context_gap_diagnosis": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "diagnosis",
+        "target_utterance_count",
+        "available_context_windows",
+        "missing_context_windows",
+        "treats_missing_history_as_stage_stability",
+        "current_state_process_decision",
+        "recommendation"
+      ],
+      "properties": {
+        "schema_version": { "const": "romantic_context_gap_diagnosis.v1" },
+        "diagnosis": {
+          "enum": [
+            "identity_or_window_unconfirmed",
+            "messages_may_exist_but_not_read_or_extracted",
+            "no_current_target_message_available",
+            "current_message_available_but_history_incomplete",
+            "sufficient_multi_window_context"
+          ]
+        },
+        "confidence": { "type": "number" },
+        "target_person_id": { "type": ["string", "null"] },
+        "target_utterance_count": { "type": "integer", "minimum": 0 },
+        "available_context_windows": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "missing_context_windows": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "capture_gap_signals": { "type": "object", "additionalProperties": true },
+        "current_relationship_stage": { "enum": ["R0", "R1", "R2", "R3", "R4", "R5", "R6", "RX"] },
+        "treats_missing_history_as_stage_stability": { "const": false },
+        "current_state_process_decision": {
+          "enum": [
+            "identity_confirmation_or_context_collection_hint",
+            "read_or_capture_more_messages_before_stage_progression",
+            "ask_for_current_message_or_keep_analysis_only",
+            "give_current_stage_content_suggestion_and_request_history_capture_for_stage_upgrade",
+            "give_stage_process_content_suggestion"
+          ]
+        },
+        "recommendation": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "output_delivery_policy": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "auto_send_blocked_default",
+        "default_when_auto_send_blocked",
+        "current_output_mode",
+        "content_suggestion_available",
+        "automatic_send_allowed",
+        "real_send_requires_gates"
+      ],
+      "properties": {
+        "schema_version": { "const": "target_output_delivery_policy.v1" },
+        "system_goal": { "type": "string" },
+        "auto_send_blocked_default": { "const": true },
+        "default_when_auto_send_blocked": { "const": "content_suggestion_or_context_capture_hint" },
+        "current_output_mode": {
+          "enum": [
+            "content_suggestion",
+            "context_capture_hint",
+            "manual_review_prompt_with_content_suggestion",
+            "analysis_hint",
+            "user_visible_safety_hint"
+          ]
+        },
+        "content_suggestion_available": { "type": "boolean" },
+        "delegated_input_allowed_after_confirmation": { "type": "boolean" },
+        "automatic_send_allowed": { "const": false },
+        "real_send_requires_gates": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "ui_instruction": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "user_visible_reasoning_log": {
+      "type": "object",
+      "required": ["schema_version", "visible_to_user", "visible_to_target", "steps"],
+      "properties": {
+        "schema_version": { "const": "relationship_reasoning_log.v1" },
+        "visible_to_user": { "const": true },
+        "visible_to_target": { "const": false },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "object", "additionalProperties": true }
+        }
+      },
+      "additionalProperties": true
+    },
+    "target_utterances": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["utterance_id", "text", "source_type"],
+        "properties": {
+          "utterance_id": { "type": "string", "minLength": 1 },
+          "target_person_id": { "type": ["string", "null"] },
+          "target_display_name": { "type": ["string", "null"] },
+          "source_type": { "type": "string" },
+          "text": { "type": "string", "minLength": 1 },
+          "evidence_refs": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "window_refs": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "pua_or_coercion_risk": {
+      "type": "object",
+      "required": ["schema_version", "scope", "risk_level", "signal_families"],
+      "properties": {
+        "schema_version": { "const": "coercion_and_pua_risk_expert.v1" },
+        "scope": { "const": "target_to_user_only" },
+        "risk_level": { "enum": ["low", "watch", "warning", "critical"] },
+        "signal_families": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "allowed_output_level": {
+      "type": "string",
+      "enum": [
+        "analysis_only",
+        "user_visible_log",
+        "draft_allowed",
+        "preview_allowed",
+        "manual_review_required",
+        "send_blocked"
+      ]
+    },
+    "send_gate_precondition": {
+      "type": "object",
+      "required": ["real_execution_allowed", "required_gates"],
+      "properties": {
+        "real_execution_allowed": { "const": false },
+        "required_gates": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "upstream_downstream_closure": {
+      "type": "object",
+      "required": ["schema_version", "upstream_closed", "downstream_closed", "gate_decision"],
+      "properties": {
+        "schema_version": { "const": "pt028_upstream_downstream_closure.v1" },
+        "upstream_checks": {
+          "type": "array",
+          "items": { "type": "object", "additionalProperties": true }
+        },
+        "downstream_checks": {
+          "type": "array",
+          "items": { "type": "object", "additionalProperties": true }
+        },
+        "upstream_closed": { "type": "boolean" },
+        "downstream_closed": { "type": "boolean" },
+        "gate_decision": {
+          "enum": ["pt028_upstream_downstream_closed", "pt028_closure_incomplete"]
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ParallelExpertRunLog",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_log_id",
+    "executor",
+    "concurrency_policy",
+    "context_snapshot_id",
+    "lane_count",
+    "completed_lane_count",
+    "lanes",
+    "merge_step"
+  ],
+  "properties": {
+    "schema_version": { "const": "parallel_expert_run_log.v1" },
+    "run_log_id": { "type": "string", "minLength": 1 },
+    "started_at": { "type": "string" },
+    "completed_at": { "type": "string" },
+    "executor": { "type": "string", "minLength": 1 },
+    "concurrency_policy": {
+      "type": "object",
+      "required": ["parallelizable", "no_cross_expert_dependency_before_merge"],
+      "properties": {
+        "parallelizable": { "const": true },
+        "no_cross_expert_dependency_before_merge": { "const": true },
+        "current_runtime_note": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "context_snapshot_id": { "type": "string", "minLength": 1 },
+    "lane_count": { "type": "integer", "minimum": 0 },
+    "completed_lane_count": { "type": "integer", "minimum": 0 },
+    "lanes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["lane_id", "expert_id", "status", "context_pack_ref", "can_run_without_other_experts"],
+        "properties": {
+          "lane_id": { "type": "string", "minLength": 1 },
+          "expert_id": { "type": "string", "minLength": 1 },
+          "discipline": { "type": "string" },
+          "status": { "type": "string" },
+          "context_pack_ref": { "type": ["string", "null"] },
+          "independent_context_analysis_ref": { "type": ["string", "null"] },
+          "can_run_without_other_experts": { "const": true },
+          "blocks_other_lanes": { "type": "boolean" },
+          "output_refs": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    },
+    "merge_step": { "type": "object", "additionalProperties": true }
+  },
+  "additionalProperties": true
+}

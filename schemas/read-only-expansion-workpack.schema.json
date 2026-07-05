@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/read-only-expansion-workpack.schema.json",
+  "title": "ReadOnlyExpansionWorkpack",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "workpack_id",
+    "created_at",
+    "gate_decision",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "source",
+    "sample_summary",
+    "graph_loop_summary",
+    "feedback_collection",
+    "next_sampling_targets",
+    "operator_checklist",
+    "checks",
+    "required_failures",
+    "warning_failures",
+    "next_actions",
+    "stop_or_adjust_when"
+  ],
+  "properties": {
+    "schema_version": { "const": "read_only_expansion_workpack.v1" },
+    "workpack_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": { "type": "string", "minLength": 1 },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "source": { "type": "object" },
+    "sample_summary": {
+      "type": "object",
+      "required": [
+        "raw_observation_count",
+        "effective_observation_count",
+        "duplicate_suppressed_count",
+        "generated_records",
+        "generated_feedback_records",
+        "ready_for_decision_trial",
+        "ready_for_closed_loop_mvp"
+      ],
+      "properties": {
+        "raw_observation_count": { "type": "integer", "minimum": 0 },
+        "effective_observation_count": { "type": "integer", "minimum": 0 },
+        "duplicate_suppressed_count": { "type": "integer", "minimum": 0 },
+        "generated_records": { "type": "integer", "minimum": 0 },
+        "generated_feedback_records": { "type": "integer", "minimum": 0 },
+        "ready_for_decision_trial": { "type": "boolean" },
+        "ready_for_closed_loop_mvp": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "graph_loop_summary": {
+      "type": "object",
+      "required": [
+        "gate_decision",
+        "required_failures",
+        "closed_loop_complete",
+        "trial_completed_expert_count",
+        "trial_writeback_complete"
+      ],
+      "properties": {
+        "gate_decision": { "type": "string" },
+        "required_failures": { "type": "array", "items": { "type": "string" } },
+        "closed_loop_complete": { "type": "boolean" },
+        "trial_completed_expert_count": { "type": "integer", "minimum": 0 },
+        "trial_writeback_complete": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "feedback_collection": {
+      "type": "object",
+      "required": ["gate_decision", "summary", "required_fields", "append_commands"],
+      "properties": {
+        "gate_decision": { "type": "string" },
+        "summary": { "type": "object" },
+        "required_fields": { "type": "array", "items": { "type": "string" } },
+        "append_commands": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "next_sampling_targets": {
+      "type": "object",
+      "required": [
+        "target_plan_id",
+        "gate_decision",
+        "target_count",
+        "top_targets",
+        "blocking_target_ids",
+        "required_failures",
+        "warning_failures"
+      ],
+      "properties": {
+        "target_plan_id": { "type": "string" },
+        "gate_decision": { "type": "string" },
+        "target_count": { "type": "integer", "minimum": 0 },
+        "top_targets": { "type": "array", "items": { "type": "object" } },
+        "blocking_target_ids": { "type": "array", "items": { "type": "string" } },
+        "required_failures": { "type": "array", "items": { "type": "string" } },
+        "warning_failures": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "operator_checklist": { "type": "array", "items": { "type": "string" } },
+    "checks": { "type": "array", "items": { "type": "object" } },
+    "required_failures": { "type": "array", "items": { "type": "string" } },
+    "warning_failures": { "type": "array", "items": { "type": "string" } },
+    "next_actions": { "type": "array", "items": { "type": "string" } },
+    "stop_or_adjust_when": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

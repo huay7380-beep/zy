@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/goal-oriented-interaction-backtest.schema.json",
+  "title": "GoalOrientedInteractionBacktest",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "backtest_id",
+    "created_at",
+    "gate_decision",
+    "source",
+    "metrics",
+    "alignment",
+    "hard_exit_signals",
+    "continue_when",
+    "stop_or_adjust_when",
+    "scenarios"
+  ],
+  "properties": {
+    "schema_version": { "const": "goal_oriented_interaction_backtest.v1" },
+    "backtest_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "goal_oriented_backtest_passed",
+        "goal_oriented_backtest_failed"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "theory_markdown_path",
+        "theory_signature_hash",
+        "code_signature_hash"
+      ],
+      "properties": {
+        "theory_markdown_path": { "type": "string" },
+        "theory_signature_hash": { "type": "string" },
+        "code_signature_hash": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "metrics": {
+      "type": "object",
+      "required": [
+        "scenario_count",
+        "turn_count",
+        "required_theory_context_completion_rate",
+        "full_code_context_completion_rate",
+        "theory_code_match_rate",
+        "strategy_evolution_rate",
+        "message_draft_completion_rate",
+        "writeback_completion_rate"
+      ],
+      "properties": {
+        "scenario_count": { "type": "integer", "minimum": 0 },
+        "turn_count": { "type": "integer", "minimum": 0 },
+        "required_theory_context_completion_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "full_code_context_completion_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "theory_code_match_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "strategy_evolution_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "message_draft_completion_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "writeback_completion_rate": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": true
+    },
+    "alignment": {
+      "type": "object",
+      "required": ["checks"],
+      "properties": {
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["check_id", "label", "severity", "status", "passed", "evidence"],
+            "properties": {
+              "check_id": { "type": "string" },
+              "label": { "type": "string" },
+              "severity": { "type": "string", "enum": ["required", "warning"] },
+              "status": { "type": "string", "enum": ["pass", "fail"] },
+              "passed": { "type": "boolean" },
+              "evidence": { "type": "array", "items": { "type": "string" } },
+              "fix": { "type": ["string", "null"] }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "hard_exit_signals": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "continue_when": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "stop_or_adjust_when": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "scenario_id",
+          "title",
+          "setting",
+          "storage_tags",
+          "turns",
+          "strategy_evolved",
+          "result"
+        ],
+        "properties": {
+          "scenario_id": { "type": "string" },
+          "title": { "type": "string" },
+          "setting": { "type": "object", "additionalProperties": true },
+          "storage_tags": { "type": "object", "additionalProperties": true },
+          "turns": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "round",
+                "counterpart_message",
+                "theory_context",
+                "code_context_snapshot",
+                "strategy_state",
+                "decision",
+                "writeback"
+              ],
+              "properties": {
+                "round": { "type": "integer", "minimum": 1 },
+                "counterpart_message": { "type": "string" },
+                "theory_context": { "type": "object", "additionalProperties": true },
+                "code_context_snapshot": { "type": "object", "additionalProperties": true },
+                "strategy_state": { "type": "object", "additionalProperties": true },
+                "decision": { "type": "object", "additionalProperties": true },
+                "writeback": { "type": "object", "additionalProperties": true }
+              },
+              "additionalProperties": true
+            }
+          },
+          "strategy_evolved": { "type": "boolean" },
+          "result": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.zhineng/cross-border-ecommerce/schemas/quote-draft.schema.json",
+  "title": "Structured Cabling Quote Draft",
+  "type": "object",
+  "required": ["contract", "quote_id", "status", "customer", "quote_type", "line_items", "commercial_terms", "gate"],
+  "additionalProperties": false,
+  "properties": {
+    "contract": { "const": "structured_cabling_quote_draft.v1" },
+    "quote_id": { "type": "string" },
+    "inquiry_id": { "type": "string" },
+    "status": { "enum": ["draft_only", "blocked", "ready_for_review", "approved_for_send", "sent_after_confirmation"] },
+    "quote_type": { "enum": ["standard_sku_quote", "bom_quote", "private_label_quote", "sample_quote"] },
+    "customer": {
+      "type": "object",
+      "required": ["company", "contact", "country"],
+      "additionalProperties": false,
+      "properties": {
+        "company": { "type": "string" },
+        "contact": { "type": "string" },
+        "country": { "type": "string" },
+        "email": { "type": "string" },
+        "buyer_type": { "type": "string" }
+      }
+    },
+    "line_items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["item_no", "product_ref", "description", "quantity", "unit_price"],
+        "additionalProperties": false,
+        "properties": {
+          "item_no": { "type": "string" },
+          "product_ref": { "type": "string" },
+          "family_id": { "type": "string" },
+          "description": { "type": "string" },
+          "technical_spec": { "type": "object" },
+          "quantity": { "type": "string" },
+          "unit_price": {
+            "type": "object",
+            "required": ["currency", "amount"],
+            "additionalProperties": false,
+            "properties": {
+              "currency": { "type": "string" },
+              "amount": { "type": "string" }
+            }
+          },
+          "packing": { "type": "string" },
+          "lead_time": { "type": "string" },
+          "remarks": { "type": "string" }
+        }
+      }
+    },
+    "commercial_terms": {
+      "type": "object",
+      "required": ["incoterms", "payment_terms", "valid_until"],
+      "additionalProperties": false,
+      "properties": {
+        "incoterms": { "type": "string" },
+        "place": { "type": "string" },
+        "payment_terms": { "type": "string" },
+        "valid_until": { "type": "string" },
+        "sample_policy": { "type": "string" },
+        "private_label_cost": { "type": "string" },
+        "freight_assumption": { "type": "string" }
+      }
+    },
+    "source_refs": { "type": "array", "items": { "type": "string" } },
+    "risk_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "product_master_exists": { "type": "boolean" },
+        "cost_source_exists": { "type": "boolean" },
+        "margin_floor_passed": { "type": "boolean" },
+        "compliance_claims_verified": { "type": "boolean" },
+        "pdu_high_review_required": { "type": "boolean" },
+        "blocked_reasons": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "required": ["real_send_allowed", "approved_by_human", "approval_ref"],
+      "additionalProperties": false,
+      "properties": {
+        "real_send_allowed": { "const": false },
+        "approved_by_human": { "type": "boolean" },
+        "approval_ref": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

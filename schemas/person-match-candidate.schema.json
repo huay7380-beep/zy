@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/person-match-candidate.schema.json",
+  "title": "PersonMatchCandidate",
+  "type": "object",
+  "required": [
+    "candidate_id",
+    "channel_identity_id",
+    "candidate_person_id",
+    "confidence",
+    "match_reasons",
+    "requires_user_confirmation",
+    "recommended_action",
+    "status"
+  ],
+  "properties": {
+    "candidate_id": { "type": "string", "minLength": 1 },
+    "source_observation_id": { "type": ["string", "null"] },
+    "channel_identity_id": { "type": "string", "minLength": 1 },
+    "candidate_person_id": { "type": "string", "minLength": 1 },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "match_reasons": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "ambiguity_group_id": { "type": ["string", "null"] },
+    "requires_user_confirmation": { "type": "boolean" },
+    "recommended_action": {
+      "type": "string",
+      "enum": ["auto_link_confirmed_identity", "ask_user_to_confirm", "create_unknown_identity", "reject_candidate"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["candidate", "auto_linked", "queued_for_confirmation", "rejected"]
+    },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": true
+}

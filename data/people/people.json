@@ -1,0 +1,32 @@
+{
+  "schema_version": "0.1.0",
+  "people": [
+    {
+      "aliases": [
+        "兮颜",
+        "wechat:兮颜"
+      ],
+      "roles": [
+        "romantic_partner"
+      ],
+      "tags": [
+        "confirmed_by_user",
+        "romantic_partner",
+        "source_actor_type_human_contact",
+        "wechat_active_contact"
+      ],
+      "source": "user_confirmation",
+      "created_at": "2026-06-18T08:39:24.148Z",
+      "updated_at": "2026-06-18T08:39:24.148Z",
+      "person_id": "person_xiyan_romantic_partner",
+      "display_name": "兮颜",
+      "metadata": {
+        "confirmed_by": "user",
+        "confirmation_source": "user_message",
+        "source_thread_key": "wechat:兮颜",
+        "real_execution_allowed": false,
+        "real_send_attempted": false
+      }
+    }
+  ]
+}

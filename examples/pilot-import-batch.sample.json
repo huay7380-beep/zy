@@ -1,0 +1,170 @@
+{
+  "schema_version": "0.1.0",
+  "import_id": "pilot_import_client_a_realistic_sample",
+  "goal": {
+    "initial_goal": "推动张总确认一次轻量技术评审",
+    "scene": "business",
+    "primary_person_id": "person_client_a",
+    "target_person_ids": ["person_client_a", "person_tech_lead_a"]
+  },
+  "people": [
+    {
+      "person_id": "person_client_a",
+      "display_name": "张总",
+      "aliases": ["张经理"],
+      "roles": ["客户采购负责人"],
+      "tags": ["客户", "重点客户"],
+      "source": "pilot_import"
+    },
+    {
+      "person_id": "person_tech_lead_a",
+      "display_name": "李工",
+      "roles": ["客户技术负责人"],
+      "tags": ["技术评审参与人"],
+      "source": "pilot_import"
+    }
+  ],
+  "relationships": [
+    {
+      "relationship_id": "rel_user_client_a",
+      "from_person_id": "user",
+      "to_person_id": "person_client_a",
+      "type_code": "client",
+      "phase": "exploring",
+      "trust_level": "low",
+      "health_score": 0.58,
+      "recent_event_ids": []
+    }
+  ],
+  "records": [
+    {
+      "record_id": "chat_001",
+      "source": "wechat_manual_export",
+      "occurred_at": "2026-06-01T09:10:00+08:00",
+      "speaker_person_id": "person_client_a",
+      "target_person_ids": ["person_client_a"],
+      "content": "我们现在主要是想先确认接口能不能覆盖现有流程，预算还没有完全定下来。",
+      "linked_relationship_ids": ["rel_user_client_a"]
+    },
+    {
+      "record_id": "web_001",
+      "source": "web_note",
+      "occurred_at": "2026-06-01T14:20:00+08:00",
+      "speaker_person_id": "user",
+      "target_person_ids": ["person_client_a"],
+      "content": "客户公司近期在公开招聘运维和数据岗位，可能正在推进内部数字化项目。",
+      "linked_relationship_ids": ["rel_user_client_a"]
+    },
+    {
+      "record_id": "chat_002",
+      "source": "wechat_manual_export",
+      "occurred_at": "2026-06-02T10:05:00+08:00",
+      "speaker_person_id": "person_client_a",
+      "target_person_ids": ["person_client_a"],
+      "content": "你先把技术方案发我，我给李工看看，他比较关心部署风险。",
+      "linked_relationship_ids": ["rel_user_client_a"]
+    },
+    {
+      "record_id": "chat_003",
+      "source": "wechat_manual_export",
+      "occurred_at": "2026-06-02T16:40:00+08:00",
+      "speaker_person_id": "user",
+      "target_person_ids": ["person_client_a"],
+      "content": "我可以先发一版轻量方案，只覆盖接口、部署方式和风险清单，不涉及报价承诺。",
+      "linked_relationship_ids": ["rel_user_client_a"]
+    },
+    {
+      "record_id": "chat_004",
+      "source": "wechat_manual_export",
+      "occurred_at": "2026-06-03T09:25:00+08:00",
+      "speaker_person_id": "person_client_a",
+      "target_person_ids": ["person_client_a", "person_tech_lead_a"],
+      "content": "李工说可以先看一下，但不要开太长会，最好半小时。",
+      "linked_relationship_ids": ["rel_user_client_a"]
+    },
+    {
+      "record_id": "chat_005",
+      "source": "wechat_manual_export",
+      "occurred_at": "2026-06-03T11:00:00+08:00",
+      "speaker_person_id": "person_client_a",
+      "target_person_ids": ["person_client_a"],
+      "content": "价格方面我们也会和另一家供应商做比较，所以先不要讲太满。",
+      "linked_relationship_ids": ["rel_user_client_a"]
+    },
+    {
+      "record_id": "chat_006",
+      "source": "wechat_manual_export",
+      "occurred_at": "2026-06-03T17:35:00+08:00",
+      "speaker_person_id": "user",
+      "target_person_ids": ["person_client_a"],
+      "content": "理解，我这边先按风险澄清和适配度评审来准备，不把报价作为这次会议重点。",
+      "linked_relationship_ids": ["rel_user_client_a"]
+    },
+    {
+      "record_id": "chat_007",
+      "source": "wechat_manual_export",
+      "occurred_at": "2026-06-04T10:30:00+08:00",
+      "speaker_person_id": "person_client_a",
+      "target_person_ids": ["person_client_a"],
+      "content": "下周二上午你们方便吗？我先问问李工时间。",
+      "linked_relationship_ids": ["rel_user_client_a"]
+    },
+    {
+      "record_id": "chat_008",
+      "source": "wechat_manual_export",
+      "occurred_at": "2026-06-04T14:15:00+08:00",
+      "speaker_person_id": "person_client_a",
+      "target_person_ids": ["person_client_a", "person_tech_lead_a"],
+      "content": "李工确认下周二十点半可以，先线上评审。",
+      "linked_relationship_ids": ["rel_user_client_a"]
+    },
+    {
+      "record_id": "chat_009",
+      "source": "wechat_manual_export",
+      "occurred_at": "2026-06-04T15:00:00+08:00",
+      "speaker_person_id": "user",
+      "target_person_ids": ["person_client_a", "person_tech_lead_a"],
+      "content": "收到，我会发一个半小时以内的议程，重点是接口覆盖、部署风险和后续下一步。",
+      "linked_relationship_ids": ["rel_user_client_a"]
+    }
+  ],
+  "semantic_hints": [
+    {
+      "hint_id": "hint_budget_unclear",
+      "raw_record_ids": ["chat_001", "chat_005"],
+      "event_type_code": "budget_or_price",
+      "event_level": "P2",
+      "tags": ["预算", "报价", "竞品比较"],
+      "weight": 0.76,
+      "confidence": 0.72,
+      "linked_person_ids": ["person_client_a"],
+      "linked_relationship_ids": ["rel_user_client_a"],
+      "requires_confirmation": false
+    },
+    {
+      "hint_id": "hint_review_confirmed",
+      "raw_record_ids": ["chat_007", "chat_008", "chat_009"],
+      "event_type_code": "meeting_or_appointment",
+      "event_level": "P2",
+      "tags": ["预约", "技术评审", "客户推进"],
+      "weight": 0.82,
+      "confidence": 0.8,
+      "linked_person_ids": ["person_client_a", "person_tech_lead_a"],
+      "linked_relationship_ids": ["rel_user_client_a"],
+      "requires_confirmation": false
+    }
+  ],
+  "feedback_records": [
+    {
+      "feedback_id": "feedback_pilot_import_client_a_001",
+      "decision_id": "decision_manual_preview_001",
+      "trigger_id": "trigger_manual_preview_001",
+      "executed": true,
+      "reply_received": true,
+      "goal_progress": 0.7,
+      "relationship_change": 0.15,
+      "user_rating": 4,
+      "new_event_candidate_ids": ["semantic_pilot_import_client_a_realistic_sample_hint_review_confirmed"]
+    }
+  ]
+}

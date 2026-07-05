@@ -1,0 +1,151 @@
+{
+  "version": "0.1.0",
+  "source": "人际关系图谱完整版.md",
+  "relationship_types": [
+    {
+      "type_code": "client",
+      "relationship_type": "客户",
+      "dimension": 4,
+      "base_weight": 0.6,
+      "default_strategy": {
+        "communication_style": "patient_and_service_oriented",
+        "sensitive_topics": ["贬低产品", "过度承诺"],
+        "maintenance_frequency": "as_needed",
+        "default_trust": "low",
+        "disclosure_depth": "public",
+        "interaction_guideline": "满足合理需求，管理不合理预期，维护品牌形象。",
+        "interest_protection": "合同范围之外的需求明确拒绝或另行报价；投诉处理留记录防止被恶意索赔"
+      },
+      "event_interface": {
+        "typical_events": ["contract_signing", "service_request", "complaint", "renewal", "business_meeting"],
+        "high_impact_positive": ["长期合作", "转介绍"],
+        "high_impact_negative": ["纠纷", "流失"]
+      }
+    },
+    {
+      "type_code": "business_partner",
+      "relationship_type": "合作伙伴",
+      "dimension": 4,
+      "base_weight": 0.65,
+      "default_strategy": {
+        "communication_style": "direct_and_clear",
+        "sensitive_topics": ["商业机密", "核心利益让步"],
+        "maintenance_frequency": "project_based",
+        "default_trust": "medium",
+        "disclosure_depth": "partial",
+        "interaction_guideline": "强调共赢点，守住底线，契约精神优先。",
+        "interest_protection": "合同条款逐条审核防不平等条款；核心资产和商业机密协议保密；利益分配方案提前书面确定"
+      },
+      "event_interface": {
+        "typical_events": ["contract_signing", "business_meeting", "collaboration", "agreement"],
+        "high_impact_positive": ["超额完成", "长期信任"],
+        "high_impact_negative": ["违约", "撕破脸"]
+      }
+    },
+    {
+      "type_code": "project_collaborator",
+      "relationship_type": "项目协作者",
+      "dimension": 4,
+      "base_weight": 0.6,
+      "default_strategy": {
+        "communication_style": "clear_and_cooperative",
+        "sensitive_topics": ["责任划分", "成果归属", "延期"],
+        "maintenance_frequency": "project_cycle",
+        "default_trust": "low",
+        "disclosure_depth": "public",
+        "interaction_guideline": "明确分工与交付，及时同步风险，避免甩锅。",
+        "interest_protection": "项目分工书面确认；风险提前书面告知留记录；交付验收有签字凭证"
+      },
+      "event_interface": {
+        "typical_events": ["project_start", "business_meeting", "delivery_acceptance", "conflict"],
+        "high_impact_positive": ["高效协作", "解决难题"],
+        "high_impact_negative": ["推诿", "延期", "质量差"]
+      }
+    },
+    {
+      "type_code": "normal_friend",
+      "relationship_type": "普通朋友",
+      "dimension": 2,
+      "base_weight": 0.5,
+      "default_strategy": {
+        "communication_style": "friendly_and_light",
+        "sensitive_topics": ["个人隐私", "深度价值观辩论"],
+        "maintenance_frequency": "monthly",
+        "default_trust": "medium",
+        "disclosure_depth": "partial",
+        "interaction_guideline": "保持轻松友善，适度维护，不过度索取。",
+        "interest_protection": "社交资源不过度输出；不因面子接受超出能力的请求；避免成为情绪垃圾桶"
+      },
+      "event_interface": {
+        "typical_events": ["invitation", "help", "celebration", "conflict"],
+        "high_impact_positive": ["关键帮助", "长期陪伴"],
+        "high_impact_negative": ["背叛", "利用"]
+      }
+    },
+    {
+      "type_code": "romantic_partner",
+      "relationship_type": "\u604b\u7231\u5bf9\u8c61",
+      "dimension": 2,
+      "base_weight": 0.78,
+      "default_strategy": {
+        "communication_style": "warm_playful_respectful",
+        "sensitive_topics": ["\u538b\u8feb\u5f0f\u627f\u8bfa", "\u8fc7\u5ea6\u5360\u6709", "\u5355\u65b9\u9762\u5173\u7cfb\u5b9a\u4e49"],
+        "maintenance_frequency": "high_frequency_as_mutual",
+        "default_trust": "medium",
+        "disclosure_depth": "private_gradual",
+        "interaction_guideline": "\u4ee5\u53cc\u65b9\u8212\u9002\u548c\u53ef\u64a4\u56de\u7684\u8868\u8fbe\u7ef4\u6301\u4eb2\u5bc6\uff0c\u5c0a\u91cd\u5bf9\u65b9\u8282\u594f\uff0c\u4e0d\u7528\u7cfb\u7edf\u63a8\u8350\u4ee3\u66ff\u771f\u5b9e\u60c5\u611f\u786e\u8ba4\u3002",
+        "interest_protection": "\u4fdd\u7559\u4eba\u5de5\u786e\u8ba4\u548c\u53ef\u7f16\u8f91\u8349\u7a3f\uff1b\u9047\u5230\u62d2\u7edd\u3001\u538b\u529b\u6216\u51b2\u7a81\u4fe1\u53f7\u65f6\u964d\u4f4e\u63a8\u8fdb\u5f3a\u5ea6\uff1b\u4e0d\u81ea\u52a8\u53d1\u9001\u4eb2\u5bc6\u4fe1\u606f\u3002"
+      },
+      "event_interface": {
+        "typical_events": ["personal_relationship_signal", "invitation", "help", "celebration", "conflict", "rejection"],
+        "high_impact_positive": ["\u7a33\u5b9a\u4eb2\u5bc6\u4e92\u52a8", "\u53cc\u65b9\u4e3b\u52a8\u7ef4\u62a4"],
+        "high_impact_negative": ["\u8fb9\u754c\u4fe1\u53f7", "\u8fde\u7eed\u51b7\u6de1", "\u8bef\u8bfb\u6216\u538b\u529b"]
+      }
+    },
+    {
+      "type_code": "neighbor",
+      "relationship_type": "邻居",
+      "dimension": 3,
+      "base_weight": 0.4,
+      "default_strategy": {
+        "communication_style": "polite_and_boundary_aware",
+        "sensitive_topics": ["噪音", "公共区域", "隐私"],
+        "maintenance_frequency": "as_needed",
+        "default_trust": "low",
+        "disclosure_depth": "public",
+        "interaction_guideline": "保持礼貌，优先协商，纠纷留记录并走正式渠道。",
+        "interest_protection": "居家安全信息不透露；邻里纠纷优先走物业渠道留记录；不轻易授权邻居进入自家"
+      },
+      "event_interface": {
+        "typical_events": ["neighbor_dispute", "help", "community_activity"],
+        "high_impact_positive": ["日常互助"],
+        "high_impact_negative": ["安全事件", "持续纠纷"]
+      }
+    },
+    {
+      "type_code": "regular_merchant",
+      "relationship_type": "常驻商家/熟识店主",
+      "dimension": 4,
+      "base_weight": 0.35,
+      "default_strategy": {
+        "communication_style": "friendly_transactional",
+        "sensitive_topics": ["价格纠纷", "隐私", "过度优惠"],
+        "maintenance_frequency": "usage_based",
+        "default_trust": "low",
+        "disclosure_depth": "public",
+        "interaction_guideline": "维持友善的商业关系，适度闲聊增进亲切感，但不过度索取优惠。",
+        "interest_protection": "消费记录保留凭证；价格欺诈留证投诉；不因熟络关系透露个人家庭信息"
+      },
+      "event_interface": {
+        "typical_events": ["regular_patronage", "service_request", "gift", "conflict"],
+        "high_impact_positive": ["长期熟识", "额外帮助"],
+        "high_impact_negative": ["服务纠纷", "价格欺诈"]
+      }
+    }
+  ],
+  "scene_switching": {
+    "business": "优先使用维度4（社会与契约）的关系策略。",
+    "family": "优先使用维度1或2的关系策略。",
+    "social": "优先使用维度2或3的关系策略。"
+  }
+}

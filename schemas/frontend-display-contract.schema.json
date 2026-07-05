@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FrontendDisplayContract",
+  "type": "object",
+  "required": ["schema_version", "surfaces"],
+  "properties": {
+    "schema_version": { "const": "frontend_display_contract.v1" },
+    "surfaces": {
+      "type": "object",
+      "required": ["dock", "console", "send_window"],
+      "properties": {
+        "dock": {
+          "type": "object",
+          "required": ["mode", "text", "status_parts", "max_chars", "detail_hidden"],
+          "properties": {
+            "mode": { "const": "brief_status_only" },
+            "text": { "type": "string" },
+            "legacy_text": { "type": "string" },
+            "status_parts": {
+              "type": "object",
+              "required": [
+                "relationship_stage",
+                "online_stage",
+                "offline_stage",
+                "current_turn_intent",
+                "gate_status"
+              ],
+              "properties": {
+                "relationship_stage": { "type": "string" },
+                "online_stage": { "type": "string" },
+                "offline_stage": { "type": "string" },
+                "current_turn_intent": { "type": ["string", "null"] },
+                "gate_status": { "type": "string" }
+              },
+              "additionalProperties": true
+            },
+            "max_chars": { "type": "integer", "minimum": 1 },
+            "detail_hidden": { "const": true },
+            "movement_policy": { "type": "string" },
+            "click_target": { "type": "string" },
+            "placement_policy": {
+              "type": "object",
+              "required": ["preferred_anchor", "fallback_anchor", "avoid_target_chat_input_overlap"],
+              "properties": {
+                "preferred_anchor": { "type": "string" },
+                "target_application": { "type": "string" },
+                "fallback_anchor": { "type": "string" },
+                "avoid_target_chat_input_overlap": { "type": "boolean" },
+                "draggable_by_operator": { "type": "boolean" },
+                "persist_user_override": { "type": "boolean" }
+              },
+              "additionalProperties": true
+            },
+            "context_interface": {
+              "type": "object",
+              "required": ["read_model", "allowed_fields"],
+              "properties": {
+                "read_model": { "type": "string" },
+                "ipc_channel": { "type": "string" },
+                "allowed_fields": { "type": "array", "items": { "type": "string" } },
+                "refresh_interval_ms": { "type": "integer", "minimum": 0 }
+              },
+              "additionalProperties": true
+            },
+            "boundary_policy": {
+              "type": "object",
+              "properties": {
+                "detailed_logs_allowed": { "type": "boolean" },
+                "raw_private_text_allowed": { "type": "boolean" },
+                "target_visible_analysis_allowed": { "type": "boolean" },
+                "pause_or_expand_required_for_moving_status": { "type": "boolean" }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "console": {
+          "type": "object",
+          "required": ["mode", "show_draft", "show_reasoning_log", "show_expert_run_log", "sections"],
+          "properties": {
+            "mode": { "const": "chat_model_style_detail_log" },
+            "show_draft": { "type": "boolean" },
+            "show_reasoning_log": { "type": "boolean" },
+            "show_expert_run_log": { "type": "boolean" },
+            "show_chain_flow": { "type": "boolean" },
+            "show_branch_records": { "type": "boolean" },
+            "context_interface": {
+              "type": "object",
+              "properties": {
+                "read_model": { "type": "string" },
+                "ipc_channel": { "type": "string" },
+                "allowed_fields": { "type": "array", "items": { "type": "string" } },
+                "refresh_interval_ms": { "type": "integer", "minimum": 0 }
+              },
+              "additionalProperties": true
+            },
+            "reasoning_policy": {
+              "type": "object",
+              "properties": {
+                "show_user_visible_structured_reasoning_log": { "type": "boolean" },
+                "show_hidden_chain_of_thought": { "type": "boolean" },
+                "include_evidence_refs": { "type": "boolean" },
+                "include_expert_lane_status": { "type": "boolean" }
+              },
+              "additionalProperties": true
+            },
+            "sections": { "type": "array", "items": { "type": "object", "additionalProperties": true } }
+          },
+          "additionalProperties": true
+        },
+        "send_window": {
+          "type": "object",
+          "required": ["mode", "target_visible_analysis", "draft_transfer_allowed"],
+          "properties": {
+            "mode": { "type": "string" },
+            "target_visible_analysis": { "const": false },
+            "draft_transfer_allowed": { "type": "boolean" },
+            "required_confirmation_before_transfer": { "type": "boolean" },
+            "context_interface": {
+              "type": "object",
+              "properties": {
+                "read_model": { "type": "string" },
+                "allowed_fields": { "type": "array", "items": { "type": "string" } }
+              },
+              "additionalProperties": true
+            },
+            "boundary_policy": {
+              "type": "object",
+              "properties": {
+                "expert_logs_allowed": { "type": "boolean" },
+                "raw_context_allowed": { "type": "boolean" },
+                "only_confirmed_draft_payload_allowed": { "type": "boolean" }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

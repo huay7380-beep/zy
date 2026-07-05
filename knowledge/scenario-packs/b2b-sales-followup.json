@@ -1,0 +1,33 @@
+{
+  "scenario_pack": "B2B 商务沟通",
+  "version": "0.1.0",
+  "target_users": ["销售", "客户成功", "创始人", "顾问", "商务负责人"],
+  "sub_scenarios": [
+    {
+      "name": "客户不回复",
+      "common_obstacles": ["时机阻力", "优先级不足", "内部责任不清"],
+      "recommended_next_step": "低压力重启沟通，并把问题收敛到一个可回复选项"
+    },
+    {
+      "name": "客户说太贵",
+      "common_obstacles": ["价格阻力", "价值阻力", "预算窗口不清"],
+      "recommended_next_step": "先确认价格背后的真实卡点，再进入 ROI 或范围调整"
+    },
+    {
+      "name": "客户拖延",
+      "common_obstacles": ["时机阻力", "内部协同阻力", "推进动能不足"],
+      "recommended_next_step": "把最终决策拆成低承诺评审"
+    },
+    {
+      "name": "客户比较竞品",
+      "common_obstacles": ["竞品阻力", "信任阻力", "信息不足"],
+      "recommended_next_step": "建立比较框架，不直接贬低竞品"
+    },
+    {
+      "name": "客户内部推进慢",
+      "common_obstacles": ["权限阻力", "内部协同阻力", "风险责任不清"],
+      "recommended_next_step": "补齐决策链，并提供内部汇报材料"
+    }
+  ],
+  "evaluation_metrics": ["回复率", "会议预约率", "下一步推进率", "异议缓解率", "复盘完成率"]
+}

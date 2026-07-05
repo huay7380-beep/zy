@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ControlledSendCommandConfirmationDecision",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "draft_id",
+    "decision",
+    "operator_id",
+    "operator_confirmed_at",
+    "test_window",
+    "confirmations",
+    "evidence_refs"
+  ],
+  "properties": {
+    "schema_version": { "const": "controlled_send_command_confirmation_decision.v1" },
+    "draft_id": { "type": "string", "minLength": 1 },
+    "decision": {
+      "type": "string",
+      "enum": ["pending", "reject", "approve_for_controlled_test_window"]
+    },
+    "operator_id": { "type": "string", "minLength": 1 },
+    "operator_confirmed_at": { "type": "string", "minLength": 1 },
+    "test_window": {
+      "type": "object",
+      "required": ["conversation_title", "target_display_name", "platform_handle"],
+      "properties": {
+        "conversation_title": { "type": "string", "minLength": 1 },
+        "target_display_name": { "type": "string", "minLength": 1 },
+        "platform_handle": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "confirmations": {
+      "type": "object",
+      "required": [
+        "no_production_contact",
+        "window_matches",
+        "thread_matches",
+        "draft_matches",
+        "permission_granted"
+      ],
+      "properties": {
+        "no_production_contact": { "type": "boolean" },
+        "window_matches": { "type": "boolean" },
+        "thread_matches": { "type": "boolean" },
+        "draft_matches": { "type": "boolean" },
+        "permission_granted": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

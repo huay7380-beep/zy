@@ -1,0 +1,64 @@
+{
+  "contract": "structured_cabling_rfq_field_map.template.v1",
+  "form_version": "rfq_structured_cabling_v1",
+  "default_required_fields": [
+    "company",
+    "contact_name",
+    "email",
+    "country",
+    "product_family",
+    "quantity",
+    "message",
+    "consent_checkbox"
+  ],
+  "default_recommended_fields": [
+    "phone_or_whatsapp",
+    "website",
+    "buyer_type",
+    "destination_city_or_port",
+    "preferred_incoterms",
+    "target_delivery_date",
+    "sample_required",
+    "private_label_required",
+    "certificate_request"
+  ],
+  "hidden_tracking_fields": [
+    "utm_source",
+    "utm_medium",
+    "utm_campaign",
+    "utm_content",
+    "landing_page",
+    "product_page",
+    "first_visit_at",
+    "consent_version",
+    "form_version"
+  ],
+  "family_dynamic_fields": {
+    "keystone_jack": ["grade", "shielding", "termination", "angle", "shutter", "color", "packing"],
+    "patch_panel": ["ports", "rack_unit", "grade", "shielding", "loaded_or_blank", "cable_manager", "quantity"],
+    "cable_management": ["rack_unit", "style", "material", "color", "quantity"],
+    "110_cabling_system": ["pair_count", "module_type", "mounting_type", "quantity"],
+    "face_plate": ["country_type", "size", "ports", "angle", "material", "color"],
+    "surface_mount_box": ["ports", "blank_or_loaded", "grade", "material", "color"],
+    "plug_patch_cord": ["grade", "shielding", "length", "jacket", "color", "wire_gauge", "plug_type"],
+    "telecommunication_accessories": ["pair_count", "module_type", "mounting_frame", "quantity"],
+    "power_distribution_unit": ["target_country", "plug_country_type", "outlet_count", "rack_unit", "rated_voltage", "rated_current", "cable_length", "certificate_request"]
+  },
+  "lead_scoring_rules": {
+    "A": ["company_email_present", "quantity_present", "product_family_clear", "destination_present", "buyer_type_project_or_distributor"],
+    "B": ["company_email_present", "product_family_clear", "quantity_missing_or_low"],
+    "C": ["consumer_like_request", "unclear_product", "missing_company"],
+    "D": ["spam", "unsupported_product", "invalid_contact"]
+  },
+  "auto_missing_question_rules": {
+    "keystone_jack": "Please confirm the required category, shielding type, color and quantity.",
+    "patch_panel": "Please confirm port count, rack unit, loaded or blank type, shielding and quantity.",
+    "face_plate": "Please confirm country type, size, port count, color and quantity.",
+    "plug_patch_cord": "Please confirm category, shielding, length, jacket, color and quantity.",
+    "power_distribution_unit": "Please confirm target country, plug/outlet type, rated voltage/current, cable length, certification request and quantity."
+  },
+  "human_gate": {
+    "first_reply_requires_approval": true,
+    "real_external_send_allowed": false
+  }
+}

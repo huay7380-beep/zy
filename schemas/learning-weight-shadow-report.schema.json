@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/learning-weight-shadow-report.schema.json",
+  "title": "LearningWeightShadowReport",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "shadow_report_id",
+    "source_phase_run_id",
+    "created_at",
+    "mode",
+    "status",
+    "baseline_rule_version",
+    "shadow_model",
+    "input_refs",
+    "comparison",
+    "aggregate",
+    "read_only_consumers",
+    "rollback_plan",
+    "promotion_confirmation_gate",
+    "writes_fact_state",
+    "allowed_effects",
+    "forbidden_effects"
+  ],
+  "properties": {
+    "schema_version": { "const": "learning_weight_shadow_report.v1" },
+    "shadow_report_id": { "type": "string", "minLength": 1 },
+    "source_phase_run_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string" },
+    "mode": { "const": "shadow_only" },
+    "status": {
+      "type": "string",
+      "enum": ["shadow_ready_pending_learning_weight_promotion_confirmation"]
+    },
+    "baseline_rule_version": { "type": "string", "minLength": 1 },
+    "shadow_model": {
+      "type": "object",
+      "required": [
+        "model_id",
+        "training_enabled",
+        "writeback_enabled",
+        "promotion_enabled",
+        "training_data_status",
+        "calculation_mode"
+      ],
+      "properties": {
+        "training_enabled": { "const": false },
+        "writeback_enabled": { "const": false },
+        "promotion_enabled": { "const": false }
+      },
+      "additionalProperties": true
+    },
+    "input_refs": { "type": "object" },
+    "comparison": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "subject_ref",
+          "rule_weight_profile_id",
+          "rule_visual_weight",
+          "shadow_visual_weight",
+          "shadow_delta",
+          "applied_to_weight_profile",
+          "allowed_effect"
+        ],
+        "properties": {
+          "subject_ref": { "type": "string", "minLength": 1 },
+          "rule_weight_profile_id": { "type": "string", "minLength": 1 },
+          "rule_visual_weight": { "type": "number", "minimum": 0, "maximum": 1 },
+          "shadow_visual_weight": { "type": "number", "minimum": 0, "maximum": 1 },
+          "shadow_delta": { "type": "number", "minimum": -1, "maximum": 1 },
+          "applied_to_weight_profile": { "const": false },
+          "allowed_effect": { "const": "report_only" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "aggregate": { "type": "object" },
+    "read_only_consumers": {
+      "type": "object",
+      "required": [
+        "context_snapshot_uses_shadow",
+        "nebula_projection_uses_shadow",
+        "weight_profile_mutation_allowed"
+      ],
+      "properties": {
+        "context_snapshot_uses_shadow": { "const": false },
+        "nebula_projection_uses_shadow": { "const": false },
+        "weight_profile_mutation_allowed": { "const": false }
+      }
+    },
+    "rollback_plan": { "type": "object" },
+    "promotion_confirmation_gate": { "type": "object" },
+    "writes_fact_state": { "const": false },
+    "allowed_effects": { "type": "array", "items": { "type": "string" } },
+    "forbidden_effects": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

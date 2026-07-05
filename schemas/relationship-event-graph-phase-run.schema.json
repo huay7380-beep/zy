@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/relationship-event-graph-phase-run.schema.json",
+  "title": "RelationshipEventGraphPhaseRun",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "created_at",
+    "gate_decision",
+    "execution_scope",
+    "metrics",
+    "artifacts",
+    "phases",
+    "required_failures",
+    "warning_failures",
+    "continue_when",
+    "stop_or_adjust_when"
+  ],
+  "properties": {
+    "schema_version": { "const": "relationship_event_graph_phase_run.v1" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string" },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "relationship_event_graph_p9_ready",
+        "relationship_event_graph_p10_shadow_ready",
+        "relationship_event_graph_phase_run_failed"
+      ]
+    },
+    "execution_scope": {
+      "type": "object",
+      "required": [
+        "requested_phases",
+        "p10_learning_weight_implemented",
+        "real_execution_allowed",
+        "real_send_attempted",
+        "relationship_state_writes",
+        "identity_merges_applied",
+        "external_actions_executed"
+      ]
+    },
+    "metrics": { "type": "object" },
+    "artifacts": { "type": "object" },
+    "phases": { "type": "array", "items": { "type": "object" } },
+    "required_failures": { "type": "array", "items": { "type": "string" } },
+    "warning_failures": { "type": "array", "items": { "type": "string" } },
+    "continue_when": { "type": "array", "items": { "type": "string" } },
+    "stop_or_adjust_when": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

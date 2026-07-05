@@ -1,0 +1,498 @@
+{
+  "contract": "growth_sales_automation_branch.v1",
+  "branch_id": "growth_sales_automation_branch",
+  "label": "AI外贸增长销售自动化分支",
+  "status": "alignment_confirmed_draft_only",
+  "source_flowchart": "C:/Users/zhang/Documents/Tencent Files/3866346877/nt_qq/nt_data/Pic/2026-06/Ori/9feffc98d736fed0e00550e8d5d528c6.png",
+  "relationship_to_canonical_flow": {
+    "mode": "overlay_branch",
+    "preserve_canonical_flow": true,
+    "covered_stage_ids": [
+      "cbx_03_market_selection",
+      "cbx_07_acquisition",
+      "cbx_08_lead_capture",
+      "cbx_09_inquiry_reception",
+      "cbx_10_quote_engine",
+      "cbx_11_contract_payment",
+      "cbx_12_order_fulfillment",
+      "cbx_14_after_sales_retention",
+      "cbx_15_audit_learning"
+    ],
+    "notes": "This branch enriches growth, sales, quote and retention automation. It does not replace the 16-stage cross-border canonical flow."
+  },
+  "safety_policy": {
+    "default_mode": "draft_only",
+    "real_external_actions_allowed": false,
+    "software_actions_enabled_by_default": false,
+    "debug_before_enable": true,
+    "manual_enable_required_for": [
+      "external data platform login",
+      "customer contact enrichment",
+      "email send",
+      "WhatsApp send",
+      "LinkedIn message",
+      "real ad spend",
+      "quote send",
+      "CRM write to production",
+      "payment instruction",
+      "shipment booking",
+      "customs/tax/FX filing"
+    ]
+  },
+  "software_catalog": [
+    {
+      "software_id": "panjiva",
+      "label": "Panjiva",
+      "category": "market_and_customs_data",
+      "default_state": "disabled",
+      "allowed_mode": "manual_research_only",
+      "required_before_enable": ["account authorization", "data usage review", "read-only connector debug"]
+    },
+    {
+      "software_id": "importyeti",
+      "label": "ImportYeti",
+      "category": "market_and_customs_data",
+      "default_state": "disabled",
+      "allowed_mode": "manual_research_only",
+      "required_before_enable": ["data source review", "lead privacy review"]
+    },
+    {
+      "software_id": "importgenius",
+      "label": "ImportGenius",
+      "category": "market_and_customs_data",
+      "default_state": "disabled",
+      "allowed_mode": "manual_research_only",
+      "required_before_enable": ["account authorization", "data usage review", "read-only connector debug"]
+    },
+    {
+      "software_id": "un_comtrade",
+      "label": "UN Comtrade",
+      "category": "trade_statistics",
+      "default_state": "disabled",
+      "allowed_mode": "read_only_after_debug",
+      "required_before_enable": ["query scope confirmation", "HS code review"]
+    },
+    {
+      "software_id": "google_trends",
+      "label": "Google Trends",
+      "category": "demand_signal",
+      "default_state": "disabled",
+      "allowed_mode": "read_only_after_debug",
+      "required_before_enable": ["keyword set confirmation", "target market confirmation"]
+    },
+    {
+      "software_id": "amazon",
+      "label": "Amazon",
+      "category": "competitor_price_monitoring",
+      "default_state": "disabled",
+      "allowed_mode": "manual_research_only",
+      "required_before_enable": ["marketplace scope", "anti-scraping/legal review"]
+    },
+    {
+      "software_id": "alibaba",
+      "label": "Alibaba",
+      "category": "competitor_price_monitoring",
+      "default_state": "disabled",
+      "allowed_mode": "manual_research_only",
+      "required_before_enable": ["supplier comparison scope", "data usage review"]
+    },
+    {
+      "software_id": "linkedin",
+      "label": "LinkedIn",
+      "category": "lead_generation_and_outreach",
+      "default_state": "disabled",
+      "allowed_mode": "blocked_until_manual_enable",
+      "required_before_enable": ["account authorization", "ICP approval", "message approval", "rate-limit policy"]
+    },
+    {
+      "software_id": "canton_fair",
+      "label": "Canton Fair",
+      "category": "exhibition_leads",
+      "default_state": "disabled",
+      "allowed_mode": "manual_research_only",
+      "required_before_enable": ["source file import", "consent/source tracking"]
+    },
+    {
+      "software_id": "made_in_china",
+      "label": "Made-in-China",
+      "category": "b2b_platform",
+      "default_state": "disabled",
+      "allowed_mode": "blocked_until_manual_enable",
+      "required_before_enable": ["account authorization", "listing approval", "reply template approval"]
+    },
+    {
+      "software_id": "email",
+      "label": "Email",
+      "category": "customer_communication",
+      "default_state": "disabled",
+      "allowed_mode": "blocked_until_manual_enable",
+      "required_before_enable": ["domain/mailbox setup", "privacy/consent review", "controlled-send preflight"]
+    },
+    {
+      "software_id": "whatsapp",
+      "label": "WhatsApp",
+      "category": "customer_communication",
+      "default_state": "disabled",
+      "allowed_mode": "blocked_until_manual_enable",
+      "required_before_enable": ["business account authorization", "template approval", "controlled-send preflight"]
+    },
+    {
+      "software_id": "product_knowledge_rag",
+      "label": "Product Knowledge RAG",
+      "category": "ai_knowledge_base",
+      "default_state": "disabled",
+      "allowed_mode": "draft_only",
+      "required_before_enable": ["source catalogue approval", "claim/certification review", "RAG answer QA"]
+    },
+    {
+      "software_id": "crm",
+      "label": "CRM",
+      "category": "sales_operations",
+      "default_state": "disabled",
+      "allowed_mode": "blocked_until_manual_enable",
+      "required_before_enable": ["field mapping", "sandbox write test", "manual enable"]
+    }
+  ],
+  "phases": [
+    {
+      "phase_id": "gs_01_market_intelligence",
+      "label": "全球市场洞察",
+      "mapped_stage_ids": ["cbx_03_market_selection", "cbx_07_acquisition"],
+      "modules": [
+        {
+          "module_id": "demand_heat_analysis",
+          "label": "需求热力分析",
+          "coverage": "new_module",
+          "current_status": "planned_draft_only",
+          "mapped_stage_ids": ["cbx_03_market_selection"],
+          "inputs": ["target_product_family", "HS code candidate", "market keyword set", "manual market notes"],
+          "outputs": ["demand_heat_report.v1", "market_signal_source_log.v1"],
+          "hard_boundaries": ["No paid data query without account authorization.", "No target country recommendation without compliance status."],
+          "human_gates": ["confirm_target_markets", "hs_code_review"],
+          "software_refs": ["panjiva", "importyeti", "un_comtrade", "google_trends"],
+          "next_implementation": ["Create read-only market signal template.", "Add manual import CSV for external market data."]
+        },
+        {
+          "module_id": "competitor_price_monitoring",
+          "label": "竞对价格监控",
+          "coverage": "partial",
+          "current_status": "concept_covered_by_pricing_plan",
+          "mapped_stage_ids": ["cbx_03_market_selection", "cbx_06_catalog_pricing"],
+          "inputs": ["competitor product URL", "comparable SKU", "marketplace", "currency"],
+          "outputs": ["competitor_price_snapshot.v1", "price_position_note.v1"],
+          "hard_boundaries": ["Price data is reference only.", "No final quote from competitor price alone."],
+          "human_gates": ["approve_price_book"],
+          "software_refs": ["amazon", "alibaba"],
+          "next_implementation": ["Add competitor snapshot schema.", "Connect to price book as reference evidence only."]
+        },
+        {
+          "module_id": "blue_ocean_market_identification",
+          "label": "蓝海市场识别",
+          "coverage": "partial",
+          "current_status": "covered_by_market_priority_matrix",
+          "mapped_stage_ids": ["cbx_03_market_selection"],
+          "inputs": ["demand_heat_report.v1", "competitor_price_snapshot.v1", "certification readiness", "logistics constraints"],
+          "outputs": ["blue_ocean_candidate_matrix.v1", "market_priority_matrix.v1"],
+          "hard_boundaries": ["Mark low-evidence markets as test or unknown.", "Do not publish or spend budget from blue-ocean score alone."],
+          "human_gates": ["confirm_market_priority", "approve_ad_budget"],
+          "software_refs": ["un_comtrade", "google_trends"],
+          "next_implementation": ["Add market confidence score.", "Route low confidence to human review."]
+        }
+      ]
+    },
+    {
+      "phase_id": "gs_02_smart_acquisition",
+      "label": "智能获客",
+      "mapped_stage_ids": ["cbx_07_acquisition", "cbx_08_lead_capture"],
+      "modules": [
+        {
+          "module_id": "linkedin_ai_mining",
+          "label": "LinkedIn AI挖掘",
+          "coverage": "partial",
+          "current_status": "channel_strategy_exists_no_connector",
+          "mapped_stage_ids": ["cbx_07_acquisition", "cbx_08_lead_capture"],
+          "inputs": ["ICP", "target role", "target country", "approved search terms"],
+          "outputs": ["lead_candidate_list.v1", "source_snapshot.v1"],
+          "hard_boundaries": ["No scraping or messaging by default.", "Manual review before any contact enrichment."],
+          "human_gates": ["confirm_high_value_customer_identity", "approve_real_outreach_send"],
+          "software_refs": ["linkedin"],
+          "next_implementation": ["Draft LinkedIn search playbook.", "Add read-only manual CSV import for lead candidates."]
+        },
+        {
+          "module_id": "customs_data_mining",
+          "label": "海关数据挖掘",
+          "coverage": "new_module",
+          "current_status": "planned_manual_research_only",
+          "mapped_stage_ids": ["cbx_03_market_selection", "cbx_08_lead_capture"],
+          "inputs": ["HS code candidate", "country", "product keywords", "data source authorization"],
+          "outputs": ["importer_candidate_list.v1", "customs_data_source_log.v1"],
+          "hard_boundaries": ["Do not treat importer names as consented contacts.", "No outreach before privacy and source review."],
+          "human_gates": ["hs_code_review", "confirm_high_value_customer_identity"],
+          "software_refs": ["panjiva", "importgenius", "importyeti"],
+          "next_implementation": ["Add importer candidate schema.", "Add privacy/source gate."]
+        },
+        {
+          "module_id": "fair_platform_integration",
+          "label": "展会与平台整合",
+          "coverage": "partial",
+          "current_status": "covered_by_channel_strategy_no_runtime",
+          "mapped_stage_ids": ["cbx_07_acquisition", "cbx_08_lead_capture"],
+          "inputs": ["business card", "platform inquiry", "exhibition list", "source consent note"],
+          "outputs": ["lead_record.v1", "dedupe_candidate.v1", "lead_source_performance.v1"],
+          "hard_boundaries": ["Only import data with traceable source.", "No platform reply until template approval."],
+          "human_gates": ["confirm_high_value_customer_identity", "approve_real_outreach_send"],
+          "software_refs": ["canton_fair", "made_in_china", "crm"],
+          "next_implementation": ["Add source-channel intake map.", "Add lead dedupe report."]
+        },
+        {
+          "module_id": "lead_scoring_icp_frequency_volume",
+          "label": "AI线索评分",
+          "coverage": "covered",
+          "current_status": "lead_score_contract_exists",
+          "mapped_stage_ids": ["cbx_08_lead_capture"],
+          "inputs": ["lead_record.v1", "ICP", "company profile", "purchase signal", "volume signal"],
+          "outputs": ["lead_score.v1", "priority_queue.v1"],
+          "hard_boundaries": ["Score explains evidence and missing fields.", "High score does not authorize outreach."],
+          "human_gates": ["confirm_high_value_customer_identity"],
+          "software_refs": ["crm"],
+          "next_implementation": ["Add scoring weights for ICP, frequency and volume.", "Show score reasons in dashboard."]
+        },
+        {
+          "module_id": "personalized_multilingual_outreach",
+          "label": "个性化开发信与多语言草案",
+          "coverage": "partial",
+          "current_status": "draft_templates_exist_no_send",
+          "mapped_stage_ids": ["cbx_07_acquisition", "cbx_09_inquiry_reception"],
+          "inputs": ["lead_candidate_list.v1", "product page", "language", "approved value proposition"],
+          "outputs": ["outreach_draft_pack.v1", "human_review_pack.v1"],
+          "hard_boundaries": ["No cold send by default.", "No claims about certification, price or lead time without approved evidence."],
+          "human_gates": ["approve_real_outreach_send", "approve_first_external_reply"],
+          "software_refs": ["email", "whatsapp", "linkedin"],
+          "next_implementation": ["Add D1/D3/D7/D14 draft generator.", "Add controlled-send preflight."]
+        }
+      ]
+    },
+    {
+      "phase_id": "gs_03_ai_communication",
+      "label": "AI智能沟通",
+      "mapped_stage_ids": ["cbx_08_lead_capture", "cbx_09_inquiry_reception", "cbx_10_quote_engine"],
+      "modules": [
+        {
+          "module_id": "omnichannel_ai_reception",
+          "label": "多渠道AI接待",
+          "coverage": "partial",
+          "current_status": "site_chat_draft_exists",
+          "mapped_stage_ids": ["cbx_08_lead_capture", "cbx_09_inquiry_reception"],
+          "inputs": ["email_message", "chat_message", "WhatsApp message", "LinkedIn message", "site RFQ"],
+          "outputs": ["inquiry_intake.v1", "first_response_draft.v1", "chat_message_draft.v1"],
+          "hard_boundaries": ["AI drafts only until channel is manually enabled.", "Human can take over at any time."],
+          "human_gates": ["approve_first_external_reply"],
+          "software_refs": ["email", "whatsapp", "linkedin", "crm"],
+          "next_implementation": ["Unify channel message schema.", "Connect site chat draft to inquiry intake."]
+        },
+        {
+          "module_id": "inquiry_intent_detection",
+          "label": "询盘意图识别",
+          "coverage": "covered",
+          "current_status": "rfq_intake_schema_exists",
+          "mapped_stage_ids": ["cbx_09_inquiry_reception"],
+          "inputs": ["raw inquiry", "product text", "target country", "quantity"],
+          "outputs": ["inquiry_intent.v1", "missing_questions.v1", "priority_order.v1"],
+          "hard_boundaries": ["Ask missing questions before quote.", "Do not assume CAT6A/CAT8 need or certification."],
+          "human_gates": ["approve_first_external_reply"],
+          "software_refs": ["product_knowledge_rag"],
+          "next_implementation": ["Add intent classifier sample.", "Add priority queue to review pack."]
+        },
+        {
+          "module_id": "product_knowledge_rag",
+          "label": "产品知识库RAG",
+          "coverage": "partial",
+          "current_status": "product_catalog_exists_rag_not_built",
+          "mapped_stage_ids": ["cbx_05_content_assets", "cbx_09_inquiry_reception"],
+          "inputs": ["source catalog", "product master", "certificate matrix", "FAQ"],
+          "outputs": ["rag_answer_draft.v1", "rag_source_trace.v1"],
+          "hard_boundaries": ["Every answer cites internal source.", "Unverified claims are blocked."],
+          "human_gates": ["verify_product_claims", "approve_first_external_reply"],
+          "software_refs": ["product_knowledge_rag"],
+          "next_implementation": ["Build local knowledge index manifest.", "Add answer QA gate."]
+        },
+        {
+          "module_id": "followup_sequence_d1_d3_d7_d14",
+          "label": "AI跟进序列",
+          "coverage": "partial",
+          "current_status": "followup_timing_documented_no_scheduler",
+          "mapped_stage_ids": ["cbx_09_inquiry_reception", "cbx_10_quote_engine", "cbx_14_after_sales_retention"],
+          "inputs": ["inquiry status", "quote status", "last customer action", "customer timezone"],
+          "outputs": ["followup_plan.v1", "customer_message_draft.v1"],
+          "hard_boundaries": ["No scheduled external send by default.", "Frequency changes require review."],
+          "human_gates": ["approve_customer_message", "approve_quote_send"],
+          "software_refs": ["email", "whatsapp", "crm"],
+          "next_implementation": ["Generate local follow-up schedule.", "Add calendar/task export draft."]
+        }
+      ]
+    },
+    {
+      "phase_id": "gs_04_quote_and_deal",
+      "label": "智能报价与成单",
+      "mapped_stage_ids": ["cbx_06_catalog_pricing", "cbx_10_quote_engine", "cbx_11_contract_payment", "cbx_12_order_fulfillment"],
+      "modules": [
+        {
+          "module_id": "dynamic_quote_engine",
+          "label": "AI动态报价引擎",
+          "coverage": "covered",
+          "current_status": "quote_schema_and_gate_exist",
+          "mapped_stage_ids": ["cbx_06_catalog_pricing", "cbx_10_quote_engine"],
+          "inputs": ["price_book", "cost_model", "quantity", "currency", "freight estimate", "margin floor"],
+          "outputs": ["quote_draft.v1", "quote_gate_report.v1"],
+          "hard_boundaries": ["No real quote without approved cost and terms.", "Below-margin quote is blocked."],
+          "human_gates": ["approve_price", "approve_terms", "approve_quote_send"],
+          "software_refs": ["crm"],
+          "next_implementation": ["Add exchange rate and freight placeholders.", "Generate sample quote pack only."]
+        },
+        {
+          "module_id": "quote_document_generator",
+          "label": "自动生成报价单",
+          "coverage": "covered",
+          "current_status": "quotation_template_exists",
+          "mapped_stage_ids": ["cbx_10_quote_engine", "cbx_11_contract_payment"],
+          "inputs": ["quote_draft.v1", "customer account", "certification notes", "terms"],
+          "outputs": ["quotation_file_draft.v1", "quote_email_draft.v1"],
+          "hard_boundaries": ["Draft watermark until approval.", "No PI or contract send without manual confirmation."],
+          "human_gates": ["approve_quote_send", "approve_pi", "approve_contract"],
+          "software_refs": ["email", "crm"],
+          "next_implementation": ["Add PDF/HTML quote draft output.", "Add approval evidence record."]
+        },
+        {
+          "module_id": "win_probability_prediction",
+          "label": "成交概率预测",
+          "coverage": "new_module",
+          "current_status": "planned_after_data_accumulates",
+          "mapped_stage_ids": ["cbx_10_quote_engine", "cbx_15_audit_learning"],
+          "inputs": ["lead_score.v1", "quote history", "customer behavior", "deal stage", "price position"],
+          "outputs": ["win_probability_score.v1", "recommended_concession_strategy.v1"],
+          "hard_boundaries": ["Prediction is advisory only.", "No automatic discount or concession."],
+          "human_gates": ["approve_price", "approve_strategy_change"],
+          "software_refs": ["crm"],
+          "next_implementation": ["Start rule-based score before ML.", "Feed historical quote outcomes later."]
+        },
+        {
+          "module_id": "crm_stage_flow",
+          "label": "CRM自动流转",
+          "coverage": "partial",
+          "current_status": "status_flow_known_no_crm_write",
+          "mapped_stage_ids": ["cbx_08_lead_capture", "cbx_10_quote_engine", "cbx_11_contract_payment", "cbx_12_order_fulfillment"],
+          "inputs": ["lead_record.v1", "quote_draft.v1", "quote acceptance", "PO", "production status"],
+          "outputs": ["crm_stage_update_draft.v1", "order_lifecycle_event.v1"],
+          "hard_boundaries": ["CRM production write disabled by default.", "Stage transitions require source evidence."],
+          "human_gates": ["confirm_high_value_customer_identity", "approve_pi", "approve_production"],
+          "software_refs": ["crm"],
+          "next_implementation": ["Create CRM field map.", "Add sandbox write test before manual enable."]
+        }
+      ]
+    },
+    {
+      "phase_id": "gs_05_after_sales_retention",
+      "label": "售后与复购",
+      "mapped_stage_ids": ["cbx_12_order_fulfillment", "cbx_14_after_sales_retention", "cbx_15_audit_learning"],
+      "modules": [
+        {
+          "module_id": "order_tracking_visibility",
+          "label": "订单可视追踪",
+          "coverage": "partial",
+          "current_status": "fulfillment_outputs_exist_no_dashboard",
+          "mapped_stage_ids": ["cbx_12_order_fulfillment"],
+          "inputs": ["production status", "QC status", "packing status", "tracking number", "delivery proof"],
+          "outputs": ["order_tracking_view.v1", "customer_update_draft.v1"],
+          "hard_boundaries": ["No customer update send without approval.", "Tracking data must come from verified source."],
+          "human_gates": ["approve_qc_release", "approve_customer_message"],
+          "software_refs": ["crm", "email", "whatsapp"],
+          "next_implementation": ["Add order tracking view contract.", "Add customer update draft."]
+        },
+        {
+          "module_id": "reorder_prediction",
+          "label": "复购预测",
+          "coverage": "partial",
+          "current_status": "retention_trigger_plan_exists",
+          "mapped_stage_ids": ["cbx_14_after_sales_retention"],
+          "inputs": ["delivered order", "estimated consumption cycle", "product family", "last quote/order"],
+          "outputs": ["reorder_prediction.v1", "retention_trigger_plan.v1"],
+          "hard_boundaries": ["Prediction is a reminder only.", "No automatic customer message."],
+          "human_gates": ["approve_customer_message"],
+          "software_refs": ["crm"],
+          "next_implementation": ["Add 30/15/7 day reminder logic.", "Use order history once available."]
+        },
+        {
+          "module_id": "cross_sell_recommendation",
+          "label": "交叉销售推荐",
+          "coverage": "partial",
+          "current_status": "concept_covered_by_after_sales_plan",
+          "mapped_stage_ids": ["cbx_14_after_sales_retention", "cbx_15_audit_learning"],
+          "inputs": ["purchased product", "compatible product map", "customer segment", "stock/catalog availability"],
+          "outputs": ["cross_sell_recommendation.v1", "bundle_quote_draft.v1"],
+          "hard_boundaries": ["Do not recommend incompatible products.", "Bundle quote still goes through quote gate."],
+          "human_gates": ["approve_customer_message", "approve_quote_send"],
+          "software_refs": ["crm", "product_knowledge_rag"],
+          "next_implementation": ["Build compatibility map: Patch Panel -> Keystone.", "Route bundle quote through cbx_10."]
+        }
+      ]
+    }
+  ],
+  "implementation_path": [
+    {
+      "step_id": "p0_alignment",
+      "label": "确认流程图作为分支而非替换主流程",
+      "status": "done",
+      "outputs": ["docs/22-ai-foreign-trade-flowchart-alignment.md"],
+      "depends_on": []
+    },
+    {
+      "step_id": "p1_control_pack_dashboard",
+      "label": "生成分支控制包与网页查询面板",
+      "status": "done",
+      "outputs": ["runtime/growth-sales-automation/branch-control-pack.json", "runtime/growth-sales-automation/dashboard/index.html"],
+      "depends_on": ["p0_alignment"]
+    },
+    {
+      "step_id": "p2_local_draft_generators",
+      "label": "为市场洞察、线索评分、跟进序列、成交预测、复购推荐生成本地草案脚本",
+      "status": "pending_me",
+      "outputs": ["runtime/growth-sales-automation/drafts/**", "runtime/growth-sales-automation/review-packs/**"],
+      "depends_on": ["p1_control_pack_dashboard"]
+    },
+    {
+      "step_id": "p3_manual_data_import",
+      "label": "建立外部软件数据的手动导入模板",
+      "status": "pending_me",
+      "outputs": ["templates/growth-sales-data-import.template.json", "runtime/growth-sales-automation/intakes/**"],
+      "depends_on": ["p2_local_draft_generators"]
+    },
+    {
+      "step_id": "p4_read_only_connectors",
+      "label": "调试后接入只读连接器",
+      "status": "pending_user",
+      "outputs": ["connector_readiness_report.v1", "read_only_intake_report.v1"],
+      "depends_on": ["p3_manual_data_import"]
+    },
+    {
+      "step_id": "p5_controlled_enable",
+      "label": "人工开启受控执行能力",
+      "status": "blocked_real_action",
+      "outputs": ["controlled_execution_preflight.v1", "manual_enable_record.v1"],
+      "depends_on": ["p4_read_only_connectors"]
+    },
+    {
+      "step_id": "p6_event_learning_loop",
+      "label": "把分支结果写回主系统事件与审计学习",
+      "status": "pending_me",
+      "outputs": ["RawEvent", "SemanticEvent", "weekly_business_dashboard.v1"],
+      "depends_on": ["p2_local_draft_generators"]
+    }
+  ],
+  "sync_policy": {
+    "control_pack": "runtime/growth-sales-automation/branch-control-pack.json",
+    "dashboard": "runtime/growth-sales-automation/dashboard/index.html",
+    "nebula_projection": "os-particle-projection.json",
+    "status_overlay": "runtime/control-plane/status/current-status.json.branch_overlays",
+    "regenerate_command": "node cross-border-ecommerce-ai-route/scripts/build-growth-sales-automation-branch.mjs"
+  }
+}

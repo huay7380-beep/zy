@@ -1,0 +1,71 @@
+{
+  "schema_version": "skill_creation_gate.v1",
+  "gate_id": "example_skill_creation_gate",
+  "created_at": "",
+  "requested_goal": "",
+  "requested_by": "user_or_system",
+  "must_execute_capabilities": [],
+  "proposed_skill": {
+    "name": "",
+    "intended_trigger": "",
+    "expected_outputs": [],
+    "owner_module_or_project": ""
+  },
+  "required_search_sources": [
+    "available_session_skills",
+    "local_codex_skills",
+    "installed_plugins_and_connectors",
+    "tool_search_when_available",
+    "repository_modules_and_scripts",
+    "capability-upgrade-registry",
+    "local_tool_catalogs_such_as_cli_anything",
+    "reputable_external_software_or_open_source_projects_when_network_research_is_appropriate"
+  ],
+  "search_results": [
+    {
+      "source": "",
+      "query_or_path": "",
+      "candidate_name": "",
+      "candidate_type": "skill_or_plugin_or_connector_or_repo_module_or_software",
+      "candidate_location": "",
+      "fit_summary": "",
+      "decision": "reuse_or_adapt_or_reject_or_needs_more_research",
+      "reason": "",
+      "license_or_security_notes": ""
+    }
+  ],
+  "decision_order_result": {
+    "reuse_existing_skill_or_tool": "accepted_or_rejected_or_not_found",
+    "wrap_or_adapt_existing_capability": "accepted_or_rejected_or_not_applicable",
+    "install_or_request_existing_plugin_or_connector": "accepted_or_rejected_or_not_applicable",
+    "create_new_skill": "allowed_or_blocked"
+  },
+  "creation_allowed_when_checked": [
+    "no_existing_skill_or_software_satisfies_the_required_goal",
+    "existing_candidate_cannot_be_safely_adapted",
+    "adaptation_cost_or_risk_exceeds_a_small_purpose_built_skill",
+    "the_needed_workflow_is_private_project_specific_and_requires_local_instructions",
+    "the_gate_record_is_written_before_skill_files_are_created"
+  ],
+  "creation_blockers": [],
+  "final_decision": {
+    "decision": "reuse_or_adapt_or_create_new_skill_or_blocked",
+    "confidence": "low_or_medium_or_high",
+    "reason": "",
+    "approved_next_step": ""
+  },
+  "validation_plan": {
+    "dry_run_prompt": "",
+    "expected_behavior": [],
+    "required_files_if_created": [
+      "SKILL.md"
+    ],
+    "required_validation_commands": []
+  },
+  "human_confirmation": {
+    "required": true,
+    "status": "pending",
+    "confirmed_by": "",
+    "confirmed_at": ""
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.zhineng/cross-border-ecommerce/schemas/growth-sales-automation-branch.schema.json",
+  "title": "Growth Sales Automation Branch",
+  "type": "object",
+  "required": [
+    "contract",
+    "branch_id",
+    "relationship_to_canonical_flow",
+    "safety_policy",
+    "software_catalog",
+    "phases",
+    "implementation_path",
+    "sync_policy"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "contract": { "const": "growth_sales_automation_branch.v1" },
+    "branch_id": { "const": "growth_sales_automation_branch" },
+    "label": { "type": "string" },
+    "status": { "type": "string" },
+    "source_flowchart": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "summary": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "control_surface": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "writeback_policy": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "ai_implementation_plan": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "relationship_to_canonical_flow": {
+      "type": "object",
+      "required": ["mode", "preserve_canonical_flow", "covered_stage_ids"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "const": "overlay_branch" },
+        "preserve_canonical_flow": { "const": true },
+        "covered_stage_ids": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      }
+    },
+    "safety_policy": {
+      "type": "object",
+      "required": [
+        "default_mode",
+        "real_external_actions_allowed",
+        "software_actions_enabled_by_default",
+        "manual_enable_required_for"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "default_mode": { "const": "draft_only" },
+        "real_external_actions_allowed": { "const": false },
+        "software_actions_enabled_by_default": { "const": false },
+        "manual_enable_required_for": { "type": "array", "items": { "type": "string" } },
+        "debug_before_enable": { "type": "boolean" }
+      }
+    },
+    "software_catalog": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["software_id", "label", "category", "default_state", "allowed_mode"],
+        "additionalProperties": false,
+        "properties": {
+          "software_id": { "type": "string" },
+          "label": { "type": "string" },
+          "category": { "type": "string" },
+          "default_state": { "const": "disabled" },
+          "allowed_mode": { "enum": ["manual_research_only", "read_only_after_debug", "draft_only", "blocked_until_manual_enable"] },
+          "required_before_enable": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["phase_id", "label", "mapped_stage_ids", "modules"],
+        "additionalProperties": false,
+        "properties": {
+          "phase_id": { "type": "string" },
+          "label": { "type": "string" },
+          "mapped_stage_ids": { "type": "array", "items": { "type": "string" } },
+          "modules": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "module_id",
+                "label",
+                "coverage",
+                "current_status",
+                "inputs",
+                "outputs",
+                "hard_boundaries",
+                "human_gates",
+                "software_refs"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "module_id": { "type": "string" },
+                "label": { "type": "string" },
+                "coverage": { "enum": ["covered", "partial", "new_module"] },
+                "current_status": { "type": "string" },
+                "mapped_stage_ids": { "type": "array", "items": { "type": "string" } },
+                "inputs": { "type": "array", "items": { "type": "string" } },
+                "outputs": { "type": "array", "items": { "type": "string" } },
+                "hard_boundaries": { "type": "array", "items": { "type": "string" } },
+                "human_gates": { "type": "array", "items": { "type": "string" } },
+                "software_refs": { "type": "array", "items": { "type": "string" } },
+                "next_implementation": { "type": "array", "items": { "type": "string" } },
+                "ai_function_spec": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "implementation_path": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step_id", "label", "status", "outputs"],
+        "additionalProperties": false,
+        "properties": {
+          "step_id": { "type": "string" },
+          "label": { "type": "string" },
+          "status": { "enum": ["done", "pending_me", "pending_user", "pending_external", "blocked_real_action"] },
+          "outputs": { "type": "array", "items": { "type": "string" } },
+          "depends_on": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "sync_policy": {
+      "type": "object",
+      "required": ["control_pack", "dashboard", "nebula_projection", "status_overlay"],
+      "additionalProperties": false,
+      "properties": {
+        "control_pack": { "type": "string" },
+        "dashboard": { "type": "string" },
+        "nebula_projection": { "type": "string" },
+        "status_overlay": { "type": "string" },
+        "regenerate_command": { "type": "string" }
+      }
+    }
+  }
+}

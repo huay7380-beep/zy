@@ -1,0 +1,139 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "engineering_entry",
+  "display_name": "工程入口",
+  "owner": "process_tree",
+  "source_dir": ".",
+  "process_tree_node_id": "engineering_entry",
+  "registration_status": "process_tree_status:implemented_skeleton",
+  "gate": "system_patrol_coverage_gate",
+  "compass": "system_patrol.engineering_entry",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "validated",
+  "updated_at": "2026-07-01T11:39:08.902Z",
+  "ttl_ms": 604800000,
+  "change_session_id": "system_patrol_blocks_init_20260701",
+  "data_flow": {
+    "inputs": [
+      "README.md",
+      "package.json",
+      "docs/04-项目树与演进路线.md",
+      "packages/tool-runtime/README.md",
+      "scripts/run-tool-runtime-demo.mjs",
+      "sightflow-desktop-agent-main/src/renderer/src/zhineng-console/ZhinengConsole.tsx",
+      "sightflow-desktop-agent-main/src/renderer/src/zhineng-console/zhineng-console.css",
+      "scripts/write-gui-control-panel-report.mjs",
+      "schemas/frontend-display-contract.schema.json"
+    ],
+    "processing": [
+      "记录项目入口、运行命令、目录索引和演进路线。"
+    ],
+    "outputs": [
+      "project_index",
+      "run_commands",
+      "tool_runtime_demo",
+      "floating_dock_brief_status",
+      "chat_model_style_console_detail_log",
+      "gui_control_panel_report"
+    ],
+    "dependencies": [
+      "examples/system-process-tree.json",
+      "dialogue-system-patrol/registry/system-patrol-registry.json"
+    ]
+  },
+  "state": {
+    "headline": "工程入口: patrol block initialized from process tree status implemented_skeleton.",
+    "current_task": "Maintain summary-only patrol coverage and expose dialogue-readable state.",
+    "progress": 1,
+    "blockers": [],
+    "risks": [
+      "项目树需要在新增目录或新模块后同步维护。"
+    ],
+    "next": [
+      "Review this generated patrol block before treating it as a deep module interpretation.",
+      "Refresh validation with npm.cmd run system-patrol:validate.",
+      "Publish dialogue-readable output with npm.cmd run system-patrol:publish."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "examples/system-process-tree.json",
+      "README.md",
+      "package.json",
+      "docs/04-项目树与演进路线.md",
+      "packages/tool-runtime/README.md",
+      "scripts/run-tool-runtime-demo.mjs",
+      "sightflow-desktop-agent-main/src/renderer/src/zhineng-console/ZhinengConsole.tsx",
+      "sightflow-desktop-agent-main/src/renderer/src/zhineng-console/zhineng-console.css",
+      "scripts/write-gui-control-panel-report.mjs"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:publish",
+      "npm.cmd run process-tree:validate"
+    ],
+    "latest_validation_refs": [
+      "runtime/dialogue-system-patrol-validations/latest.json"
+    ]
+  },
+  "boundaries": {
+    "mode": "controlled_write_runtime_summary",
+    "allowed_reads": [
+      "examples/system-process-tree.json",
+      "README.md",
+      "package.json",
+      "docs/04-项目树与演进路线.md",
+      "packages/tool-runtime/README.md",
+      "scripts/run-tool-runtime-demo.mjs",
+      "sightflow-desktop-agent-main/src/renderer/src/zhineng-console/ZhinengConsole.tsx",
+      "sightflow-desktop-agent-main/src/renderer/src/zhineng-console/zhineng-console.css",
+      "scripts/write-gui-control-panel-report.mjs"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/engineering_entry.json",
+      "runtime/status-events/engineering_entry.json",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**"
+    ],
+    "forbidden_actions": [
+      "no business module rewrite from patrol initialization",
+      "no dialogue reader rewrite from patrol initialization",
+      "no external platform action",
+      "no raw private payload publication"
+    ],
+    "confirmation_gates": [
+      "user confirmation required before protocol migration",
+      "user confirmation required before process-tree and Obsidian registration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The module is represented in the process tree.",
+      "The patrol block was initialized from process-tree summary evidence.",
+      "Current status is summary-only and should cite source refs."
+    ],
+    "must_not_infer": [
+      "Do not infer raw runtime facts that are not present in evidence refs.",
+      "Do not treat generated patrol text as a full source-code review.",
+      "Do not claim external actions or business outcomes from patrol coverage alone."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "sha256:a40c980753b589cea22ce3ada9be5bc2b27d43cbf509666de0898a088517dae4",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-05T13:12:46.780Z",
+    "source_hash_refs": [
+      "README.md",
+      "docs/04-项目树与演进路线.md",
+      "examples/system-process-tree.json",
+      "package.json",
+      "packages/tool-runtime/README.md",
+      "scripts/run-tool-runtime-demo.mjs",
+      "scripts/write-gui-control-panel-report.mjs",
+      "sightflow-desktop-agent-main/src/renderer/src/zhineng-console/ZhinengConsole.tsx",
+      "sightflow-desktop-agent-main/src/renderer/src/zhineng-console/zhineng-console.css"
+    ],
+    "source_hash_excluded_refs": []
+  }
+}

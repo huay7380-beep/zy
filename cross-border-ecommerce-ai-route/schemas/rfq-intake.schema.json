@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.zhineng/cross-border-ecommerce/schemas/rfq-intake.schema.json",
+  "title": "Structured Cabling RFQ Intake",
+  "type": "object",
+  "required": ["contract", "rfq_id", "received_at", "source", "customer", "request", "routing", "human_gate"],
+  "additionalProperties": false,
+  "properties": {
+    "contract": { "const": "structured_cabling_rfq_intake.v1" },
+    "rfq_id": { "type": "string", "minLength": 1 },
+    "received_at": { "type": "string" },
+    "source": {
+      "type": "object",
+      "required": ["channel", "source_ref"],
+      "additionalProperties": false,
+      "properties": {
+        "channel": { "enum": ["site_rfq", "email", "whatsapp", "linkedin", "b2b_platform", "trade_show", "manual_import"] },
+        "source_ref": { "type": "string" },
+        "landing_page": { "type": "string" },
+        "utm_source": { "type": "string" },
+        "utm_medium": { "type": "string" },
+        "utm_campaign": { "type": "string" },
+        "consent_version": { "type": "string" }
+      }
+    },
+    "customer": {
+      "type": "object",
+      "required": ["company", "country", "contact_name", "email"],
+      "additionalProperties": false,
+      "properties": {
+        "company": { "type": "string" },
+        "country": { "type": "string" },
+        "contact_name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone_or_whatsapp": { "type": "string" },
+        "website": { "type": "string" },
+        "buyer_type": { "enum": ["installer", "distributor", "system_integrator", "project_contractor", "oem_private_label", "unknown"] },
+        "language": { "type": "string" },
+        "tax_or_import_id": { "type": "string" }
+      }
+    },
+    "request": {
+      "type": "object",
+      "required": ["products", "quantity", "message"],
+      "additionalProperties": false,
+      "properties": {
+        "products": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["family_id"],
+            "additionalProperties": false,
+            "properties": {
+              "family_id": {
+                "enum": [
+                  "keystone_jack",
+                  "patch_panel",
+                  "cable_management",
+                  "110_cabling_system",
+                  "face_plate",
+                  "surface_mount_box",
+                  "plug_patch_cord",
+                  "telecommunication_accessories",
+                  "power_distribution_unit",
+                  "unknown"
+                ]
+              },
+              "public_sku": { "type": "string" },
+              "factory_model": { "type": "string" },
+              "grade": { "type": "string" },
+              "shielding": { "type": "string" },
+              "ports": { "type": "string" },
+              "rack_unit": { "type": "string" },
+              "length": { "type": "string" },
+              "color": { "type": "string" },
+              "plug_country_type": { "type": "string" },
+              "rated_voltage": { "type": "string" },
+              "rated_current": { "type": "string" },
+              "customization": { "type": "string" },
+              "certificate_request": { "type": "string" }
+            }
+          }
+        },
+        "quantity": { "type": "string" },
+        "destination_country": { "type": "string" },
+        "destination_city_or_port": { "type": "string" },
+        "preferred_incoterms": { "type": "string" },
+        "target_price": { "type": "string" },
+        "target_delivery_date": { "type": "string" },
+        "sample_required": { "type": "boolean" },
+        "private_label_required": { "type": "boolean" },
+        "message": { "type": "string" },
+        "attachments": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "ai_extraction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lead_grade": { "enum": ["A", "B", "C", "D", "unknown"] },
+        "intent": { "enum": ["quote", "sample", "catalogue", "distributor", "oem_private_label", "technical_question", "unknown"] },
+        "missing_fields": { "type": "array", "items": { "type": "string" } },
+        "risk_flags": { "type": "array", "items": { "type": "string" } },
+        "recommended_next_action": { "type": "string" }
+      }
+    },
+    "routing": {
+      "type": "object",
+      "required": ["target_node", "owner_role", "next_action"],
+      "additionalProperties": false,
+      "properties": {
+        "target_node": { "enum": ["cbx_08_lead_capture", "cbx_09_inquiry_reception", "cbx_10_quote_engine"] },
+        "owner_role": { "type": "string" },
+        "next_action": { "type": "string" },
+        "next_touch_at": { "type": "string" }
+      }
+    },
+    "human_gate": {
+      "type": "object",
+      "required": ["first_reply_approved", "quote_allowed", "real_external_send_allowed"],
+      "additionalProperties": false,
+      "properties": {
+        "first_reply_approved": { "type": "boolean" },
+        "quote_allowed": { "type": "boolean" },
+        "real_external_send_allowed": { "const": false },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

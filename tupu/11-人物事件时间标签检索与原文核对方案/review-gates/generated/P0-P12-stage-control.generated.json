@@ -1,0 +1,947 @@
+{
+  "validator": "validate-p0-p12-stage-control.mjs",
+  "control_path": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\00-总目标与执行控制台.md",
+  "control_file_exists": true,
+  "global_checks": {
+    "has_goal_drift_rules": true,
+    "has_particle_drift_gate": true,
+    "has_particle_sync_checkpoint": true,
+    "has_full_roadmap": true,
+    "has_review_gate_block": true
+  },
+  "stage_checks": [
+    {
+      "phase": "P0",
+      "found": true,
+      "required_drift_terms": [
+        "ROOT",
+        "P1 审查门",
+        "3D 粒子"
+      ],
+      "missing_structural_blocks": [],
+      "missing_drift_terms": [],
+      "boundary_control_present": true,
+      "drift_verdict_present": true,
+      "particle_control_present": true,
+      "particle_checkpoint_present": true,
+      "validation_control_present": true,
+      "next_gate_control_present": true,
+      "hard_failures": [],
+      "status": "PASS"
+    },
+    {
+      "phase": "P1",
+      "found": true,
+      "required_drift_terms": [
+        "SourceArchive",
+        "EvidenceAnchor",
+        "runtime",
+        "ParticleProjectionEntry"
+      ],
+      "missing_structural_blocks": [],
+      "missing_drift_terms": [],
+      "boundary_control_present": true,
+      "drift_verdict_present": true,
+      "particle_control_present": true,
+      "particle_checkpoint_present": true,
+      "validation_control_present": true,
+      "next_gate_control_present": true,
+      "hard_failures": [],
+      "status": "PASS"
+    },
+    {
+      "phase": "P2",
+      "found": true,
+      "required_drift_terms": [
+        "fixture",
+        "EvidenceAnchor",
+        "公开案件"
+      ],
+      "missing_structural_blocks": [],
+      "missing_drift_terms": [],
+      "boundary_control_present": true,
+      "drift_verdict_present": true,
+      "particle_control_present": true,
+      "particle_checkpoint_present": true,
+      "validation_control_present": true,
+      "next_gate_control_present": true,
+      "hard_failures": [],
+      "status": "PASS"
+    },
+    {
+      "phase": "P3",
+      "found": true,
+      "required_drift_terms": [
+        "原文归档",
+        "SQLite",
+        "tombstone"
+      ],
+      "missing_structural_blocks": [],
+      "missing_drift_terms": [],
+      "boundary_control_present": true,
+      "drift_verdict_present": true,
+      "particle_control_present": true,
+      "particle_checkpoint_present": true,
+      "validation_control_present": true,
+      "next_gate_control_present": true,
+      "hard_failures": [],
+      "status": "PASS"
+    },
+    {
+      "phase": "P4",
+      "found": true,
+      "required_drift_terms": [
+        "检索命中",
+        "EvidenceAnchor",
+        "降级状态"
+      ],
+      "missing_structural_blocks": [],
+      "missing_drift_terms": [],
+      "boundary_control_present": true,
+      "drift_verdict_present": true,
+      "particle_control_present": true,
+      "particle_checkpoint_present": true,
+      "validation_control_present": true,
+      "next_gate_control_present": true,
+      "hard_failures": [],
+      "status": "PASS"
+    },
+    {
+      "phase": "P5",
+      "found": true,
+      "required_drift_terms": [
+        "ContextSnapshot",
+        "SummaryShard",
+        "确认包"
+      ],
+      "missing_structural_blocks": [],
+      "missing_drift_terms": [],
+      "boundary_control_present": true,
+      "drift_verdict_present": true,
+      "particle_control_present": true,
+      "particle_checkpoint_present": true,
+      "validation_control_present": true,
+      "next_gate_control_present": true,
+      "hard_failures": [],
+      "status": "PASS"
+    },
+    {
+      "phase": "P6",
+      "found": true,
+      "required_drift_terms": [
+        "visual_weight",
+        "V0-V5",
+        "学习权重"
+      ],
+      "missing_structural_blocks": [],
+      "missing_drift_terms": [],
+      "boundary_control_present": true,
+      "drift_verdict_present": true,
+      "particle_control_present": true,
+      "particle_checkpoint_present": true,
+      "validation_control_present": true,
+      "next_gate_control_present": true,
+      "hard_failures": [],
+      "status": "PASS"
+    },
+    {
+      "phase": "P7",
+      "found": true,
+      "required_drift_terms": [
+        "三维粒子 OS",
+        "NebulaProjection",
+        "object_ref"
+      ],
+      "missing_structural_blocks": [],
+      "missing_drift_terms": [],
+      "boundary_control_present": true,
+      "drift_verdict_present": true,
+      "particle_control_present": true,
+      "particle_checkpoint_present": true,
+      "validation_control_present": true,
+      "next_gate_control_present": true,
+      "hard_failures": [],
+      "status": "PASS"
+    },
+    {
+      "phase": "P8",
+      "found": true,
+      "required_drift_terms": [
+        "embedding",
+        "semantic_similarity",
+        "EvidenceAnchor"
+      ],
+      "missing_structural_blocks": [],
+      "missing_drift_terms": [],
+      "boundary_control_present": true,
+      "drift_verdict_present": true,
+      "particle_control_present": true,
+      "particle_checkpoint_present": true,
+      "validation_control_present": true,
+      "next_gate_control_present": true,
+      "hard_failures": [],
+      "status": "PASS"
+    },
+    {
+      "phase": "P9",
+      "found": true,
+      "required_drift_terms": [
+        "图数据库",
+        "图路径",
+        "SQLite"
+      ],
+      "missing_structural_blocks": [],
+      "missing_drift_terms": [],
+      "boundary_control_present": true,
+      "drift_verdict_present": true,
+      "particle_control_present": true,
+      "particle_checkpoint_present": true,
+      "validation_control_present": true,
+      "next_gate_control_present": true,
+      "hard_failures": [],
+      "status": "PASS"
+    },
+    {
+      "phase": "P10",
+      "found": true,
+      "required_drift_terms": [
+        "runtime",
+        "dry-run",
+        "fixture replay"
+      ],
+      "missing_structural_blocks": [],
+      "missing_drift_terms": [],
+      "boundary_control_present": true,
+      "drift_verdict_present": true,
+      "particle_control_present": true,
+      "particle_checkpoint_present": true,
+      "validation_control_present": true,
+      "next_gate_control_present": true,
+      "hard_failures": [],
+      "status": "PASS"
+    },
+    {
+      "phase": "P11",
+      "found": true,
+      "required_drift_terms": [
+        "真实信源",
+        "关系状态写入",
+        "删除"
+      ],
+      "missing_structural_blocks": [],
+      "missing_drift_terms": [],
+      "boundary_control_present": true,
+      "drift_verdict_present": true,
+      "particle_control_present": true,
+      "particle_checkpoint_present": true,
+      "validation_control_present": true,
+      "next_gate_control_present": true,
+      "hard_failures": [],
+      "status": "PASS"
+    },
+    {
+      "phase": "P12",
+      "found": true,
+      "required_drift_terms": [
+        "人际关系框架",
+        "摘要",
+        "确认门"
+      ],
+      "missing_structural_blocks": [],
+      "missing_drift_terms": [],
+      "boundary_control_present": true,
+      "drift_verdict_present": true,
+      "particle_control_present": true,
+      "particle_checkpoint_present": true,
+      "validation_control_present": true,
+      "next_gate_control_present": true,
+      "hard_failures": [],
+      "status": "PASS"
+    }
+  ],
+  "stage_contracts": [
+    {
+      "phase": "P0",
+      "goal": [
+        "确认 ROOT、AGENTS、00 总控、16 索引契约、3D 粒子同步规则已经闭合。"
+      ],
+      "inputs": [
+        "AGENTS.md",
+        "ROOT-图谱构建底层逻辑规则.md",
+        "00-总目标与执行控制台.md",
+        "16-ObjectRegistryAndIndexContracts.v1"
+      ],
+      "outputs": [
+        "current_state = ready_for_json_schema_after_user_confirmation",
+        "blocked_boundaries = preserved",
+        "projection_sync_rule = active",
+        "projection_sync_drift_gate = active"
+      ],
+      "boundaries": [
+        "不写 schema。",
+        "不建 runtime。",
+        "不接真实数据。",
+        "不生成真实建议动作。"
+      ],
+      "drift_checks": [
+        "若绕过 ROOT / AGENTS / 00 总控进入后续阶段，判定为目标偏离。",
+        "若未确认 P1 审查门却推进 P2，判定为目标偏离。",
+        "若把 3D 粒子同步当作 UI 事后补丁，判定为目标偏离。"
+      ],
+      "particle_sync_notes": [
+        "只确认粒子同步规则。",
+        "不构建真实 3D runtime。",
+        "本阶段输出 ParticleSyncCheckpoint，记录 projection_sync_rule 和 projection_sync_drift_gate 是否 active。"
+      ],
+      "validation": [
+        "ROOT / AGENTS / 00 总控 / README 引用闭合检查。",
+        "blocked boundary 保持检查。",
+        "projection_sync_rule = active 检查。",
+        "projection_sync_drift_gate = active 检查。"
+      ],
+      "next_gate": [
+        "用户确认进入 JSON Schema 草案。"
+      ]
+    },
+    {
+      "phase": "P1",
+      "goal": [
+        "把核心对象转为可验证 schema 草案。"
+      ],
+      "inputs": [
+        "EvidenceAnchor 方案",
+        "NestedEvent / ComplexEvent / ConflictSet 方案",
+        "TagRegistry / IndexContracts",
+        "ContextSnapshotRankingPolicy",
+        "ParticleProjection 最小字段"
+      ],
+      "outputs": [
+        "EvidenceAnchor.schema.json",
+        "SourceArchive.schema.json",
+        "RawEvent.schema.json",
+        "SemanticEvent.schema.json",
+        "NestedEvent.schema.json",
+        "ConflictSet.schema.json",
+        "TagRegistry.schema.json",
+        "TagAssignment.schema.json",
+        "PersonIndexEntry.schema.json",
+        "TimelineIndexEntry.schema.json",
+        "EventIndexEntry.schema.json",
+        "SourceIndexEntry.schema.json",
+        "TagIndexEntry.schema.json",
+        "FeatureIndexEntry.schema.json",
+        "EvidenceIndexEntry.schema.json",
+        "NarrativeIndexEntry.schema.json",
+        "RetrievalHitPackage.schema.json",
+        "ContextSnapshotRankingPolicy.schema.json",
+        "ContextSnapshotRankingDecision.schema.json",
+        "ContextSnapshot.schema.json",
+        "NarrativeContextSnapshot.schema.json",
+        "ParticleProjectionEntry.schema.json"
+      ],
+      "boundaries": [
+        "schema 只定义形状，不接真实数据。",
+        "schema 不写关系状态。",
+        "schema 不执行身份合并。",
+        "schema 不启用学习权重。",
+        "schema 不允许摘要替代 EvidenceAnchor。"
+      ],
+      "drift_checks": [
+        "若 schema 字段不能回到 SourceArchive / EvidenceAnchor，判定为目标偏离。",
+        "若 schema 固化真实 runtime、真实数据接入或外部动作，判定为目标偏离。",
+        "若 schema 允许 ParticleProjectionEntry 反写事实层，判定为目标偏离。"
+      ],
+      "particle_sync_notes": [
+        "同步定义 ParticleProjectionEntry.schema.json。",
+        "每个核心对象必须说明是否可投影为粒子。",
+        "不可投影对象必须说明原因。",
+        "本阶段输出 ParticleSyncCheckpoint，记录每个 schema 对象的 ProjectionDecision 和只读边界。"
+      ],
+      "validation": [
+        "schema 字段完整性检查。",
+        "required 字段检查。",
+        "EvidenceAnchor 引用检查。",
+        "blocked boundary 字段检查。",
+        "ParticleProjection object_ref 检查。",
+        "ProjectionDecision / ParticleSyncCheckpoint 覆盖检查。"
+      ],
+      "next_gate": [
+        "scripts/validate-p1-schema.mjs = PASS。",
+        "scripts/validate-p1-json-schema-contract.mjs = PASS_P1_JSON_SCHEMA_CONTRACT。",
+        "scripts/validate-p1-evidence-readback-coverage.mjs = PASS_EVIDENCE_READBACK_COVERAGE。",
+        "scripts/validate-full-roadmap-and-particle-sync.mjs = PASS。",
+        "scripts/validate-p0-p12-stage-control.mjs = PASS_P0_P12_STAGE_CONTROL。",
+        "scripts/validate-p0-p12-stage-control.mjs --self-test = PASS_P0_P12_STAGE_CONTROL_SELF_TEST。",
+        "scripts/validate-p1-review-decision.mjs = PASS_APPROVED_FOR_P2_FIXTURE_ONLY。",
+        "scripts/validate-current-phase-state.mjs = PASS_CURRENT_PHASE_STATE 且 p2_entry_allowed = true。",
+        "scripts/validate-p1-completion-audit.mjs = PASS_P1_COMPLETION_AUDIT_APPROVED_FOR_P2_FIXTURE_ONLY。",
+        "scripts/validate-p2-preparation-boundary.mjs = PASS_P2_PREPARATION_BOUNDARY_APPROVED_FOR_FIXTURE_ONLY。",
+        "scripts/validate-p2-fixture-contract.mjs = PASS_P2_FIXTURE_CONTRACT_READY。",
+        "scripts/validate-p2-fixture-contract.mjs --self-test = PASS_P2_FIXTURE_CONTRACT_SELF_TEST。",
+        "scripts/validate-generated-artifacts-freshness.mjs = PASS_GENERATED_ARTIFACTS_FRESHNESS。",
+        "scripts/write-p1-review-pack.mjs = PASS_P1_REVIEW_PACK_APPROVED_FOR_P2_FIXTURE_ONLY。",
+        "scripts/validate-p2-entry-gate.mjs --self-test = PASS_P2_ENTRY_GATE_SELF_TEST。",
+        "scripts/validate-p2-entry-gate.mjs = PASS_P2_ENTRY_APPROVED_FOR_FIXTURE_ONLY。",
+        "approval_transition_checks = all true。",
+        "p2_fixture_contract_output_checks = all true。",
+        "用户确认状态为 approved_for_p2_fixture_only 或 approved_with_minor_notes_for_p2_fixture_only。",
+        "runtime、真实数据、关系状态写入、身份合并、外部动作、学习权重转正仍保持 blocked。"
+      ]
+    },
+    {
+      "phase": "P2",
+      "goal": [
+        "用可控样例验证结构能否精简存储、准确检索、反读原文。"
+      ],
+      "inputs": [
+        "销售客户推进样例",
+        "恋爱关系维护样例",
+        "公开案件式多源复杂材料样例",
+        "JSON Schema 草案"
+      ],
+      "outputs": [
+        "source_archive fixtures",
+        "event fixtures",
+        "tag/index fixtures",
+        "evidence fixtures",
+        "context snapshot fixtures",
+        "particle projection fixtures",
+        "fixture_validation_report"
+      ],
+      "boundaries": [
+        "样例不代表真实数据。",
+        "公开案件样例只做结构压力测试，不做法律判断。",
+        "fixture 不触发真实外部动作。"
+      ],
+      "drift_checks": [
+        "若 fixture 被当作真实业务数据，判定为目标偏离。",
+        "若只验证摘要还原而不验证 EvidenceAnchor 原文反读，判定为目标偏离。",
+        "若公开案件样例进入法律结论或判决判断，判定为目标偏离。"
+      ],
+      "particle_sync_notes": [
+        "生成 mock NebulaProjection。",
+        "验证粒子能从人物、事件、标签、时间、证据、冲突、轨迹多路观察。",
+        "验证粒子点击路径能回到 EvidenceAnchor 和原文片段。",
+        "本阶段输出 ParticleSyncCheckpoint，记录 mock 粒子读回和禁止反写检查。"
+      ],
+      "validation": [
+        "标签反推事件原貌。",
+        "人物反推相关事件。",
+        "时间线反推事件序列。",
+        "证据锚点反读原文。",
+        "冲突说法不被去重吞掉。",
+        "粒子 object_ref 全部可解析。"
+      ],
+      "next_gate": [
+        "fixture_validation_report = PASS。",
+        "标签/人物/事件/时间/证据反推验证 = PASS。",
+        "mock ParticleProjection 反读验证 = PASS。",
+        "P2 暴露缺口已登记到 00 缺口池。",
+        "用户确认进入 P3 本地存储底座。"
+      ]
+    },
+    {
+      "phase": "P3",
+      "goal": [
+        "建立第一版事实源和结构化主库。"
+      ],
+      "inputs": [
+        "SourceArchive schema",
+        "EvidenceAnchor schema",
+        "IndexEntry schema",
+        "fixture 通过结果"
+      ],
+      "outputs": [
+        "本地原文归档目录",
+        "SQLite 主库",
+        "SQLite FTS5 全文索引",
+        "source manifest",
+        "schema migration",
+        "storage validation report"
+      ],
+      "boundaries": [
+        "文件归档和 SQLite 是主存储底座。",
+        "FTS5 是检索层。",
+        "不引入向量库作为事实源。",
+        "不引入图数据库作为事实源。"
+      ],
+      "drift_checks": [
+        "若原文归档被摘要、索引或向量替代，判定为目标偏离。",
+        "若 SQLite / 文件归档之外的投影层成为事实源，判定为目标偏离。",
+        "若用户删除源数据后没有 tombstone 或审计路径，判定为目标偏离。"
+      ],
+      "particle_sync_notes": [
+        "粒子投影从 SQLite 和文件归档生成。",
+        "粒子 projection_id 不作为事实主键。",
+        "粒子层损坏时必须能从 SQLite/文件归档重建。",
+        "本阶段输出 ParticleSyncCheckpoint，记录 SourceArchive / SQLite / EvidenceAnchor 到粒子的重建路径。"
+      ],
+      "validation": [
+        "原文 hash / offset 核对。",
+        "SQLite 外键或引用完整性检查。",
+        "FTS5 检索召回检查。",
+        "用户删除源数据后的 tombstone 检查。",
+        "粒子投影重建检查。"
+      ],
+      "next_gate": [
+        "storage validation report = PASS。",
+        "SourceArchive / EvidenceAnchor / SQLite / FTS5 之间可反读。",
+        "删除源数据后的 tombstone 行为通过验证。",
+        "用户确认进入 P4 多索引检索层。"
+      ]
+    },
+    {
+      "phase": "P4",
+      "goal": [
+        "实现按人物、事件、时间、来源、标签、特征、证据、叙事的快速召回。"
+      ],
+      "inputs": [
+        "SQLite 主库",
+        "FTS5 索引",
+        "PersonIndex / EventIndex / TimelineIndex / SourceIndex",
+        "TagIndex / FeatureIndex / EvidenceIndex / NarrativeIndex"
+      ],
+      "outputs": [
+        "QueryPlan",
+        "RetrievalHitPackage",
+        "EvidenceReadbackPlan",
+        "ranking input",
+        "retrieval validation report"
+      ],
+      "boundaries": [
+        "索引命中不是事实。",
+        "全文命中不是事实。",
+        "语义相似不是事实。",
+        "所有可回答结果必须回到 EvidenceAnchor。"
+      ],
+      "drift_checks": [
+        "若检索命中被当作事实结论，判定为目标偏离。",
+        "若标签、人物、时间、来源命中不能反读 EvidenceAnchor 证据，判定为目标偏离。",
+        "若 no_hit / orphaned / readback_failed 没有降级状态，判定为目标偏离。"
+      ],
+      "particle_sync_notes": [
+        "显示检索命中路径。",
+        "显示热路径命中和冷路径反读状态。",
+        "显示 no_hit、orphaned、readback_failed、needs_review。",
+        "本阶段输出 ParticleSyncCheckpoint，记录检索命中粒子、降级状态和 EvidenceAnchor 反读覆盖。"
+      ],
+      "validation": [
+        "标签检索能找回目标事件。",
+        "人物检索能找回相关事件和证据。",
+        "时间检索能找回阶段和事件序列。",
+        "来源检索能找回原文归档。",
+        "检索结果能组成 RetrievalHitPackage。"
+      ],
+      "next_gate": [
+        "retrieval validation report = PASS。",
+        "所有可回答命中均可回到 EvidenceAnchor。",
+        "no_hit / orphaned / readback_failed / needs_review 均有降级状态。",
+        "用户确认进入 P5 ContextSnapshot 组装层。"
+      ]
+    },
+    {
+      "phase": "P5",
+      "goal": [
+        "把检索结果压缩成模型可用上下文，同时保留证据路径。"
+      ],
+      "inputs": [
+        "RetrievalHitPackage",
+        "ContextSnapshotRankingPolicy",
+        "ContextSnapshotRankingDecision",
+        "EvidenceIndex",
+        "WeightProfile",
+        "confirmation_gate"
+      ],
+      "outputs": [
+        "ContextSnapshot",
+        "NarrativeContextSnapshot",
+        "summary shards",
+        "selected_hits",
+        "deferred_hits",
+        "excluded_hits",
+        "overflow_refs"
+      ],
+      "boundaries": [
+        "上下文不是事实源。",
+        "摘要不是事实源。",
+        "高风险内容必须冷读。",
+        "关系状态、身份合并、外部动作只进入确认包，不自动执行。"
+      ],
+      "drift_checks": [
+        "若 ContextSnapshot 或 SummaryShard 替代原文证据，判定为目标偏离。",
+        "若为了精简上下文删除冲突、反证或高风险证据路径，判定为目标偏离。",
+        "若确认包被写成已确认关系状态或真实动作，判定为目标偏离。"
+      ],
+      "particle_sync_notes": [
+        "显示 ContextParticle。",
+        "显示 selected/deferred/excluded/overflow 四类上下文命中。",
+        "显示高风险确认门。",
+        "本阶段输出 ParticleSyncCheckpoint，记录 ContextSnapshot 粒子与 selected/deferred/excluded/overflow_refs 的反读路径。"
+      ],
+      "validation": [
+        "内容精简度检查。",
+        "证据完整性检查。",
+        "高风险冷读检查。",
+        "冲突保留检查。",
+        "overflow_refs 可追溯检查。"
+      ],
+      "next_gate": [
+        "ContextSnapshot 组装验证 = PASS。",
+        "摘要未替代原文。",
+        "高风险内容冷读原文通过。",
+        "selected/deferred/excluded/overflow_refs 均可解释。",
+        "用户确认进入 P6 权重与确认门层。"
+      ]
+    },
+    {
+      "phase": "P6",
+      "goal": [
+        "建立规则权重、可视权重、确认门和后续学习权重边界。"
+      ],
+      "inputs": [
+        "事件状态",
+        "证据强度",
+        "目标域",
+        "关系框架",
+        "ContextSnapshot",
+        "用户确认记录"
+      ],
+      "outputs": [
+        "WeightProfile",
+        "visual_weight_level V0-V5",
+        "ConfirmationGate",
+        "confirmation_package",
+        "blocked_action_report"
+      ],
+      "boundaries": [
+        "权重不是真实性。",
+        "V5 不是已确认。",
+        "学习权重不得自动转正。",
+        "真实动作必须用户确认。"
+      ],
+      "drift_checks": [
+        "若 visual_weight / V0-V5 被解释为事实真实性，判定为目标偏离。",
+        "若 V5 被解释为已确认关系状态，判定为目标偏离。",
+        "若学习权重未经单独确认进入正式权重，判定为目标偏离。"
+      ],
+      "particle_sync_notes": [
+        "用大小、亮度、层级、边强度显示 visual_weight。",
+        "同时显示 confirmation_gate，防止把高权重误读成已确认。",
+        "本阶段输出 ParticleSyncCheckpoint，记录 V0-V5 可视权重、确认门和学习权重 pending 边界。"
+      ],
+      "validation": [
+        "V0-V5 分级边界检查。",
+        "高风险动作 blocked 检查。",
+        "学习权重 pending 检查。",
+        "确认包 evidence completeness 检查。"
+      ],
+      "next_gate": [
+        "WeightProfile / ConfirmationGate 验证 = PASS。",
+        "V0-V5 未被解释为真实性或确认状态。",
+        "学习权重仍为 pending，未转正。",
+        "用户确认进入 P7 只读粒子投影层。"
+      ]
+    },
+    {
+      "phase": "P7",
+      "goal": [
+        "从主库生成三维粒子 OS 可消费的只读投影。"
+      ],
+      "inputs": [
+        "SQLite 主库",
+        "SourceArchive manifest",
+        "EvidenceIndex",
+        "ContextSnapshot",
+        "WeightProfile",
+        "ConfirmationGate"
+      ],
+      "outputs": [
+        "NebulaProjection.json",
+        "ParticleProjectionEntry",
+        "ParticleEdge",
+        "ParticleVisualState",
+        "projection validation report"
+      ],
+      "boundaries": [
+        "只读。",
+        "可重建。",
+        "不写事实。",
+        "不执行动作。",
+        "不替代 EvidenceAnchor。",
+        "不替代 SQLite。"
+      ],
+      "drift_checks": [
+        "若三维粒子 OS 写入事实层、关系状态或身份合并，判定为目标偏离。",
+        "若 NebulaProjection 删除后不能从主库重建，判定为目标偏离。",
+        "若粒子没有 object_ref / EvidenceAnchor / SourceArchive 反读路径，判定为目标偏离。"
+      ],
+      "particle_sync_notes": [
+        "本阶段开始可以接入 3D 显示壳层。",
+        "显示壳层只读取 NebulaProjection。",
+        "用户在 3D 中的操作只能生成 visual_operation_intent，不得直接修改事实层。",
+        "本阶段输出 ParticleSyncCheckpoint，记录真实显示壳层仍只读、可重建、可反读。"
+      ],
+      "validation": [
+        "每个粒子 object_ref 可解析。",
+        "每个证据粒子可反读。",
+        "每个 blocked 状态可显示。",
+        "粒子数量增长时仍能分层显示。",
+        "投影删除后可从主库重建。"
+      ],
+      "next_gate": [
+        "projection validation report = PASS。",
+        "NebulaProjection 删除后可从主库重建。",
+        "3D 操作只产生 visual_operation_intent，不写事实。",
+        "用户确认是否进入 P8 语义向量 sidecar。",
+        "若用户确认跳过 P8/P9，可直接进入 P10 Runtime 封装。"
+      ]
+    },
+    {
+      "phase": "P8",
+      "goal": [
+        "在不破坏事实源的前提下增强模糊语义召回。"
+      ],
+      "inputs": [
+        "EvidenceAnchor snippets",
+        "SummaryShard",
+        "TagDefinition",
+        "ContextSnapshot"
+      ],
+      "outputs": [
+        "embedding index",
+        "semantic retrieval hits",
+        "semantic_hit -> EvidenceAnchor mapping"
+      ],
+      "boundaries": [
+        "向量库不是事实源。",
+        "语义相似不是事实。",
+        "向量命中必须回 EvidenceAnchor。",
+        "向量库可删除并重建。"
+      ],
+      "drift_checks": [
+        "若 embedding hit 被当作事实关系，判定为目标偏离。",
+        "若 semantic_similarity edge 未标注为 similarity，判定为目标偏离。",
+        "若向量结果不能映射回 EvidenceAnchor，判定为目标偏离。"
+      ],
+      "particle_sync_notes": [
+        "可显示 semantic_similarity edge。",
+        "该边必须标注为 similarity，不得标注为 fact_relation。",
+        "本阶段输出 ParticleSyncCheckpoint，记录 semantic_similarity edge 仅作为召回提示且能回到 EvidenceAnchor。"
+      ],
+      "validation": [
+        "semantic_hit evidence mapping 检查。",
+        "误召回降级检查。",
+        "向量索引重建检查。"
+      ],
+      "next_gate": [
+        "若启用：semantic retrieval validation = PASS。",
+        "若跳过：记录 skipped_by_user，不影响事实主链。",
+        "所有 semantic_hit 均能回到 EvidenceAnchor。",
+        "用户确认进入 P9 图数据库投影或跳过 P9 进入 P10。"
+      ]
+    },
+    {
+      "phase": "P9",
+      "goal": [
+        "当复杂关系遍历成为瓶颈时，建立可重建图数据库投影。"
+      ],
+      "inputs": [
+        "SQLite 主库",
+        "IndexEntry",
+        "ComplexEvent / ConflictSet",
+        "TrajectoryRecord / NarrativeIndex",
+        "ParticleProjection"
+      ],
+      "outputs": [
+        "graph projection",
+        "path query results",
+        "relationship traversal report"
+      ],
+      "boundaries": [
+        "图数据库不是事实源。",
+        "图路径不是因果证明。",
+        "图数据库只做遍历和投影加速。"
+      ],
+      "drift_checks": [
+        "若图数据库被提升为主事实库，判定为目标偏离。",
+        "若图路径被解释为因果证明或关系确认，判定为目标偏离。",
+        "若图投影不能由 SQLite 主库重建，判定为目标偏离。"
+      ],
+      "particle_sync_notes": [
+        "图数据库可以辅助粒子边布局。",
+        "布局结果不能写回事实层。",
+        "本阶段输出 ParticleSyncCheckpoint，记录图投影边、粒子布局和 SQLite 主库重建路径。"
+      ],
+      "validation": [
+        "图投影与 SQLite 主库一致性检查。",
+        "路径查询 EvidenceAnchor 覆盖检查。",
+        "图投影重建检查。"
+      ],
+      "next_gate": [
+        "若启用：graph projection validation = PASS。",
+        "若跳过：记录 skipped_by_user，不影响事实主链。",
+        "图数据库仍为可重建投影，不是事实源。",
+        "用户确认进入 P10 Runtime 封装。"
+      ]
+    },
+    {
+      "phase": "P10",
+      "goal": [
+        "把 schema、存储、检索、上下文、粒子投影封装为可运行模块。"
+      ],
+      "inputs": [
+        "通过验证的 schema",
+        "通过验证的 fixture",
+        "SQLite/FTS5 存储",
+        "ProjectionBuilder"
+      ],
+      "outputs": [
+        "graph runtime APIs",
+        "storage runtime",
+        "retrieval runtime",
+        "context assembly runtime",
+        "projection builder runtime",
+        "runtime validation report"
+      ],
+      "boundaries": [
+        "runtime 初期仍不接真实微信。",
+        "runtime 初期仍不执行真实外部动作。",
+        "runtime 必须有 dry-run。"
+      ],
+      "drift_checks": [
+        "若 runtime 未经 P11 确认接入真实信源，判定为目标偏离。",
+        "若 runtime 绕过 dry-run 或确认门执行外部动作，判定为目标偏离。",
+        "若 runtime 输出无法被 fixture replay / readback audit 复核，判定为目标偏离。"
+      ],
+      "particle_sync_notes": [
+        "ProjectionBuilder 作为 runtime 的只读输出模块。",
+        "三维粒子 OS 只消费 projection，不直接连主库写入。",
+        "本阶段输出 ParticleSyncCheckpoint，记录 runtime projection builder 的只读输出和 fixture replay 复核结果。"
+      ],
+      "validation": [
+        "单元测试。",
+        "fixture replay。",
+        "readback audit。",
+        "projection rebuild。",
+        "blocked boundary tests。"
+      ],
+      "next_gate": [
+        "runtime validation report = PASS。",
+        "dry-run 通过。",
+        "blocked boundary tests 通过。",
+        "用户明确确认进入 P11 真实信源受控接入。",
+        "未确认前不得接入真实微信或真实外部工具。"
+      ]
+    },
+    {
+      "phase": "P11",
+      "goal": [
+        "在确认门内接入真实信源，只做采集、归档、抽取和验证。"
+      ],
+      "inputs": [
+        "传感器数据",
+        "微信桌面/文件/API/OCR 等来源",
+        "用户授权范围",
+        "SourceArchive manifest"
+      ],
+      "outputs": [
+        "real SourceArchive",
+        "real RawEvent",
+        "real EvidenceAnchor",
+        "real extraction report",
+        "real projection report"
+      ],
+      "boundaries": [
+        "只读采集优先。",
+        "用户可删除源数据。",
+        "真实关系变更仍需确认。",
+        "真实外部动作仍 blocked。"
+      ],
+      "drift_checks": [
+        "若真实信源接入超出用户授权范围，判定为目标偏离。",
+        "若真实采集同时触发关系状态写入、身份合并或外部动作，判定为目标偏离。",
+        "若用户删除后投影仍泄露已删除原文内容，判定为目标偏离。"
+      ],
+      "particle_sync_notes": [
+        "真实来源粒子必须显示 source type、captured_at、readback_status、delete_state。",
+        "用户删除后粒子显示 tombstoned，不显示已删除原文内容。",
+        "本阶段输出 ParticleSyncCheckpoint，记录真实来源授权范围、删除墓碑和投影不泄露检查。"
+      ],
+      "validation": [
+        "真实源 hash 检查。",
+        "抽取准确性抽检。",
+        "原文反读检查。",
+        "删除墓碑检查。",
+        "投影不泄露已删除内容检查。"
+      ],
+      "next_gate": [
+        "real extraction report = PASS。",
+        "real projection report = PASS。",
+        "真实关系状态变更、身份合并、外部动作仍需单独确认。",
+        "用户确认进入 P12 完整闭环形态。"
+      ]
+    },
+    {
+      "phase": "P12",
+      "goal": [
+        "形成可持续接收、多源存储、结构化图谱、快速检索、上下文组装、只读三维观察、确认门控制、建议生成的完整系统。"
+      ],
+      "inputs": [
+        "多源真实数据",
+        "用户确认记录",
+        "关系框架",
+        "事件图谱",
+        "人际关系图谱",
+        "标签注册表",
+        "权重策略",
+        "粒子投影"
+      ],
+      "outputs": [
+        "可审计图谱记忆",
+        "可反读证据链",
+        "可检索上下文",
+        "可视化三维粒子 OS",
+        "确认包",
+        "建议草案",
+        "用户确认后的状态更新"
+      ],
+      "boundaries": [
+        "系统永远不自动修改用户定义的人际关系框架。",
+        "系统永远不让摘要替代原文。",
+        "系统永远不让 3D 粒子层成为事实源。",
+        "系统永远不绕过确认门执行真实动作。"
+      ],
+      "drift_checks": [
+        "若完整闭环自动修改用户定义的人际关系框架，判定为目标偏离。",
+        "若完整闭环让摘要、标签、权重或粒子显示替代原文证据，判定为目标偏离。",
+        "若任何高风险动作绕过确认门，判定为目标偏离。"
+      ],
+      "particle_sync_notes": [
+        "三维粒子 OS 成为总览、巡检、权重观察、冲突发现、确认门展示界面。",
+        "它仍是只读投影层。",
+        "任何写入都必须回到图谱 runtime 的确认流程。",
+        "本阶段持续输出 ParticleSyncCheckpoint，记录完整闭环的粒子可追溯、可重建和高风险确认门状态。"
+      ],
+      "validation": [
+        "端到端回放验证。",
+        "真实源删除与 tombstone 验证。",
+        "人物、事件、时间、标签、证据、叙事多路检索验证。",
+        "ContextSnapshot 组装解释性验证。",
+        "ParticleProjection 可追溯和可重建验证。",
+        "确认门阻断真实动作验证。"
+      ],
+      "next_gate": [
+        "任何新增模块必须同步 ROOT、00 总控、README、schema/runtime 文档和粒子投影说明。",
+        "任何高风险动作仍必须进入单独确认流程。",
+        "任何发现的缺口先进入 00 缺口池，不默认新增散文件。"
+      ]
+    }
+  ],
+  "write_mode": "write_report",
+  "validation_status": "PASS_P0_P12_STAGE_CONTROL",
+  "generated_at": "2026-07-05T13:55:23.490Z",
+  "output_files": [
+    "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\review-gates\\generated\\P0-P12-stage-control.generated.json",
+    "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\review-gates\\generated\\P0-P12-stage-control.generated.md"
+  ]
+}

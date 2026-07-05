@@ -1,0 +1,61 @@
+{
+  "contract": "pdp_site_wireframe.v1",
+  "version": "1.0.0",
+  "generated_at": "2026-07-04T00:00:00+08:00",
+  "standard_id": "pdp-layout-standard.v1",
+  "surface_type": "b2b_technical_product_page_and_pdf_spec_sheet",
+  "output_modes": ["web_pdp", "pdf_spec_sheet"],
+  "sections": [
+    {
+      "id": "product_identity",
+      "title": "Product Identity",
+      "required_inputs": ["product_id", "product_name", "category", "technical_grade", "application_scenarios"],
+      "outputs": ["hero_title", "model_marker", "category_tags", "primary_cta"]
+    },
+    {
+      "id": "product_visuals",
+      "title": "Product Visuals",
+      "required_inputs": ["primary_image", "detail_images"],
+      "outputs": ["complete_product_view", "detail_view", "application_or_installation_view"]
+    },
+    {
+      "id": "value_points",
+      "title": "Value Points",
+      "required_inputs": ["features_benefits", "distinctive_markers"],
+      "outputs": ["buyer_facing_bullets", "unique_value_labels"]
+    },
+    {
+      "id": "applications",
+      "title": "Applications",
+      "required_inputs": ["application_scenarios", "buyer_roles"],
+      "outputs": ["scenario_copy", "role_fit_copy"]
+    },
+    {
+      "id": "technical_specs",
+      "title": "Technical Specifications",
+      "required_inputs": ["electrical_specs", "mechanical_specs", "materials", "dimensions"],
+      "outputs": ["spec_tables", "dimension_area", "missing_spec_notes"]
+    },
+    {
+      "id": "standards_compliance",
+      "title": "Standards and Compliance",
+      "required_inputs": ["standards", "certifications", "test_reports", "claim_status"],
+      "outputs": ["compliance_table", "confirmation_status_labels", "blocked_claim_notes"]
+    },
+    {
+      "id": "part_numbers_packaging",
+      "title": "Part Numbers and Packaging",
+      "required_inputs": ["part_number_matrix", "colors", "packaging", "private_label_options"],
+      "outputs": ["sku_table", "packaging_table", "oem_odm_options"]
+    },
+    {
+      "id": "purchase_action",
+      "title": "Purchase Action",
+      "required_inputs": ["moq", "lead_time", "price_logic", "rfq_fields", "contact_channels"],
+      "outputs": ["rfq_prompt", "sample_prompt", "quantity_price_note", "human_review_notes"]
+    }
+  ],
+  "claim_status_values": ["confirmed", "source_listed", "needs_confirmation", "not_applicable", "blocked"],
+  "human_review_required": true,
+  "real_external_actions_executed": false
+}

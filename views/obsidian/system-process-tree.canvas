@@ -1,0 +1,990 @@
+{
+  "nodes": [
+    {
+      "id": "user_goal",
+      "type": "text",
+      "text": "## user_goal\n\n用户目标\n\nFunction: canonical process node",
+      "x": 0,
+      "y": 0,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "relationship_context",
+      "type": "text",
+      "text": "## relationship_context\n\n人物关系\n\nFunction: canonical process node",
+      "x": 360,
+      "y": 0,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "identity_resolution",
+      "type": "text",
+      "text": "## identity_resolution\n\nIdentity Resolution\n\nFunction: canonical process node",
+      "x": 720,
+      "y": 0,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "event_recording",
+      "type": "text",
+      "text": "## event_recording\n\n事件记录\n\nFunction: canonical process node",
+      "x": 1080,
+      "y": 0,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "decision_recommendation",
+      "type": "text",
+      "text": "## decision_recommendation\n\n决策建议\n\nFunction: canonical process node",
+      "x": 1440,
+      "y": 0,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "trigger_plan",
+      "type": "text",
+      "text": "## trigger_plan\n\n触发计划\n\nFunction: canonical process node",
+      "x": 1800,
+      "y": 0,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "platform_snapshot_validation",
+      "type": "text",
+      "text": "## platform_snapshot_validation\n\n平台快照验证\n\nFunction: canonical process node",
+      "x": 2160,
+      "y": 0,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "feedback",
+      "type": "text",
+      "text": "## feedback\n\n反馈\n\nFunction: canonical process node",
+      "x": 2520,
+      "y": 0,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "writeback",
+      "type": "text",
+      "text": "## writeback\n\n回写\n\nFunction: canonical process node",
+      "x": 2880,
+      "y": 0,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "index_rebuild",
+      "type": "text",
+      "text": "## index_rebuild\n\n索引\n\nFunction: canonical process node",
+      "x": 3240,
+      "y": 0,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "audit",
+      "type": "text",
+      "text": "## audit\n\n审计\n\nFunction: canonical process node",
+      "x": 3600,
+      "y": 0,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "layered_architecture",
+      "type": "text",
+      "text": "## layered_architecture\n\n分层架构\n\nFunction: registered process node",
+      "x": 0,
+      "y": -280,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "three_layer_audit",
+      "type": "text",
+      "text": "## three_layer_audit\n\n三层审计\n\nFunction: registered process node",
+      "x": 360,
+      "y": -280,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "engineering_entry",
+      "type": "text",
+      "text": "## engineering_entry\n\n工程入口\n\nFunction: registered process node",
+      "x": 720,
+      "y": -280,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "document_governance",
+      "type": "text",
+      "text": "## document_governance\n\n文档治理\n\nFunction: registered process node",
+      "x": 1080,
+      "y": -280,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "pt_001",
+      "type": "text",
+      "text": "### PT-001 closed\n\n策略小组 Agent 运行时意见不完整\n\nNode: decision_recommendation",
+      "x": 0,
+      "y": 320,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_002",
+      "type": "text",
+      "text": "### PT-002 closed\n\n流程树缺少统一运行脚本\n\nNode: audit",
+      "x": 360,
+      "y": 320,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_003",
+      "type": "text",
+      "text": "### PT-003 in_progress\n\n正式试点样本量不足\n\nNode: event_recording",
+      "x": 720,
+      "y": 320,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_004",
+      "type": "text",
+      "text": "### PT-004 in_progress\n\n自动化预览仍停留在 dry-run\n\nNode: trigger_plan",
+      "x": 1080,
+      "y": 320,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_005",
+      "type": "text",
+      "text": "### PT-005 closed\n\n状态笔记并发写入在 Windows 下可能 EPERM 或初始化竞态\n\nNode: audit",
+      "x": 1440,
+      "y": 320,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_006",
+      "type": "text",
+      "text": "### PT-006 closed\n\n决策上下文可能读取反馈后才产生的回写事件\n\nNode: decision_recommendation",
+      "x": 1800,
+      "y": 320,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_007",
+      "type": "text",
+      "text": "### PT-007 closed\n\n决策、触发和自动化试运行 ID 同毫秒可能碰撞\n\nNode: audit",
+      "x": 0,
+      "y": 550,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_008",
+      "type": "text",
+      "text": "### PT-008 closed\n\n闭环完成后缺少真实用户视角回顾和优化输出\n\nNode: audit",
+      "x": 360,
+      "y": 550,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_009",
+      "type": "text",
+      "text": "### PT-009 closed\n\n闭环结果缺少应用内可观察报告页\n\nNode: audit",
+      "x": 720,
+      "y": 550,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_010",
+      "type": "text",
+      "text": "### PT-010 closed\n\n用户专项测试意见没有结构化进入闭环和报告\n\nNode: feedback",
+      "x": 1080,
+      "y": 550,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_011",
+      "type": "text",
+      "text": "### PT-011 closed\n\n专项反馈指出推荐动作像模板、平台执行流程不清晰\n\nNode: decision_recommendation",
+      "x": 1440,
+      "y": 550,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_012",
+      "type": "text",
+      "text": "### PT-012 closed\n\nMVP 完成度缺少可重建证据审计入口\n\nNode: audit",
+      "x": 1800,
+      "y": 550,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_013",
+      "type": "text",
+      "text": "### PT-013 closed\n\nClosed-loop sample mapping contains historical mojibake text\n\nNode: document_governance",
+      "x": 0,
+      "y": 780,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_014",
+      "type": "text",
+      "text": "### PT-014 closed\n\nMissing unified MVP self-agent preflight entry\n\nNode: audit",
+      "x": 360,
+      "y": 780,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_015",
+      "type": "text",
+      "text": "### PT-015 closed\n\nProcess tree and Obsidian views lack automated sync validation\n\nNode: document_governance",
+      "x": 720,
+      "y": 780,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_016",
+      "type": "text",
+      "text": "### PT-016 closed\n\nMVP self-agent preflight did not automatically include process-tree sync validation\n\nNode: audit",
+      "x": 1080,
+      "y": 780,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_017",
+      "type": "text",
+      "text": "### PT-017 closed\n\nExisting stress test did not cover the full MVP closed loop\n\nNode: audit",
+      "x": 1440,
+      "y": 780,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_018",
+      "type": "text",
+      "text": "### PT-018 closed\n\nRunning MVP self-agent and MVP audit in parallel can read an in-progress state\n\nNode: audit",
+      "x": 1800,
+      "y": 780,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_019",
+      "type": "text",
+      "text": "### PT-019 closed\n\nMVP self-agent preflight did not automatically include MVP stress evidence\n\nNode: audit",
+      "x": 0,
+      "y": 1010,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_020",
+      "type": "text",
+      "text": "### PT-020 closed\n\nReal user goal review was only checked for presence, not completeness\n\nNode: audit",
+      "x": 360,
+      "y": 1010,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_021",
+      "type": "text",
+      "text": "### PT-021 closed\n\nMVP self-agent preflight listed external inputs but did not write a handoff input kit\n\nNode: audit",
+      "x": 720,
+      "y": 1010,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_022",
+      "type": "text",
+      "text": "### PT-022 closed\n\nExternal input kit had no aggregate readiness checker for prepared real files\n\nNode: audit",
+      "x": 1080,
+      "y": 1010,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_023",
+      "type": "text",
+      "text": "### PT-023 closed\n\nExternal input readiness could say files are missing but did not provide safe editable templates\n\nNode: audit",
+      "x": 1440,
+      "y": 1010,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_024",
+      "type": "text",
+      "text": "### PT-024 closed\n\nActive MVP goal had no dedicated requirement-by-requirement objective audit\n\nNode: audit",
+      "x": 1800,
+      "y": 1010,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_025",
+      "type": "text",
+      "text": "### PT-025 closed\n\nReady real materials had no guarded one-command MVP trial entry\n\nNode: audit",
+      "x": 0,
+      "y": 1240,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_026",
+      "type": "text",
+      "text": "### PT-026 closed\n\nReal-input trial lacked an app-readable report page for blocked and ready states\n\nNode: audit",
+      "x": 360,
+      "y": 1240,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_027",
+      "type": "text",
+      "text": "### PT-027 closed\n\nMVP evidence was split across many runtime folders without a unified current-status dashboard\n\nNode: audit",
+      "x": 720,
+      "y": 1240,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_028",
+      "type": "text",
+      "text": "### PT-028 open\n\nReal-time intimate relationship chat assistance lacks a dedicated scenario, boundary signals and low-latency strategy path\n\nNode: decision_recommendation",
+      "x": 1080,
+      "y": 1240,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_028a",
+      "type": "text",
+      "text": "### PT-028a closed\n\nIdentity-unconfirmed or unread romantic targets must not expose relationship-progression drafts\n\nNode: decision_recommendation",
+      "x": 1440,
+      "y": 1240,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_028b",
+      "type": "text",
+      "text": "### PT-028b closed\n\nRomantic expert matrix over-constrained active relationship progression into observation-only advice\n\nNode: decision_recommendation",
+      "x": 1800,
+      "y": 1240,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_028c",
+      "type": "text",
+      "text": "### PT-028c closed\n\nRomantic active progression needs psychological-comfort gradients and sentence-level intent instead of abrupt hard-push drafts\n\nNode: decision_recommendation",
+      "x": 0,
+      "y": 1470,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_029",
+      "type": "text",
+      "text": "### PT-029 open\n\nLocal information acquisition ports for WeChat, web pages and chat tools are not designed as a unified intake layer\n\nNode: event_recording",
+      "x": 360,
+      "y": 1470,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_030",
+      "type": "text",
+      "text": "### PT-030 closed\n\nSpecialist agent selection and scenario-specific expert roles are not explicit\n\nNode: decision_recommendation",
+      "x": 720,
+      "y": 1470,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt_031",
+      "type": "text",
+      "text": "### PT-031 open\n\nProactive process scheduling lacks real-world cadence, culture context, second interaction, invitation and meeting strategy loops\n\nNode: trigger_plan",
+      "x": 1080,
+      "y": 1470,
+      "width": 320,
+      "height": 190
+    },
+    {
+      "id": "pt028_event_feedback_acceptance_artifacts",
+      "type": "text",
+      "text": "## PT-028 event/feedback/acceptance artifacts\n\nCommands:\n- npm run pt028:event-stream\n- npm run pt028:event-stream -- --session=runtime/pt028-feedback-collection-sessions/latest.json\n- npm run pt028:event-stream -- --feedback=runtime/user-inputs/pt028-real-multi-window-operator-feedback.real.json\n- npm run pt028:feedback-decision-pack\n- npm run pt028:feedback-handoff:validate\n- npm run pt028:feedback-collection:session\n- npm run pt028:feedback-collection:coverage\n- npm run pt028:feedback-finalize -- --decision=<decision template path>\n- npm run pt028:feedback-confirm:preflight\n- npm run pt028:acceptance-status\n- npm run pt028:operator-handoff\n- npm run pt028:operator-handoff:refresh\n- npm run pt028:acceptance-chain\n\nStatus: low-latency event stream, collection-session multi-window prebinding, feedback-bound multi-window event stream mode, real feedback workpack, controlled confirmation gate, finalization runner, read-only acceptance status with event counts/input-mode/latency/prompt-only summary, operator acceptance handoff with pt028_operator_quickstart.v1, operator handoff refresh chain, feedback collection handoff/session/coverage summary and final acceptance chain are wired. Production remains blocked pending human-reviewed real operator feedback and final human special review.",
+      "x": 0,
+      "y": -560,
+      "width": 760,
+      "height": 460
+    },
+    {
+      "id": "process_tree_validation_governance",
+      "type": "text",
+      "text": "## Process Tree Sync Rule\n\nRun npm run process-tree:validate after changing docs/15, examples/system-process-tree.json, views/obsidian/system-process-tree.md or views/obsidian/system-process-tree.canvas.\n\nRequired views:\n- docs/15-????????????.md\n- examples/system-process-tree.json\n- views/obsidian/system-process-tree.md\n- views/obsidian/system-process-tree.canvas",
+      "x": 820,
+      "y": -560,
+      "width": 620,
+      "height": 330
+    },
+    {
+      "id": "pt028_real_feedback_finalizations",
+      "type": "text",
+      "text": "## runtime/pt028-real-feedback-finalizations/**\n\nOutput of npm run pt028:feedback-finalize.\n\nContains ordered finalization reports, per-step artifacts, target-write status, feedback-bound event stream, readiness, calibration, acceptance-chain evidence and no-send boundary.",
+      "x": 1480,
+      "y": -560,
+      "width": 520,
+      "height": 260
+    },
+    {
+      "id": "pt028_event_stream_health",
+      "type": "text",
+      "text": "## runtime/pt028-event-stream-health/**\n\nOutput of npm run pt028:event-stream:health.\n\nValidates the PT-028 GUI event stream low-latency subscription contract: IPC channel, 50ms dispatch, 50ms debounce, 1s fallback poll, event sequence integrity, window/target coverage, prompt-only and no-send boundary.",
+      "x": 2040,
+      "y": -560,
+      "width": 560,
+      "height": 280
+    },
+    {
+      "id": "pt028_final_special_review_pack",
+      "type": "text",
+      "text": "## runtime/pt028-final-special-review-packs/**\n\nOutput of npm run pt028:final-review-pack.\n\nConsolidates decision pack, collection session, event-stream health, finalization and acceptance-chain evidence into a human special review handoff. The handoff exposes event-stream input/count/latency/prompt-only summary, feedback collection session/coverage/confirmed-task summary and window-task-to-template-row mapping. Read-only; no send; no target write.",
+      "x": 2640,
+      "y": -560,
+      "width": 600,
+      "height": 300
+    },
+    {
+      "id": "pt028_human_review_decision_writer",
+      "type": "text",
+      "text": "## runtime/pt028-human-review-decisions/**\n\nOutput of npm run pt028:human-review-decision.\n\nWrites a fillable human review sheet JSON plus Markdown/HTML worksheet by default. The JSON sheet embeds pt028_human_review_sheet_guidance.v1 and pt028_human_review_evidence_summary.v1 for allowed decisions, response signals, row-ready rules, final-review rules, event-stream evidence, feedback-collection progress and the safe completion sequence. The writer report also exposes template_initial_diagnostics and pt028_human_review_fill_plan.v1 for the unfilled sheet so GUI or external filling tools can see target files, row-level fill tasks, missing confirmations, command order and row failures before human input. With --review --check-only, missing requested review files produce human_review_sheet_input_missing plus pt028_review_sheet_input_status.v1; present review files produce diagnostics without generating a decision. With --review, converts the filled sheet into a confirmation decision JSON for coverage, preflight and finalization. Read-only for the real feedback target; no send.",
+      "x": 3280,
+      "y": -560,
+      "width": 620,
+      "height": 300
+    },
+    {
+      "id": "pt028_acceptance_statuses",
+      "type": "text",
+      "text": "## runtime/pt028-acceptance-statuses/**\n\nOutput of npm run pt028:acceptance-status.\n\nRead-only current-status snapshots for low-latency event stream counts/input-mode/latency/prompt-only summary, feedback-bound multi-window evidence, real feedback readiness, real feedback calibration, final human review handoff with JSON/Markdown/HTML worksheet paths, handoff freshness against latest source artifacts, review-sheet initial diagnostics summary, pt028_human_review_fill_plan_summary.v1, pt028_operator_action_queue.v1 current/next blocking action ids, stable human input target paths, remaining blockers and next commands. It does not rerun the chain, write the real feedback target, approve review or send messages.",
+      "x": 3920,
+      "y": -560,
+      "width": 620,
+      "height": 320
+    },
+    {
+      "id": "pt028_operator_acceptance_handoffs",
+      "type": "text",
+      "text": "## runtime/pt028-operator-acceptance-handoffs/**\n\nOutput of npm run pt028:operator-handoff.\n\nRead-only final operator handoff from the latest acceptance status, final special review pack and human review sheet. It exposes pt028_operator_quickstart.v1 for the first action, open paths, target files and command order, passes through pt028_operator_action_queue.v1 for current/next blocking action ids, then summarizes event-stream evidence, feedback collection coverage, pending human actions and the no target-write/no-send/no-approval boundary.",
+      "x": 4580,
+      "y": -560,
+      "width": 620,
+      "height": 300
+    },
+    {
+      "id": "pt028_operator_handoff_refresh_chains",
+      "type": "text",
+      "text": "## runtime/pt028-operator-handoff-refresh-chains/**\n\nOutput of npm run pt028:operator-handoff:refresh.\n\nOrdered read-only refresh report. When a real feedback target exists, it runs feedback-bound acceptance-chain first, then refreshes final-review-pack, human-review-decision template/check-only, optional auto controlled preflight, acceptance-status and operator-handoff so human review materials bind the latest acceptance-chain evidence. It auto-detects runtime/user-inputs/pt028-human-review-decision.real.json for check-only, runs controlled preflight when that default review is ready, exposes pt028_controlled_preflight_summary.v1 with generated decision output and exact finalization command, exposes pt028_human_review_fill_plan_summary.v1 with target files, row-level fill state, unready rows and command order, exposes pt028_operator_action_queue_summary.v1 with current action, next blocking action and action statuses, and auto-detects runtime/user-inputs/pt028-real-multi-window-operator-feedback.real.json for read-only acceptance-chain validation when present. It exposes per-step gates, pt028_operator_quickstart_summary.v1, latest artifact refs, human input target status, review/feedback input detection and no finalization/no target-write/no-send boundary.",
+      "x": 5240,
+      "y": -560,
+      "width": 620,
+      "height": 300
+    },
+    {
+      "id": "pt028_operator_next_steps",
+      "type": "text",
+      "text": "## runtime/pt028-operator-next-steps/**\n\nOutput of npm run pt028:operator-next-step.\n\nRead-only current action report from the latest refresh chain, operator handoff and acceptance status. It exposes pt028_operator_next_step.v1, pt028_operator_objective_progress.v1 tracks and pt028_operator_completion_gate.v1 fail-on-incomplete evidence for low-latency event stream, real multi-window feedback calibration and final special acceptance, normalized queue, current action, next blocking action, target status, next commands and source artifact refs. npm run pt028:operator-next-step:check exits non-zero until the active goal is actually complete. Sightflow GUI reads this through zhineng:decision-state:get, keeps the dock short status as R*/O*/F* · current_turn_intent · gate_status, and shows Acceptance Gate blockers without writing runtime/user-inputs/** or sending messages. It does not run finalization, write runtime/user-inputs/**, approve review or send messages.",
+      "x": 5900,
+      "y": -560,
+      "width": 620,
+      "height": 300
+    },
+    {
+      "id": "capability_upgrade_registry",
+      "type": "text",
+      "text": "## capability_upgrade_registry\n\n能力升级候选库\n\nStores excellent external projects, patrols current execution modes, decomposes process IO, evaluates replacement value, and exposes source-only 3D OS projection.\n\nPaths:\n- capability-upgrade-registry/README.md\n- scripts/run-capability-upgrade-patrol.mjs\n- runtime/capability-upgrade-patrols/**\n- capability-upgrade-registry/os-particle-projection.json\n\nBoundary: read-only by default; real replacement requires IO consistency, latency/effectiveness evidence, analogical candidate confirmation, dry-run, tests, rollback, previous-requirements alignment and human confirmation.",
+      "x": 4600,
+      "y": -920,
+      "width": 620,
+      "height": 340
+    },
+    {
+      "id": "dialogue_system_patrol",
+      "type": "text",
+      "text": "## dialogue_system_patrol\n\nDialogue System Patrol\n\nStrict required patrol coverage, source_hash/source drift detection, scaffold entry, patrol-maintainer workflow, dialogue read index, status cards, status events, validation reports and source-only 3D projection.\n\nPaths:\n- dialogue-system-patrol/README.md\n- dialogue-system-patrol/docs/strict-governance-and-surfaces.md\n- dialogue-system-patrol/docs/module-onboarding-gate.md\n- dialogue-system-patrol/registry/system-patrol-registry.json\n- dialogue-system-patrol/blocks/**\n- dialogue-system-patrol/scripts/check-source-drift.mjs\n- dialogue-system-patrol/scripts/scaffold-module-patrol.mjs\n- dialogue-system-patrol/scripts/run-patrol-maintainer.mjs\n- dialogue-system-patrol/scripts/publish-patrol-surfaces.mjs\n- runtime/dialogue-system-patrol-source-drift/**\n- runtime/dialogue-system-patrol/dialogue-read-index.json\n- runtime/dialogue-system-patrol-maintenance/**\n- .githooks/pre-commit\n- .github/workflows/system-patrol.yml\n- dialogue-system-patrol/os-particle-projection.json\n\nBoundary: strict coverage and source drift validate patrol evidence only; no business-code rewrite; no dialogue reader source rewrite; 3D projection is source-only; no external action.",
+      "x": 5260,
+      "y": -1280,
+      "width": 620,
+      "height": 430
+    },
+    {
+      "id": "relationship_event_storage_plan",
+      "type": "text",
+      "text": "## Relationship/Event Graph Storage Plans\n\nFormal plan entry for relationship graph, event graph and data collection storage.\n\nPaths:\n- docs/18-relationship-event-graph-memory-plan.md\n- docs/19-source-collection-classified-storage-plan.md\n- docs/20-relationship-event-graph-phased-execution-plan.md\n\nRuntime:\n- npm run relationship-event:phases\n- npm run relationship-event:p10-shadow\n- npm run relationship-event:promotion-confirmation\n- npm run relationship-event:promotion-confirmation:validate\n- npm run relationship-event:validate\n\nScope: local SourceArchive, SourceEpisode, semantic NestedEvent, SummaryShard, rule-based WeightProfile, V0-V5 visual weight levels, P10 LearningWeightShadowReport, LearningWeightPromotionConfirmation and read-only NebulaProjection.\n\nBoundary: P10 is shadow-only; promotion confirmation opens review only; no direct relationship-state write, identity merge, learning-weight promotion, limited trial execution or external action.",
+      "x": 5920,
+      "y": -1280,
+      "width": 640,
+      "height": 360
+    },
+    {
+      "id": "intake_implementation_audit_artifacts",
+      "type": "text",
+      "text": "## Intake Implementation Audit Artifacts\n\nDocs/16 intake and controlled-send audit registration.\n\nScripts:\n- scripts/audit-intake-implementation.mjs\n- scripts/write-controlled-send-command-draft.mjs\n- scripts/confirm-controlled-send-command.mjs\n- scripts/write-controlled-send-operator-pack.mjs\n- scripts/check-controlled-send-command.mjs\n- scripts/complete-controlled-send-trial.mjs\n- scripts/write-controlled-send-handoff.mjs\n- scripts/write-docs16-implementation-status.mjs\n- scripts/bridge-tool-intake.mjs\n- scripts/init-source-adapter-kit.mjs\n- scripts/validate-source-adapter-conformance.mjs\n- scripts/init-controlled-send-material-kit.mjs\n- scripts/check-controlled-send-real-window-readiness.mjs\n\nRuntime:\n- runtime/tool-intake-bridges/**\n- runtime/controlled-send-material-kits/**\n- runtime/controlled-send-command-drafts/**\n- runtime/controlled-send-command-confirmations/**\n- runtime/controlled-send-operator-packs/**\n- runtime/controlled-send-real-window-readiness/**\n- runtime/desktop-controlled-send-command-preflights/**\n- runtime/desktop-controlled-send-handoffs/**\n- runtime/docs16-implementation-status/**\n- runtime/source-adapter-kits/**\n- runtime/source-adapter-conformance/**\n- runtime/desktop-controlled-send-completions/**\n- runtime/intake-implementation-audits/**",
+      "x": 6580,
+      "y": -1280,
+      "width": 640,
+      "height": 540
+    },
+    {
+      "id": "cloud_source_mirror",
+      "type": "text",
+      "text": "## cloud_source_mirror\n\nCloud Source Mirror\n\nGitHub remote: huay7380-beep/zy\n\nPaths:\n- docs/21-cloud-github-sync-plan.md\n- schemas/cloud-source-mirror.schema.json\n- scripts/write-cloud-sync-manifest.mjs\n- runtime/cloud-sync/**\n\nBoundary: source-first Git mirror; excludes third_party, node_modules, runtime outputs, tmp, .env files, model weights, binary libraries, generated logs and caches. Push requires authenticated command-line Git for huay7380-beep.",
+      "x": 7240,
+      "y": -1280,
+      "width": 640,
+      "height": 380
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_user_goal_relationship_context",
+      "fromNode": "user_goal",
+      "toNode": "relationship_context",
+      "label": "next"
+    },
+    {
+      "id": "edge_relationship_context_identity_resolution",
+      "fromNode": "relationship_context",
+      "toNode": "identity_resolution",
+      "label": "next"
+    },
+    {
+      "id": "edge_identity_resolution_event_recording",
+      "fromNode": "identity_resolution",
+      "toNode": "event_recording",
+      "label": "next"
+    },
+    {
+      "id": "edge_event_recording_decision_recommendation",
+      "fromNode": "event_recording",
+      "toNode": "decision_recommendation",
+      "label": "next"
+    },
+    {
+      "id": "edge_decision_recommendation_trigger_plan",
+      "fromNode": "decision_recommendation",
+      "toNode": "trigger_plan",
+      "label": "next"
+    },
+    {
+      "id": "edge_trigger_plan_platform_snapshot_validation",
+      "fromNode": "trigger_plan",
+      "toNode": "platform_snapshot_validation",
+      "label": "next"
+    },
+    {
+      "id": "edge_platform_snapshot_validation_feedback",
+      "fromNode": "platform_snapshot_validation",
+      "toNode": "feedback",
+      "label": "next"
+    },
+    {
+      "id": "edge_feedback_writeback",
+      "fromNode": "feedback",
+      "toNode": "writeback",
+      "label": "next"
+    },
+    {
+      "id": "edge_writeback_index_rebuild",
+      "fromNode": "writeback",
+      "toNode": "index_rebuild",
+      "label": "next"
+    },
+    {
+      "id": "edge_index_rebuild_audit",
+      "fromNode": "index_rebuild",
+      "toNode": "audit",
+      "label": "next"
+    },
+    {
+      "id": "edge_issue_pt_001",
+      "fromNode": "pt_001",
+      "toNode": "decision_recommendation",
+      "label": "PT-001"
+    },
+    {
+      "id": "edge_issue_pt_002",
+      "fromNode": "pt_002",
+      "toNode": "audit",
+      "label": "PT-002"
+    },
+    {
+      "id": "edge_issue_pt_003",
+      "fromNode": "pt_003",
+      "toNode": "event_recording",
+      "label": "PT-003"
+    },
+    {
+      "id": "edge_issue_pt_004",
+      "fromNode": "pt_004",
+      "toNode": "trigger_plan",
+      "label": "PT-004"
+    },
+    {
+      "id": "edge_issue_pt_005",
+      "fromNode": "pt_005",
+      "toNode": "audit",
+      "label": "PT-005"
+    },
+    {
+      "id": "edge_issue_pt_006",
+      "fromNode": "pt_006",
+      "toNode": "decision_recommendation",
+      "label": "PT-006"
+    },
+    {
+      "id": "edge_issue_pt_007",
+      "fromNode": "pt_007",
+      "toNode": "audit",
+      "label": "PT-007"
+    },
+    {
+      "id": "edge_issue_pt_008",
+      "fromNode": "pt_008",
+      "toNode": "audit",
+      "label": "PT-008"
+    },
+    {
+      "id": "edge_issue_pt_009",
+      "fromNode": "pt_009",
+      "toNode": "audit",
+      "label": "PT-009"
+    },
+    {
+      "id": "edge_issue_pt_010",
+      "fromNode": "pt_010",
+      "toNode": "feedback",
+      "label": "PT-010"
+    },
+    {
+      "id": "edge_issue_pt_011",
+      "fromNode": "pt_011",
+      "toNode": "decision_recommendation",
+      "label": "PT-011"
+    },
+    {
+      "id": "edge_issue_pt_012",
+      "fromNode": "pt_012",
+      "toNode": "audit",
+      "label": "PT-012"
+    },
+    {
+      "id": "edge_issue_pt_013",
+      "fromNode": "pt_013",
+      "toNode": "document_governance",
+      "label": "PT-013"
+    },
+    {
+      "id": "edge_issue_pt_014",
+      "fromNode": "pt_014",
+      "toNode": "audit",
+      "label": "PT-014"
+    },
+    {
+      "id": "edge_issue_pt_015",
+      "fromNode": "pt_015",
+      "toNode": "document_governance",
+      "label": "PT-015"
+    },
+    {
+      "id": "edge_issue_pt_016",
+      "fromNode": "pt_016",
+      "toNode": "audit",
+      "label": "PT-016"
+    },
+    {
+      "id": "edge_issue_pt_017",
+      "fromNode": "pt_017",
+      "toNode": "audit",
+      "label": "PT-017"
+    },
+    {
+      "id": "edge_issue_pt_018",
+      "fromNode": "pt_018",
+      "toNode": "audit",
+      "label": "PT-018"
+    },
+    {
+      "id": "edge_issue_pt_019",
+      "fromNode": "pt_019",
+      "toNode": "audit",
+      "label": "PT-019"
+    },
+    {
+      "id": "edge_issue_pt_020",
+      "fromNode": "pt_020",
+      "toNode": "audit",
+      "label": "PT-020"
+    },
+    {
+      "id": "edge_issue_pt_021",
+      "fromNode": "pt_021",
+      "toNode": "audit",
+      "label": "PT-021"
+    },
+    {
+      "id": "edge_issue_pt_022",
+      "fromNode": "pt_022",
+      "toNode": "audit",
+      "label": "PT-022"
+    },
+    {
+      "id": "edge_issue_pt_023",
+      "fromNode": "pt_023",
+      "toNode": "audit",
+      "label": "PT-023"
+    },
+    {
+      "id": "edge_issue_pt_024",
+      "fromNode": "pt_024",
+      "toNode": "audit",
+      "label": "PT-024"
+    },
+    {
+      "id": "edge_issue_pt_025",
+      "fromNode": "pt_025",
+      "toNode": "audit",
+      "label": "PT-025"
+    },
+    {
+      "id": "edge_issue_pt_026",
+      "fromNode": "pt_026",
+      "toNode": "audit",
+      "label": "PT-026"
+    },
+    {
+      "id": "edge_issue_pt_027",
+      "fromNode": "pt_027",
+      "toNode": "audit",
+      "label": "PT-027"
+    },
+    {
+      "id": "edge_issue_pt_028",
+      "fromNode": "pt_028",
+      "toNode": "decision_recommendation",
+      "label": "PT-028"
+    },
+    {
+      "id": "edge_issue_pt_028a",
+      "fromNode": "pt_028a",
+      "toNode": "decision_recommendation",
+      "label": "PT-028a"
+    },
+    {
+      "id": "edge_issue_pt_028b",
+      "fromNode": "pt_028b",
+      "toNode": "decision_recommendation",
+      "label": "PT-028b"
+    },
+    {
+      "id": "edge_issue_pt_028c",
+      "fromNode": "pt_028c",
+      "toNode": "decision_recommendation",
+      "label": "PT-028c"
+    },
+    {
+      "id": "edge_issue_pt_029",
+      "fromNode": "pt_029",
+      "toNode": "event_recording",
+      "label": "PT-029"
+    },
+    {
+      "id": "edge_issue_pt_030",
+      "fromNode": "pt_030",
+      "toNode": "decision_recommendation",
+      "label": "PT-030"
+    },
+    {
+      "id": "edge_issue_pt_031",
+      "fromNode": "pt_031",
+      "toNode": "trigger_plan",
+      "label": "PT-031"
+    },
+    {
+      "id": "edge_pt028_event_feedback_acceptance",
+      "fromNode": "pt028_event_feedback_acceptance_artifacts",
+      "toNode": "feedback",
+      "label": "PT-028 feedback path"
+    },
+    {
+      "id": "edge_process_tree_validation_governance",
+      "fromNode": "process_tree_validation_governance",
+      "toNode": "audit",
+      "label": "governance"
+    },
+    {
+      "id": "edge_pt028_real_feedback_finalizations",
+      "fromNode": "pt028_real_feedback_finalizations",
+      "toNode": "feedback",
+      "label": "finalization"
+    },
+    {
+      "id": "edge_pt028_event_stream_health",
+      "fromNode": "pt028_event_stream_health",
+      "toNode": "pt028_event_feedback_acceptance_artifacts",
+      "label": "low-latency health"
+    },
+    {
+      "id": "edge_pt028_final_special_review_pack",
+      "fromNode": "pt028_final_special_review_pack",
+      "toNode": "pt028_event_feedback_acceptance_artifacts",
+      "label": "human review pack"
+    },
+    {
+      "id": "edge_pt028_human_review_decision_writer",
+      "fromNode": "pt028_human_review_decision_writer",
+      "toNode": "pt028_event_feedback_acceptance_artifacts",
+      "label": "review sheet to decision"
+    },
+    {
+      "id": "edge_pt028_acceptance_statuses",
+      "fromNode": "pt028_acceptance_statuses",
+      "toNode": "pt028_event_feedback_acceptance_artifacts",
+      "label": "current acceptance status"
+    },
+    {
+      "id": "edge_pt028_operator_acceptance_handoffs",
+      "fromNode": "pt028_operator_acceptance_handoffs",
+      "toNode": "pt028_event_feedback_acceptance_artifacts",
+      "label": "operator handoff"
+    },
+    {
+      "id": "edge_pt028_operator_handoff_refresh_chains",
+      "fromNode": "pt028_operator_handoff_refresh_chains",
+      "toNode": "pt028_event_feedback_acceptance_artifacts",
+      "label": "handoff refresh chain"
+    },
+    {
+      "id": "edge_pt028_operator_next_steps",
+      "fromNode": "pt028_operator_next_steps",
+      "toNode": "pt028_event_feedback_acceptance_artifacts",
+      "label": "operator next step"
+    },
+    {
+      "id": "edge_capability_upgrade_registry_decision",
+      "fromNode": "capability_upgrade_registry",
+      "toNode": "decision_recommendation",
+      "label": "candidate replacement tradeoff"
+    },
+    {
+      "id": "edge_capability_upgrade_registry_audit",
+      "fromNode": "capability_upgrade_registry",
+      "toNode": "audit",
+      "label": "evaluation and replacement gates"
+    },
+    {
+      "id": "edge_capability_upgrade_registry_governance",
+      "fromNode": "capability_upgrade_registry",
+      "toNode": "process_tree_validation_governance",
+      "label": "registered artifacts"
+    },
+    {
+      "id": "edge_dialogue_system_patrol_governance",
+      "fromNode": "dialogue_system_patrol",
+      "fromSide": "left",
+      "toNode": "process_tree_validation_governance",
+      "toSide": "right",
+      "label": "registered status publisher"
+    },
+    {
+      "id": "edge_dialogue_system_patrol_audit",
+      "fromNode": "dialogue_system_patrol",
+      "fromSide": "left",
+      "toNode": "audit",
+      "toSide": "right",
+      "label": "status visibility evidence"
+    },
+    {
+      "id": "edge_dialogue_system_patrol_capability",
+      "fromNode": "dialogue_system_patrol",
+      "fromSide": "left",
+      "toNode": "capability_upgrade_registry",
+      "toSide": "right",
+      "label": "patrol evidence boundary"
+    },
+    {
+      "id": "edge_relationship_event_storage_plan_relationship_context",
+      "fromNode": "relationship_event_storage_plan",
+      "toNode": "relationship_context",
+      "label": "relationship graph boundary"
+    },
+    {
+      "id": "edge_relationship_event_storage_plan_event_recording",
+      "fromNode": "relationship_event_storage_plan",
+      "toNode": "event_recording",
+      "label": "source and event storage"
+    },
+    {
+      "id": "edge_relationship_event_storage_plan_governance",
+      "fromNode": "relationship_event_storage_plan",
+      "toNode": "process_tree_validation_governance",
+      "label": "registered formal plan"
+    },
+    {
+      "id": "edge_intake_implementation_audit_artifacts_event_recording",
+      "fromNode": "intake_implementation_audit_artifacts",
+      "toNode": "event_recording",
+      "label": "docs16 intake audit"
+    },
+    {
+      "id": "edge_intake_implementation_audit_artifacts_audit",
+      "fromNode": "intake_implementation_audit_artifacts",
+      "toNode": "audit",
+      "label": "audit artifacts"
+    },
+    {
+      "id": "edge_cloud_source_mirror_governance",
+      "fromNode": "cloud_source_mirror",
+      "toNode": "process_tree_validation_governance",
+      "label": "registered cloud mirror"
+    },
+    {
+      "id": "edge_cloud_source_mirror_audit",
+      "fromNode": "cloud_source_mirror",
+      "toNode": "audit",
+      "label": "mirror manifest evidence"
+    }
+  ]
+}

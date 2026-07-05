@@ -1,0 +1,6076 @@
+# 主体状态对话框实现进度 v1
+
+## 2026-07-01 Real Voice Retest Suite Command
+
+- Scope:
+  - Continue the active STT specialist goal.
+  - Add one operator-facing command that combines the existing real GUI/STT/TTS diagnostics after a manual voice test.
+  - Do not create a new STT or dialogue subsystem; this only orchestrates existing scripts.
+- Implemented:
+  - Added `scripts/run-status-dialogue-real-voice-retest-suite.cjs`.
+  - Added npm commands:
+    - `voice:runtime-flow:real-voice-suite`
+    - `voice:runtime-flow:wait-real-voice-suite`
+  - The suite runs:
+    - `diagnose-status-dialogue-real-stt-entry.cjs`
+    - `wait-status-dialogue-real-voice-turns.cjs`
+    - post-wait STT entry diagnosis
+    - `audit-status-dialogue-runtime-voice-flow.cjs`
+    - `validate-status-dialogue-remote-stt-config.cjs`
+    - `audit-status-dialogue-goal-completion.cjs`
+  - Output report schema:
+    - `status_dialogue_real_voice_retest_suite.v1`
+  - Output path:
+    - `runtime/verification-reports/status-dialogue-real-voice-retest-suite-*.json`
+- Current suite result:
+  - `npm.cmd run voice:runtime-flow:real-voice-suite` produced expected `result=incomplete`.
+  - Current `next_action=click_inside_right_bottom_gui_or_check_window_focus_overlay`.
+  - Summary:
+    - `pre_entry=no_graph_window_pointer_activity_after_marker`
+    - `turns=waiting_for_real_voice_turns`
+    - `post_entry=no_graph_window_pointer_activity_after_marker`
+    - `runtime_audit=warn`
+    - `remote_config_ready_for_probe=false`
+    - `remote_config_missing=["remote_stt_api_key"]`
+    - `goal_result=incomplete`
+    - `goal_summary={ proved: 7, partial: 1, missing: 0, total: 8 }`
+- How to use:
+  - If the user has already completed two fresh right-bottom GUI voice turns, run:
+    - `npm.cmd run voice:runtime-flow:real-voice-suite`
+  - If the user is about to test live, run the wait command first, then the user speaks two turns during the 180 second window:
+    - `npm.cmd run voice:runtime-flow:wait-real-voice-suite`
+- Verification:
+  - `node --check scripts/run-status-dialogue-real-voice-retest-suite.cjs` passed.
+  - `npm.cmd run voice:runtime-flow:real-voice-suite` produced the expected incomplete report.
+  - `npm.cmd run voice:runtime-flow:check-real-turns` produced `waiting_for_real_voice_turns`.
+  - `npm.cmd run voice:runtime-flow:diagnose-stt-entry` produced `no_graph_window_pointer_activity_after_marker`.
+  - `npm.cmd run voice:goal:audit` passed but remains incomplete.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:remote-stt-config:validate` passed with `ready_for_remote_probe=false`.
+  - `package.json` parsed successfully.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+- Boundary:
+  - The suite is read-only orchestration.
+  - It does not open the microphone by itself.
+  - It does not upload audio.
+  - It does not write the world model.
+  - It does not create `requirement_packet.v1`.
+  - It does not persist raw audio.
+
+## 2026-07-01 Real Voice Turn Evidence Tightening
+
+- Scope:
+  - Continue the active STT specialist goal.
+  - Tighten the repeated-input diagnosis so "two turns" means two complete STT-to-TTS turns, not two duplicated STT success events from one turn.
+  - Reuse the existing real voice turn wait script and goal audit; no new same-level module was created.
+- Implemented:
+  - Updated `scripts/wait-status-dialogue-real-voice-turns.cjs`.
+  - Updated `scripts/audit-status-dialogue-goal-completion.cjs`.
+  - Both now build `voice_turns` from each real `stt_start_requested` event and check each turn for:
+    - STT success;
+    - no STT failure;
+    - dialogue chain activity;
+    - TTS queue completion;
+    - no TTS failure;
+    - no slow TTS queue;
+    - Xiaozhi bridge events.
+  - Added turn-level metrics:
+    - `turn_count`
+    - `turn_stt_success_count`
+    - `turn_dialogue_chain_count`
+    - `turn_tts_queue_count`
+    - `turn_xiaozhi_event_count`
+  - Kept `stt_tts_pairs` as a compatibility evidence field, but completion proof now uses turn-level records.
+- Current diagnosis:
+  - `npm.cmd run voice:runtime-flow:check-real-turns` now reports:
+    - `result=waiting_for_real_voice_turns`
+    - `ready_for_operator_action=true`
+    - `turn_count=0`
+    - `next_action=run_two_real_voice_turns_in_right_bottom_gui`
+  - `npm.cmd run voice:runtime-flow:diagnose-stt-entry` still reports:
+    - `result=no_graph_window_pointer_activity_after_marker`
+    - `next_action=click_inside_right_bottom_gui_or_check_window_focus_overlay`
+  - This means the latest current-window symptom is still not reproduced inside the logged right-bottom Electron GUI chain after the latest runtime marker.
+- Verification:
+  - `node --check scripts/wait-status-dialogue-real-voice-turns.cjs` passed.
+  - `node --check scripts/audit-status-dialogue-goal-completion.cjs` passed.
+  - `npm.cmd run voice:runtime-flow:check-real-turns` produced the expected incomplete operator-ready report.
+  - `npm.cmd run voice:goal:audit` passed but remains incomplete:
+    - `proved=7`
+    - `partial=1`
+    - `missing=0`
+    - remaining partial: `cloud_stt_stability`
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:local-whisper-service:validate` passed.
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No remote audio upload.
+  - No raw audio persistence.
+  - No new same-level dialogue or STT module.
+- Next required real evidence:
+  - In the right-bottom Electron GUI, run two fresh voice turns.
+  - Then rerun:
+    - `npm.cmd run voice:runtime-flow:diagnose-stt-entry`
+    - `npm.cmd run voice:runtime-flow:check-real-turns`
+    - `npm.cmd run voice:goal:audit`
+  - If it still fails, the new `voice_turns` records should identify the exact turn boundary that broke.
+
+## 2026-07-01 Remote STT Env Key Path And Current Lag Recheck
+
+- Scope:
+  - Continue the active STT specialist goal.
+  - Answer the current lag and "many voice inputs, only one valid" question from runtime evidence.
+  - Do not narrow the goal and do not mark it complete.
+  - Do not upload audio or start a network probe while the remote STT API key is missing.
+- Implemented:
+  - `scripts/configure-status-dialogue-remote-stt.cjs` now auto-detects an API key from accepted environment variables when explicit `--api-key`, `--api-key-env`, and existing app settings do not provide one.
+  - Accepted key env vars:
+    - `SIGHTFLOW_STATUS_DIALOGUE_STT_API_KEY`
+    - `STATUS_DIALOGUE_STT_API_KEY`
+    - `OPENAI_STT_API_KEY`
+    - `OPENAI_API_KEY`
+  - `voice:cloud-stt-stability:validate` now checks this env-key auto-detection path.
+  - `voice:remote-stt-config:validate` now tells the operator to set one accepted API-key env var and rerun `voice:remote-stt-config:apply`.
+- Current environment check:
+  - No accepted remote STT API-key environment variable is currently present.
+  - App settings contain non-secret remote STT defaults:
+    - `enabled=true`
+    - `baseURL=https://api.openai.com/v1`
+    - `endpointPath=/audio/transcriptions`
+    - `model=whisper-1`
+    - `timeoutMs=30000`
+    - `apiKey=""`
+  - Therefore remote/cloud STT still cannot start a real configured probe.
+- Verification:
+  - `node --check scripts/configure-status-dialogue-remote-stt.cjs` passed.
+  - `node --check scripts/validate-status-dialogue-remote-stt-config.cjs` passed.
+  - `node --check scripts/validate-status-dialogue-cloud-stt-stability.cjs` passed.
+  - `npm.cmd run voice:remote-stt-config:prepare` passed in dry-run mode:
+    - `changed=false`
+    - `missing=["remote_stt_api_key"]`
+    - `accepted_api_key_env` lists all four accepted env vars.
+  - `npm.cmd run voice:remote-stt-config:validate` passed:
+    - `ready_for_remote_probe=false`
+    - `missing=["remote_stt_api_key"]`
+    - `next_action=set_remote_stt_api_key`
+  - `npm.cmd run voice:remote-stt-config:acceptance` passed as a gated preflight:
+    - `network_probe_started=false`
+    - `probe_skipped=true`
+    - `next_action=provide_remote_stt_api_key_then_run_acceptance`
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+  - `npm.cmd run voice:runtime-flow:wait-remote-stt` produced the expected failed gate:
+    - `result=failed`
+    - latest remote health shows `base_url_host=api.openai.com`, `endpoint_path=/audio/transcriptions`, `model=whisper-1`
+    - `configured=false`
+    - `next_action=configure_remote_stt_api_key`
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:goal:audit` passed but remains `result=incomplete`:
+    - `proved=7`
+    - `partial=1`
+    - `missing=0`
+    - remaining partial: `cloud_stt_stability`
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+- Current lag interpretation:
+  - The newest controlled continuous two-turn probe is fast:
+    - latest two-turn TTS queue `end_to_end_ms=798`
+    - `total_tts_ms=20`
+    - `total_playback_ms=324`
+  - The newest controlled TTS spoken-budget probe is fast:
+    - queue `end_to_end_ms=806`
+    - `total_tts_ms=30`
+    - `total_playback_ms=483`
+  - Historical real GUI TTS queues are still slow in the log:
+    - max `end_to_end_ms=52232`
+    - max `total_tts_ms=11625`
+    - max `total_playback_ms=22219`
+  - Runtime audit currently classifies the bottleneck as `historical_tts_queue_end_to_end_latency`, not a fresh current-window slow TTS sample.
+- Current repeated-input interpretation:
+  - Non-probe real GUI logs show two earlier valid voice turns:
+    - `2026-07-01T11:47:07Z`: STT reached local fallback and transcript handoff.
+    - `2026-07-01T12:51:32Z`: local STT recorded, detected voice, and produced a transcript.
+  - After the latest real GUI marker at `2026-07-01T14:10:19.949Z`, the log has no fresh non-probe `stt_button_click`, `stt_start_requested`, or user microphone STT turn.
+  - Therefore the latest "many inputs, only one valid" symptom is not yet reproduced as a Whisper transcription failure in the current window.
+  - The next diagnosis must distinguish:
+    - click not reaching the logged Electron GUI/STT control;
+    - click reaches STT but formal handler does not start;
+    - STT starts but TTS/dialogue queue delays the next turn;
+    - user tested in browser preview instead of the right-bottom Electron GUI.
+- Current target status:
+  - Seven goal items are proved.
+  - The remaining open item is still configured cloud/remote STT stability.
+  - Remote STT is source-ready and defaults-visible, but not configured because the API key is absent.
+- Next gate:
+  - Set one accepted API-key env var or fill `chatProvider.config.statusDialogueStt.apiKey`.
+  - Run:
+    - `npm.cmd run voice:remote-stt-config:apply`
+    - `npm.cmd run voice:remote-stt-config:acceptance`
+    - `npm.cmd run voice:runtime-flow:probe-remote-stt-configured`
+    - `npm.cmd run voice:goal:audit`
+  - For the repeated-input symptom, run two fresh turns in the right-bottom Electron GUI and then inspect for:
+    - `stt_button_pointer_down`
+    - `stt_button_click`
+    - `stt_start_requested`
+    - `local_stt_transcribe_result`
+    - `tts_queue_complete`
+
+## 2026-07-01 Remote STT Nonsecret Defaults Applied
+
+- Scope:
+  - Continue the active STT specialist goal.
+  - Move `cloud_stt_stability` closer to real remote API verification.
+  - Reuse the existing `status-dialogue-system` remote STT config path.
+  - Do not store a real API key in this pass.
+  - Do not upload audio or start a network probe while config is incomplete.
+- Implemented:
+  - Extended `scripts/configure-status-dialogue-remote-stt.cjs` with safe non-secret default application:
+    - `--apply-nonsecret-defaults`
+    - alias: `--allow-missing-secret`
+  - Added npm script:
+    - `voice:remote-stt-config:apply-defaults`
+  - Updated remote config preflight next action:
+    - empty config now points to `apply_nonsecret_defaults_then_set_remote_stt_api_key`;
+    - after defaults are written it points to `set_remote_stt_api_key`.
+  - Updated remote STT acceptance next action:
+    - when only the key is missing it now reports `provide_remote_stt_api_key_then_run_acceptance`.
+  - Extended `voice:cloud-stt-stability:validate` so the safe defaults command is part of the verification gate.
+- Local settings changed:
+  - Wrote non-secret defaults to:
+    - `C:\Users\zhang\AppData\Roaming\zhineng-social-assistant-desktop\settings.json`
+  - Backup created:
+    - `C:\Users\zhang\AppData\Roaming\zhineng-social-assistant-desktop\settings.json.status-dialogue-stt-backup-1782915787918.bak`
+  - Written values:
+    - `enabled=true`
+    - `baseURL=https://api.openai.com/v1`
+    - `endpointPath=/audio/transcriptions`
+    - `model=whisper-1`
+    - `timeoutMs=30000`
+    - `apiKey=""`
+- Safety boundary:
+  - Runtime remote STT remains disabled until an API key exists.
+  - Main process still requires `enabled && apiKey && baseURL` before remote upload can run.
+  - `voice:remote-stt-config:acceptance` skipped the network probe because `ready_for_remote_probe=false`.
+- Verification:
+  - `node --check scripts/configure-status-dialogue-remote-stt.cjs` passed.
+  - `node --check scripts/validate-status-dialogue-remote-stt-config.cjs` passed.
+  - `node --check scripts/audit-status-dialogue-goal-completion.cjs` passed.
+  - `node --check scripts/run-status-dialogue-remote-stt-acceptance.cjs` passed.
+  - `node --check scripts/validate-status-dialogue-cloud-stt-stability.cjs` passed.
+  - `npm.cmd run voice:remote-stt-config:apply-defaults` passed and changed settings.
+  - `npm.cmd run voice:remote-stt-config:validate` passed:
+    - `ready_for_remote_probe=false`
+    - `missing=["remote_stt_api_key"]`
+    - `base_url_host=api.openai.com`
+    - `model=whisper-1`
+  - `npm.cmd run voice:remote-stt-config:acceptance` passed as gated preflight:
+    - `network_probe_started=false`
+    - `probe_skipped=true`
+    - `next_action=provide_remote_stt_api_key_then_run_acceptance`
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+  - `npm.cmd run voice:goal:audit` passed but remains `result=incomplete`:
+    - `proved=7`
+    - `partial=1`
+    - `missing=0`
+    - remaining partial: `cloud_stt_stability`
+  - `npm.cmd run typecheck` passed.
+- Current state:
+  - Remote STT source and defaults are ready.
+  - Remote STT API key is the only config preflight gap.
+  - Real remote STT health/probe and real GUI remote microphone sample are still unproved.
+- Next gate:
+  - Provide an API key through one of:
+    - `SIGHTFLOW_STATUS_DIALOGUE_STT_API_KEY`
+    - `STATUS_DIALOGUE_STT_API_KEY`
+    - `OPENAI_STT_API_KEY`
+    - `OPENAI_API_KEY`
+    - or `chatProvider.config.statusDialogueStt.apiKey`
+  - Then run:
+    - `npm.cmd run voice:remote-stt-config:validate`
+    - `npm.cmd run voice:remote-stt-config:acceptance`
+    - `npm.cmd run voice:runtime-flow:probe-remote-stt-configured`
+    - `npm.cmd run voice:goal:audit`
+
+## 2026-07-01 Remote STT Runtime Visibility After Defaults
+
+- Scope:
+  - Verify that the non-secret remote STT defaults written to app settings are visible to a newly launched Electron runtime path.
+  - Do not upload audio.
+  - Do not treat local fallback as cloud/remote STT stability.
+- Evidence:
+  - `npm.cmd run voice:runtime-flow:probe-remote-stt-unavailable` passed.
+    - It is a controlled unavailable probe, so it intentionally uses controlled fallback evidence and is not the right proof for real configured host visibility.
+  - `npm.cmd run voice:runtime-flow:probe-remote-stt-configured` returned non-zero because a successful remote transcript is impossible without an API key.
+  - The failed configured probe still produced the needed runtime visibility evidence:
+    - latest `remote_stt_health_check`:
+      - `base_url_host=api.openai.com`
+      - `endpoint_path=/audio/transcriptions`
+      - `model=whisper-1`
+      - `configured=false`
+      - `fallback_reason=remote_stt_not_configured`
+      - `success=false`
+    - no `remote_stt_start` or `remote_stt_complete` happened in that runtime probe window.
+    - no remote audio upload occurred.
+  - `npm.cmd run voice:runtime-flow:wait-remote-stt` now reports:
+    - `result=failed`
+    - `next_action=configure_remote_stt_api_key`
+    - latest health check includes `base_url_host=api.openai.com`.
+- Implemented:
+  - Enhanced `scripts/wait-status-dialogue-remote-stt.cjs` compact output with:
+    - `base_url_host`
+    - `endpoint_path`
+    - `model`
+    - `boundary`
+  - Updated wait report next action:
+    - if remote defaults are visible but the probe is `remote_stt_not_configured`, report `configure_remote_stt_api_key`;
+    - otherwise keep `configure_remote_stt_api_key_base_url_and_model`.
+  - Added this wait-report visibility to `voice:cloud-stt-stability:validate`.
+- Verification:
+  - `node --check scripts/wait-status-dialogue-remote-stt.cjs` passed.
+  - `node --check scripts/validate-status-dialogue-cloud-stt-stability.cjs` passed.
+  - `npm.cmd run voice:runtime-flow:wait-remote-stt` produced the expected failed gate with `next_action=configure_remote_stt_api_key`.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+- Current interpretation:
+  - Settings defaults are now visible to a new runtime probe.
+  - The remaining remote STT config blocker is specifically the API key, not base URL, endpoint, or model.
+  - The active goal remains incomplete until a configured remote STT probe returns a real transcript and `voice:goal:audit` no longer marks `cloud_stt_stability` partial.
+
+## 2026-07-01 Goal Audit Visibility And Remote STT Gate Confirmation
+
+- Scope:
+  - Continue the active STT specialist goal without shrinking it.
+  - Do not change STT/TTS runtime behavior in this pass.
+  - Strengthen verification visibility for cloud STT, input queue, continuous listening, TTS-during-input, local Whisper, dialogue state, and Xiaozhi-style logic.
+  - Keep boundaries unchanged: no world model write, no `requirement_packet.v1`, no raw audio persistence, no remote audio upload without ready config.
+- Implemented:
+  - `voice:runtime-flow:audit` now checks the Xiaozhi-style required event set through `tts_start` and `tts_stop`, matching the stricter `voice:goal:audit` requirement.
+  - `voice:goal:audit` now prints `requirements_summary` directly to the console.
+  - `requirements_summary` reports each active goal item with concise evidence:
+    - `real_gui_runtime`
+    - `cloud_stt_stability`
+    - `dialogue_input_queue`
+    - `continuous_listening_w3`
+    - `tts_during_input`
+    - `local_whisper_persistent_service`
+    - `dialogue_state_context`
+    - `xiaozhi_style_logic`
+- Verification:
+  - `node --check scripts/audit-status-dialogue-goal-completion.cjs` passed.
+  - `node --check scripts/audit-status-dialogue-runtime-voice-flow.cjs` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+    - Known warning remains historical TTS queue latency.
+    - Latest controlled two-turn TTS queue remains fast: `end_to_end_ms=798`, `total_tts_ms=20`, `total_playback_ms=324`.
+    - Xiaozhi observed required types now include `hello`, `listen_start`, `listen_detect`, `stt_result`, `llm_start`, `tts_start`, `tts_stop`.
+  - `npm.cmd run voice:goal:audit` passed but remains `result=incomplete`.
+    - Summary: `proved=7`, `partial=1`, `missing=0`, `total=8`.
+    - The only partial item remains `cloud_stt_stability`.
+  - `npm.cmd run voice:remote-stt-config:validate` passed as a read-only preflight and reported `ready_for_remote_probe=false`.
+  - `npm.cmd run voice:remote-stt-config:prepare` passed in dry-run mode and reported the default remote STT settings can be prepared, but `remote_stt_api_key` is missing.
+  - `npm.cmd run voice:remote-stt-config:acceptance` passed as a safe preflight and skipped the network probe because config is not ready.
+- Current evidence:
+  - Latest real GUI runtime marker:
+    - `ts=2026-07-01T14:10:19.949Z`
+    - `runtime_fix_marker=stt-local-observability-2026-06-29-v3`
+    - `tts_spoken_budget_marker=tts-spoken-budget-2026-07-01-v2`
+    - `default_stt_adapter=local`
+  - Local Whisper persistent service is ready:
+    - `health_status=ready`
+    - `health_latency_ms=42`
+    - prior real transcription evidence is already proved.
+  - Real right-bottom GUI two-turn retest after the latest marker is still not proved:
+    - `stt_start_count=0`
+    - `stt_success_count=0`
+    - `tts_queue_complete_count=0`
+    - `xiaozhi_event_count=0`
+  - Remote STT config is still empty in app settings:
+    - `chatProvider.config.statusDialogueStt={}`.
+  - Required remote STT config remains missing:
+    - `remote_stt_enable_flag`
+    - `remote_stt_api_key`
+    - `remote_stt_base_url_or_full_endpoint`
+- Current interpretation:
+  - The optimized controlled probes prove the local/queue/continuous/TTS-boundary/Xiaozhi structure.
+  - The latest real GUI window does not yet contain fresh manual STT evidence after the latest restart marker.
+  - Cloud/remote STT is code-ready but config-gated; it cannot be called stable until credentials and endpoint are configured and the remote probe plus goal audit pass.
+- Next gate:
+  - Configure remote STT through settings or env, then run:
+    - `npm.cmd run voice:remote-stt-config:validate`
+    - `npm.cmd run voice:runtime-flow:probe-remote-stt-configured`
+    - `npm.cmd run voice:goal:audit`
+  - Run a fresh right-bottom GUI two-turn real voice test and then `npm.cmd run voice:runtime-flow:diagnose-stt-entry`.
+
+## 2026-07-01 Dock Voice Entry Alignment For Real GUI STT Retest
+
+- Scope:
+  - Continue the active STT specialist goal.
+  - Extend the existing right-bottom dock and `status-dialogue-system` only.
+  - No world model write, no `requirement_packet.v1`, no raw audio persistence, no automatic microphone start.
+- Evidence from latest diagnosis before this change:
+  - `voice:runtime-flow:diagnose-stt-entry` changed from no pointer to:
+    - `result=graph_window_pointer_not_on_stt_button`
+    - `global_pointer=2`
+    - `global_pointer_stt_target=0`
+  - Latest pointer target was:
+    - `target.class_name=zg-graph-close-button`
+    - `target.aria_label=关闭图谱`
+  - Interpretation:
+    - The click reached the graph window, but not the STT control.
+    - The right-bottom 132x136 dock was still only a launcher/status dock, not a formal voice input surface.
+- Implemented:
+  - Added `DockGraphLaunchState.launchIntent`, `statusDialogueAction`, and `source`.
+  - Added dock voice entry button:
+    - class: `zg-dock-action-button voice`
+    - aria-label: `打开语音对话入口`
+  - Dock voice entry logs:
+    - `dock_voice_entry_click`
+  - Graph launch intent parser now supports:
+    - existing `state` JSON; and
+    - direct query fallback: `launchIntent`, `statusDialogueAction`, `source`.
+  - Graph voice entry behavior:
+    - scroll/focus the existing `zg-dialogue-stt-button`;
+    - apply temporary `voice-entry-highlight`;
+    - log `status_dialogue_voice_entry_focused`;
+    - do not call `startSpeechRecognition()` automatically.
+  - Added controlled probe:
+    - npm script `voice:runtime-flow:probe-dock-voice-entry`
+    - test mode `status-dialogue-dock-voice-entry`
+    - probe loads dock, clicks voice entry, verifies launch state, loads graph, verifies STT button focus.
+  - Added validation gate:
+    - `dock_voice_entry_probe_registered`.
+- Validation:
+  - `npm.cmd run voice:runtime-flow:probe-dock-voice-entry` passed.
+    - Note: Electron prints a shutdown `ERR_FAILED (-2)` load-cancel message after the probe has completed; exit code is still 0 and the probe completion log is written.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run voice:local-whisper-service:validate` passed and includes `dock_voice_entry_probe_registered=true`.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:goal:audit` passed but remains `result=incomplete`.
+- Real GUI restart evidence:
+  - `npm.cmd run voice:runtime-flow:restart-for-retest` restarted the real GUI.
+  - Latest real marker:
+    - `ts=2026-07-01T14:10:19.949Z`
+    - `runtime_fix_marker=stt-local-observability-2026-06-29-v3`
+    - `tts_spoken_budget_marker=tts-spoken-budget-2026-07-01-v2`
+    - `default_stt_adapter=local`
+    - `stt_model=base`
+    - `electron_ipc_available=true`
+  - Window diagnosis:
+    - `result=graph_window_candidates_found`
+    - main graph/dialogue window: `left=580 top=226 width=760 height=580 topmost=true`
+    - secondary graph window: `left=750 top=166 width=420 height=700`
+    - right-bottom dock/floating window: `left=1776 top=884 width=132 height=136 topmost=true`
+  - STT entry diagnosis after restart:
+    - `result=no_graph_window_pointer_activity_after_marker`
+    - `global_pointer=0`
+    - `stt_start=0`
+    - This is a fresh baseline after restart; no new manual click has been captured yet.
+- Current interpretation:
+  - The current UI no longer leaves the dock voice path ambiguous.
+  - The dock voice button should open/focus the existing graph STT entry, then the user can click STT for real microphone input.
+  - If the next real test still fails, `diagnose-stt-entry` can now distinguish:
+    - no click into graph/dock;
+    - click into graph but not STT;
+    - click onto STT but handler not reached;
+    - STT reached but downstream transcription/TTS failed.
+- Remaining open goal items:
+  - Real right-bottom GUI two-turn voice retest is still missing after the latest restart.
+  - Cloud/remote STT remains not configured:
+    - `remote_stt_enable_flag`
+    - `remote_stt_api_key`
+    - `remote_stt_base_url_or_full_endpoint`
+  - `voice:goal:audit` remains the completion gate.
+
+## 2026-07-01 Real GUI Pointer Diagnosis And Current Lag Recheck
+
+- Scope:
+  - Continue the active STT specialist goal; do not mark complete.
+  - Extend the existing `status-dialogue-system` only.
+  - No world model write, no `requirement_packet.v1`, no raw audio persistence.
+- User-facing question checked:
+  - Current goal is still STT specialist work:
+    - cloud/remote STT stability;
+    - input queue;
+    - continuous listening;
+    - receiving formal input while TTS is playing;
+    - local Whisper persistent service;
+    - dialogue state completion;
+    - Xiaozhi-style state logic verification.
+  - The newest verified issue is not proven as local Whisper failure.
+  - Latest real GUI logs after the newest marker have no pointer/click/STT events, so the first current check is whether the operator click reaches the active right-bottom GUI window.
+- Added diagnostics:
+  - Renderer now logs `status_dialogue_global_pointer_down` in capture phase.
+  - The event records:
+    - clicked target summary;
+    - active element summary;
+    - whether the pointer landed on the STT button;
+    - client coordinates and window bounds.
+  - This is only runtime observability; it does not open audio, upload audio, or write world state.
+  - `scripts/diagnose-status-dialogue-real-stt-entry.cjs` now distinguishes:
+    - `no_graph_window_pointer_activity_after_marker`;
+    - `graph_window_pointer_not_on_stt_button`;
+    - `stt_target_pointer_without_button_handler`;
+    - normal downstream STT/TTS failures.
+  - Added `scripts/diagnose-status-dialogue-real-gui-window.cjs`.
+  - Added npm script `voice:runtime-flow:diagnose-gui-window`.
+  - Added validation gates:
+    - `real_gui_pointer_entry_diagnosis_registered`;
+    - `real_gui_window_diagnosis_registered`.
+- Latest real GUI evidence:
+  - Restarted real GUI with:
+    - `npm.cmd run voice:runtime-flow:restart-for-retest`
+  - Runtime marker check passed:
+    - `ts=2026-07-01T13:58:11.312Z`
+    - `runtime_fix_marker=stt-local-observability-2026-06-29-v3`
+    - `tts_spoken_budget_marker=tts-spoken-budget-2026-07-01-v2`
+    - `default_stt_adapter=local`
+    - `stt_model=base`
+    - `electron_ipc_available=true`
+  - Window diagnosis passed:
+    - `result=graph_window_candidates_found`
+    - `runtime_process_ids=[26800,69872,61724,43756,28756,54556]`
+    - candidate windows include:
+      - main graph/dialogue window: `left=580 top=226 width=760 height=580 topmost=true`;
+      - secondary graph window: `left=750 top=166 width=420 height=700`;
+      - right-bottom dock/floating window: `left=1776 top=884 width=132 height=136 topmost=true`.
+  - STT entry diagnosis after restart:
+    - `result=no_graph_window_pointer_activity_after_marker`
+    - `global_pointer=0`
+    - `global_pointer_stt_target=0`
+    - `pointer_down=0`
+    - `click=0`
+    - `stt_start=0`
+    - `tts_queue=0`
+    - next action: click inside the right-bottom GUI or exact STT button and re-run the diagnosis.
+- Controlled code-path evidence:
+  - `npm.cmd run voice:runtime-flow:probe-visible-stt-button` passed after this update.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run voice:local-whisper-service:validate` passed and includes the new diagnostics.
+- Current interpretation:
+  - Current real GUI exists and is loaded with the latest TTS budget marker.
+  - Current default STT remains local; cloud/remote STT is still not configured.
+  - Latest controlled probes show the button-to-STT path works.
+  - Latest real GUI evidence does not yet show the user's latest manual clicks entering the graph window.
+  - Therefore the immediate current bottleneck is real GUI input entry/focus/click landing evidence, not a proven local Whisper transcription bottleneck.
+  - Historical TTS lag still exists in logs, but current real-window slow TTS has not been reproduced after the latest restart because no fresh real voice turn has completed.
+- Next required evidence:
+  - In the actual right-bottom GUI, click the small floating window or exact STT control and speak two complete Chinese turns.
+  - Then run:
+    - `npm.cmd run voice:runtime-flow:diagnose-stt-entry`
+    - `npm.cmd run voice:runtime-flow:check-real-turns`
+    - `npm.cmd run voice:runtime-flow:audit`
+    - `npm.cmd run voice:goal:audit`
+  - If `global_pointer>0` but `global_pointer_stt_target=0`, fix layout/click target.
+  - If `global_pointer_stt_target>0` but `stt_button_click=0`, fix CSS pointer events or button handler.
+  - If `stt_button_click>0` but `stt_start=0`, fix `startSpeechRecognition()` entry.
+  - If `stt_success>0` but TTS is slow, optimize the TTS queue/playback path next.
+
+## 2026-07-01 Real STT Entry Diagnosis And Remote STT Acceptance Gate
+
+- Scope:
+  - Continue the active STT specialist goal; do not mark the goal complete.
+  - Extend the existing `status-dialogue-system` only.
+  - No world model write, no `requirement_packet.v1`, no raw audio persistence.
+- Real GUI STT entry diagnosis:
+  - Added renderer event `stt_button_click` next to the existing `stt_button_pointer_down`.
+  - Added renderer event `stt_button_click_start_failed` if the click handler reaches `startSpeechRecognition()` but the async start rejects.
+  - Added `scripts/diagnose-status-dialogue-real-stt-entry.cjs`.
+  - Added npm scripts:
+    - `voice:runtime-flow:diagnose-stt-entry`
+    - `voice:runtime-flow:wait-stt-entry`
+  - The diagnosis splits the real GUI path into:
+    - pointer reached visible STT button;
+    - click handler entered;
+    - `stt_start_requested`;
+    - recording request;
+    - recording started;
+    - voice detected;
+    - transcribe request;
+    - STT success;
+    - dialogue chain;
+    - TTS queue;
+    - Xiaozhi bridge event.
+- Visible STT button controlled probe:
+  - Added `runStatusDialogueVisibleSttButtonClickProbe()` in `scripts/test-cli.ts`.
+  - Added npm script `voice:runtime-flow:probe-visible-stt-button`.
+  - Added `isolated_visible_stt_button_probe_registered` to `voice:local-whisper-service:validate`.
+  - The probe finds `button[aria-label="start speech input"], button.zg-dialogue-stt-button`, dispatches `pointerdown` and `click`, then checks the existing formal STT path.
+  - It uses fake microphone audio and mocked local Whisper IPC; it does not use real microphone audio, remote API, or raw audio persistence.
+  - Latest controlled evidence:
+    - `stt_button_pointer_down`
+    - `stt_button_click`
+    - `stt_start_requested`
+    - `local_stt_recording_start_request`
+    - `local_stt_recording_started`
+    - `local_stt_transcribe_request`
+    - `local_stt_transcribe_result.success=true`
+    - `status_dialogue_visible_stt_button_click_probe_complete`
+  - Interpretation:
+    - The visible STT button DOM handler and formal STT entry chain are working in the controlled Electron renderer.
+    - Since the latest real GUI diagnosis still has `pointer_down=0` and `click=0`, the remaining real symptom is more likely window focus, overlay, wrong runtime instance, or the operator click not landing on the current logged STT button.
+- Current real GUI entry finding:
+  - `npm.cmd run voice:runtime-flow:diagnose-stt-entry` produced:
+    - `result=no_visible_stt_button_activity_after_marker`
+    - `pointer_down=0`
+    - `click=0`
+    - `stt_start=0`
+    - `tts_queue=0`
+  - Interpretation:
+    - The latest real GUI window is loaded with the current runtime marker, but the latest logs do not contain the user's later STT button interactions.
+    - The current evidence points to missing/uncaptured visible-button activity after the latest marker, not to slow transcription inside the local Whisper path.
+    - Next real test should focus on window focus, overlay, active runtime instance, and whether the visible right-bottom STT button emits `stt_button_pointer_down` and `stt_button_click`.
+- Remote STT acceptance chain:
+  - Added `scripts/run-status-dialogue-remote-stt-acceptance.cjs`.
+  - Added npm script `voice:remote-stt-config:acceptance`.
+  - The chain first runs the read-only config preflight.
+  - It starts the runtime remote STT network probe only when `ready_for_remote_probe=true`.
+  - It skips the network probe when config is incomplete, writes an acceptance report, and does not upload audio.
+- Current remote STT acceptance finding:
+  - `npm.cmd run voice:remote-stt-config:acceptance` produced:
+    - `result=remote_stt_config_not_ready`
+    - `network_probe_started=false`
+    - `probe_skipped=true`
+    - missing `remote_stt_enable_flag`, `remote_stt_api_key`, `remote_stt_base_url_or_full_endpoint`.
+  - This confirms current cloud/remote STT remains unconfigured rather than slow or unstable in a real configured path.
+- Validation:
+  - `node --check scripts/diagnose-status-dialogue-real-stt-entry.cjs` passed.
+  - `node --check scripts/run-status-dialogue-remote-stt-acceptance.cjs` passed.
+  - `node --check scripts/validate-status-dialogue-cloud-stt-stability.cjs` passed.
+  - `node --check scripts/test-cli.ts` passed.
+  - `npm.cmd run voice:remote-stt-config:acceptance` passed as a safe gated report with no network probe.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed and now checks `remote_stt_acceptance_chain_registered=true`.
+  - `npm.cmd run voice:local-whisper-service:validate` passed and now checks `isolated_visible_stt_button_probe_registered=true`.
+  - `npm.cmd run voice:runtime-flow:probe-visible-stt-button` passed twice; latest observed `status_dialogue_visible_stt_button_click_probe_complete` with `latency_ms=3679`.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:restart-for-retest` restarted the real GUI.
+  - `npm.cmd run voice:runtime-flow:check-marker -- --require-tts-budget-marker` passed:
+    - latest real marker `2026-07-01T13:44:30.623Z`;
+    - `tts_spoken_budget_marker=tts-spoken-budget-2026-07-01-v2`;
+    - `default_stt_adapter=local`;
+    - `electron_ipc_available=true`.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`; the warning is historical TTS queue latency.
+  - `npm.cmd run voice:goal:audit` still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+- Remaining gap:
+  - Run a fresh real right-bottom GUI STT test after this build and confirm `stt_button_pointer_down -> stt_button_click -> stt_start_requested`.
+  - Configure real remote/cloud STT before claiming `cloud_stt_stability`.
+
+## 2026-07-01 Remote STT Probe Restore And TTS Queue Lag Recheck
+
+- Scope:
+  - Continue the active STT specialist goal; do not mark the goal complete.
+  - Keep work inside the existing `status-dialogue-system`.
+  - No world model write and no `requirement_packet.v1`.
+- Current goal status:
+  - `voice:goal:audit` still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+  - Remaining partial item is still `cloud_stt_stability`.
+- Remote STT configured probe:
+  - `voice:runtime-flow:probe-remote-stt-configured` now reaches the GUI probe marker instead of timing out on marker wait.
+  - The probe returns `remote_stt_not_configured`.
+  - Latest wait report action is `configure_remote_stt_api_key_base_url_and_model`.
+  - Evidence:
+    - `status_dialogue_remote_stt_configured_probe_complete`
+    - `configured=false`
+    - `reachable=false`
+    - `fallback_reason=remote_stt_not_configured`
+- Fix applied:
+  - `prepare-status-dialogue-real-gui-retest.cjs` now passes `--allow-probe` when a runtime probe is launched.
+  - `remote_stt_configured` probe now restores the previous STT adapter after completion.
+  - Runtime evidence shows:
+    - `status_dialogue_remote_stt_configured_probe_adapter_restored`
+    - restored adapter: `local`
+  - This prevents a remote STT probe from leaving the operator-facing mic path stuck on `remote`.
+- Current lag evidence:
+  - The latest real STT transcription path remains fast when local fallback is used; latest local transcription evidence includes `442ms`.
+  - Current runtime lag is now dominated by TTS queue/playback, not STT.
+  - `voice:runtime-flow:audit` now reports `status=warn` with `known_bottlenecks=["tts_queue_end_to_end_latency"]`.
+  - Current max queue evidence:
+    - `tts_queue_end_to_end_max_ms=52232`
+    - `tts_queue_total_tts_max_ms=11625`
+    - `tts_queue_total_playback_max_ms=22219`
+- TTS queue mitigation:
+  - Added a spoken event-broadcast budget:
+    - `STATUS_DIALOGUE_EVENT_BROADCAST_VOICE_MAX_PATCHES = 1`
+    - `STATUS_DIALOGUE_EVENT_BROADCAST_VOICE_MAX_CHARS = 48`
+  - `buildVoiceEventBroadcastSpeechText` now truncates event-broadcast speech before TTS.
+  - Full event detail remains visible in UI/logs; the spoken queue no longer reads long patrol/event text by default.
+- Validation:
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+  - `npm.cmd run voice:event-broadcast:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn` because TTS queue latency is still present in existing logs.
+  - `npm.cmd run voice:goal:audit` passed with `result=incomplete`.
+- Remaining gap:
+  - Configure real remote STT API credentials or provide a working cloud STT path before `cloud_stt_stability` can complete.
+  - Run a fresh real GUI multi-turn test after the event-broadcast voice budget change to prove the TTS queue latency improves in live use.
+
+## 2026-07-01 Remote STT Unavailable Direct Local Fallback
+
+- Scope:
+  - Continue the active STT specialist goal; do not mark the goal complete.
+  - Keep work inside the existing `status-dialogue-system`.
+  - No world model write and no `requirement_packet.v1`.
+- Current evidence before this change:
+  - `remote_stt_configured` probe proves the remote API is not configured.
+  - Current probe result remains `fallback_reason=remote_stt_not_configured`.
+  - Local Whisper transcription evidence remains fast; current lag is dominated by TTS queue latency, not local STT.
+- Fix applied:
+  - Formal voice input now checks the remote STT health state before recording when `selectedSttAdapter === "remote"`.
+  - If remote health is explicitly `not_configured` or `error`, the renderer logs `remote_stt_unavailable_skip_to_local`.
+  - It selects `local` with reason `remote_stt_unavailable_skip_to_local`.
+  - It starts local Whisper directly instead of first attempting remote transcription and then falling back.
+- Safety boundary:
+  - The skip only triggers on explicit `base_url_host === "not_configured"`, `error`, or `remote STT is not configured`.
+  - A future configured remote API is not blocked merely because a health check is still pending.
+  - The fallback is still local Whisper; no external action and no world write are introduced.
+- Validation:
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed and now checks the direct local fallback source path.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`; current warning remains `tts_queue_end_to_end_latency`.
+  - `npm.cmd run voice:goal:audit` passed with `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+- Remaining gap:
+  - Need a fresh GUI voice retest with remote selected while API is not configured to observe `remote_stt_unavailable_skip_to_local` in runtime logs.
+  - Need configured remote STT API or a working cloud STT sample to complete `cloud_stt_stability`.
+
+## 2026-07-01 Remote STT Configured Probe And Lag Evidence Recheck
+
+- Scope:
+  - Continue the active STT specialist goal; do not mark the goal complete.
+  - Keep work inside the existing `status-dialogue-system`.
+  - No world model write and no `requirement_packet.v1`.
+- Current active goal:
+  - Cloud/remote STT stability.
+  - STT input queue.
+  - Continuous listening.
+  - Formal input during TTS playback.
+  - Local Whisper persistent service.
+  - Dialogue state completion.
+  - Xiaozhi-style dialogue logic verification.
+- What changed:
+  - Added a real configured remote STT probe path for `openai_compatible_stt`.
+  - Added IPC `zhineng:status-dialogue:stt:remote-configured-probe`.
+  - Added runtime probe mode `remote_stt_configured` in the renderer.
+  - Added wait script `scripts/wait-status-dialogue-remote-stt.cjs`.
+  - Added npm scripts:
+    - `voice:runtime-flow:wait-remote-stt`
+    - `voice:runtime-flow:probe-remote-stt-configured`
+  - Extended `voice:cloud-stt-stability:validate` so the configured remote STT probe is part of structural validation.
+  - Extended `voice:goal:audit` so cloud/remote STT stability reports controlled configured-remote probe evidence separately from real operator microphone evidence.
+- Current environment check:
+  - `SIGHTFLOW_STATUS_DIALOGUE_STT_API_KEY` missing.
+  - `STATUS_DIALOGUE_STT_API_KEY` missing.
+  - `SIGHTFLOW_STATUS_DIALOGUE_STT_BASE_URL` missing.
+  - `STATUS_DIALOGUE_STT_BASE_URL` missing.
+  - `SIGHTFLOW_STATUS_DIALOGUE_STT_MODEL` missing.
+  - `STATUS_DIALOGUE_STT_MODEL` missing.
+  - Therefore real remote STT cannot be claimed configured in the current environment.
+- Current lag evidence:
+  - Earlier real manual local STT inputs reached transcript successfully with `487ms` and `542ms` transcription latency.
+  - Latest real GUI runtime window after `2026-07-01T10:34:46.418Z` contains only runtime load and health events, not a fresh manual STT attempt.
+  - The old real lag evidence is mostly in serialized TTS playback/queue, not local Whisper transcription.
+  - Old real TTS queue evidence includes playback up to `7712ms` and end-to-end up to about `25s`.
+  - New controlled TTS budget probes reduce short spoken chunks to about `30ms` synthesis and `0.2s-1.0s` playback, but this is still controlled probe evidence, not a fresh real multi-round GUI proof.
+- Current repeated-input evidence:
+  - Runtime audit still sees input queue/dequeue and formal TTS interruption evidence.
+  - The current log does not reproduce a latest-window real manual STT loss after the latest GUI marker.
+  - A fresh operator retest is still needed to prove whether "multiple voice inputs only one effective" remains in the current GUI.
+- Validation:
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=pass`.
+  - `npm.cmd run voice:goal:audit` passed with `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:stt-input-queue:validate` passed.
+  - `npm.cmd run voice:local-whisper-service:validate` passed.
+- Remaining gap:
+  - `cloud_stt_stability` remains partial.
+  - Need either a configured remote STT API and a successful `remote_stt_configured` probe, or a fresh current-window Chrome cloud STT success sample.
+  - Need one fresh real GUI multi-round voice retest after the current build, because the newest real runtime window has not recorded new manual STT input events.
+
+## 2026-07-01 TTS Stream Budget Runtime Fix And Current Lag Check
+
+- Scope:
+  - Continue the active STT specialist goal; do not mark the goal complete.
+  - Keep the work inside the existing `status-dialogue-system`.
+  - No world model write and no `requirement_packet.v1`.
+- Current active goal:
+  - Cloud/remote STT stability.
+  - STT input queue.
+  - Continuous listening.
+  - Formal input during TTS playback.
+  - Local Whisper persistent service.
+  - Dialogue state completion.
+  - Xiaozhi-style dialogue logic verification.
+- What was checked:
+  - Latest real GUI log contains two real manual STT starts.
+  - Both real starts reached recording, voice detection, local STT completion, and transcript handoff into dialogue.
+  - Real local STT transcription latency was low: `487ms` and `542ms`.
+  - The latest repeated-input symptom is therefore not currently reproduced as local STT transcription loss.
+  - Runtime evidence still shows the perceived lag is mainly in serialized TTS playback/queue, not local Whisper.
+- Fixes applied:
+  - Fixed short final voice duplication, so a result like `我先给结论。` is no longer spoken twice.
+  - Added a short 80ms stream-listener drain window after `zhineng:status-dialogue:complete:stream` returns, preventing fast model streams from being missed before listener cleanup.
+  - Split model-stream sentence threshold from normal TTS chunking:
+    - Normal TTS chunk minimum remains `VOICE_CHUNK_MIN_CHARS = 8`.
+    - Model stream sentence minimum is now `VOICE_STREAM_SENTENCE_MIN_CHARS = 4`.
+  - Added runtime observability for:
+    - `model_stream_delta_received`
+    - `model_stream_voice_progress`
+    - `tts_stream_sentence_skipped_by_voice_budget`
+    - `tts_final_voice_budget_applied`
+  - Non-stream final voice now also logs `tts_final_voice_budget_applied`.
+- Current optimization result:
+  - `voice:runtime-flow:probe-tts-voice-budget` now passes.
+  - Runtime audit now reports `tts_voice_budget_events_seen=true`.
+  - Runtime audit now reports `tts_stream_sentence_budget_skip_count=2`.
+  - Runtime audit now reports `tts_final_voice_budget_applied_count=4`.
+  - In the controlled TTS budget probe, a 31-character voice output was reduced to a 6-character final spoken line while the full reply stayed visible in the dialogue panel.
+- Validation:
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:probe-remote-stt-mock` passed.
+  - `npm.cmd run voice:runtime-flow:probe-tts-voice-budget` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:goal:audit` still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+- Remaining gap:
+  - Cloud/remote STT stability still needs a current-window real cloud or remote STT success sample.
+  - The latest real GUI default STT adapter is still `local`, so no current-window remote health or remote transcription sample has been observed.
+  - A fresh GUI multi-round test is still needed after restart/refresh to prove the newly fixed TTS stream budget in the operator-facing window, not only in the controlled runtime probe.
+
+## 2026-07-01 Remote STT Audit And TTS Spoken Budget
+
+- Scope:
+  - Continue the active STT specialist goal without marking it complete.
+  - Keep changes inside the existing `status-dialogue-system`.
+  - Do not write world model data.
+  - Do not create `requirement_packet.v1`.
+- Remote STT audit coverage:
+  - `remote` OpenAI-compatible STT is now represented in validation and goal audit evidence.
+  - `voice:cloud-stt-stability:validate` now checks:
+    - `main_remote_stt_health_ipc`
+    - `renderer_remote_stt_health_visible`
+  - `voice:runtime-flow:audit` now reports:
+    - `remote_stt_health_seen`
+    - `remote_stt_events_seen`
+    - `remote_stt_success_seen`
+    - remote health/start/complete/success/failure counts.
+  - `voice:goal:audit` now treats Chrome WebSpeech cloud STT and OpenAI-compatible remote STT as the same goal lane for cloud/remote STT stability.
+  - The goal still remains incomplete until a current-window real cloud or remote STT transcription sample succeeds.
+- TTS spoken budget:
+  - Added `STATUS_DIALOGUE_STREAMING_VOICE_MAX_SENTENCES = 1`.
+  - Added `STATUS_DIALOGUE_STREAMING_VOICE_MAX_CHARS = 32`.
+  - The model streaming path now only speaks the first concise streaming sentence.
+  - Later streamed model sentences are kept in the visible reply but skipped from the TTS queue with `tts_stream_sentence_skipped_by_voice_budget`.
+  - After streaming, final voice now uses `buildStatusDialogueShortFinalVoice(result)` instead of speaking the full remaining `voiceText`.
+  - Final concise voice usage is logged with `tts_final_voice_budget_applied`.
+  - Full reply, attention log, status refs and missing status remain visible in the UI and conversation memory.
+- Validation:
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed with spoken-budget checks.
+  - `npm.cmd run voice:local-whisper-service:validate` passed.
+  - `npm.cmd run voice:stt-input-queue:validate` passed.
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run voice:w3-wake-detector:validate` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed.
+  - `npm.cmd run voice:goal:audit` remains incomplete: `proved=7 / partial=1 / missing=0 / total=8`.
+- Current remaining evidence:
+  - Current runtime log has no post-change real GUI sample yet.
+  - `tts_stream_sentence_budget_skip_count=0` and `tts_final_voice_budget_applied_count=0` until GUI is restarted/refreshed and a new streamed dialogue turn is tested.
+  - `remote_stt_health_count=0` and `remote_stt_success_count=0` until remote STT is selected/configured and checked from the current GUI.
+  - Next real test should restart/refresh the right-bottom GUI, run one voice turn, then inspect `voice-flow-YYYYMMDD.jsonl` for the new budget events and remote STT health/result events if remote is selected.
+
+## 2026-07-01 Current Goal And Voice Optimization Recheck
+
+- Active goal:
+  - STT specialist track remains open.
+  - Scope still includes cloud/remote STT stability, input queue, continuous listening, formal input during TTS playback, local Whisper persistent service, dialogue state completion, and Xiaozhi-style dialogue logic verification.
+- Current verification result:
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=pass`.
+  - `npm.cmd run voice:goal:audit` still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed for guards and structure, but cloud STT remains only partially proven by the goal audit.
+  - `npm.cmd run voice:local-whisper-service:validate` passed.
+  - `npm.cmd run voice:stt-input-queue:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run voice:w3-wake-detector:validate` passed.
+- Current lag finding:
+  - Latest real GUI default STT adapter is `local`.
+  - Latest local Whisper health is ready, `latency_ms=25`, `device=cuda`.
+  - Latest real local STT transcription samples succeeded at `487ms` and `542ms`; STT is not the dominant current lag source on the local path.
+  - Latest TTS queue evidence still shows `tts_queue_end_to_end_max_ms=25270`.
+  - Latest TTS synthesis is relatively small compared with playback: `tts_queue_total_tts_max_ms=2520`, `tts_queue_total_playback_max_ms=7712`.
+  - The perceived lag is currently dominated by serialized spoken chunks and multi-sentence playback, not by local Whisper transcription.
+- Repeated input finding:
+  - Latest real GUI log contains two real manual STT starts.
+  - Both starts reached recording, voice detection, local STT completion, and renderer transcription result.
+  - No latest-window `local_stt_silence_detected` was observed.
+  - If the operator clicked/spoke more times after the latest real GUI marker but no log appeared, the next check must inspect visible button event delivery, window focus, and whether the GUI is running the latest build.
+- Remote/cloud STT status:
+  - `remote` OpenAI-compatible STT route is available in the renderer adapter selector and main process transcription IPC.
+  - Remote STT health IPC/UI visibility has been added for checking whether the configured API host is reachable without uploading audio.
+  - The goal audit still requires a real current-window cloud/remote STT success sample before cloud STT stability can be marked complete.
+- Xiaozhi-style state:
+  - Required state-machine events are present in logs: `hello`, `listen_start`, `listen_detect`, `stt_result`, `llm_start`, `llm_emotion`, `tts_start`, `tts_sentence_start`, `tts_stop`, `abort`.
+  - The logic is applied structurally, but response quality and latency still need policy/voice composition optimization.
+- Next safe optimization target:
+  - Keep high-quality same-voice TTS.
+  - Reduce spoken payload and serialize less unnecessary text into the audible queue.
+  - Keep full details in the visible panel/log, while `voiceText` speaks only the operator-useful conclusion, key evidence, and next action.
+  - Add or tighten runtime evidence for visible STT button clicks if the next real test still shows multiple clicks with only one logged input.
+
+## 2026-07-01 STT/TTS Lag And Repeated Input Recheck
+
+- Active goal remains open:
+  - Cloud STT stability.
+  - STT input queue.
+  - Continuous listening.
+  - Formal input during TTS playback.
+  - Local Whisper persistent service.
+  - Dialogue state completion.
+  - Xiaozhi-style dialogue logic verification.
+- Current inspected runtime:
+  - Latest real GUI runtime loaded at `2026-07-01T10:34:46.418Z`.
+  - Current real default STT adapter is `local`.
+  - Current real default voice output mode is `edge_readaloud_stream`.
+  - Local Whisper health is ready: `latency_ms=25`, `device=cuda`.
+- Repeated input finding:
+  - Real GUI log on 2026-07-01 shows two manual STT starts.
+  - Both starts recorded microphone audio, detected voice, invoked local STT, and produced transcripts.
+  - STT transcription latency was low: `487ms` and `542ms`.
+  - Therefore the latest observed "only one of many inputs works" symptom is not reproduced in STT itself.
+  - Missing real evidence remains for user speaking/clicking during active TTS playback; controlled probe is now passed.
+- Lag finding:
+  - The current bottleneck is mainly after STT, in model/TTS playback sequencing.
+  - Latest real TTS queue evidence includes `tts_queue_end_to_end_max_ms=25270`.
+  - Latest real TTS generation time is not the dominant cost: `tts_queue_total_tts_max_ms=2520`.
+  - Playback and serial sentence queues dominate perceived waiting: `tts_queue_total_playback_max_ms=7712`, plus multi-sentence queue sequencing.
+  - STT itself is currently not the main lag source on the latest real local path.
+- Remote STT path completed:
+  - Renderer now exposes `remote` in the STT adapter selector.
+  - `remote` routes microphone recording into the existing `zhineng:status-dialogue:stt:transcribe` IPC with `adapter_id=openai_compatible_stt`.
+  - Main process has `openai_compatible_stt` support through `getStatusDialogueRemoteSttConfig` and `runOpenAiCompatibleSttTranscription`.
+  - Remote STT is disabled unless explicitly configured.
+  - Remote failure falls back to `local_whisper_persistent_service`.
+  - No raw audio persistence is added; transient WAV cleanup remains.
+- Validation:
+  - `npm.cmd run voice:local-whisper-service:validate` passed.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed with remote STT checks included.
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run voice:stt-input-queue:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run voice:w3-wake-detector:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:probe-tts-input-interrupt` passed.
+  - `npm.cmd run voice:runtime-flow:audit` now passes with `status=pass`, `input_queued_count=1`, `input_dequeued_count=2`, `formal_interrupt_count=1`, `input_queue_wait_max_ms=91`.
+  - `npm.cmd run voice:goal:audit` remains incomplete: `proved=7 / partial=1 / missing=0 / total=8`.
+- Remaining:
+  - `cloud_stt_stability` remains partial because current-window cloud STT has no stable real success sample.
+  - Cloud Web Speech historical failures remain; remote OpenAI-compatible STT is now available for real API configuration, but not proven against a configured API yet.
+  - Real GUI multi-turn test during active TTS playback should be repeated by the operator after restart.
+  - Next latency optimization should reduce spoken queue length and first audible waiting without dropping high-quality same-voice TTS.
+
+## 2026-06-30 STT Specialist Borderline VAD And Cloud Cooldown Hardening
+
+- Active goal remains open.
+- Scope:
+  - Reduce repeated real microphone input loss caused by frontend VAD false negatives.
+  - Reduce repeated cloud STT timeout impact by persisting a short degraded cooldown.
+  - Keep all changes inside `status-dialogue-system`; no world model write, no `requirement_packet.v1`, no raw audio persistence.
+- Implemented local STT borderline path:
+  - Added `STATUS_DIALOGUE_LOCAL_STT_BORDERLINE_RMS_THRESHOLD=0.00015`.
+  - Added `STATUS_DIALOGUE_LOCAL_STT_BORDERLINE_PEAK_THRESHOLD=0.001`.
+  - Added `STATUS_DIALOGUE_LOCAL_STT_BORDERLINE_MIN_AUDIO_MS=1200`.
+  - Expanded `vad_gate` from three states to four states: `voice_detected`, `low_signal_candidate`, `borderline_candidate`, `silence`.
+  - Added `local_stt_borderline_transcribe_allowed`.
+  - `borderline_candidate` sends transient WAV to local Whisper instead of skipping transcription at the frontend gate.
+  - Empty or failed Whisper results are still rejected downstream.
+- Implemented isolated borderline probe:
+  - Added `local_stt_borderline` runtime probe mode.
+  - Added `configureLocalSttBorderlineFakeAudio`.
+  - Added `runStatusDialogueLocalSttBorderlineProbe`.
+  - Added npm command: `npm.cmd run voice:runtime-flow:probe-local-stt-borderline`.
+  - First probe evidence before threshold adjustment: `audio_rms=0.000167`, `audio_peak=0.00114`, `vad_gate=silence`.
+  - Threshold was adjusted from `0.00018` to `0.00015` based on that evidence, then the probe passed.
+- Implemented cloud STT degraded cooldown:
+  - Added localStorage key `zhineng.statusDialogue.cloudStt.degraded.v1`.
+  - Added 10 minute cooldown: `STATUS_DIALOGUE_CLOUD_STT_DEGRADED_COOLDOWN_MS=600000`.
+  - Added `readPersistedCloudSttDegradedHealthState`, `persistCloudSttDegradedCooldown`, and `clearCloudSttDegradedCooldown`.
+  - Cloud STT success clears the cooldown.
+  - Cloud timeout/degraded state saves cooldown and keeps local Whisper primary.
+  - Added `cloud_stt_degraded_cooldown_saved`.
+  - `voice:runtime-flow:probe-cloud-stt-budget` now requires `cloud_stt_degraded_cooldown_saved`.
+- Validation:
+  - `npm.cmd run voice:runtime-flow:probe-local-stt-borderline` passed.
+  - `npm.cmd run voice:runtime-flow:probe-local-stt-low-signal` passed.
+  - `npm.cmd run voice:runtime-flow:probe-cloud-stt-budget` passed and observed `cloud_stt_degraded_cooldown_saved`.
+  - `npm.cmd run voice:local-whisper-service:validate` passed with `renderer_borderline_vad_gate=true` and `isolated_borderline_probe_registered=true`.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed with `renderer_persists_cloud_degraded_cooldown=true`.
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run voice:stt-input-queue:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run voice:w3-wake-detector:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:goal:audit` passed with `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+- Remaining:
+  - Cloud Web Speech recognition itself is still not proven stable.
+  - `voice:goal:audit` still reports `cloud_stt_stability` as partial.
+  - Historical cloud failures remain as evidence.
+  - Historical CosyVoice slow TTS evidence remains; fresh real GUI voice turn is still needed to prove current live latency.
+  - Fresh real microphone multi-turn retest is still required to prove the borderline VAD path fixes the user's real repeated-input symptom.
+
+## 2026-06-30 STT Specialist Recheck: Current Goal, Lag, And One-Of-Many Input Symptom
+
+- Active goal remains open:
+  - Cloud STT stability.
+  - STT input queue.
+  - Continuous listening.
+  - Formal input during TTS playback.
+  - Local Whisper persistent service.
+  - Dialogue state completion.
+  - Xiaozhi-style dialogue logic verification.
+- Current goal audit:
+  - `npm.cmd run voice:goal:audit` passed but still reports `result=incomplete`.
+  - Current summary remains `proved=7 / partial=1 / missing=0 / total=8`.
+  - The remaining partial item is `cloud_stt_stability`.
+- Verified current lag evidence:
+  - Latest real GUI runtime reports `default_stt_adapter=local`.
+  - Latest real GUI runtime reports `default_voice_output_mode=edge_readaloud_stream`.
+  - Runtime audit remains `status=warn`.
+  - Historical CosyVoice synthesis samples remain slow: `tts_synthesis_avg_ms=13353`, `tts_synthesis_max_ms=15979`, `tts_queue_end_to_end_max_ms=45204`.
+  - Edge Read Aloud stream samples are lower latency when successful, but older stream assembly errors and timeout samples still exist.
+  - Cloud STT still has high failure evidence: `chrome_stt_success_count=1`, `chrome_stt_failure_count=31`.
+  - Latest cloud STT probe after the newest real GUI marker failed twice with `chrome_stt_timeout` after `ready / start / audio_start`.
+- Verified one-of-many input symptom:
+  - Real non-probe local STT starts observed today: `5`.
+  - Successful real non-probe local transcriptions observed today: `2`.
+  - Failed real non-probe local attempts observed today: `3`, all stopped before transcription as `local_stt_silence_detected` / `no_audible_speech`.
+  - Latest failed real sample: `audio_rms=0.000357`, `audio_peak=0.003227`, `voice_ms=0`, `recorded_ms=3072`.
+  - Therefore the repeated input failure is currently mostly before transcription, at the local VAD/audible-speech gate, not inside Whisper itself.
+- Optimization result rechecked:
+  - `npm.cmd run voice:local-whisper-service:validate` passed.
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run voice:stt-input-queue:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run voice:w3-wake-detector:validate` passed.
+  - `npm.cmd run voice:runtime-flow:probe-local-stt-low-signal` passed.
+  - The low-signal gate exists and is verified by an isolated probe, but a fresh real microphone multi-turn retest is still required before claiming the user-facing issue is fixed.
+- Current conclusion:
+  - Local Whisper service readiness is not the main blocker.
+  - Remaining user-facing lag comes from TTS path choice/history plus cloud STT timeout/fallback behavior.
+  - Remaining multi-input instability comes from real microphone signal being rejected by VAD in several attempts.
+  - The next useful fix should either lower/replace the frontend VAD gate further, add a user-visible mic level calibration state, or bypass VAD by sending borderline audio to Whisper with stricter transcript validation.
+
+## 2026-06-30 STT Specialist Low-Signal Local STT Gate
+
+- Active goal remains open. This update targets the real multi-input failure where recording starts but VAD rejects low-volume microphone input before Whisper transcription.
+- Problem verified before change:
+  - Real non-probe logs showed `stt_start_requested=5` and `local_stt_recording_started=5`.
+  - Only `local_stt_voice_detected=2` and `local_stt_transcribe_result=2` were observed.
+  - `local_stt_silence_detected=3` was observed with `no_audible_speech`.
+  - Failed samples had very low but non-zero energy, for example `audio_rms=0.000329-0.000405` and `audio_peak=0.001755-0.003738`.
+  - The previous strict VAD gate required `rms=0.003` or `peak=0.02`, so quiet speech could be rejected before the local Whisper service had a chance to judge it.
+- Implemented:
+  - Added low-signal local STT thresholds:
+    - `STATUS_DIALOGUE_LOCAL_STT_LOW_SIGNAL_RMS_THRESHOLD=0.00025`
+    - `STATUS_DIALOGUE_LOCAL_STT_LOW_SIGNAL_PEAK_THRESHOLD=0.0015`
+    - `STATUS_DIALOGUE_LOCAL_STT_LOW_SIGNAL_MIN_MS=240`
+    - `STATUS_DIALOGUE_LOCAL_STT_LOW_SIGNAL_MIN_AUDIO_MS=1200`
+    - `STATUS_DIALOGUE_LOCAL_STT_LOW_SIGNAL_TRANSCRIBE_MS=4200`
+  - Added `local_stt_low_signal_candidate` event.
+  - Added `local_stt_low_signal_transcribe_allowed` event.
+  - Added `vad_gate: voice_detected | low_signal_candidate | silence` to recording and transcription logs.
+  - Continuous listening no longer fast-fails as idle silence when a low-signal candidate is present.
+  - Low-signal candidate audio is still transient only and is sent to Whisper; empty or failed transcripts are rejected downstream.
+- Boundary:
+  - This does not save raw audio.
+  - This does not write to the world model.
+  - This does not create `requirement_packet.v1`.
+  - This does not claim cloud STT is stable.
+- Validation:
+  - Added isolated probe command:
+    - `npm.cmd run voice:runtime-flow:probe-local-stt-low-signal`
+  - The first probe run intentionally failed because the fake audio was amplified by Electron and crossed the strict VAD threshold; this proved the probe was exercising the real frontend VAD path.
+  - The fake audio amplitude was reduced and the second probe passed.
+  - Passing probe evidence:
+    - `status_dialogue_local_stt_low_signal_probe_start`
+    - `local_stt_recording_started`
+    - `local_stt_low_signal_candidate`
+    - `local_stt_recording_stopped` with `vad_gate=low_signal_candidate`
+    - `local_stt_low_signal_transcribe_allowed`
+    - `local_stt_transcribe_request` with `vad_gate=low_signal_candidate`
+    - `local_stt_transcribe_result.success=true`
+    - `status_dialogue_local_stt_low_signal_probe_observed`
+  - `npm.cmd run voice:local-whisper-service:validate` passed with `renderer_low_signal_vad_gate=true`.
+  - `npm.cmd run voice:local-whisper-service:validate` passed with `isolated_low_signal_probe_registered=true`.
+  - `npm.cmd run voice:runtime-flow:probe-local-stt-low-signal` passed.
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run voice:stt-input-queue:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run voice:w3-wake-detector:validate` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:goal:audit` passed with `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+- Remaining:
+  - Fresh real GUI retest is required. Expected proof after rebuild/restart is a real non-probe event sequence containing either `local_stt_voice_detected` or `local_stt_low_signal_transcribe_allowed`, followed by `local_stt_transcribe_result.success=true`.
+  - Cloud STT stability remains partial and must not be reported complete until current-window cloud recognition succeeds or the goal is explicitly changed.
+
+## 2026-06-30 STT Specialist Isolated Cloud STT Budget Probe
+
+- Active goal remains open. This verification confirms the latest optimization boundary, not final completion.
+- Current objective:
+  - Stabilize the voice conversation path around cloud STT, local Whisper fallback, input queueing, continuous listening, TTS input boundary, and Xiaozhi-style dialogue state.
+  - Keep the current phase scoped to the status-dialogue-system and right-bottom GUI; no world model write and no requirement forwarding.
+- Optimization result verified:
+  - Added an isolated Electron test path for cloud STT latency-budget verification.
+  - The isolated probe does not launch external Chrome and does not touch the real GUI.
+  - The renderer passes `timeout_ms=7000` to the cloud STT bridge.
+  - Timeout is classified as `timeout`.
+  - Timeout opens the cloud STT degraded path immediately and keeps local Whisper as the primary fallback.
+  - `voice:runtime-flow:probe-cloud-stt-budget` passed.
+- Current lag evidence:
+  - Real GUI default STT adapter is `local`.
+  - Local Whisper health is ready and fast in current checks, around `10ms-15ms`.
+  - Successful local STT samples are about `1273ms` and `1325ms`.
+  - Historical CosyVoice local HTTP TTS remains the main slow evidence: synthesis about `8.7s-15.9s`, with old queue end-to-end up to about `45s`.
+  - Current default voice output mode is `edge_readaloud_stream`, but a fresh real GUI full voice round is still required to prove live experience.
+- Current multi-input evidence:
+  - Real non-probe logs show `stt_start_requested=5` and `local_stt_recording_started=5`.
+  - Only `local_stt_voice_detected=2` and `local_stt_transcribe_result=2` were observed.
+  - `local_stt_silence_detected=3` was observed, with `no_audible_speech`.
+  - Therefore, repeated voice input is currently failing mostly before transcription, at the voice-activity detection / audible-speech gate.
+- Validation run:
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run voice:local-whisper-service:validate` passed.
+  - `npm.cmd run voice:stt-input-queue:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run voice:w3-wake-detector:validate` passed.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+  - `npm.cmd run voice:runtime-flow:probe-cloud-stt-budget` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+- Remaining:
+  - `npm.cmd run voice:goal:audit` still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+  - Remaining partial item is `cloud_stt_stability`.
+  - `npm.cmd run voice:runtime-flow:check-continuous-loop` still reports `continuous_loop_recoverable_retry_proved_without_transcript`.
+  - Required real proof is still two successful operator speech turns through the full path: `stt_start_requested -> local_stt_recording_started -> local_stt_voice_detected -> local_stt_transcribe_request -> local_stt_transcribe_result.success=true`.
+
+## 2026-06-30 STT Specialist Cloud STT Latency Budget Update
+
+- Active goal remains open. This update improves cloud STT latency behavior but does not claim cloud Web Speech recognition is fully stable.
+- Problem verified before change:
+  - Renderer still passed `timeout_ms=24000` to `zhineng:status-dialogue:chrome-stt:transcribe`.
+  - Historical cloud STT probes showed 10s+ `no-speech` waits and one 24s `chrome_stt_timeout`.
+  - `probe-cloud-stt` allowed two attempts and a 120s wait window, which made failed cloud STT tests too slow for the current low-latency objective.
+- Implemented:
+  - Added `STATUS_DIALOGUE_CLOUD_STT_DEFAULT_TIMEOUT_MS=7000`.
+  - Added `STATUS_DIALOGUE_CLOUD_STT_MIN_TIMEOUT_MS=3000`.
+  - Added `STATUS_DIALOGUE_CLOUD_STT_MAX_TIMEOUT_MS=12000`.
+  - Renderer now passes `timeout_ms: timeoutMs` instead of hard-coded `24000`.
+  - Runtime probe config now accepts `status_dialogue_cloud_stt_timeout_ms`.
+  - `ZHINENG_CHROME_STT_TIMEOUT_MS` is passed from the restart/preflight script through main process graph state into the renderer.
+  - Cloud STT `timeout` now opens the degraded circuit immediately, routing the next formal voice input to local Whisper instead of inviting repeated slow cloud retries.
+  - `voice:runtime-flow:probe-cloud-stt` now uses one attempt, `--chrome-stt-timeout-ms=7000`, and a 30s wait window.
+- Boundary:
+  - This is a latency guard and fallback hardening, not a proof that Chrome Web Speech cloud STT is stable.
+  - Default real-time STT remains local Whisper.
+  - No raw audio persistence was added.
+  - No world model write and no `requirement_packet.v1`.
+- Validation:
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:goal:audit` passed with `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run voice:local-whisper-service:validate` passed.
+  - `npm.cmd run voice:stt-input-queue:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run voice:w3-wake-detector:validate` passed.
+- Remaining:
+  - Real GUI cloud STT still needs a fresh runtime probe if we want to observe the new 7s timeout budget in logs.
+  - Real continuous voice loop still needs two successful operator speech turns.
+  - Historical CosyVoice slow synthesis evidence remains until a fresh GUI voice turn proves the current Edge stream path latency.
+
+## 2026-06-30 STT Specialist Runtime Recheck: Lag And Multi-Input Status
+
+- Active goal remains open: cloud STT stability, input queue, continuous listening, receiving formal input during TTS playback, local Whisper persistent service, dialogue state completion, and Xiaozhi-style dialogue logic verification.
+- Current goal audit result remains `incomplete`: `proved=7 / partial=1 / missing=0 / total=8`.
+- Remaining partial item is still `cloud_stt_stability`.
+- Current lag evidence:
+  - Local Whisper persistent service is available and validated.
+  - Latest local STT health evidence is `ready`, latency about `13ms`.
+  - Controlled continuous idle-silence probe now fast-fails at about `3243ms` instead of waiting for the full recording window.
+  - Runtime audit still preserves historical slow TTS evidence from CosyVoice: `tts_synthesis_avg_ms=13353`, `tts_synthesis_max_ms=15979`, `tts_queue_end_to_end_max_ms=45204`.
+  - Runtime audit still preserves historical cloud STT failure evidence; cloud STT itself is not stable and is guarded by degraded-to-local fallback.
+- Current multi-input evidence:
+  - Input queue and TTS interruption paths remain validated.
+  - Real GUI continuous loop preflight is ready, but not complete.
+  - `voice:runtime-flow:check-continuous-loop` currently reports `continuous_loop_recoverable_retry_proved_without_transcript`.
+  - Real GUI evidence shows loop start and STT resume, but no two-turn successful transcription proof yet.
+  - Required operator action remains: start loop, speak two audible complete Chinese sentences, then run the continuous-loop wait/check command.
+- Fixes added in this recheck:
+  - Runtime probe logs now include `runtime_probe` on `status_dialogue_ui_runtime_loaded` and `stt_adapter_runtime_selected`.
+  - Goal audit, runtime audit, and continuous-loop wait now exclude runtime probe windows even when an older probe created untagged adjacent events.
+  - Continuous-listening validation now checks that runtime probe marker logs are tagged and real operator loop waits exclude runtime probes.
+- Validation run:
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run voice:local-whisper-service:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:probe-continuous-fast-fail` passed.
+  - `npm.cmd run voice:goal:audit` passed with `result=incomplete`.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:runtime-flow:check-continuous-loop` intentionally remains not passed until real two-turn transcript proof exists.
+
+## 2026-06-30 STT Specialist Check: Current Goal, Lag, And Multi-Input Result
+
+- Current active goal remains: cloud STT stability, input queue, continuous listening, accepting input during TTS playback, local Whisper persistent service, dialogue state completion, and checking whether Xiaozhi-style dialogue logic is actually applied.
+- Current audit result: `npm.cmd run voice:goal:audit` still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`. The remaining partial item is `cloud_stt_stability`.
+- Verified lag causes:
+  - Cloud STT fake-audio probes launched Chrome with `fake_audio_requested=true`, `fake_audio_exists=true`, and `fake_audio_enabled=true`, but Web Speech returned `no-speech` twice, about `9.9s-10.6s` per attempt, then degraded to local Whisper.
+  - Local Whisper successful transcriptions are not the main bottleneck: successful samples were about `1273ms` and `1325ms`.
+  - Local STT no-voice samples previously waited about `10.8s-10.9s` before returning `no_audible_speech`.
+  - Historical CosyVoice cold synthesis remains in the runtime audit: `tts_synthesis_avg_ms=13353`, `tts_synthesis_max_ms=15979`, `tts_queue_end_to_end_max_ms=45204`.
+- Verified multi-input cause:
+  - Successful local microphone samples had signal around `-36 dBFS` and `-27 dBFS`.
+  - Later failed local samples had signal around `-68 dBFS` and `-70 dBFS`, so the recorder correctly treated them as silence.
+  - Current GUI logs after the latest runtime marker show the continuous loop is not started; preflight says the next operator step is `click_start_loop_and_speak_two_complete_chinese_sentences`.
+- Implemented in this check:
+  - Lowered local STT VAD gate from `rms=0.006 / peak=0.035` to `rms=0.003 / peak=0.02`.
+  - Added `STATUS_DIALOGUE_LOCAL_STT_CONTINUOUS_NO_VOICE_FAST_FAIL_MS=3200`.
+  - Added `local_stt_continuous_no_voice_fast_fail` runtime event.
+  - Continuous listening now treats `no_audible_speech`, `local_audio_too_short`, `cloud_no_speech`, and `cloud_no_speech_progress` as idle silence that resumes listening without consuming the non-idle retry budget.
+  - Continuous idle silence no longer appends a visible system dialogue message for every empty listen window.
+- Validation:
+  - `node --check scripts\validate-status-dialogue-continuous-listening.cjs` passed.
+  - `node --check scripts\wait-status-dialogue-continuous-loop.cjs` passed.
+  - `npm.cmd run voice:continuous-listening:validate` passed with `loop_fast_fails_idle_silence=true`.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:goal:audit` passed with `result=incomplete`.
+- Remaining real validation:
+  - Restart/reload the right-bottom GUI so it uses the rebuilt renderer.
+  - Click `loop`, speak two complete Chinese sentences when it shows listening, then run `npm.cmd run voice:runtime-flow:wait-continuous-loop`.
+  - Cloud Web Speech recognition itself remains unproved and should stay behind the local fallback guard.
+
+## 2026-06-30 STT 专项：当前目标、卡顿原因与 loop 静音恢复修复
+
+- 当前 active goal：云端 STT 稳定性、输入队列、连续监听、TTS 播放期间接收输入、本地 Whisper 常驻服务、对话状态补强，以及检查小智式对话逻辑是否实际应用。
+- 当前审计结果：`voice:goal:audit` 仍为 `result=incomplete`，汇总为 `proved=7 / partial=1 / missing=0 / total=8`，剩余 partial 主要是 `cloud_stt_stability`。
+- 最新真实 GUI marker：`2026-06-30T03:11:40.865Z`；默认 STT 为 `local`，来源为 `local_whisper_persistent_service`；最新本地 STT health 为 `ready`，latency 约 `13ms`。
+- 卡顿原因：本地 Whisper 成功样本约 `1273ms` 与 `1325ms`，不是主要卡顿源；当前 runtime audit 仍记录历史 CosyVoice 冷合成长尾，`tts_synthesis_avg_ms=13353`、`tts_synthesis_max_ms=15979`、`tts_queue_end_to_end_max_ms=45204`。结论是语音输出卡顿主要来自高质量 CosyVoice 冷合成和播放队列。
+- 当前默认输出模式显示为 `edge_readaloud_stream`，但仍需要真实 GUI 新一轮语音对话确认 live TTS 是否还命中旧 CosyVoice 慢路径。
+- 多次语音输入只有一次有效的根因：旧逻辑在 `voiceErrorRef.current` 存在时直接把 continuous loop 切到 `paused_error`；旧日志中 `local_stt_silence_detected` 后出现 `continuous_voice_session_paused_error`，该策略与连续监听目标冲突。
+- 本轮修复：新增 `STATUS_DIALOGUE_CONTINUOUS_VOICE_RECOVERABLE_ERROR_MAX_RETRIES=3`、`continuousVoiceRecoverableErrorRef`、`continuousVoiceRecoverableErrorCountRef`；本地 `local_audio_too_short`、`no_audible_speech` 和云端 `cloud_no_speech` 被标记为可恢复错误。
+- 新行为：continuous loop 遇到可恢复错误时不再直接暂停，而是写入 `continuous_voice_session_recoverable_error_retry`，清除 transient error 后回到正常 idle scheduler；硬错误或可恢复错误超过 3 次后仍会进入 `paused_error`。
+- 边界不变：不保存原始音频、不写世界模型、不创建 `requirement_packet.v1`。
+- 真实 GUI 无人声实测结果：自动点击右下角 GUI `loop` 后，第一次录音因无人声进入 `local_stt_silence_detected`，随后出现 `continuous_voice_session_recoverable_error_retry`，随后自动出现第二次 `continuous_voice_session_resume_scheduled`、`continuous_voice_session_resume_stt`、`stt_start_requested` 与 `local_stt_recording_started`。
+- `voice:runtime-flow:check-continuous-loop` 当前分类为 `continuous_loop_recoverable_retry_proved_without_transcript`。这证明 loop 不再因一次静音中断，但尚未证明真实语音转文字成功。
+- 仍需真实验收：操作者启动 `loop` 后说两句完整中文，至少两轮满足 `stt_start_requested -> local_stt_recording_started -> local_stt_voice_detected -> local_stt_transcribe_request -> local_stt_transcribe_result.success=true`。
+- 验证结果：`node --check scripts\wait-status-dialogue-continuous-loop.cjs` passed；`node --check scripts\validate-status-dialogue-continuous-listening.cjs` passed；`npm.cmd run voice:continuous-listening:validate` passed；`npm.cmd run typecheck` passed；`npm.cmd run build` passed；`npm.cmd run voice:runtime-flow:audit` passed with `status=warn`；`npm.cmd run voice:goal:audit` passed with `result=incomplete`。
+
+## 2026-06-30 STT Specialist: Continuous Formal STT Loop
+
+- Follow-up runtime probe:
+  - Added isolated Electron probe command:
+    - `npm.cmd run voice:runtime-flow:probe-continuous-loop`
+  - Added runtime probe mode:
+    - `continuous_voice_loop`
+  - Added controlled events:
+    - `status_dialogue_continuous_voice_loop_probe_start`
+    - `status_dialogue_continuous_voice_loop_probe_complete`
+    - `status_dialogue_continuous_voice_loop_probe_observed`
+  - Probe result:
+    - The isolated probe passed.
+    - `voice-flow-20260630.jsonl` recorded `continuous_voice_session_enabled`.
+    - It recorded `continuous_voice_session_resume_scheduled`.
+    - It recorded `continuous_voice_session_resume_stt`.
+    - It recorded `status_dialogue_continuous_voice_loop_probe_complete.success=true`.
+  - Boundary:
+    - This probe proves the scheduler and logging path.
+    - It intentionally does not open the microphone.
+    - It does not replace real operator two-turn microphone validation.
+
+- Scope:
+  - Continued the active STT specialist goal.
+  - Focused on the real cause behind "multiple voice inputs only one effective": the formal STT path was still one-shot unless the operator clicked STT again or W3 wake handoff triggered it.
+- Code updated:
+  - `D:\zhineng\sightflow-desktop-agent-main\src\renderer\src\zhineng-console\ZhinengConsole.tsx`
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\validate-status-dialogue-continuous-listening.cjs`
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\audit-status-dialogue-goal-completion.cjs`
+  - `D:\zhineng\sightflow-desktop-agent-main\package.json`
+- Added:
+  - `status_dialogue_continuous_voice_session.v1`.
+  - `STATUS_DIALOGUE_CONTINUOUS_VOICE_RESUME_DELAY_MS=650`.
+  - `continuousVoiceSessionEnabledRef`.
+  - `continuousVoiceResumeTimerRef`.
+  - `continuousVoiceResumeInFlightRef`.
+  - UI status row: `loop on/off`, `state`, `resumes`, `delay`.
+  - UI action: `start loop` / `stop loop`.
+  - Runtime events:
+    - `continuous_voice_session_enabled`
+    - `continuous_voice_session_disabled`
+    - `continuous_voice_session_resume_scheduled`
+    - `continuous_voice_session_resume_stt`
+    - `continuous_voice_session_paused_error`
+- Behavior:
+  - The continuous loop reuses the existing formal `startSpeechRecognition` path.
+  - It waits while dialogue is busy.
+  - It waits while TTS is queued, synthesizing, or playing.
+  - It waits while the dialogue input queue is not empty.
+  - It resumes STT after the system is idle for 650ms.
+  - It pauses on STT error to avoid silent/no-mic retry loops.
+  - Enabling the loop disables the W3 wake detector, because W3 is a wake phrase detector and this loop is a formal STT session controller.
+  - No raw audio persistence, no world model write, no `requirement_packet.v1`, no new same-level dialogue system.
+- Verification:
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run voice:w3-wake-detector:validate` passed.
+  - `npm.cmd run voice:stt-input-queue:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+  - `npm.cmd run voice:local-whisper-service:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:stream-loop:validate` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:goal:audit` passed with `result=incomplete`.
+- Current result:
+  - Static and build-level implementation is complete for the formal continuous STT loop.
+  - Real operator evidence is still required: click `start loop`, speak at least two turns, and verify `continuous_voice_session_resume_stt` followed by `local_stt_*` and `submitDialogue` events.
+- Remaining:
+  - Cloud STT recognition itself is still not stable; degraded-to-local fallback remains the current guard.
+  - Real W3 wake handoff and real formal STT loop resume are still unproved in operator runtime logs.
+  - Historical slow CosyVoice samples remain; the current default is `edge_readaloud_stream`, but fresh GUI latency still needs operator validation.
+
+## 2026-06-30 STT Specialist: Cloud Circuit Open Skip
+
+- Scope:
+  - Continued the active STT specialist goal.
+  - Focused on preventing repeated slow cloud STT waits after cloud STT has degraded.
+- Code updated:
+  - `D:\zhineng\sightflow-desktop-agent-main\src\renderer\src\zhineng-console\ZhinengConsole.tsx`
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\validate-status-dialogue-cloud-stt-stability.cjs`
+- Added:
+  - `isCloudSttCircuitOpen`.
+  - `cloud_stt_circuit_open_skip_to_local`.
+- Behavior:
+  - If the operator manually selects `cloud` after cloud STT is degraded or `recovery_action=switch_local`, the main STT button skips Chrome STT.
+  - The GUI logs the skip, switches visible STT adapter back to local, and calls the existing `startLocalSpeechTranscription` path.
+  - This prevents another 10s+ cloud STT wait after the circuit is already open.
+  - No world model write, no `requirement_packet.v1`, no new STT subsystem.
+- Verification:
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+  - `npm.cmd run voice:stt-input-queue:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:restart-for-retest` passed.
+  - `npm.cmd run voice:runtime-flow:check-marker` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:goal:audit` passed with `result=incomplete`.
+- Current normal GUI marker:
+  - `default_stt_adapter=local`.
+  - local STT health `status=ready`.
+  - latest health latency `32ms`.
+  - `default_voice_output_mode=edge_readaloud_stream`.
+- Remaining:
+  - Cloud recognition itself is still unstable; this change improves fallback stability and operator latency only.
+  - Real W3 continuous listening still needs operator evidence.
+  - Fresh natural multi-round operator voice test is still needed.
+
+## 2026-06-30 STT Specialist: Input Queue Drain Guard
+
+- Scope:
+  - Continued the active STT specialist goal.
+  - Focused on repeated input reliability while TTS is playing, interrupted, failed, or stuck.
+- Code updated:
+  - `D:\zhineng\sightflow-desktop-agent-main\src\renderer\src\zhineng-console\ZhinengConsole.tsx`
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\validate-status-dialogue-stt-input-queue.cjs`
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\validate-status-dialogue-tts-input-boundary.cjs`
+- Added:
+  - `STATUS_DIALOGUE_INPUT_QUEUE_DRAIN_WATCHDOG_MS=8000`.
+  - `isVoicePlaybackTerminalForInputQueue`.
+  - `drainNextQueuedDialogueInput`.
+  - `dialogue_input_dequeued_after_queue_release`.
+  - `dialogue_input_queue_drain_watchdog`.
+- Behavior:
+  - Queue still drains immediately after normal TTS `complete`.
+  - Queue now also drains after voice queue terminal states `idle`, `complete`, or `error`.
+  - If a queued input remains blocked by a stale/non-terminal voice state for 8 seconds, the watchdog releases the stale voice state and submits the queued input through the existing `submitDialogue` path.
+  - No world model write, no `requirement_packet.v1`, no new same-level dialogue system.
+- Verification:
+  - `npm.cmd run voice:stt-input-queue:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:probe-tts-input-interrupt` passed.
+  - `npm.cmd run voice:runtime-flow:restart-for-retest` passed.
+  - `npm.cmd run voice:runtime-flow:check-marker` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:goal:audit` passed with `result=incomplete`.
+- Runtime evidence:
+  - latest controlled TTS input interrupt probe logged `dialogue_input_queued`.
+  - latest controlled TTS input interrupt probe logged `dialogue_input_dequeued`.
+  - latest release logged `dialogue_input_dequeued_after_tts_complete` with `trigger=tts_complete`.
+  - release age was `96ms`.
+  - runtime audit now reports `input_queued_count=4` and `input_dequeued_count=4`.
+- Current normal GUI marker:
+  - `default_stt_adapter=local`.
+  - `source=local_whisper_persistent_service`.
+  - local STT health `status=ready`.
+  - latest health latency `49ms`.
+- Remaining:
+  - Cloud STT is still not proven stable; degraded-to-local fallback exists.
+  - Real operator W3 continuous listening remains unproved; controlled W3 handoff probe passed.
+  - Fresh natural multi-round operator voice test after Edge TTS default switch is still needed.
+
+## 2026-06-29 STT 专项：GUI 运行时修复版本标记
+
+- 问题背景：
+  - 旧 `voice-flow` 日志无法证明右下角 GUI 是否已经加载到最新 STT 修复。
+  - 继续用旧日志判断新补丁会产生误判：既可能是逻辑没生效，也可能只是窗口没重启。
+- 本轮新增：
+  - renderer 新增 `STATUS_DIALOGUE_STT_RUNTIME_FIX_MARKER=stt-local-observability-2026-06-29-v2`。
+  - 右下角 GUI 加载时写入 `status_dialogue_ui_runtime_loaded`。
+  - 日志包含：
+    - `runtime_fix_marker`
+    - `default_stt_adapter`
+    - `stt_model`
+    - `electron_ipc_available`
+    - `local_whisper_observability`
+    - `cloud_retry_one_shot`
+    - `tts_input_interrupt_observability`
+- 审计器更新：
+  - `voice:runtime-flow:audit` 新增 `expected_runtime_fix_marker_seen`。
+  - 输出 `latest_runtime_fix_marker`、`runtime_loaded_event_count`、`latest_runtime_default_stt_adapter`。
+  - 如果缺少 marker，会明确给出 `latest_gui_runtime_marker_not_observed`。
+  - 严格模式现在必须看到最新 marker，否则失败。
+- 最新旧日志审计结果：
+  - `expected_runtime_fix_marker_seen=false`
+  - `latest_runtime_fix_marker=missing`
+  - `runtime_loaded_event_count=0`
+  - 结论：旧日志不能用于证明本轮 STT 修复失败，只能证明需要重启右下角 GUI 后复测。
+- 本轮验证：
+  - `npm.cmd run voice:local-whisper-service:validate` 通过。
+  - `npm.cmd run voice:runtime-flow:audit` 通过但状态为 `warn`，并明确提示缺少最新 GUI marker。
+  - `npm.cmd run voice:stt-input-queue:validate` 通过。
+  - `npm.cmd run voice:w3-wake-detector:validate` 通过。
+  - `npm.cmd run voice:tts-input-boundary:validate` 通过。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+- 下一步真实复测判断顺序：
+  1. 先确认 `status_dialogue_ui_runtime_loaded` 且 marker 为 `stt-local-observability-2026-06-29-v2`。
+  2. 再确认 `stt_adapter_runtime_selected selected_adapter=local`。
+  3. 再确认 `local_stt_recording_started`。
+  4. 再确认 `local_stt_transcribe_request/result` 或 main 进程 `local_stt_start/complete`。
+  5. 最后在 TTS 播放中插入输入，确认出现 `voice_playback_interrupted_for_formal_input`、`dialogue_input_barge_in` 或过期 TTS 跳过事件。
+
+## 2026-06-29 STT 专项：GUI marker 等待验收脚本
+
+- 新增脚本：`D:\zhineng\sightflow-desktop-agent-main\scripts\wait-status-dialogue-runtime-marker.cjs`。
+- 新增 npm 入口：
+  - `npm.cmd run voice:runtime-flow:wait-marker`
+  - `npm.cmd run voice:runtime-flow:check-marker`
+- 用途：
+  - `check-marker`：立即检查最近真实 `voice-flow` 日志里是否已经出现最新 GUI marker。
+  - `wait-marker`：从命令启动后开始等待最新 GUI marker，适合重启右下角 GUI 时同步观察。
+- 本轮验证：
+  - `npm.cmd run voice:local-whisper-service:validate` 通过，且已覆盖 marker 等待脚本存在性。
+  - `node --check scripts/wait-status-dialogue-runtime-marker.cjs` 通过。
+  - `node --check scripts/audit-status-dialogue-runtime-voice-flow.cjs` 通过。
+  - `npm.cmd run voice:runtime-flow:check-marker` 当前返回 `missing_runtime_marker`，这是预期结果，因为右下角 GUI 尚未重启到最新构建。
+  - 当前机器上存在主 Electron 进程 `electron.exe .`，未自动关闭，避免影响其它线程和当前 GUI 会话。
+- 下一步建议流程：
+  1. 在 `D:\zhineng\sightflow-desktop-agent-main` 运行 `npm.cmd run voice:runtime-flow:wait-marker`。
+  2. 重启右下角 GUI。
+  3. 等待命令输出 marker found。
+  4. 再进行两轮真实麦克风输入测试。
+  5. 最后运行 `npm.cmd run voice:runtime-flow:audit`。
+
+## 2026-06-29 STT 专项：独立 Electron marker probe
+
+- 新增测试模式：`TEST_MODE=status-dialogue-marker`。
+- 新增命令：`npm.cmd run voice:runtime-flow:probe-marker`。
+- 行为：
+  - 先执行 `electron-vite build`。
+  - 启动独立 Electron 测试进程。
+  - 加载 `window=zhineng-graph` 页面。
+  - 只注册 `zhineng:status-dialogue:voice-log`，等待 renderer 写入 `status_dialogue_ui_runtime_loaded`。
+  - 写入 `status_dialogue_marker_probe_complete` 后自动退出。
+- 当前结果：
+  - `voice:runtime-flow:probe-marker` 通过。
+  - `voice:runtime-flow:check-marker` 仍返回 `missing_runtime_marker`，因为该命令现在默认排除 `marker_probe=true`，只验收右下角真实 GUI。
+  - `voice:runtime-flow:audit` 当前区分：
+    - `probe_runtime_fix_marker_seen=true`
+    - `real_gui_runtime_fix_marker_seen=false`
+  - 当前 `known_bottlenecks` 包含 `right_bottom_gui_runtime_marker_not_observed`。
+- 解释：
+  - 独立 probe 证明“当前构建的 renderer 能通过真实 Electron IPC 写入 marker”。
+  - 这不等于右下角真实 GUI 已更新。
+  - 后续真实验收仍必须重启右下角 GUI，并观察非 probe 的 `status_dialogue_ui_runtime_loaded`。
+
+## 2026-06-29 STT 专项：审计口径修正，排除 probe 误触发
+
+- 问题：
+  - 独立 marker probe 会写入 `stt_adapter_runtime_selected source=local_whisper_persistent_service`。
+  - 旧审计器用文本包含判断 `local_whisper_persistent_service`，导致 `local_stt_events_seen=true`，但这不是右下角真实麦克风 STT 证据。
+- 修正：
+  - `local_stt_events_seen` 只接受非 probe 的本地健康检查、录音、转写、main 本地 STT 服务事件。
+  - `stt_adapter_runtime_selected` 只有 `marker_probe !== true` 时才计入真实 GUI adapter 选择。
+  - 新增 `probe_stt_adapter_selected_count`，单独统计 probe adapter 事件。
+- 最新审计结果：
+  - `probe_runtime_fix_marker_seen=true`
+  - `real_gui_runtime_fix_marker_seen=false`
+  - `local_stt_events_seen=false`
+  - `probe_stt_adapter_selected_count=1`
+  - `dominant_stt_path=cloud`
+- 当前结论：
+  - 构建与 IPC marker probe 已通过。
+  - 真实右下角 GUI 仍没有本地 STT、录音、转写证据。
+  - 下一步仍必须重启右下角 GUI，再做真实麦克风输入。
+
+## 2026-06-29 STT 专项：真实 GUI 复测预检与受控重启入口
+
+- 新增主进程环境变量：
+  - `ZHINENG_STATUS_DIALOGUE_OPEN_GRAPH_ON_START=1`
+  - 仅在该变量启用时，应用启动后自动打开 3D 图谱 OS。
+  - 正常启动行为不变。
+- 新增脚本：`D:\zhineng\sightflow-desktop-agent-main\scripts\prepare-status-dialogue-real-gui-retest.cjs`。
+- 新增命令：
+  - `npm.cmd run voice:runtime-flow:retest-preflight`
+  - `npm.cmd run voice:runtime-flow:restart-for-retest`
+- 行为边界：
+  - `retest-preflight` 只做 dry-run，列出将要处理的进程和复测动作，不停止任何进程。
+  - `restart-for-retest` 才会执行：
+    1. 停止严格匹配当前 repo 的 `electron-vite dev` 与主 `electron.exe .`。
+    2. 以 `ZHINENG_STATUS_DIALOGUE_OPEN_GRAPH_ON_START=1` 重新启动 `npm.cmd run dev`。
+    3. 等待真实 GUI marker。
+  - 当前未执行 `restart-for-retest`，避免影响其它线程和当前 GUI 会话。
+- 当前 dry-run 结果：
+  - 目标主 Electron：`24352`
+  - Electron 子进程：`28532 / 35016 / 56480 / 43648`
+  - dev 父进程：`53088`
+- 本轮验证：
+  - `node --check scripts/prepare-status-dialogue-real-gui-retest.cjs` 通过。
+  - `npm.cmd run voice:runtime-flow:retest-preflight` 通过，结果为 `dry_run`。
+  - `npm.cmd run voice:local-whisper-service:validate` 通过。
+  - `npm.cmd run typecheck` 通过。
+- 当前结论：
+  - 已具备一个受控的真实 GUI 复测启动入口。
+  - 是否执行 `restart-for-retest` 仍需明确操作意图，因为它会重启当前项目 GUI 运行链路。
+
+## 2026-06-29 STT 专项：默认本地路径与真实 GUI 可观测性补强
+
+- 本轮目标：继续处理“语音仍卡顿、多次输入只有一次有效”的真实原因，避免只依赖静态验证。
+- 已确认的问题：
+  - 旧真实 GUI 日志仍只观察到 `chrome_stt_*`，没有本地 Whisper 命中事件。
+  - `retry cloud` 按钮此前会把全局 `selectedSttAdapter` 改成 `cloud`，导致后续普通 STT 点击可能持续走云端慢路径。
+- 本轮修复：
+  - `retry cloud` 改为一次性云端重试，不再持久化修改全局 STT adapter。
+  - 新增 `stt_adapter_runtime_selected` 日志，记录当前 GUI 选择的是 `local` 还是 `cloud`。
+  - 新增 `cloud_stt_retry_one_shot` 日志，区分“临时云端重试”和“全局选择云端”。
+  - 新增本地 STT GUI 阶段日志：
+    - `local_stt_recording_start_request`
+    - `local_stt_recording_started`
+    - `local_stt_recording_stopped`
+    - `local_stt_transcribe_request`
+    - `local_stt_transcribe_result`
+    - `local_stt_recording_failed`
+  - 新增 `local_stt_health_request` / `local_stt_health_result`，用于确认右侧 GUI 是否实际检查了本地 Whisper 常驻服务。
+  - 所有新增日志只记录 adapter、状态、计数、延迟和错误摘要，不保存原始音频。
+- 审计器同步：
+  - `voice:runtime-flow:audit` 现在区分：
+    - 本地 adapter 是否已被选中。
+    - 本地录音是否开始。
+    - 本地 Whisper 转写是否真的被调用。
+  - `voice:runtime-flow:audit:strict` 现在要求真实 GUI 日志出现本地 Whisper 转写事件。
+- 本轮验证：
+  - `npm.cmd run voice:local-whisper-service:validate` 通过。
+  - `npm.cmd run voice:runtime-flow:audit` 通过但状态仍为 `warn`，因为旧日志尚未包含本轮新增事件。
+  - `npm.cmd run voice:stt-input-queue:validate` 通过。
+  - `npm.cmd run voice:tts-input-boundary:validate` 通过。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+- 当前结论：
+  - 已修复一个会让 GUI 继续走云端慢路径的 UI 逻辑风险。
+  - 已补齐真实 GUI 验收所需日志证据点。
+  - 仍需重启右下角 GUI 后进行真实麦克风测试，再运行 `voice:runtime-flow:audit` 复核；未复测前不能宣称 STT 专项完成。
+
+## 2026-06-29 STT 专项：真实 GUI voice-flow 审计器
+
+- 当前目标仍是 STT 专项：云端 STT 稳定性、输入队列、连续监听、TTS 播放期间接收输入、本地 Whisper 常驻服务、对话状态补强，以及小智式对话逻辑是否实际应用。
+- 新增只读审计脚本：`D:\zhineng\sightflow-desktop-agent-main\scripts\audit-status-dialogue-runtime-voice-flow.cjs`。
+- 新增 npm 入口：
+  - `npm.cmd run voice:runtime-flow:audit`
+  - `npm.cmd run voice:runtime-flow:audit:strict`
+- 审计对象：`D:\zhineng\runtime\status-dialogue-logs\voice-flow-*.jsonl`。
+- 最新审计报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-reports\status-dialogue-runtime-voice-flow-audit-1782739058364.json`。
+- 最新真实 GUI 日志结论：
+  - 小智式桥接事件存在，包含 `hello / listen_start / listen_detect / stt_result / llm_start / tts_start / tts_stop`。
+  - GUI 实测仍主要命中 Chrome/WebSpeech 云端 STT，`dominant_stt_path=cloud`。
+  - 最近云端 STT 成功样本最大 `12211ms`，平均 `8179ms`。
+  - GUI 日志未观察到本地 Whisper 路径，`local_stt_events_seen=false`。
+  - CosyVoice 未缓存合成最大 `28362ms`，平均 `14017ms`。
+  - 单轮 TTS 队列最长 `59362ms`，其中 `total_tts_ms=42465ms`，`total_playback_ms=10957ms`。
+  - 后续输入最大排队等待 `13386ms`，因此“多次语音输入只有一次有效”的体感主要来自输入被旧 TTS 队列拖住。
+  - 当前真实日志未观察到 `voice_playback_interrupted_for_formal_input`，说明需要重启 GUI 后复测新补丁是否生效。
+- 静态和探针验证结果：
+  - `npm.cmd run voice:stt-input-queue:validate` 通过。
+  - `npm.cmd run voice:tts-input-boundary:validate` 通过。
+  - `npm.cmd run voice:dialogue-state-policy:validate` 通过。
+  - `npm.cmd run voice:local-whisper-service:validate` 通过。
+  - `npm.cmd run voice:w3-wake-detector:validate` 通过。
+  - `npm.cmd run voice:stream-loop:validate` 通过，探针链路 `stt_uses_persistent_service=true`，`stt_ms=1299ms`，缓存 TTS `total_tts_ms=16ms`。
+  - `npm.cmd run typecheck` 通过。
+- 当前判断：
+  - 代码层优化已经具备输入队列、TTS 播放期间输入边界、本地 Whisper 常驻服务、小智式状态链路和状态化回复策略。
+  - 真实 GUI 体验仍卡顿的直接证据是旧运行实例中仍走云端 STT 和 CosyVoice 未缓存合成长尾。
+  - 下一步必须重启 GUI，用 `voice:runtime-flow:audit` 复测真实日志；严格通过条件是出现本地 STT 命中、正式输入中断旧 TTS 或过期 TTS 跳过事件，并且不再出现十几秒级输入排队。
+
+## 2026-06-29 STT 专项：TTS 忙碌期间正式输入优先与状态结论补强
+
+- 当前 `/goal` 仍处于执行中，本轮只推进主体状态对话框自有链路，不写世界模型、不创建 `requirement_packet.v1`、不接入人际/事件图谱真实数据。
+- 真实 GUI 日志复核结论：
+  - 最近一次卡顿样本中，云端 STT 成功后记录为 `stt_input_queued`，等待约 `13386ms` 后才进入 `dialogue_input_dequeued_after_tts_complete`。
+  - 同一轮旧 TTS 的 `tts_queue_complete` 显示总耗时约 `59362ms`，其中未缓存 CosyVoice 合成约 `42465ms`。
+  - 因此“多次语音输入只有一次有效”的主要体感原因不是 STT 结果完全丢失，而是正式输入被旧 TTS 合成/播放拖住。
+- 本轮实现：
+  - `ZhinengConsole.tsx` 新增 `voiceLatencyRef`，避免 `submitDialogue` / queue drain 使用 React 闭包中的旧 `voiceLatency.stage`。
+  - `enqueueDialogueInput` 支持显式保留 `queuedDuringTts` 与原始 `voiceQueueStatus`，即使旧 TTS 被立即中断，也能追溯输入是在 TTS 忙碌期间到达。
+  - 新增 `interruptVoicePlaybackForFormalInput`：当正式文字或 STT 转写输入到达，而旧 TTS 正在 `synthesizing/playing/tts_generating` 且模型仍忙时，先中断旧语音队列，再把输入放入同一对话队列。
+  - `submitDialogue` 改为读取 `voiceLatencyRef.current.stage` 和 `voicePlaybackQueueStateRef.current.status` 的最新值。
+  - 新增 `buildStatusDialogueStateLines`，统一生成状态结论、依据、关注点和下一步。
+  - 模型 prompt 的 `voice_opening_policy` 改为使用状态专属第一句，并明确禁止把具体计数泛化成“状态有缺口”。
+  - 本地 fallback 的 `reply/voiceText/thoughts` 已接入 `stateLines.conclusion/evidence/attention`。
+- 本轮验证：
+  - `npm.cmd run voice:tts-input-boundary:validate` 通过，新增覆盖 `formal_input_interrupts_tts_before_queueing` 与 `latency_state_ref_prevents_stale_playback_detection`。
+  - `npm.cmd run voice:dialogue-state-policy:validate` 通过，新增覆盖 `buildStatusDialogueStateLines` 与状态专属开场。
+  - `npm.cmd run voice:stt-input-queue:validate` 通过，新增覆盖 `busy_tts_input_interrupts_then_enqueues`。
+  - `npm.cmd run typecheck` 通过。
+- 仍未完成：
+  - GUI 右下角真实麦克风连续多轮实测仍需复跑。
+  - W3 唤醒短语到本地 STT handoff 的真实 GUI 验收仍未完成。
+  - 当前修复是“正式输入优先中断旧 TTS”，不是完整全双工回声消除。
+  - 未缓存 CosyVoice 冷合成仍可能很慢，后续仍需低延迟 TTS 主路径或预热策略。
+
+## 2026-06-28 V5 通用流式 TTS 真实配置模式补强
+
+- 已将 `validate-generic-streaming-tts-adapter.cjs` 扩展为三模式：
+  - `mock`：默认本地 mock，证明系统链路。
+  - `configured-mock`：通过真实配置读取路径接本地 mock，证明配置分支可执行。
+  - `configured`：读取 `SIGHTFLOW_STATUS_DIALOGUE_TTS_*` / CLI 参数，直接验证真实 TTS 服务；未配置时必须失败并写未配置报告。
+- 新增命令：
+  - `npm.cmd run voice:generic-tts-stream:validate`
+  - `npm.cmd run voice:generic-tts-stream:validate:configured-mock`
+  - `npm.cmd run voice:generic-tts-stream:validate:configured`
+- 本轮验证：
+  - `mock` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\generic-streaming-tts-validation-mock-20260628131324.json`，`first_audio_payload_ms=53`。
+  - `configured-mock` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\generic-streaming-tts-validation-configured-mock-20260628131323.json`，`first_audio_payload_ms=55`。
+  - `configured` 在未配置真实服务时按预期失败，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\generic-streaming-tts-configured-unconfigured-20260628131358.json`，缺失字段为 `adapter_id / base_url / endpoint_path / model / voice`。
+- 回归验证：
+  - `npm.cmd run voice:pipeline:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782652490909.json`。
+  - `npm.cmd run voice:stream-ipc:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782652487624.json`。
+  - `npm.cmd run voice:stream-loop:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628131524.json`。
+  - `npm.cmd run voice:tts-stream-runtime:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\cosyvoice-http-streaming-validation-20260628131542.json`，CosyVoice 仍为 `interactive_ready=false`、`first_audio_payload_chunk_ms_from_request=11025`。
+  - `npm.cmd run build` 通过；页面 `http://[::1]:5173/?window=zhineng-graph` 返回 200；边界检索未发现浏览器可听 TTS fallback 或 `requirement_packet.v1`。
+- 当前结论：真实低延迟 TTS 服务的验收入口已经具备，并且未配置时不会误判通过。下一步需要配置真实服务后运行 `npm.cmd run voice:generic-tts-stream:validate:configured`，通过后再考虑提升为实时主路径。
+
+## 2026-06-28 V5 通用低延迟流式 TTS 探针
+
+- 已新增通用流式 TTS runtime 探针：`npm.cmd run voice:generic-tts-stream:validate`。
+- 新增脚本：`D:\zhineng\sightflow-desktop-agent-main\scripts\validate-generic-streaming-tts-adapter.cjs`。
+- 探针行为：
+  - 本地启动 mock streaming TTS server，不访问外网。
+  - 使用 `normalizeStatusDialogueTtsConfig` 配置 `custom_streaming_tts_http`。
+  - 通过 `createHttpStreamingTtsAdapter` 消费 HTTP chunked audio frame。
+  - 使用 `assembleStreamingTtsAudioFrames` 验证 frame 顺序、final marker 和可组装音频。
+  - 使用 `buildDefaultStatusDialogueTtsRuntimeCandidates(..., { config })` 验证配置后的低延迟候选能被选为 `live_dialogue_primary` 候选。
+- 验证报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\generic-streaming-tts-validation-20260628130343.json`。
+- 关键结果：
+  - `adapter_id=custom_streaming_tts_http`
+  - `selected_candidate_interactive_ready=true`
+  - `first_audio_payload_ms=53`
+  - `total_stream_ms=151`
+  - `audio_frame_count=3`
+  - `final_frame_count=1`
+  - `same_voice_profile=true`
+  - `browser_tts_used=false`
+  - `requirement_packet_created=false`
+  - `world_model_written=false`
+- 同步回归：
+  - `npm.cmd run voice:pipeline:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782651853560.json`。
+  - `npm.cmd run voice:stream-ipc:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782651850586.json`。
+  - `npm.cmd run voice:stream-loop:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628130436.json`。
+  - `npm.cmd run voice:tts-stream-runtime:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\cosyvoice-http-streaming-validation-20260628130450.json`，CosyVoice 仍为 `interactive_ready=false`。
+  - `npm.cmd run build` 通过。
+- 当前结论：系统现在能证明“配置一个足够快的流式 TTS 服务后，V5 候选选择、frame stream、同音色约束和播放队列前置条件成立”。这仍是本地 mock 验证，不等同于真实供应商或真实本地 TTS 服务已达标；下一步需要把真实低延迟服务接到同一配置入口并复跑该探针。
+
+## 2026-06-28 V5 可替换流式 TTS 配置入口补强
+
+- 已补齐低延迟流式 adapter 的运行时配置入口，避免 `custom_streaming_tts_http` / `openai_compatible_streaming_http` 只停留在候选展示层。
+- 核心修复：
+  - `normalizeStatusDialogueTtsConfig` 不再把 `adapter_id` 固定为 `cosyvoice_local_http`。
+  - 支持 `adapter_id / adapterId`、`response_format / responseFormat`、`payload_mode / payloadMode` 等配置别名。
+  - 主进程 `getStatusDialogueTtsConfig` 新增通用环境变量：
+    - `SIGHTFLOW_STATUS_DIALOGUE_TTS_ADAPTER_ID`
+    - `SIGHTFLOW_STATUS_DIALOGUE_TTS_BASE_URL`
+    - `SIGHTFLOW_STATUS_DIALOGUE_TTS_ENDPOINT`
+    - `SIGHTFLOW_STATUS_DIALOGUE_TTS_HEALTH_PATH`
+    - `SIGHTFLOW_STATUS_DIALOGUE_TTS_API_KEY`
+    - `SIGHTFLOW_STATUS_DIALOGUE_TTS_MODEL`
+    - `SIGHTFLOW_STATUS_DIALOGUE_TTS_VOICE`
+    - `SIGHTFLOW_STATUS_DIALOGUE_TTS_RESPONSE_FORMAT`
+    - `SIGHTFLOW_STATUS_DIALOGUE_TTS_PAYLOAD_MODE`
+    - `SIGHTFLOW_STATUS_DIALOGUE_TTS_ALLOW_REMOTE`
+    - `SIGHTFLOW_STATUS_DIALOGUE_TTS_STREAM`
+    - `SIGHTFLOW_STATUS_DIALOGUE_TTS_TIMEOUT_MS`
+  - 旧的 `SIGHTFLOW_COSYVOICE_*` 环境变量继续兼容，默认仍走 CosyVoice，不破坏现有 UI 闭环。
+- 安全边界：远程 TTS 仍需显式 `allow_remote=true` / `SIGHTFLOW_STATUS_DIALOGUE_TTS_ALLOW_REMOTE=1`，否则只允许 localhost / 127.0.0.1 / ::1。
+- 验证：
+  - `npm.cmd run voice:pipeline:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782651369959.json`。
+  - 新增检查：`tts_config_custom_adapter=custom_streaming_tts_http`、`tts_config_openai_adapter=openai_compatible_streaming_http`、`tts_config_openai_stream_body=true`。
+  - `npm.cmd run voice:stream-ipc:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782651409133.json`。
+  - 新增检查：`main_tts_generic_config_env=true`、`core_tts_adapter_id_configurable=true`。
+  - `npm.cmd run voice:stream-loop:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628125652.json`。
+  - `npm.cmd run build` 通过。
+  - `npm.cmd run voice:tts-stream-runtime:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\cosyvoice-http-streaming-validation-20260628125742.json`，CosyVoice 仍为 `interactive_ready=false`。
+- 当前结论：V5 现在具备“默认 CosyVoice 稳定路径 + 可配置低延迟流式 adapter 入口”。真正低延迟体验还需要接入一个首个可听音频低于预算的 TTS 服务后复跑 runtime 探针。
+
+## 2026-06-28 V0-V6 验证刷新
+
+- 本轮按当前模块目标复跑验证后再判断下一步，没有新增世界模型写入、需求传递或外部动作通道。
+- 通过：`npm.cmd run voice:pipeline:validate`，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782650626652.json`。
+- 通过：`npm.cmd run voice:stream-ipc:validate`，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782650623861.json`。
+- 通过：`npm.cmd run voice:stream-loop:validate`，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628124404.json`。
+- 通过：`npm.cmd run typecheck` 与 `npm.cmd run build`。
+- 通过：`npm.cmd run voice:tts-stream-runtime:validate`，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\cosyvoice-http-streaming-validation-20260628124447.json`。
+- 当前关键结论：
+  - V0：`voice_latency_trace.v1` 覆盖 STT、模型、首句 TTS、总 TTS、首句播放、总播放和句级 segments。
+  - V1：`same_voice_profile=true`，边界检索未发现浏览器可听 TTS fallback。
+  - V2：短句/开场句缓存命中，闭环探针中 `first_tts_ms=4`、`total_tts_ms=8`、`runtime_voice_cache_hits=2`。
+  - V3：`first_sentence_ready_before_model_done=true`，`first_tts_started_before_model_done=true`。
+  - V4：播放队列 segments 覆盖两句，`failed_chunk_count=0`。
+  - V5：HTTP chunked adapter 可用，但 CosyVoice 本轮 `first_audio_payload_chunk_ms_from_request=10407`、`interactive_ready=false`，只能作为高质量缓存/非实时/克隆路径，不应作为实时主对话路径。
+  - V6：`voice_tone_parameters.v1` 已进入播放计划，`tone_parameters_same_voice=true`、`tone_parameters_plan_speed_applied=true`。
+- 页面验证：`http://[::1]:5173/?window=zhineng-graph` 返回 200；内置浏览器重载后确认 `Subject Status Dialogue`、voice 控件和 3D canvas 存在，canvas 为 `1278 x 618`，前端 error 日志为 `0`。
+- 边界验证：可执行代码检索未发现 `requirement_packet.v1`、`new SpeechSynthesisUtterance`、`speechSynthesis.speak`、`synth.speak`、`browser_speech_audio_fallback`。
+
+## 2026-06-28 V6 同音色语气参数落地
+
+- 已新增 `voice_tone_parameters.v1`，把 `urgent / focused / warm / calm / reflective / steady` 映射为同一 voice profile 下的 `speed / pitch / volume` 参数。
+- 已新增 `buildVoiceToneParameters` 与 `applyVoiceToneToPlan`，播放队列会先生成 `effectivePlan`，再进入 `segmentVoiceResponsePlan`、TTS 合成、播放、缓存和 trace。
+- 当前规则保持同一音色：`voice_profile_id` 与 `clone_profile_id` 被锁定到 `resolveAudibleVoiceProfile` 的结果；情绪只改变语速、音高、音量和缓存维度，不切换声音。
+- 典型参数：`urgent.speed=1.08`、`focused.speed=1.03`、`warm.speed=0.98`，用于异常、巡检/任务监督、完成提醒/闲聊的不同语气表达。
+- 已更新静态验证：`voice:pipeline:validate` 检查 `voice_tone_parameters.v1`、同音色约束和参数落到 plan；`voice:stream-ipc:validate` 检查 renderer 使用 `effectivePlan` 进入分句与合成。
+- 最新验证证据：
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782641507145.json`
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782641504236.json`
+  - `npm.cmd run typecheck` 通过。
+- 当前边界：V6 已进入自动化链路和 UI 播放计划；真实扬声器听感仍需在 GUI 实机中确认。CosyVoice 首个可听 payload 仍偏慢，实时主路径仍需后续接入更快的高质量 streaming TTS adapter。
+
+## 2026-06-28 V5 真流式 Adapter 运行态评估
+
+- 已在 `scripts/validate-cosyvoice-http-streaming.cjs` 中补充 `adapter_runtime_assessment`，用于区分“传输层真流式”和“实时对话可用”。
+- 最新验证报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\cosyvoice-http-streaming-validation-20260628094938.json`。
+- 验证结果：`native_streaming_supported=true`，`first_chunk_ms_from_request=10`，`first_audio_payload_chunk_ms_from_request=7690`，`total_request_ms=10883`。
+- PCM live 验证报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\cosyvoice-http-streaming-validation-20260628095242.json`，`first_audio_payload_chunk_ms_from_request=10940`，`interactive_ready=false`。
+- 运行态判定：`dialogue_realtime_grade=slow`，`interactive_ready=false`，`adapter_role=cached_high_quality_or_non_realtime_voice`。
+- 当前结论：CosyVoice 已可作为真 HTTP chunked 流式传输 adapter，但当前首个可听 payload 约 7.7 秒，不适合作为低延迟实时对话主 TTS。当前更适合用于高质量缓存短句、完成提醒、非实时播报和未来克隆音色；实时对话应继续依赖 V2 预热缓存、V3 分句提前入队，并评估更快的同音色流式 adapter。
+- 边界复核：未创建 `requirement_packet.v1`，未写世界模型，未保存麦克风原始音频，未恢复浏览器可听 TTS fallback。
+
+## 2026-06-28 V5 运行态策略接入 UI 与 3D 映射
+
+- `ZhinengConsole.tsx` 新增 `status_dialogue_tts_runtime_policy.v1`，把流式 TTS runtime 证据转成操作者可见的路径策略。
+- 当前策略会区分：`primary_cached_sentence_queue`、`stream_assembled_transport_only`、`live_dialogue_primary_candidate`、`live_dialogue_experimental_only`、`cached_high_quality_or_non_realtime_voice`、`not_runtime_streaming_candidate`。
+- 右侧设置面板新增 `tts path`、`runtime`、`policy`、`first audio` 状态位；面板中只显示短标签，完整原因放在 tooltip。
+- `stream assembled` 固定标记为 transport/assembly 实验，不作为实时播报路径。
+- `stream live pcm` 会在实际播放后按首个 PCM 可听帧更新 `excellent / interactive / borderline / slow`。
+- 3D 粒子 OS 新增 `voice.tts_runtime_policy` 星点，表达输入、输出、负责的运行策略闸口和可追溯 refs。
+- 验证：`npm.cmd run voice:stream-ipc:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782640784081.json`；`npm.cmd run typecheck` 通过。
+- 回归补充：`npm.cmd run voice:pipeline:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782640853169.json`；`npm.cmd run voice:tts-stream-runtime:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\cosyvoice-http-streaming-validation-20260628100113.json`，仍判定 `interactive_ready=false`；`npm.cmd run build` 通过；`http://[::1]:5173/?window=zhineng-graph` 返回 200；可执行代码边界检索未发现浏览器可听 TTS fallback 或 `requirement_packet.v1`。
+
+## 2026-06-28 V5 可替换 TTS 候选槽补全
+
+- 核心契约新增 `status_dialogue_tts_runtime_candidate.v1`。
+- 核心函数新增 `buildDefaultStatusDialogueTtsRuntimeCandidates` 和 `selectStatusDialogueTtsRuntimeCandidate`。
+- 当前候选槽包括：`cosyvoice_local_http`、`openai_compatible_streaming_http`、`custom_streaming_tts_http`。
+- 选择逻辑：只有配置完成、启用、同音色约束成立、且首个可听音频低于交互预算的候选，才会成为实时主对话路径；否则继续选中 CosyVoice 高质量缓存/非实时路径。
+- 右侧设置面板新增 `candidate` 与 `slots` 状态位；3D 粒子 OS 新增 `voice.tts_adapter_candidates` 星点。
+- 验证：`npm.cmd run voice:pipeline:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782641149077.json`；`npm.cmd run voice:stream-ipc:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782641146260.json`；`npm.cmd run typecheck` 通过。
+- 完整回归：`npm.cmd run build` 通过；`npm.cmd run voice:tts-stream-runtime:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\cosyvoice-http-streaming-validation-20260628100720.json`，结果仍为 `interactive_ready=false`、`adapter_role=cached_high_quality_or_non_realtime_voice`；`http://[::1]:5173/?window=zhineng-graph` 返回 200；可执行代码边界检索未发现浏览器可听 TTS fallback 或 `requirement_packet.v1`。
+
+更新时间：2026-06-25
+
+## 当前状态
+
+当前已完成到 Phase 5 的巡逻状态窗口 UI 层：
+
+- Phase 0：计划冻结和边界确认已完成。
+- Phase 1：核心契约、默认配置、STT/TTS 插拔接口骨架已完成。
+- Phase 2：只读状态卡读取、内存态 `status_snapshot.v1` 注入、右侧状态行已完成。
+- Phase 3：对话模型输出 parser、身份规则 guard、本地 fallback 统一出口已完成。
+- Phase 4：语音输入输出插件接口的 UI 状态位和可替换 adapter 表达已完成。
+- Phase 5：右侧主体状态对话框已整理为完整巡逻状态窗口。
+
+当前仍保持 `patrol_only`，但语音输入输出状态已从早期占位进入浏览器能力阶段：
+
+- 不执行需求传递。
+- 不创建 `requirement_packet.v1`。
+- 不写世界模型。
+- 不接第三方或本地真实 STT/TTS 工具。
+- 浏览器 STT 已启用，只有用户点击 `STT` 时才申请麦克风权限。
+- 浏览器 TTS 已启用，只朗读 `StatusDialogueOutput.voiceText`。
+- 不保存音频样本。
+- 不读真实人际关系图谱或事件图谱。
+- 不启动外部模块或动作通道。
+
+## 已实现代码状态
+
+### 契约层
+
+位置：`D:\zhineng\sightflow-desktop-agent-main\src\core\status-dialogue-contracts.ts`
+
+已包含：
+
+- `StatusDialogueConfig`
+- `DialogueInputEnvelope`
+- `StatusDialogueContext`
+- `StatusDialogueOutput`
+- `StatusDialogueModelAdapter`
+- `SpeechToTextAdapter`
+- `TextToSpeechAdapter`
+- `SelfAwarenessProfileRef`
+- `ModuleStatusCard`
+- `StatusSnapshot`
+- `ExpectedStatusModule`
+- `StatusSnapshotRequest`
+- `StatusSnapshotReadResult`
+- `normalizeStatusDialogueConfig`
+- `normalizeModuleStatusCard`
+- `buildStatusSnapshotFromCards`
+- `guardStatusDialogueOutput`
+- `parseStatusDialogueModelOutput`
+- `StatusDialogueSpeechPortState`
+- `StatusDialogueSpeechPortsState`
+- `buildStatusDialogueSpeechPortsState`
+
+当前新增的 Phase 3 能力：
+
+- 远程模型 JSON 输出解析。
+- 远程模型纯文本输出兜底解析。
+- 第一人称身份 guard。
+- 旁白式“系统当前……”自动收束为“我当前……”。
+- `thoughts` 限定为可见关注点摘要，不展示隐藏推理链。
+- `status_refs` 和 `missing_status` 结构化保留。
+- 未接入能力自动进入边界说明，例如 STT 未接入、需求传递未启用。
+
+Phase 4 早期能力：
+
+- STT/TTS 插件端口状态结构。
+- STT 端口可表达 `text_input` fallback。
+- TTS 默认使用 `browser_speech_synthesis` 或 `text_only` fallback。
+- 插件端口均标记为 replaceable，不绑定具体工具。
+- 明确 TTS 只朗读 `voiceText`，不朗读完整上下文。
+
+2026-06-25 后续同步：
+
+- 浏览器 STT 已升级为可点击启动/停止的 `browser_speech_recognition`。
+- 启动 STT 前会进行麦克风权限预检，预检拿到的 audio track 会立即关闭。
+- STT transcript 会进入同一条主体状态对话链路。
+- 当前仍不接第三方或本地真实 STT/TTS 工具。
+
+当前新增的 Phase 5 能力：
+
+- 顶部身份条显示模式、模型/来源和语音输出状态。
+- 状态摘要区显示 global、fresh、stale、missing。
+- 快照来源区显示 snapshot source、状态卡计数和错误摘要。
+- 边界区显示 `patrol_only`、`routing off`、`world write off`、`action off`。
+- 巡逻发现区显示 missing、stale、conflict、read error 摘要。
+- 对话日志支持显示 `status_refs` 和 `missing_status`。
+- 输入区保留禁用 STT 入口、文字输入和发送按钮。
+
+### 主进程层
+
+位置：`D:\zhineng\sightflow-desktop-agent-main\src\main\index.ts`
+
+已包含：
+
+- IPC `zhineng:status-dialogue:snapshot:get`
+- IPC `zhineng:status-dialogue:complete`
+- 只读读取 `runtime/status-cards/*.json`
+- 路径限制在 `zhinengProjectRoot()` 下
+- 目录不存在时不创建目录，返回缺失快照
+- 坏 JSON 进入 `read_errors`
+- 重复 `module_id` 取最新卡并记录冲突
+- 远程 OpenAI-compatible 对话返回带 `adapterId`
+
+### Renderer / UI 层
+
+位置：`D:\zhineng\sightflow-desktop-agent-main\src\renderer\src\zhineng-console\ZhinengConsole.tsx`
+
+已包含：
+
+- 从 3D graph nodes 生成 `expected_modules`
+- 页面加载时刷新状态快照
+- 提交对话前刷新状态快照
+- `StatusDialogueContext.statusSnapshot` 注入模型上下文
+- 本地 fallback 通过 `guardStatusDialogueOutput`
+- 远程模型返回通过 `parseStatusDialogueModelOutput`
+- 右侧对话框显示 `cards fresh/stale/missing`
+- 右侧对话框显示 `STT` / `TTS` 插件状态位
+- 输入栏保留禁用的 `STT` 入口
+- 右侧对话框显示巡逻身份、状态摘要、边界、来源、巡逻发现和引用标签
+- 静态网页预览无 Electron IPC 时走 browser preview fallback
+
+## 当前可观察行为
+
+在静态网页预览中：
+
+- 3D 粒子 OS 正常显示。
+- 右侧 `Subject Status Dialogue` 面板存在。
+- 因无 Electron IPC，snapshot source 显示 `browser preview`。
+- 状态行显示 `WARN cards 0/0/18`，表示 18 个预期模块均未收到状态卡。
+- 本地 fallback 会用第一人称说明“我当前只读取状态，不执行外部动作”。
+- 语音插件状态行会显示 `STT adapter none` 和 `TTS browser_speech_synthesis`。
+- STT 入口按钮禁用，文字输入仍可用。
+- 右侧窗口可以直接看到当前是 `patrol_only` 而不是执行模式。
+
+在 Electron 环境中：
+
+- 主进程可通过 `runtime/status-cards/*.json` 只读生成 snapshot。
+- 模型缺 key、模型失败或返回非 JSON 时，仍可退回本地状态回答。
+- 远程模型返回会被 parser/guard 统一收束。
+- TTS 开启时只朗读 `voiceText`。
+
+## 已验证
+
+- `npm.cmd run typecheck` 通过。
+- `npm.cmd run build` 通过。
+- Phase 2 快照纯函数行为验证通过：fresh、stale、missing、conflict、read_errors 均可生成。
+- Phase 3 parser/guard 行为验证通过：
+  - 旁白式输出转为第一人称。
+  - 纯文本模型输出可解析。
+  - 隐藏推理链提示词从 `thoughts` 中过滤。
+  - 结构化 `status_refs` 和 `missing_status` 保留。
+- Phase 4 语音端口状态验证通过：
+  - 默认 STT 为 `off / text_input`。
+  - 默认 TTS 在 voice off 时为 `off / text_only`。
+  - 开启 voice 后 TTS 可进入 `ready`，前提是浏览器 SpeechSynthesis 可用。
+- Phase 5 巡逻窗口 UI 验证通过：
+  - 模式、模型来源、语音状态、状态卡摘要和边界可见。
+  - 日志可显示状态引用和缺失项。
+- 静态预览截图通过。
+- 3D canvas 像素非空白检查通过。
+
+## Phase 0/1 真实实现同步
+
+本次补齐 Phase 0 和 Phase 1 的真实实现入口，并保持当前目标只属于主体状态对话框自有能力：
+
+- 新增 `status_dialogue_real_env_check.v1`，用于记录 provider 配置、浏览器语音能力、IPC 来源和巡逻边界锁。
+- 新增 `status_dialogue_model_test.v1`，用于用户显式点击后的真实模型 API 探测，不自动调用模型。
+- 新增 IPC `zhineng:status-dialogue:real-env:check` 和 `zhineng:status-dialogue:model:test`。
+- 右侧 `Subject Status Dialogue` 巡逻窗口新增 Phase 0/1 状态块，可直接查看 `phase 0`、`phase 1`、`provider`、`model`、`source` 和检查项。
+- `status-dialogue-system` 星云已新增 Phase 0/1 子粒子，并在目录和 inspector 中显示 `input -> output`、`refs`。
+- 详细记录见 `phase0-phase1-real-implementation.md`。
+
+边界保持不变：不接入世界核心、人际关系图谱、事件图谱、自我意识图谱，不创建 `requirement_packet.v1`。Phase 0 环境检查不申请麦克风权限；语音输入阶段只有用户点击 `STT` 时才由浏览器发起麦克风权限流程。不自动执行 API 探测。
+
+## 语音输入输出真实实现同步
+
+本次开启主体状态对话框自有语音输入输出：
+
+- STT 输入：新增 `browser_speech_recognition`，通过 `window.SpeechRecognition` / `window.webkitSpeechRecognition` 获取 transcript。
+- TTS 输出：继续使用 `browser_speech_synthesis`，只朗读 `StatusDialogueOutput.voiceText`。
+- 右侧巡逻窗口的 `STT` 按钮已从保留状态改为可启动/停止语音识别。
+- 针对 `not-allowed` 新增 Electron audio media 权限放行：只允许 `zhineng-graph` 窗口请求音频权限，不放行视频权限。
+- STT 启动前新增麦克风权限预检，预检音频 track 会立即关闭，不保存音频样本。
+- 新增语音状态行，显示 listening、transcript、fallback 或 error。
+- 语音 transcript 会进入同一条状态对话提交路径，`input_kind` 视为 `speech_transcript`。
+- `status-dialogue-system` 星云已更新 `voice.stt_adapter`、`voice.tts_adapter`、`voice_dialogue` 子粒子的 input/output/ref。
+- 详细记录见 `phase6-voice-io-real-implementation.md`。
+
+边界保持不变：不保存音频样本，不接入世界核心、人际关系图谱、事件图谱、自我意识图谱，不执行需求传递，不触发外部动作。
+
+## 当前未完成
+
+- Phase 6：主体状态对话框更大范围的 8 个子云团完整投射仍未做；当前已完成 Phase 0/1 和语音 I/O 自有能力子粒子投射。
+- 第三方或本地真实 STT/TTS 工具接入未做；当前为浏览器 STT/TTS 第一版。
+- 真实人际关系辅助系统未接入。
+- 真实事件图谱或全域事件图谱未接入。
+- 自我意识图谱未接入，仅使用默认主体配置。
+- 需求传递只保留未来边界，不执行。
+
+## 2026-06-25 真实验证同步
+
+- 已重启当前可见 GUI：新主窗口为 `PID 9116`，启动时间 `2026-06-25 10:28:47`。
+- 已打开 3D 粒子 OS，并确认 `Subject Status Dialogue` 巡逻状态窗口、STT/TTS 端口、状态摘要和边界标签可见。
+- 已执行 `npm.cmd run typecheck`，通过。
+- 已执行 `npm.cmd run build`，通过。
+- 点击 STT 后，浏览器预览页显示语音输入失败原因为没有找到可用麦克风；不是旧的应用层 `not-allowed`。
+- Windows 麦克风设备枚举显示 `麦克风 (High Definition Audio Device)` 存在，但 `Status = Unknown` 且 `DEVPKEY_Device_IsPresent = False`。
+- 当前判断：代码权限链路已经进入运行路径；下一步真实 STT transcript 验证前，需要先让 Windows 录音输入端点变为可用/活动状态。
+
+## 2026-06-25 麦克风恢复后复测同步
+
+- Windows 录音端点已恢复为 `OK`。
+- `DEVPKEY_Device_IsPresent = True`，`DEVPKEY_Device_HasProblem = False`。
+- 3D 粒子 OS 主体状态对话框显示 `MIC READY / speech transcript idle`。
+- 点击 `STT` 后进入 `LISTENING / speech transcript idle`，按钮变为 `stop`。
+- Windows 任务栏麦克风图标亮起，确认页面已经实际获得麦克风输入。
+- 验证完成后已点击 `stop` 停止监听。
+
+当前状态：STT 采集入口已可用；还需要说话测试 transcript 是否稳定进入主体状态对话路径。
+
+## 2026-06-25 transcript 对话链路修复同步
+
+- 已修复“语音可识别但不进入对话链路”的问题。
+- 原因是旧实现只在浏览器返回 `isFinal=true` 时提交，interim transcript 只显示在状态行。
+- 新实现会缓存 STT 会话中的最新 transcript。
+- 收到 final transcript 时立即提交。
+- 如果没有 final，识别结束或点击 `stop` 时会把最后缓存的 transcript 兜底提交到 `submitDialogue(..., "speech_transcript")`。
+- `npm.cmd run typecheck` 通过。
+- `npm.cmd run build` 通过。
+
+当前测试方式：点击 `STT` 后说话；当状态行出现识别文字后，等待自然结束或点击 `stop`，文字应进入对话日志并触发主体状态对话回复。
+
+## 2026-06-25 回复链路复核与语音自动提交同步
+
+- 已确认文本输入回复链路正常：文字提交后进入 `submitDialogue(..., "text")` 并生成系统回复。
+- 当前 Chrome/Vite 预览页因无 Electron IPC，模型来源为 `local fallback`；这不是远程模型回复，但证明对话框回复链路正常。
+- Electron 主进程中 `zhineng:status-dialogue:complete` IPC 存在；有 API key 时会调用 OpenAI-compatible 模型，无 key 或失败时回退本地 fallback。
+- 已增强语音提交链路：interim transcript 稳定 1.2 秒后自动提交，不再必须等待浏览器返回 final 或用户点击 stop。
+- final transcript 仍会立即提交。
+- `stop` / `onend` 仍保留兜底提交。
+- 提交后自动停止当前识别会话，避免持续占用麦克风。
+- `npm.cmd run typecheck` 通过。
+- `npm.cmd run build` 通过。
+
+当前状态：回复链路可用；语音 transcript 现在应在识别稳定后自动进入对话日志并触发回复。远程模型是否参与取决于是否在 Electron 原生窗口内运行以及 API key 是否已配置。
+
+## 2026-06-25 语音 transcript 自动进入对话链路验证
+
+- 已使用隔离 Chrome 自动化实例注入 mock `SpeechRecognition`，模拟返回 transcript：`语音链路自动验证`。
+- 验证结果：右侧主体状态对话框先显示 `MIC READY` 和 transcript，然后自动生成用户消息 `语音链路自动验证`。
+- 验证结果：同一条链路随后生成 `LOCAL FALLBACK` 系统回复，证明 `speech_transcript -> submitDialogue -> reply` 已打通。
+- 截图证据：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-logs\voice-stt-dialogue-chain-mock-20260625.png`。
+- 当前 Chrome/Vite 预览页仍因无 Electron IPC 显示 `local fallback`；这不是远程模型回复。Electron 原生窗口内若 API key 已配置，才会优先尝试真实模型。
+- 本次验证未保存音频样本，未写入世界模型，未接入人际图谱/事件图谱，未触发需求传递或外部动作。
+
+## 2026-06-25 语音链路可见性修复
+
+- 已发现日志 DOM 中存在用户语音消息和系统回复，但对话日志滚动位置可能停在长回复底部，肉眼上容易误判为只停留在 `MIC READY` 状态行。
+- 已为 `zg-dialogue-log` 增加 `dialogueLogRef` 和 `aria-live="polite"`。
+- 每次 `dialogueMessages` 更新后，日志会滚动到最新消息开头，而不是滚到容器最底部。
+- 最终验证 transcript：`语音链路最终验证`。
+- 验证结果：上一条日志为用户语音 transcript，最新日志为 `LOCAL FALLBACK` 系统回复，且最新消息开头对齐日志窗口顶部。
+- 截图证据：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-logs\voice-stt-dialogue-chain-final-20260625.png`。
+- `npm.cmd run typecheck` 通过；`npm.cmd run build` 通过。
+
+## 2026-06-25 需求优先级纠偏记录
+
+- 已确认当前实现策略为：先跑通完整闭环，再逐步优化功能。
+- 第一目标：完整流畅对话，以及用多种音色和克隆声音与用户进行交互。
+- 第二目标：对系统节点、模块状态和项目进度进行审查，并整理成自然对话内容。
+- 持续监听、语义唤醒、抗噪、拟情感、自我意识图谱桥接和世界模型需求传递仍保留在完整目标中，但不压过当前闭环优先级。
+- 已新增 `priority-requirement-classification.v1.md`，用于记录需求分类、P0/P1/P2/P3 优先级、当前代码文件夹状态和下一步实现顺序。
+- 当前模块需求文档已有独立文件夹：`D:\zhineng\thread-requirements\3d-point-cloud-graph-v2.2\subject-status-dialogue-module`。
+- 当前代码实现尚未完全拆成独立代码目录，仍分布在 `ZhinengConsole.tsx`、`zhineng-console.css`、`status-dialogue-contracts.ts` 和 `src/main/index.ts` 中；后续可在确认后再做低风险目录拆分。
+
+## 2026-06-25 P0 语音闭环实施计划同步
+
+- 已新增 `p0-voice-profile-tts-clone-implementation-plan.v1.md`，作为当前第一目标的待确认实施计划。
+- 计划明确 P0 顺序：先补齐契约和默认配置，再用浏览器 voice list 实现多音色选择 UI，再增加 TTS adapter IPC 和健康检查，随后接入低延迟真实 TTS，最后接入克隆声音服务。
+- 计划覆盖 `voice_profile.v1`、`clone_profile.v1`、`tts_adapter.v1` 和 `voice_response_plan.v1`。
+- 真实 TTS 建议顺序为：保留 `browser_speech_synthesis` fallback，优先评估 `Kokoro` 或 `Piper` 做低延迟本地输出，再评估 `CosyVoice` 做中文自然表达，最后接入 `GPT-SoVITS` 或 `OpenVoice` 做克隆声音增强。
+- UI 方向已明确：右侧主体状态对话框增加紧凑 Voice 区，展示当前音色、adapter 状态、克隆状态、测试按钮和 fallback 原因。
+- 3D 粒子 OS 映射已明确：`voice.voice_profile`、`voice.clone_profile`、`voice.tts_adapter`、`voice.voice_response_plan`、`voice.fallback_policy`、`voice.output_trace` 均归属 `status-dialogue-system` 星云。
+- 当前仍未实施代码改动；该计划等待确认后进入 P0.1/P0.2。
+
+## 2026-06-25 不完全具备内容补全与增量拆分计划同步
+
+- 已确认后续策略调整为：边构建新功能，边拆分被新功能触碰到的边界，而不是一次性完全拆目录。
+- 已新增 `incremental-capability-completion-and-split-plan.v1.md`，用于记录当前不完全具备内容的补全计划、拆分落点、验收方式和待确认点。
+- 计划将补齐内容分为：进度文档口径同步、核心契约目录拆分、`voice_profile.v1`、浏览器多音色选择 UI、`voice_response_plan.v1` 和 output trace、TTS adapter 框架、`clone_profile.v1`、系统节点/进度审查、Renderer 面板组件拆分、测试验证补齐。
+- 推荐下一轮仅实施 Step 0-3：先修正进度文件口径，拆核心契约目录并保留兼容 re-export，补 `voice_profile.v1`，实现浏览器多音色选择 UI，并补 `voice_response_plan.v1` 内存追踪。
+- 计划明确待确认点：是否只做 Step 0-3、是否保留旧导出路径、是否只用浏览器 voice list、是否暂不持久化音色选择、是否确认默认 profile id、是否暂不保存克隆原始音频、是否暂不重命名 CSS class、是否把系统节点/进度审查排到 P1、是否允许新增专属测试脚本。
+- 当前仍未实施代码改动；等待确认后再进入代码实现。
+## 2026-06-25 不完全具备内容补全计划 v2 同步
+
+- 已根据当前最新状态新增 `incremental-capability-completion-and-split-plan.v2.md`。
+- v2 计划不再把核心目录拆分视为未开始事项，而是记录当前已经具备的基础：`src/core/status-dialogue/` 已存在，旧 `status-dialogue-contracts.ts` 已保留兼容 re-export。
+- v2 将当前不完全具备内容重新整理为：右侧巡逻状态窗口设置化整理、浏览器多音色选择 UI、`voice_response_plan.v1`/`voice_output_trace.v1` 可视化、TTS adapter 框架、`clone_profile.v1` 状态位、系统节点和进度审查摘要、renderer/main 增量拆分、测试验证补齐。
+- 推荐下一轮只执行 Step B/C/D：状态窗口设置化、浏览器多音色选择、语音输出 trace；真实 TTS adapter、真实克隆声音服务、系统节点/进度审查和大规模组件拆分后移。
+- v2 明确了待用户确认清单，确认后再进入实现。
+## 2026-06-25 Step 0-3 实现同步
+
+- 已保持旧导出路径 `src/core/status-dialogue-contracts.ts` 兼容 re-export，不立刻改动所有引用。
+- 已将右侧 `Subject Status Dialogue` 主面板整理为高频状态显示，低频 Phase 0/1、speech ports、boundary、fallback/error、状态卡来源和巡逻发现已收纳到设置图标详情区。
+- 已接入浏览器 `window.speechSynthesis.getVoices()`，映射为页面态 `voice_profile.v1[]`；第一版音色选择只保存在当前页面状态，不写入磁盘。
+- 已在设置详情区增加 voice profile 选择、test voice、clone profile 状态和最近一次输出 trace。
+- 已接入 `voice_response_plan.v1` 和 `voice_output_trace.v1`，每次浏览器 TTS 输出会记录 ready/spoken/skipped/error、profile、adapter、fallback 和 latency。
+- 已将 `voice.voice_profile`、`voice.clone_profile`、`voice.voice_response_plan`、`voice.output_trace` 补入 `status-dialogue-system` 3D 星云子粒子，包含输入、输出和 refs。
+- `clone_profile.v1` 当前仅表达元数据和状态位，仍不保存原始音频样本。
+- 已新增 `tts-selection-shortlist.2026-06-25.md`，列出 Kokoro、Piper、CosyVoice、GPT-SoVITS 等后续真实 TTS adapter 候选；当前实现不接第三方 TTS。
+- 验证：`npm.cmd run typecheck` 通过，`npm.cmd run build` 通过。
+- 视觉验证：使用临时只读静态服务器打开 `out/renderer/index.html?window=zhineng-graph`，确认 `Subject Status Dialogue` 存在、设置按钮存在、展开后 `zg-status-settings-panel` 存在、voice selector 有 3 个浏览器 voice option、3D canvas 非空白。
+- 视觉验证截图：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-logs\status-dialogue-settings-voice-list-20260625.png`。
+## 2026-06-25 CosyVoice TTS adapter 实现同步
+
+- 已修复 `http://[::1]:5173/?window=zhineng-graph` 页面空白问题。根因是 dev server 仍在内存中服务旧版 `status-dialogue-contracts.ts`，导致新导出不可见；已改为显式 re-export 并重启 dev server。
+- 已新增 `status_dialogue_tts_config.v1`、`status_dialogue_tts_health.v1`、`status_dialogue_tts_synthesis.v1`。
+- 已新增 `DEFAULT_COSYVOICE_VOICE_PROFILE`，默认 profile id 为 `voice.cosyvoice.local.default`。
+- 已新增主进程 IPC：`zhineng:status-dialogue:tts:health` 和 `zhineng:status-dialogue:tts:synthesize`。
+- 当前语音输出优先尝试 CosyVoice local_http；服务未启动、IPC 不可用或播放失败时，自动 fallback 到浏览器 TTS。
+- 默认 CosyVoice endpoint 为 `http://127.0.0.1:8000/api/v1/audio/speech`，默认 health path 为 `/health`，默认只允许 localhost。
+- 右侧设置面板已显示 CosyVoice health、`check tts`、CosyVoice profile 和最近一次 output trace。
+- 3D 星云中 `voice.tts_adapter` 已更新为 CosyVoice + browser fallback，`voice.voice_profile` 默认指向 CosyVoice。
+- 验证：`npm.cmd run typecheck` 通过。
+- 构建验证：`npm.cmd run build` 通过，包含 main/preload/renderer 打包；仅保留既有 Vite chunk size 与 npm `store-dir` warning，不影响当前 CosyVoice adapter。
+- 运行验证：已重启 dev server，`http://[::1]:5173/?window=zhineng-graph` 可打开，`Subject Status Dialogue` 面板存在，设置面板可展开，默认选中 `CosyVoice local default`，3D canvas 非空白。
+- 当前 TTS 状态显示 `cosyvoice fallback` 属于预期，因为本机 CosyVoice 服务尚未启动。
+- 验证截图：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-logs\graph-cosyvoice-dev-url-20260625.png`。
+
+## 2026-06-25 本地 CosyVoice + DeepSeek 真实闭环同步
+
+- 已部署本地 CosyVoice 独立 Python 3.10 环境：`D:\zhineng\third_party\envs\cosyvoice`。
+- 已下载并加载 `CosyVoice-300M-SFT` 模型：`D:\zhineng\third_party\CosyVoice\pretrained_models\CosyVoice-300M-SFT`。
+- 已新增 OpenAI-compatible 本地 TTS wrapper：`D:\zhineng\sightflow-desktop-agent-main\scripts\cosyvoice-openai-compatible-server.py`。
+- 已新增启动脚本：`D:\zhineng\sightflow-desktop-agent-main\scripts\start-cosyvoice-server.ps1`。
+- 当前本地服务：`http://127.0.0.1:8000/health` 可达，`/api/v1/audio/speech` 可返回 `audio/wav`。
+- 已将主体状态对话框模型配置为 `deepseek-v4-flash`，base URL 为 `https://api.deepseek.com`；API key 已配置到本机 Electron settings，但不写入文档。
+- 已将 `statusDialogueTts.timeout_ms` 配置为 `60000`，避免稍长 CosyVoice 合成超时。
+- 直连 CosyVoice 验证通过：中文输入生成 `22050 Hz / mono / PCM_16` WAV，验证样本为 `cosyvoice-direct-speech-utf8-no-text-frontend-20260625.wav`。
+- Electron IPC 完整链路验证通过：`model:test`、`status-dialogue:complete`、`tts:health`、`tts:synthesize`、`Audio.play()` 均成功。
+- Windows 本机播放验证通过：`System.Media.SoundPlayer.PlaySync()` 已完成播放并返回。
+- 验证记录：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-logs\electron-deepseek-cosyvoice-chain-20260625.json`。
+- 已新增完整记录：`phase8-local-cosyvoice-deepseek-real-chain-2026-06-25.md`。
+
+当前限制：本轮优先跑通完整闭环，使用 `CosyVoice-300M-SFT` 内置 speaker；声音克隆、zero-shot、streaming TTS、右侧窗口显式真实模型状态位仍留在后续优化。
+
+## 2026-06-25 Chrome STT Bridge 恢复同步
+
+- 已确认 Electron 内置 Web Speech 会出现 `network` 错误，而真实 Chrome Web Speech 在同机环境更稳定；当前 STT 优先路线调整为 `chrome_stt_bridge`，保留 Electron Web Speech 和 local Whisper 作为 fallback。
+- 已新增主进程 IPC：`zhineng:status-dialogue:chrome-stt:transcribe` 与 `zhineng:status-dialogue:chrome-stt:cancel`。
+- Chrome STT Bridge 使用专用 profile：`D:\zhineng\runtime\chrome-stt-profile`，不复用用户主 Chrome profile。
+- 已增加专用 Chrome 进程清理逻辑：每次启动桥接页前清理旧的 `chrome-stt-profile` 进程，结束、超时、错误或取消后再次清理，避免旧端口和旧伴随页拖慢或阻塞后续语音识别。
+- 已增加桥接事件回传：`ready`、`start`、`audio_start`、`result`、`interim`、`error`、`end`，用于判断桥接页是否加载、是否开始识别、是否拿到麦克风音频。
+- 默认运行时 `visible: false`，测试时可传 `visible: true` 打开伴随页；当前右下角悬浮窗结构和控件不做额外变化。
+- 已为专用 Chrome 启动增加 `--use-fake-ui-for-media-stream`，只在该桥接进程中自动允许本地麦克风权限，避免隐藏模式被权限弹窗卡住。
+- 验证：隐藏模式 IPC 返回 `ready/start/audio_start`，无语音输入时按超时 fallback，不残留专用 Chrome 进程。
+- 验证：可见测试模式伴随页能打开，返回 `ready/start/audio_start/error`，无语音输入时 Chrome 返回 `no-speech`，测试结束后专用 Chrome 进程已清理。
+- 验证命令：`npm.cmd run typecheck` 通过；`npm.cmd run build` 通过。
+
+当前限制：本轮自动化验证只确认桥接页、麦克风音频通道和 fallback 路径可用；真实用户说话后的 transcript 进入主体状态对话链路需要由用户在当前 GUI 中点击 `STT` 后再做一次人工语音验证。
+
+### 完成审计补充
+
+- 当前默认 GUI 调用参数为 `visible: false`，因此正式测试通过后的 STT 伴随页默认隐藏。
+- 当前测试模式传入 `visible: true` 时，专用 Chrome 伴随页会打开；审计时伴随页进程数短暂出现，证明测试页可见启动。
+- 当前隐藏模式返回事件：`ready/start/audio_start`，证明桥接页已加载、识别已启动、音频通道已进入。
+- 当前可见模式返回事件：`ready/start/audio_start/error`，无语音输入时返回 `no-speech`，不再是 Electron 内置 Web Speech 的 `network` 错误。
+- 当前审计后 `chrome-stt-profile` / `status-dialogue/chrome-stt` 专用 Chrome 进程数为 `0`，证明测试伴随页已清理。
+- 悬浮窗边界审计：`chrome_stt_bridge` 仅落在主体状态对话框、主进程 IPC 和契约配置中；未接入 `overlay-window.ts`、`src/renderer/overlay/*` 或右下角 dock orb 的渲染结构。
+- 已增加测试专用环境变量 `ZHINENG_CHROME_STT_TEST_AUDIO`，只用于自动化验证时让专用 Chrome 使用 fake audio capture；正常 GUI 不设置该变量，仍使用真实麦克风。
+- Bridge 返回事件链保留在 IPC 结果中，供自动化和内部验证使用；为保持悬浮窗界面不变，不再把事件链额外写入可见 fallback 日志。
+- fake audio 自动化验证已确认 Chrome 启动参数正确携带测试 WAV，但 Chrome Web Speech 对 fake capture 仍返回 `no-speech`；因此最终真实 transcript 仍以用户真实麦克风测试为准。
+- 补充验证：使用 Windows System.Speech 生成英文 PCM WAV 并设置 `language: en-US`，Chrome Web Speech 仍返回 `no-speech`，进一步确认 fake audio capture 不能作为本模块 transcript 自动化验收依据。
+- 收口修复：`completeChromeSttSession` 不再同步强杀专用 Chrome STT Bridge 进程，改为 `scheduleChromeSttBridgeCleanup` 延迟清理；如果第二次会话已经开始，清理任务会检测到活跃 session 并跳过，避免第一次成功后的收尾强杀影响第二次 Web Speech。
+- 收口兜底：每次新会话启动前仍会清理旧残留，Electron `before-quit` 中也保留专用 Chrome 进程兜底清理。
+- 收口验证：隐藏模式返回 `ready/start/audio_start` 后专用进程数为 `0`；可见测试模式运行时专用进程出现，结束后专用进程数回到 `0`。
+- 二次会话验证：连续两次隐藏 STT Bridge 调用通过，且“第一次结束后 350ms 内启动第二次”的快速连续场景也通过；第二次仍能进入 `ready/start/audio_start`，没有被第一次延迟清理误杀。
+- 收口边界：`overlay-window.ts`、`src/renderer/overlay/*`、右下角 dock 样式中未出现 `chrome_stt_bridge`、`Chrome STT Bridge` 或 `chrome-stt`。
+- 最终验证：`npm.cmd run typecheck` 通过；`npm.cmd run build` 通过。
+
+## 下一步建议
+
+下一步建议优先进入 P0.1/P0.2：补齐 voice/clone/TTS 契约，并先用浏览器 voice list 跑通多音色选择 UI。Phase 6 的完整 3D 子云团扩展继续保留，但不压过当前“完整流畅对话 + 多音色/克隆声音交互”的第一目标。
+
+## 2026-06-26 延迟优化 1-4 项实现同步
+
+- 已实现 `voice_ack + voice_final` 两段语音输出：提交文字或语音 transcript 后，先用浏览器 TTS 立即播短 ack，再等待模型和 CosyVoice final。
+- 默认语音输出模式为 `cosyvoice_short`，文字区仍显示完整回复，TTS 默认只播短句；设置区可切换 `cosy short`、`browser fast`、`cosy full`。
+- STT 本地 Whisper 支持 `base/tiny` 档位切换，默认保留 `base`；当前实测 `base` 比 `tiny` 更快且更准。
+- 右侧主体状态巡逻窗口已增加延迟状态位：`stage / ack / stt / model / tts / play / total`，同时顶部 compact 状态显示 total latency。
+- `status-dialogue-voice-loop-probe.mjs` 已增强为默认 `cosyvoice_short` 探针，报告中包含 `voice_ack`、`dialogue_compose` 和 `tts_cosyvoice`。
+- 验证通过：`npm.cmd run typecheck`、`npm.cmd run build`。
+- 真实探针通过：
+  - `base + cosyvoice_short`: STT 6645ms，final voice 20 字，TTS 8305ms，音频 4.249s，total 15003ms。
+  - `tiny + cosyvoice_short`: STT 10866ms，final voice 21 字，TTS 7735ms，音频 3.773s，total 18659ms。
+- 已重启 Electron，renderer 命令行确认带有 `--autoplay-policy=no-user-gesture-required`；`http://[::1]:5173/?window=zhineng-graph` 返回 HTTP 200；CosyVoice health 返回 HTTP 200。
+- 详细审计记录见 `tts-output-chain-audit-2026-06-26.md` 的“四次修正：延迟优化 1-4 项实现与验证”。
+
+## 2026-06-26 同音色、云端 STT 与状态栏收纳修正
+
+- 已修正 ack 与 final 音色不一致问题：默认 `cosyvoice_short` 下，ack 和 final 都优先使用当前选中的 `CosyVoice local default`，不再用浏览器 TTS 播第一句、CosyVoice 播后续。
+- `browser fast` 模式仍保留，但该模式下 ack/final 都走浏览器音色，保持同一音色策略。
+- 已将 STT 默认路径改回云端 `Chrome STT Bridge`；本地 Whisper 仍保留为设置区可手动切换的 fallback 模式。
+- 云端 STT 失败时不再自动启动本地录音，避免失败后重新录到空白语音，造成链路混乱；界面会提示重试或切换本地 STT。
+- 已将主对话面常驻状态块收纳到 `voice off` 右侧齿轮设置中，并按 `runtime / voice profile / snapshot / real integration / speech io / latency` 分类展示。
+- 主对话面默认只保留对话、焦点、记忆和输入区，减少语音输入附近的参数噪音。
+- 已更新 `status-dialogue-system` 星云中的 `voice.stt_adapter` 子粒子说明：默认云端 Chrome STT，手动本地 Whisper fallback。
+- 验证通过：`npm.cmd run typecheck`、`npm.cmd run build`。
+- 同音色探针通过：`status-dialogue-e2e-20260626134929.json` 中 `tts_cosyvoice_ack` 与 `tts_cosyvoice` 均为 `cosyvoice_local_http / voice=default`。
+- 视觉验证截图：
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\graph-ui-after-status-collapse-20260626.png`
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\graph-ui-settings-open-20260626.png`
+
+## 2026-06-26 巡检状态源与情感化交流方案同步
+
+- 已按“先理解、测试、验证，再修改”的系统级规则核对当前主体状态对话框回复逻辑。
+- 已确认当前回复过短、缺少情感与改进方向的主要原因包括：`runtime/status-cards` 当前不存在、系统提示词强调 `concise`、local fallback 为固定状态模板、`cosyvoice_short` 会把最终语音压缩到约 36 个中文字符。
+- 已确认当前可优先接入的真实状态源包括：`runtime/state/current-status.json`、`runtime/state/operator-note.md`、`runtime/state/run-events.jsonl`、`runtime/pt028-real-observation-gui-states/latest.json`、`runtime/pt028-gui-decision-states/latest.json` 以及主体状态对话框自身的语音/模型链路日志。
+- 已新增待确认方案文档：`patrol-dialogue-state-source-and-emotional-response-plan.v1.md`。
+- 方案建议先建立只读状态卡桥接层，将现有 runtime 状态源转换为 `module_status_card.v1` 并输出到 `runtime/status-cards/*.json`，再由既有 `zhineng:status-dialogue:snapshot:get` 读取。
+- 方案建议把回复结构升级为：用户意图、巡检结论、证据来源、影响判断、改进方向、待确认项。
+- 方案建议把语音最终回复从极短 `cosyvoice_short` 扩展为可选 `cosyvoice_balanced`，保留短 ack，但最终语音播放 1 到 3 句自然巡检反馈。
+- 当前仍未实施代码修改，等待用户确认状态源接入顺序、状态卡桥接写入边界、默认语音长度策略和下一轮实施范围。
+
+## 2026-06-27 云端 STT no-speech 诊断与可见性修复
+
+- 根据用户两次测试反馈，已先检查真实日志再修改代码。
+- 最近两次云端 STT 调用均已进入 `chrome_stt_bridge`，事件链为 `ready / start / audio_start / error`，错误为 `no-speech`，`transcript_length=0`。
+- 结论：本次不是 `network`、不是 `not-allowed`，也不是没有走云端；而是外部 Chrome Web Speech 已打开麦克风流，但没有检测到可识别语音。
+- 已确认 Windows 音频端点中 `麦克风 (High Definition Audio Device)` 状态为 `OK`，专用 `chrome-stt-profile` 也在测试时间被正常更新。
+- 已修复主进程 `chrome_stt_bridge` 事件可见性：主进程现在会把 `ready/start/audio_start/interim/result/error/complete` 发送到发起请求的 Renderer 窗口。
+- 已修复右侧主体状态对话框的云端 STT UI 状态：现在会显示 `CLOUD STT READY`、`CLOUD STT STARTING`、`LISTENING - 请现在说话`、`HEARD ...`、`NO SPEECH DETECTED`。
+- 已将 `no-speech` 失败文案改为可操作诊断：云端已打开麦克风但未检测到可识别语音，提示在 `LISTENING - 请现在说话` 出现后再说，或检查 Windows 默认麦克风输入音量。
+- 已重启当前 Electron dev 进程，页面 `http://[::1]:5173/?window=zhineng-graph` 返回 HTTP 200。
+- 验证通过：`npm.cmd run typecheck`、`npm.cmd run build`。
+- 静态验证通过：`out/main` 与 `out/renderer` 均包含 `zhineng:status-dialogue:chrome-stt:event`、`status_dialogue_chrome_stt_progress.v1` 和 `LISTENING - 请现在说话`。
+- 当前仍需用户进行一轮真实麦克风云端 STT 测试；我不能替用户发出真实语音，因此不把云端 transcript 成功作为已验证项。
+
+## 2026-06-27 云端 STT 两次未转文字原因复核
+
+- 已按“先理解、测试、验证，再修改”的系统级规则复核用户反馈的两次云端未转文字。
+- 真实日志位置：`D:\zhineng\runtime\status-dialogue-logs\voice-flow-20260626.jsonl`。
+- 两次失败对应本地时间 `2026-06-27 07:39:34` 与 `2026-06-27 07:39:52`，均已进入 `chrome_stt_bridge`。
+- 两次事件链一致：`ready / start / audio_start / error`，错误为 `no-speech`，`transcript_length=0`。
+- 结论：这两次不是 `network`，不是 `not-allowed`，不是没有走云端；而是外部 Chrome Web Speech 已打开麦克风音频流，但没有检测到可识别的人声。
+- 同一日志中 `2026-06-27 07:49:52` 以后同一路径成功返回一次，说明云端 STT 桥接链路不是整体不可用，而是实时麦克风输入进入 Chrome Web Speech 的稳定性不足。
+- 已检查 Windows 音频端点，`麦克风 (High Definition Audio Device)` 状态为 `OK`。
+- 已检查 `D:\zhineng\runtime\chrome-stt-profile` 专用 Chrome 桥接进程，没有残留旧会话进程。
+- 已运行固定 WAV + Chrome fake audio capture 探针；测试音频本身不是静音，但 Chrome Web Speech 对 fake capture 仍返回 `no-speech`，因此 fake audio 不能作为该模块云端 transcript 的最终验收依据。
+- 下一步建议：先增加真实麦克风电平预检、`no-speech` 自动重试/明确等待提示、以及可选的短时诊断录音引用；后续若要彻底稳定，应改为“应用侧采集音频 -> 真实云端 STT API”路线，而不是完全依赖 Chrome Web Speech 隐藏桥接窗口。
+
+## 2026-06-27 完整对话逻辑与接口方案同步
+
+- 已根据当前代码、契约和既有需求文件复核主体状态对话框真实链路。
+- 已新增确认稿：`complete-dialogue-logic-interface-design.v1.md`。
+- 方案明确当前真实逻辑：文字和语音 transcript 统一进入 `submitDialogue`，先刷新 `status_snapshot.v1`，再进入模型或本地 fallback，随后更新 `conversation_memory.v1`，最后执行 TTS 输出。
+- 方案明确目标逻辑分层：入口层、语音前处理层、意图理解层、上下文组装层、路由层、巡检执行层、回复编排层、命令传达层、TTS 播报层。
+- 方案明确常规语音助手能力纳入路径：持续监听、VAD、端点检测、噪声抑制、回声消除、打断 TTS、声音克隆和拟情感语音均作为后续分期能力，不压过当前“先跑通稳定闭环”的优先级。
+- 方案明确自有产品能力纳入路径：状态卡桥接、状态巡检、进度审查、需求转译、命令草案、世界模型需求入口均有独立接口和 gate。
+- 当前仍不创建正式 `requirement_packet.v1`，不写世界模型，不接入真实人际关系图谱或事件图谱，不触发外部动作。
+- 已将“本线程每次完成用户当轮请求后执行对应 TTS 播报”写入方案，作为后续必须执行项；本轮播报文本为：`方案已经制作完成，请确认。`
+- 已执行本轮 TTS 播报，文本为 `方案已经制作完成，请确认。`；CosyVoice health 返回 200，音频文件为 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\dialogue-design-confirm-20260627-080605.wav`，大小 89644 bytes。
+
+## 2026-06-28 小智式语音会话桥路线 A 最小实现
+
+- 已按用户确认采用路线 A：只借鉴小智语音机器人的会话数据流和状态事件，不接入 ESP32 烧录、OTA、硬件按键或真实硬件绑定。
+- 已将需求登记为 `idea-0006`，并新增方案文档 `voice-dialogue-xiaozhi-style-bridge-plan.v1.md`。
+- 已新增核心模块 `D:\zhineng\sightflow-desktop-agent-main\src\core\status-dialogue\xiaozhi-voice-bridge.ts`，提供 `xiaozhi_style_voice_bridge_event.v1` 与 `xiaozhi_style_voice_bridge_state.v1` 的纯函数状态机。
+- 已在 `ZhinengConsole.tsx` 中把现有 Chrome STT、本地 Whisper、状态对话模型、CosyVoice/browser TTS 映射为 `hello/listen/stt/llm/tts/abort/error` 事件。
+- 已把 bridge 事件写入现有 `zhineng:status-dialogue:voice-log`，不新增原始音频持久化。
+- 已在右侧巡逻窗口设置面板增加 `xiaozhi bridge` 状态区，显示 stage、emotion、listen、speak、event count。
+- 已在世界系统 3D 粒子 OS 的主体状态对话框星云中增加 `voice.xiaozhi_style_bridge` 节点，记录输入、输出、refs 和边界。
+- 当前实现不改变 STT/TTS provider，不切换到小智 server，不写世界模型，不创建需求传递包，不影响人际关系图谱或事件图谱。
+- 验证通过：`npm.cmd run typecheck`、`npm.cmd run build`。
+
+## 2026-06-28 唤醒词方案与执行条件检查
+
+- 已将“保留手动 STT、持续监听默认关闭、唤醒词分阶段接入”的建议补入 `voice-dialogue-xiaozhi-style-bridge-plan.v1.md`。
+- 当前真实状态仍是手动点击 `STT` 录入；默认 STT adapter 为 `cloud`，即 Chrome STT Bridge；本地 Whisper 仍是手动 fallback。
+- 已核对代码中浏览器 SpeechRecognition fallback 仍为 `recognition.continuous = false`，当前没有 `wake_word`、`hotword` 或持续监听配置入口。
+- 已在方案中新增 `voice.wake_word_gate` 3D 映射节点，用于未来表达麦克风状态、VAD、唤醒词短语、TTS 播放门控和 wake window。
+- 执行条件结论：手动 STT、TTS、小智式 bridge 状态机、UI 状态位和基础 3D 映射已具备；持续监听音频入口、VAD、唤醒词 detector、语义唤醒和回声门控尚未具备。
+- 下一步可执行范围：先做 W1 配置骨架和 W2 VAD 预检；真正自动唤醒词进入对话需要 W3 detector adapter 后再实现。
+## 2026-06-28 W1/W2 配置骨架与 VAD 预检实现同步
+
+- 已将小智式语音会话桥的唤醒方案推进到 `W1 config skeleton` 和 `W2 VAD precheck`。
+- W1 已新增 `xiaozhi_style_wake_config.v1` 契约和默认配置，当前默认仍为 `voice_input_mode=manual_click`，`continuous_listen_enabled=false`，`wake_word.enabled=false`。
+- W1 已在右侧主体状态巡逻窗口设置区展示 `input manual_click`、`wake off`、候选唤醒短语和 VAD 状态，用于表达未来唤醒词入口，但不默认启用监听。
+- W1 已在世界系统三维粒子 OS 的 `status-dialogue-system` 星云下新增 `voice.wake_word_gate` 子粒子，明确输入、输出、闸口和边界。
+- W2 已新增 `xiaozhi_style_vad_precheck.v1` 状态契约和 `check vad` 手动预检入口。
+- W2 预检只短时打开麦克风并用 WebAudio RMS 判断 `voice_detected` 或 `silence`，不保存原始音频，不生成 transcript，不提交 `submitDialogue`，不进入模型对话链路。
+- W2 已在世界系统三维粒子 OS 的 `status-dialogue-system` 星云下新增 `voice.vad_precheck` 子粒子，输出明确为 `dialogue_triggered=false`。
+- 现有文字输入、云端 Chrome STT、本地 Whisper fallback、CosyVoice/browser TTS provider 选择均保持原路径，不因 W1/W2 改动而切换。
+- 当前仍不具备真实自动唤醒词能力；`W3 keyword gate` 需要后续新增 detector adapter 后再实现。
+- 当前执行边界保持不变：不写世界模型，不创建 `requirement_packet.v1`，不接入真实人际关系图谱或事件图谱，不触发外部动作通道。
+
+验证结果：
+- `npm.cmd run typecheck` 通过。
+- `npm.cmd run build` 通过；仅出现既有 Vite chunk 警告和 npm `store-dir` warning，未阻断构建。
+- 静态检索确认 `src` 中没有 `requirement_packet.v1` 创建路径。
+- 静态检索确认 `xiaozhi_style_wake_config.v1`、`xiaozhi_style_vad_precheck.v1`、`voice.wake_word_gate`、`voice.vad_precheck`、`check vad`、`dialogue_triggered=false` 均已落在代码或文档映射中。
+- 预览地址 `http://[::1]:5173/?window=zhineng-graph` 返回 HTTP 200。
+- 后台浏览器验证确认 `Subject Status Dialogue` 面板存在，设置面板可展开，`xiaozhi bridge` 区域包含 `input manual_click`、`wake off`、`check vad`；3D 粒子画面截图非空白。
+
+## 2026-06-28 W3 detector adapter 前置条件补齐
+
+- 已核对当前状态：W1/W2 已完成，但在本次补齐前，W3 仍缺少 detector adapter 的独立契约、状态位和 3D 子粒子，因此不能直接进入真实自动唤醒实现。
+- 已新增 `xiaozhi_style_wake_detector_adapter.v1`，作为 W3 detector adapter 的配置插槽。
+- 已新增 `xiaozhi_style_wake_detector_state.v1`，作为 W3 detector 的运行状态插槽。
+- 默认配置保持 `adapter_id=none`、`enabled=false`，不会启动后台持续监听。
+- 默认状态显示 `not_configured`、`wake_window_open=false`、`dialogue_triggered=false`、`store_raw_audio=false`。
+- 右侧主体状态窗口设置区已新增 W3 状态位：`detector none`、`w3 not_configured`、`window closed`、`gate wake pause`。
+- 世界系统三维粒子 OS 已新增 `voice.wake_detector_adapter` 子粒子，用于表达 W3 adapter 输入、输出、refs 和边界。
+- 已新增文档 `w3-detector-adapter-readiness.v1.md`，明确 W3 进入条件、候选 adapter、待确认事项、验收条件和边界。
+- 当前结论：已经具备进入 W3 adapter 选型和最小接口实现的前置条件；仍不具备直接开启真实自动唤醒运行时。
+
+验证结果：
+- `npm.cmd run typecheck` 通过。
+- `npm.cmd run build` 通过；仅出现既有 Vite chunk 警告和 npm `store-dir` warning。
+- 静态检索确认 `src` 中没有 `requirement_packet.v1`。
+- 静态检索确认 `xiaozhi_style_wake_detector_adapter.v1`、`xiaozhi_style_wake_detector_state.v1`、`voice.wake_detector_adapter` 已落地。
+- 后台浏览器只读验证通过：`Subject Status Dialogue` 面板存在，设置区显示 `detector none`、`w3 not_configured`、`window closed`、`gate wake pause`，3D canvas 非空白尺寸正常。
+
+## 2026-06-28 W3 唤醒短语与 TTS 门控边界调整
+
+- 已将默认唤醒短语从旧候选调整为 `小张`、`高手`、`小天才`。
+- 明确不保留 `张博` 作为唤醒词。
+- 已将 W3 adapter 边界调整为 `pause_wake_detector_only`：TTS 播放期间暂停唤醒词 detector，而不是屏蔽整条输入链路。
+- 已明确输入链路与唤醒词 gate 分离：输入可以持续接收，唤醒词只负责是否打开对话窗口。
+- 已明确最终目标为边播边收；需要屏蔽的是系统播放内容形成的回声或自我转写，而不是用户输入本身。
+- 已明确原始音频保存必须另开确认项和可见开关，默认继续 `store_raw_audio=false`。
+- 右侧主体状态窗口设置区的 gate 文案已从 `tts` 调整为 `wake pause`，用于表达只暂停 wake detector。
+- `w3-detector-adapter-readiness.v1.md` 与 `voice-dialogue-xiaozhi-style-bridge-plan.v1.md` 已同步最新验收条件和边界。
+
+验证结果：
+- `npm.cmd run typecheck` 通过。
+- `npm.cmd run build` 通过；仅出现既有 Vite chunk 警告和 npm `store-dir` warning。
+- 静态检索确认核心配置和文档中已出现 `小张`、`高手`、`小天才`、`pause_wake_detector_only`、`input_stream_allowed_echo_filter_required`、`wake pause`。
+- 静态检索确认本次触达文件中没有旧的 `小智同学` 或旧 `phrases: ['小智'` 唤醒短语配置残留。
+- 静态检索确认 `src` 中没有 `requirement_packet.v1`。
+- 后台浏览器只读验证通过：设置区显示 `phrase 小张`、`detector none`、`w3 not_configured`、`window closed`、`gate wake pause`。
+
+## 2026-06-28 W3.0 执行阶段与完成任务定制播报
+
+- 已将 W3 从“前置条件具备”推进到右下角 GUI 可执行阶段。
+- 新增 W3.0 `browser_phrase_match_reserved` 闭环：显式点击 `start w3` 后，renderer Browser SpeechRecognition 独立监听 `小张`、`高手`、`小天才`。
+- W3 命中唤醒短语后只打开 `wake_window`，随后转交现有 STT 链路；不会直接把 detector 音频提交给模型。
+- TTS 播放期间 W3 stage 进入 `paused_tts`，只暂停 wake detector，不关闭手动文字输入、正式 STT 或 TTS。
+- 右下角设置面板新增 W3 执行状态：`start w3/stop w3`、`w3 stage`、`window`、`gate wake pause`。
+- 新增 `completion notice` 完成任务定制播报区：可编辑播报文本、点击播放，并展示 count、trace、error 和 route。
+- 新增确定性播报状态 `CompletionNoticeState`，完成播报会等待 CosyVoice/browser fallback 的播放结束或错误，再写入 `voice_output_trace.v1`。
+- 世界系统三维粒子 OS 已新增 `voice.completion_notice` 星点；`voice.wake_word_gate` 与 `voice.wake_detector_adapter` 已更新为 W3.0 可执行表达。
+- 新增实现记录文档 `w3-browser-phrase-completion-notice-implementation-2026-06-28.md`。
+
+边界：
+- 当前 W3.0 不是最终本地 keyword detector；真实本地唤醒词为后续 W3.1。
+- 不引入新依赖，不保存原始音频，不创建 `requirement_packet.v1`，不写世界模型、人际图谱、事件图谱或外部动作通道。
+
+验证结果：
+- `npm.cmd run typecheck` 通过。
+- `npm.cmd run build` 通过；仅有既有 Vite chunk 警告和 npm `store-dir` warning。
+- 本地开发服务已启动，`http://[::1]:5173/?window=zhineng-graph` 返回 200。
+- 屏幕截图确认 3D 粒子 OS 和右侧主体状态对话框渲染非空白。
+- 构建产物检索确认 `start w3`、`completion notice`、`voice.completion_notice`、`browser_phrase_match_reserved` 已进入 `out/renderer`。
+- 完成播报验证更正：上一条 `w3-completion-notice-20260628.wav` 由临时 PowerShell string body 请求生成，未强制 UTF-8，CosyVoice 日志显示文本进入服务时已变成 `W3????????...`，不能作为中文播报通过依据。
+- 已重新生成 UTF-8 修正版 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\w3-completion-notice-utf8-fixed-20260628.wav`，请求显式使用 `voice=中文女`。本地 Whisper 对旧文件转写为英文乱码，对修正版转写出中文完成播报语义。
+- 已新增 Node/fetch 对照验证：使用 ASCII Unicode escape 构造中文，再通过 `fetch + JSON.stringify` 生成 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\w3-completion-notice-node-fetch-escaped-20260628.wav`，本地 Whisper 转写为中文完成播报语义。
+- 后续完成播报验证只采用右下角 GUI/Electron `fetch + JSON.stringify` 路径，或显式 UTF-8 byte body；不再使用未指定编码的 PowerShell string body 或 PowerShell 管道中文源码作为中文 TTS 验证路径。
+
+## 2026-06-28 TTS 播放失败排查与修复
+
+- 已确认旧 dev server 仍占用 `::1:5173`，导致网页和 GUI 可能测试到旧 renderer；已停止旧 Node/Electron/CosyVoice 进程并重启当前版本。
+- 已给 CosyVoice local HTTP adapter 增加本地 CORS，允许网页预览从 `5173` 直接请求 `127.0.0.1:8000`。
+- 已给网页预览增加无 Electron IPC 时的 CosyVoice 直连 fallback；GUI 仍优先使用 Electron IPC。
+- 已给 voice on、send、STT、voice test、completion notice play 增加播放解锁尝试，并复用已解锁 audio 元素。
+- 已新增 `replay` 按钮，用于浏览器预览在异步 TTS 自动播放被拦截后重播最近生成的语音。
+- 详细记录见 `tts-playback-failure-fix-2026-06-28.md`。
+
+验证结果：
+- `npm.cmd run typecheck` 通过。
+- `npm.cmd run build` 通过；仅有既有 Vite chunk 警告和 npm `store-dir` warning。
+- CORS 预检通过：`Origin=http://[::1]:5173` 可访问 `http://127.0.0.1:8000/api/v1/audio/speech`。
+- 浏览器预览已能触发 CosyVoice 合成；in-app browser 自动化环境仍返回 autoplay `not-allowed`，页面提供 `replay` 恢复路径。
+
+## 2026-06-28 Voice Output Pipeline V0-V6 实现同步
+
+- 已新增实现记录：`voice-output-pipeline-v0-v6-implementation-2026-06-28.md`。
+- 已新增核心契约：`voice_output_chunk.v1`、`voice_playback_queue.v1`、`voice_latency_trace.v1`、`streaming_tts_adapter.v1`、`StreamingTtsAdapter`、`StreamingTtsAudioFrame`。
+- 已将 ACK、正式回复、完成播报和 voice test 统一到 `playVoicePlanThroughQueue`，不再走浏览器 TTS 可听 fallback。
+- 已新增同音色锁定：可听输出统一走 CosyVoice `audibleVoiceProfile`，浏览器 speech synthesis 仅保留环境能力检测。
+- 已新增内存短句缓存，缓存上限 24 条，不写磁盘。
+- 已新增分句伪流式：模型未完成前 ACK 可先进入 TTS 队列，正式回复按 `voice_output_chunk.v1` 分段合成和播放。
+- 已新增播放队列状态显示：queue、chunks、cache、fail，并在 latency 区显示 first/full TTS 与 first/full playback。
+- 已同步世界系统 3D 粒子 OS：新增/更新 `voice.tts_adapter`、`voice.voice_profile`、`voice.voice_response_plan`、`voice.playback_queue`、`voice.streaming_tts_adapter`、`voice.output_trace`、`speech_synthesis`。
+- 验证：`npm.cmd run typecheck` 通过；`npm.cmd run build` 通过；主动浏览器语音输出检索无命中；`http://[::1]:5173/?window=zhineng-graph` 与 CosyVoice `/health` 均返回 200。
+
+## 2026-06-28 Voice Output Pipeline 验证补强
+
+- 已新增 `scripts/validate-voice-output-pipeline.cjs`，并在 `package.json` 中新增 `npm.cmd run voice:pipeline:validate`。
+- 验证脚本覆盖：中文标点分句、中文逗号不强制断句、长文本分块、同一 voice profile 缓存键稳定性、`voice_playback_queue.v1` 默认状态、`voice_playback_queue_simulation.v1` 队列规则、`voice_latency_trace.v1` 最慢阶段计算、`streaming_tts_adapter.v1` 预留接口。
+- 已修正中文分句规则为 Unicode escape 写法，并去掉逗号断句，减少语音输出被切得过碎的问题。
+- 已修正部分 chunk 失败时的 `voice_output_trace.v1`：不再标记为 `fallback`，改为 `error`，避免误判为浏览器 TTS 混音 fallback。
+- 本轮验证通过：`npm.cmd run voice:pipeline:validate`、`npm.cmd run typecheck`、`npm.cmd run build`。
+- 浏览器 UI 验证通过：右侧设置面板显示 `chunked short/full`、`locked same voice`、`queue/cache/fail/latency`、`CosyVoice READY`；3D canvas 非空白。
+- 当前仍需人工实听确认真实扬声器播放质量；自动化环境只能证明队列、合成入口、UI 状态和服务健康，不能替代用户侧听感。
+
+## 2026-06-28 Voice Playback Queue 模拟验证补强
+
+- 已新增 `simulateVoicePlaybackQueue`，用于核心层模拟播放队列执行，不依赖浏览器音频权限。
+- 自动验证覆盖：chunk 播放顺序保持、缓存命中不重复合成、失败 chunk 不进入播放顺序、失败计数进入 latency trace。
+- 最新 `npm.cmd run voice:pipeline:validate` 通过：`queue_playback_order_ok=true`、`queue_cache_hits=1`、`queue_failure_count=1`。
+- 最新队列验证报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782624023038.json`。
+- 已修复构建门：`electron.vite.config.ts` 中 renderer HTML input 从绝对路径调整为项目相对路径，解决 Vite build-html 报错；`npm.cmd run build` 已重新通过。
+
+## 2026-06-28 Voice Output Pipeline V5 帧流 adapter 补强
+
+- 已将 V5 从“仅协议预留”补强为“协议预留 + 通用 buffered frame adapter 实现”。
+- 新增 `createBufferedStreamingTtsAdapter`：可包装任意 TTS 合成函数，不绑定 CosyVoice、浏览器或某个远端服务。
+- 新增 `splitAudioBase64IntoStreamingFrames`：把 `audio_base64` 切分为有序 `streaming_tts_audio_frame.v1`，最后一帧标记 `final=true`。
+- 已更新 3D 粒子 OS 映射：`voice.streaming_tts_reserved` 调整为 `voice.streaming_tts_adapter`，状态为 `buffered frame adapter`。
+- `npm.cmd run voice:pipeline:validate` 已验证：`streaming_adapter_implemented=streaming_tts_adapter.validation.buffered`、`streaming_frame_count=5`、`streaming_frames_recombine=true`。
+- 最新验证报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782623480397.json`。
+- 当前边界：运行时仍走高质量分块伪流式；未来若接入原生 WebSocket/SSE/chunked HTTP 边生成边吐音频帧，只需要替换 adapter，不需要重写上层队列和 UI。
+
+## 2026-06-28 Voice Runtime TTS Chain 真实合成探针
+
+- 已新增 `scripts/validate-voice-runtime-tts-chain.cjs`，并在 `package.json` 中新增 `npm.cmd run voice:runtime:validate`。
+- 该探针真实请求本地 CosyVoice `/health` 与 `/api/v1/audio/speech`，不使用浏览器 SpeechSynthesis。
+- 探针会生成一条短中文 notice，保持 `voice_profile_id=voice.cosyvoice.local.default`、`voice_id=default`，并将返回 WAV 保存到 `runtime/voice-loop-probes`。
+- 本轮运行通过：health `58ms`，TTS 合成 `5693ms`，输出 `audio/wav`，大小 `101420 bytes`，WAV header 有效。
+- 生成音频样本：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-runtime-tts-chain-audio-1782623734066.wav`。
+- 运行时帧流验证通过：`streaming_tts_adapter.runtime.cosyvoice_buffered` 输出 `34` 帧，`final_frame=true`，`recombined=true`。
+- 运行时报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-runtime-tts-chain-validation-1782623734068.json`。
+- 当前结论：可证明本地 CosyVoice 合成、统一音色 profile、WAV 输出、V5 帧流 adapter 和 V0 latency trace 均可跑通；真实扬声器播放和真实麦克风多轮对话仍需用户侧实测。
+## 2026-06-28 Voice Output Pipeline V6 规则下沉与验证
+
+- 已补齐核心函数 `deriveVoiceEmotionPriority`，将巡检异常、完成提醒、闲聊、任务监督的语气和优先级规则从 UI 临时判断下沉到 `src/core/status-dialogue/voice-output-pipeline.ts`。
+- 已扩展 `segmentVoiceResponsePlan` 的 `emotionHint` 参数；同一回复被分句后，每个 `voice_output_chunk.v1` 使用同一策略情绪，同时保持同一个 `voice_profile_id`。
+- 已将右侧主体状态对话框的 ACK、final reply、completion notice 接入该策略，最终仍统一进入 `playVoicePlanThroughQueue`。
+- 已移除完成播报按钮残留的 “browser fallback” title 文案；当前可听语音不再表达为浏览器 TTS fallback。
+- 已扩展 `scripts/validate-voice-output-pipeline.cjs`，新增 V6 检查：
+  - `emotion_priority_error=urgent/urgent`
+  - `emotion_priority_patrol_warn=focused/notice`
+  - `emotion_priority_completion=warm/notice`
+  - `emotion_priority_casual_chat=warm/normal`
+  - `emotion_priority_task_supervision=focused/notice`
+  - `emotion_priority_same_voice=true`
+- 最新验证报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782624496982.json`。
+- 验证结果：
+  - `npm.cmd run voice:pipeline:validate` 通过。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+  - 静态检索确认没有 `new SpeechSynthesisUtterance`、`synth.speak`、`browser_speech_audio_fallback`、`browser TTS fallback used`、`with browser fallback` 残留。
+- 当前结论：V0-V6 的核心代码路径、自动化验证和文档记录已进一步对齐；真实扬声器听感、真实麦克风多轮对话和原生服务端 streaming TTS 仍需要后续在 GUI 实机环境继续验证。
+## 2026-06-28 Voice Runtime TTS Chain 复验
+
+- 已重新执行 `npm.cmd run voice:runtime:validate`，真实请求本地 CosyVoice `/health` 与 `/api/v1/audio/speech`。
+- 最新报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-runtime-tts-chain-validation-1782624653088.json`。
+- 最新音频样本：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-runtime-tts-chain-audio-1782624653086.wav`。
+- 复验结果：
+  - CosyVoice health `77ms`，adapter 为 `cosyvoice_openai_compatible`。
+  - TTS 合成 `5833ms`，输出 `audio/wav`，`91692 bytes`，WAV header 有效。
+  - runtime buffered stream 输出 `30` 帧，`final_frame=true`，`recombined=true`。
+  - `voice_latency_trace.v1` 显示 `first_tts_ms=5833`、`end_to_end_ms=5918`、`slowest_stage=tts`。
+  - 边界检查：`browser_tts_used=false`，`external_world_write=false`，`requirement_packet_created=false`。
+- 页面复验：内置浏览器刷新 `http://[::1]:5173/?window=zhineng-graph` 后，3D 粒子星云非空白，右侧 `Subject Status Dialogue` 面板正常显示。
+## 2026-06-28 Voice Output Pipeline V3 流式入口补强
+
+- 已新增核心文本流契约：
+  - `voice_response_text_stream.v1`
+  - `voice_response_text_stream_event.v1`
+  - `buildDefaultVoiceResponseTextStreamState`
+  - `appendVoiceResponseTextDelta`
+  - `finishVoiceResponseTextStream`
+- 该契约用于把模型自然语言字段的增量文本汇聚成稳定状态，并在第一句完整出现时发出 `first_sentence_ready`，供 TTS 队列提前消费。
+- 已扩展 `npm.cmd run voice:pipeline:validate`：
+  - `text_stream_first_sentence_event_count=1`
+  - `text_stream_first_sentence=我正在检查当前状态。`
+  - `text_stream_first_sentence_queueable=true`
+- 已新增 `AIClient.callChatStream`，使用 OpenAI-compatible `/chat/completions` 的 `stream=true` SSE delta 输出。
+- 已新增验证脚本 `scripts/validate-ai-client-stream.cjs` 和命令 `npm.cmd run voice:model-stream:validate`。
+- `voice:model-stream:validate` 使用本地模拟 SSE，不访问真实模型 API；验证结果：
+  - `stream_requested=true`
+  - `delta_count=3`
+  - `recombined_text=我正在检查当前状态。后续会继续补充。`
+- 最新报告：
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782625065336.json`
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\ai-client-stream-validation-1782625066906.json`
+- 当前边界：GUI 运行链路仍默认使用原 `zhineng:status-dialogue:complete` 一次性完整回复，尚未替换为流式 IPC；本轮补齐的是 V3 的核心首句抽取契约和模型 streaming 客户端能力，后续可在不破坏现有闭环的前提下新增 `complete:stream` 事件通道。
+
+## 2026-06-28 Voice Runtime TTS Chain 延迟复验
+
+- 已重新执行 `npm.cmd run voice:runtime:validate`。
+- 最新报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-runtime-tts-chain-validation-1782625107226.json`。
+- 最新音频样本：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-runtime-tts-chain-audio-1782625107224.wav`。
+- 复验结果：
+  - CosyVoice health `128ms`。
+  - TTS 合成 `15335ms`。
+  - 输出 `audio/wav`，`125996 bytes`，WAV header 有效。
+  - buffered stream 输出 `42` 帧，`final_frame=true`，`recombined=true`。
+  - `voice_latency_trace.v1` 显示 `slowest_stage=tts`。
+  - 边界检查：`browser_tts_used=false`，`external_world_write=false`，`requirement_packet_created=false`。
+- 页面复验：`http://[::1]:5173/?window=zhineng-graph` DOM 包含 `Subject Status Dialogue` 和 `World system nebula particle graph`，浏览器 error 日志为 `0`。
+## 2026-06-28 Voice Output Pipeline V3 IPC Stream 接入
+
+- 已新增主进程 IPC：`zhineng:status-dialogue:complete:stream`。
+- 新 IPC 保留原 `zhineng:status-dialogue:complete` 不变；流式失败或不可用时，renderer 会回退到原一次性 complete 路径。
+- 主进程流式事件通道：`zhineng:status-dialogue:complete:stream:event`。
+- 事件 schema：`status_dialogue_model_stream_event.v1`，包含 `start`、`delta`、`done`、`error`。
+- renderer 已接入流式事件：
+  - 只从 streaming JSON 的 `voice` / `voiceText` 字段抽取自然语言。
+  - 不直接朗读 raw JSON delta。
+  - `first_sentence_ready` 后立即进入 `playVoicePlanThroughQueue`。
+  - 最终完整回复到达后，使用 `stripAlreadySpokenVoicePrefix` 去掉已提前播出的第一句，避免重复播放。
+- 已调整模型提示词：JSON 输出中 `voice` 字段放在最前，方便流式语音首句安全抽取。
+- 新增验证命令：`npm.cmd run voice:stream-ipc:validate`。
+- 最新验证报告：
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782625914772.json`
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\ai-client-stream-validation-1782625914517.json`
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782625911104.json`
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-runtime-tts-chain-validation-1782625921245.json`
+- 验证结果：
+  - `text_stream_json_voice_field_only=true`
+  - `text_stream_first_sentence_queueable=true`
+  - `stream_requested=true`
+  - `renderer_extracts_voice_field_only=true`
+  - `renderer_first_sentence_to_queue=true`
+  - `renderer_final_voice_deduplicates=true`
+  - `main_keeps_complete_handler=true`
+  - `browser_tts_used=false`
+- 本轮命令：
+  - `npm.cmd run voice:pipeline:validate` 通过。
+  - `npm.cmd run voice:model-stream:validate` 通过。
+  - `npm.cmd run voice:stream-ipc:validate` 通过。
+  - `npm.cmd run voice:runtime:validate` 通过。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+- 页面复验：`http://[::1]:5173/?window=zhineng-graph` 中 `Subject Status Dialogue`、`World system nebula particle graph`、语音控件均存在，浏览器 error 日志为 `0`。
+- 当前边界：自动化已证明流式 IPC、首句抽取、队列入口、同音色约束和回退边界；真实模型流式 API 在用户 API 配置下的现场表现、真实扬声器听感和真实多轮麦克风对话仍需继续实测。
+## 2026-06-28 Voice Stream Loop Runtime Probe
+
+- 已新增运行时流式语音闭环探针：`scripts/validate-status-dialogue-voice-stream-loop.cjs`。
+- 已新增命令：`npm.cmd run voice:stream-loop:validate`。
+- 探针覆盖：
+  - 本地 Whisper STT 真实转写默认验证音频。
+  - 模型 streaming delta 默认用本地模拟 OpenAI-compatible JSON stream；如果设置 `STATUS_DIALOGUE_MODEL_API_KEY`，可用 `--model-mode real` 切换为真实模型 streaming。
+  - `voice_response_text_stream.v1` 从 streaming JSON 的 `voice` 字段抽取第一完整句。
+  - 第一完整句在模型流未完成前启动 CosyVoice TTS。
+  - 完整 voice 到达后，剩余文本去掉已播第一句再合成。
+  - 首句音频使用 `createBufferedStreamingTtsAdapter` 切成 `streaming_tts_audio_frame.v1` 并验证重组。
+  - 输出 `voice_latency_trace.v1`，记录 STT / model / first TTS / total TTS / playback estimate / end-to-end。
+- 最新 runtime stream-loop 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628074346.json`。
+- 最新探针结果：
+  - `stt_ms=7764`
+  - `model_ms=5`（本轮为 simulated OpenAI delta）
+  - `first_tts_ms=4415`
+  - `total_tts_ms=14905`
+  - `first_playback_ms=1254`
+  - `total_playback_ms=5910`
+  - `end_to_end_ms=22735`
+  - `slowest_stage=tts`
+- 关键检查：
+  - `stt_ok=true`
+  - `first_sentence_ready_before_model_done=true`
+  - `first_tts_started_before_model_done=true`
+  - `first_sentence_tts_ok=true`
+  - `remaining_voice_tts_ok=true`
+  - `same_voice_profile=true`
+  - `browser_tts_used=false`
+  - `external_world_write=false`
+  - `requirement_packet_created=false`
+  - `streaming_frames_recombined=true`
+- 同步回归验证：
+  - `npm.cmd run voice:pipeline:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782632682379.json`。
+  - `npm.cmd run voice:model-stream:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\ai-client-stream-validation-1782632682398.json`。
+  - `npm.cmd run voice:stream-ipc:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782632679195.json`。
+  - `npm.cmd run voice:runtime:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-runtime-tts-chain-validation-1782632691108.json`。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+- 页面复验：`http://[::1]:5173/?window=zhineng-graph` 中 `Subject Status Dialogue`、`World system nebula particle graph`、语音控件均存在，浏览器 error 日志为 `0`。
+- 当前边界：本轮已证明“STT -> 模型流式首句 -> 第一句 TTS 队列 -> 剩余 TTS -> latency trace”可在运行时探针中成立；真实 API streaming、真实 GUI 扬声器播放和真实麦克风多轮交互仍需用户实机环境继续确认。
+
+## 2026-06-28 Voice Stream Loop App Settings 验证入口
+
+- 已增强 `scripts/validate-status-dialogue-voice-stream-loop.cjs`：
+  - 继续默认支持本地模拟 OpenAI-compatible streaming delta。
+  - 新增 `--model-mode app-settings`，可从 Electron `settings` store 读取与 GUI 同源的模型配置。
+  - 新增 `--model-config <json>`，可用显式配置文件进行真实模型流式验证。
+  - 报告只记录 `source`、`api_key_configured`、`model`、`base_url_host`、`provider_label`，不写入 API key。
+- 已新增命令：`npm.cmd run voice:stream-loop:validate:app-settings`。
+- 本轮默认闭环复验通过：
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628075458.json`。
+  - `stt_ms=9006`，`model_ms=5`，`first_tts_ms=6916`，`total_tts_ms=19968`，`end_to_end_ms=29092`。
+  - `first_sentence_ready_before_model_done=true`。
+  - `first_tts_started_before_model_done=true`。
+  - `same_voice_profile=true`。
+  - `browser_tts_used=false`。
+  - `external_world_write=false`。
+  - `requirement_packet_created=false`。
+  - `streaming_frames_recombined=true`。
+  - `slowest_stage=tts`。
+- 本轮 app-settings 真实模型入口复验结果：
+  - 命令：`npm.cmd run voice:stream-loop:validate:app-settings`。
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628075417.failed.json`。
+  - 结果：验证脚本已读取 `electron_store.settings`，但 `api_key_configured=false`，因此没有启动真实模型 API streaming。
+  - 红线：失败报告不包含密钥明文。
+- 本轮同步回归：
+  - `npm.cmd run voice:pipeline:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782633285763.json`。
+  - `npm.cmd run voice:model-stream:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\ai-client-stream-validation-1782633285695.json`。
+  - `npm.cmd run voice:stream-ipc:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782633282834.json`。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+- 页面复验：
+  - URL：`http://[::1]:5173/?window=zhineng-graph`。
+  - `Subject Status Dialogue=true`，`sttControl=true`，`ttsControl=true`，`canvasPresent=true`。
+  - canvas 尺寸：`1278 x 618`。
+  - 前端 error 日志：`0`。
+- 当前判断：
+  - V0-V6 的自动化验证链路已覆盖测速、统一音色、短句缓存、首句伪流式、播放队列、buffered streaming adapter 和情绪优先级。
+  - 真实模型 streaming 入口已准备好，但当前应用设置中缺少模型 API key；待你完成模型 API 配置后，应先运行 `npm.cmd run voice:stream-loop:validate:app-settings` 再进入 GUI 实测。
+  - 当前最大可观测延迟仍在 TTS 合成阶段，不在模型流式分句入口。
+
+## 2026-06-28 V2 真实 TTS 缓存推进
+
+- 已把 `voice-cache.v1` 从 renderer 内存缓存推进到主进程 TTS IPC 的磁盘缓存：
+  - 缓存目录：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-audio-cache`。
+  - cache key 由文本、`voice_profile`、`voice_id`、adapter 和 `emotion_hint` 共同决定。
+  - 缓存内容只包含成功合成后的音频 `data URL`、mime、profile、emotion 和摘要元数据。
+  - 不缓存失败结果，不保存麦克风原始音频，不写世界模型，不创建 `requirement_packet.v1`。
+  - 可用 `SIGHTFLOW_STATUS_DIALOGUE_TTS_CACHE=0` 临时关闭缓存。
+- 已扩展 `status_dialogue_tts_synthesis.v1` 结果：
+  - 新增可选 `cache_hit`。
+  - 新增可选 `cache_key`。
+  - 保持旧调用兼容。
+- renderer 播放队列已识别主进程返回的 `cache_hit=true`，并计入 `cached_count`、`voice_latency_trace.v1.cached_chunk_count` 和 UI cache 统计。
+- 运行时探针已接入同一缓存目录，并新增 `tts_cache_probe`：
+  - 同一句、同音色、同 emotion 第二次合成必须命中缓存。
+- 验证结果：
+  - 首次缓存探针报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628080446.json`。
+    - `tts_cache_second_hit=true`。
+    - `tts_cache_second_latency_ms=166`。
+    - 主回复当轮第一次出现，`runtime_voice_cache_hits=0`，`total_tts_ms=15070`。
+  - 复跑缓存命中报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628080528.json`。
+    - `runtime_voice_cache_hits=2`。
+    - `cached_chunk_count=2`。
+    - `total_tts_ms=3`。
+    - `slowest_stage=stt`。
+    - `browser_tts_used=false`。
+    - `same_voice_profile=true`。
+    - `external_world_write=false`。
+    - `requirement_packet_created=false`。
+- 本轮回归：
+  - `npm.cmd run voice:pipeline:validate` 通过。
+  - `npm.cmd run voice:model-stream:validate` 通过。
+  - `npm.cmd run voice:stream-ipc:validate` 通过。
+  - `npm.cmd run voice:stream-loop:validate` 连续两轮通过。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+- 当前判断：
+  - V2 不再只是模拟层缓存；真实 CosyVoice TTS IPC 和运行时探针均已能验证缓存命中。
+  - 对重复确认语、完成提醒、错误提示，缓存命中后 TTS 阶段可从秒级降到毫秒级。
+  - 当前未缓存的全新长句仍会受 CosyVoice 合成速度影响；后续体验优化应继续推进原生 streaming TTS adapter 或更快的高质量 TTS adapter。
+
+## 2026-06-28 V5 真 HTTP 音频流式 Adapter 推进
+
+- 已复核旧 V5 状态：
+  - `createBufferedStreamingTtsAdapter` 能把完整音频拆成 `streaming_tts_audio_frame.v1`。
+  - 但它仍需要先等 TTS 完整返回，不属于服务端真实流式消费。
+- 已新增工具无关的 `createHttpStreamingTtsAdapter`：
+  - 位置：`D:\zhineng\sightflow-desktop-agent-main\src\core\status-dialogue\voice-output-pipeline.ts`。
+  - transport：`chunked_http`。
+  - 输入由调用方提供 `buildRequest`，不绑定 CosyVoice、Kokoro、Piper 或任何固定工具。
+  - 每收到一个 HTTP response body chunk，就产出一个 `streaming_tts_audio_frame.v1`。
+  - 响应结束时追加一个空的 `final=true` marker，用于下游确认流结束，避免重复音频字节。
+- 已扩展 `npm.cmd run voice:pipeline:validate`：
+  - 新增本地 mock streaming audio server。
+  - mock server 分三段发送音频字节。
+  - 验证 adapter 第一帧早于完整响应结束。
+  - 验证逐帧 base64 解码后可重组成原始音频字节。
+- 最新 V5 验证报告：
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782634268257.json`。
+  - `http_streaming_adapter_implemented=streaming_tts_adapter.validation.http_chunked`。
+  - `http_streaming_audio_frame_count=3`。
+  - `http_streaming_final_marker_count=1`。
+  - `http_streaming_first_frame_before_end=true`。
+  - `http_streaming_recombined_bytes=true`。
+- 同步回归：
+  - `npm.cmd run voice:pipeline:validate` 通过。
+  - `npm.cmd run voice:model-stream:validate` 通过。
+  - `npm.cmd run voice:stream-ipc:validate` 通过。
+  - `npm.cmd run voice:stream-loop:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628081145.json`。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+- 边界：
+  - 当前 V5 已具备工具无关的真 HTTP 流式 adapter 和可验证 mock 流证据。
+  - 右下角 GUI 当前仍使用高质量分块播放队列和 CosyVoice HTTP 合成；尚未把 GUI 播放层切到逐帧播放。
+  - 下一步如要继续降低全新句子的首次听到时间，需要把 GUI 播放层接入 `createHttpStreamingTtsAdapter`，并选择一个能真正返回 chunked audio 的 TTS 服务。
+
+## 2026-06-28 V5 TTS Streaming IPC 通道接入
+
+- 已新增主进程 IPC：
+  - `zhineng:status-dialogue:tts:synthesize:stream`
+  - 事件通道：`zhineng:status-dialogue:tts:synthesize:stream:event`
+  - 事件 schema：`status_dialogue_tts_stream_event.v1`
+- 主进程行为：
+  - 保留原 `zhineng:status-dialogue:tts:synthesize` 一次性合成路径不变，作为稳定 fallback。
+  - streaming 路径优先检查 `voice-cache.v1`，命中时直接发送缓存音频 frame 和 final marker。
+  - 未命中时通过 `createHttpStreamingTtsAdapter` 消费 HTTP response body chunk。
+  - 每个音频 chunk 通过 IPC 发送 `streaming_tts_audio_frame.v1`。
+  - 完成时发送 `done`，包含 `frame_count`、`final_frame_count`、`first_frame_ms`、`total_stream_ms`、`cache_key`。
+  - 未命中且流成功时会把重组后的音频写入 `runtime/voice-audio-cache`。
+- renderer 行为：
+  - 新增 `requestStatusDialogueTtsStream` helper。
+  - helper 监听 `zhineng:status-dialogue:tts:synthesize:stream:event`。
+  - helper 统计 `frameCount`、`finalFrameCount`、`firstFrameMs`、`totalStreamMs`。
+  - 当前不替换 `playVoicePlanThroughQueue` 的稳定 data URL 播放路径。
+- 验证：
+  - `npm.cmd run voice:stream-ipc:validate` 已扩展覆盖 TTS stream IPC。
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782634699758.json`。
+  - `main_tts_stream_handler=true`。
+  - `main_tts_stream_events=true`。
+  - `main_tts_stream_uses_http_adapter=true`。
+  - `main_tts_synthesize_fallback_kept=true`。
+  - `renderer_tts_stream_listener=true`。
+  - `renderer_tts_stream_invoker=true`。
+  - `renderer_tts_stream_helper_keeps_frame_count=true`。
+- 同步回归：
+  - `npm.cmd run voice:pipeline:validate` 通过。
+  - `npm.cmd run voice:model-stream:validate` 通过。
+  - `npm.cmd run voice:stream-ipc:validate` 通过。
+  - `npm.cmd run voice:stream-loop:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628081844.json`。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+  - `http://[::1]:5173/?window=zhineng-graph` 返回 `200`。
+- 当前判断：
+  - V5 已从 core adapter 推进到 Electron IPC 帧通道。
+  - GUI 播放层还没有切到逐帧播放，因此真实听感仍走原高质量队列。
+  - 下一步应做“frame stream -> audio playback”的小范围验证，或先选择真实 chunked audio TTS 服务后再切播放层。
+
+## 2026-06-28 V5 Frame Stream 可播放组装桥
+
+- 已新增 `streaming_tts_frame_assembly.v1`：
+  - 位置：`D:\zhineng\sightflow-desktop-agent-main\src\core\status-dialogue\voice-output-pipeline.ts`。
+  - 函数：`assembleStreamingTtsAudioFrames`。
+  - 输入：`streaming_tts_audio_frame.v1[]`。
+  - 输出：可播放 `audio_data_url`、`audio_base64`、`audio_mime_type`、`audio_frame_count`、`final_frame_count`、`ordered`、`errors`。
+  - 组装逻辑按 frame 解码为字节后再重新编码，避免 base64 padding 边界导致音频损坏。
+- 已增强 renderer `requestStatusDialogueTtsStream`：
+  - 保留完整 frame stream。
+  - 调用 `assembleStreamingTtsAudioFrames`。
+  - 返回 `audioDataUrl`、`audioMimeType`、`frameSequenceOk`、`assemblyErrors`。
+  - 当前仍不替换默认 `playVoicePlanThroughQueue`，因此不影响已稳定可听路径。
+- 验证增强：
+  - mock HTTP streaming 音频 chunk 改为非 3 字节对齐的大块数据，专门验证 base64 padding 边界。
+  - `npm.cmd run voice:pipeline:validate` 新增：
+    - `http_streaming_assembly_schema=streaming_tts_frame_assembly.v1`。
+    - `http_streaming_assembly_playable=true`。
+    - `http_streaming_assembly_ordered=true`。
+    - `http_streaming_assembly_errors=0`。
+  - `npm.cmd run voice:stream-ipc:validate` 新增：
+    - `renderer_tts_stream_assembles_playable_audio=true`。
+- 最新报告：
+  - pipeline：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782635094059.json`。
+  - IPC：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782635107866.json`。
+  - 真实闭环：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628082532.json`。
+- 同步回归：
+  - `npm.cmd run voice:pipeline:validate` 通过。
+  - `npm.cmd run voice:model-stream:validate` 通过。
+  - `npm.cmd run voice:stream-ipc:validate` 通过。
+  - `npm.cmd run voice:stream-loop:validate` 通过。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+  - `http://[::1]:5173/?window=zhineng-graph` 返回 `200`。
+- 当前判断：
+  - V5 已具备“HTTP 音频流 -> IPC frame -> renderer frame assembly -> 可播放 audioDataUrl”的完整可验证桥。
+  - 真实默认播音仍走高质量队列，下一步才适合做“用 assembled audioDataUrl 接入播放队列”的小范围开关验证。
+
+## 2026-06-28 V5 Stream Assembled 实验播放模式
+
+- 已新增显式实验模式：
+  - `voiceOutputMode='cosyvoice_stream_assembled'`
+  - UI 下拉显示：`stream assembled`
+  - 默认仍为 `cosyvoice_short`，不改变稳定播放路径。
+- 实验模式行为：
+  - `synthesizeVoiceChunk` 在该模式下调用 `requestStatusDialogueTtsStream`。
+  - `requestStatusDialogueTtsStream` 监听 TTS stream IPC frame。
+  - frame stream 经 `assembleStreamingTtsAudioFrames` 组装为 `audioDataUrl`。
+  - 组装后的 `audioDataUrl` 进入现有 `playVoiceAudioChunk` 播放路径。
+  - 成功时记录 `tts_stream_assembled_ready`，包含 frame count、first frame latency、total stream latency 和 cache hit。
+- 验证：
+  - `npm.cmd run voice:stream-ipc:validate` 已覆盖：
+    - `renderer_tts_stream_experimental_mode=true`
+    - `renderer_tts_stream_assembled_enters_audio_result=true`
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782635365991.json`。
+- 同步回归：
+  - `npm.cmd run voice:pipeline:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782635369734.json`。
+  - `npm.cmd run voice:model-stream:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\ai-client-stream-validation-1782635389266.json`。
+  - `npm.cmd run voice:stream-ipc:validate` 通过。
+  - `npm.cmd run voice:stream-loop:validate` 通过，报告 `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628082949.json`。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+  - `http://[::1]:5173/?window=zhineng-graph` 返回 `200`。
+- 当前判断：
+  - V5 已具备可由 UI 显式选择的 stream assembled 播放路径。
+  - 该模式仍是“stream frame 组装后播放”，不是逐帧边收边播。
+  - 下一步若继续逼近目标，应验证真实 TTS 服务是否能稳定 chunked 返回，并再做逐帧边收边播的 WebAudio/MSE 实验。
+## 2026-06-28 Voice Output Native Streaming Probe
+
+- 新增方案文档：`D:\zhineng\thread-requirements\3d-point-cloud-graph-v2.2\subject-status-dialogue-module\voice-output-streaming-optimization-plan.v1.md`。
+- 新增真实 CosyVoice HTTP 流式探针：`D:\zhineng\sightflow-desktop-agent-main\scripts\validate-cosyvoice-http-streaming.cjs`。
+- 新增命令：`npm.cmd run voice:tts-stream-runtime:validate`。
+- 先验证旧服务状态：
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\cosyvoice-http-streaming-validation-20260628083616.json`
+  - `native_streaming_supported=false`
+  - `first_chunk_ms_from_request=10935`
+  - `total_request_ms=10937`
+  - 结论：旧服务端接收 `stream:true`，但固定 `stream=False` 合成，首个音频 chunk 没有提前。
+- 已改造本地 CosyVoice OpenAI-compatible adapter：
+  - `stream:true` 时使用 FastAPI `StreamingResponse`。
+  - 底层调用 `cosyvoice.inference_sft(..., stream=True)`。
+  - `wav` 流式输出 streaming WAV header + PCM16 chunk。
+  - `pcm` 输出裸 PCM16，作为后续 WebAudio 边收边播的目标格式。
+  - 旧的一次性 WAV 路径保持不变。
+- 已重启本地 CosyVoice adapter，当前进程 PID：`18232`。
+- 改造后复验：
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\cosyvoice-http-streaming-validation-20260628083929.json`
+  - `native_streaming_supported=true`
+  - `transfer_encoding=chunked`
+  - `first_chunk_ms_from_request=16`
+  - `total_request_ms=10700`
+  - 结论：服务端已经具备真实 HTTP chunked 音频提前输出能力。
+- 网页预览 fallback 补齐：
+  - `ZhinengConsole.tsx` 的 `requestStatusDialogueTtsStream` 在无 Electron IPC 时不再直接报 `electron ipc unavailable`。
+  - 新增浏览器 `fetch` body reader 路径，可读取 HTTP chunk 并组装为 `streaming_tts_audio_frame.v1`。
+  - 默认播放模式仍是 `cosyvoice_short`，只有显式选择 `stream assembled` 才启用该路径。
+- 验证：
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run voice:stream-ipc:validate` 通过。
+  - 新增静态检查：`renderer_tts_stream_browser_preview_fallback=true`。
+- 当前边界：
+  - GUI 默认仍不是边收边播，`stream assembled` 仍需收完整 frame 后组装播放。
+  - 下一步应新增 `stream live pcm` 实验播放层：`response_format=pcm -> streaming_tts_audio_frame.v1 -> WebAudio chunk scheduling`。
+  - 不写世界模型，不创建 `requirement_packet.v1`，不保存麦克风原始音频。
+
+## 2026-06-28 Stream Live PCM 实验播放层
+
+- 已新增 GUI 显式实验模式：`stream live pcm`。
+- 默认播放模式保持 `cosyvoice_short`，不会自动切换到实验模式。
+- renderer 新增：
+  - `StatusDialogueVoiceOutputMode='cosyvoice_stream_live_pcm'`
+  - `playVoiceLivePcmStreamChunk`
+  - `decodePcm16LeMonoBase64`
+  - `voiceLiveAudioContextRef`
+- live PCM 数据流：
+  - `voice_output_chunk.v1`
+  - `requestStatusDialogueTtsStream(response_format=pcm, skip_cache=true)`
+  - `streaming_tts_audio_frame.v1(audio/pcm)`
+  - `decodePcm16LeMonoBase64`
+  - `AudioContext.createBuffer`
+  - `AudioBufferSourceNode.start(playback_cursor_time)`
+  - `voice_playback_queue.v1 / voice_latency_trace.v1`
+- 主进程新增 stream request 覆盖：
+  - `response_format` / `responseFormat`
+  - `skip_cache` / `skipCache`
+  - 当请求格式与默认格式不同时自动跳过 cache，避免 WAV cache 被 live PCM 误读。
+- 3D 粒子 OS 映射新增子粒子：
+  - `voice.live_pcm_playback`
+  - 输入：`streaming_tts_audio_frame.v1(audio/pcm)`、`voice_output_chunk.v1`、`AudioContext`
+  - 输出：`WebAudio scheduled buffers`、`voice_latency_trace.v1.first_frame_ms`、`voice_playback_queue.v1`
+- PCM 真实服务探针：
+  - 命令：`node scripts\validate-cosyvoice-http-streaming.cjs --format pcm --text "我正在测试实时 PCM 语音输出。"`
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\cosyvoice-http-streaming-validation-20260628085327.json`
+  - `native_streaming_supported=true`
+  - `first_chunk_ms_from_request=7225`
+  - `total_request_ms=10493`
+- PCM 复跑波动报告：
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\cosyvoice-http-streaming-validation-20260628085644.json`
+  - `native_streaming_supported=true`
+  - `first_chunk_ms_from_request=11671`
+  - `total_request_ms=14166`
+- 当前判断：
+  - live PCM 播放层已具备代码入口和静态验证。
+  - PCM 首个真实音频 chunk 早于完整合成结束，但底层 CosyVoice 首音频生成仍慢且有波动，约 7.2-11.7 秒。
+  - 下一步若继续压延迟，需要继续优化底层 TTS：更短分句、更强预热、更高缓存命中、更快 TTS adapter 或模型参数/部署优化。
+- 边界仍保持：
+  - 不写世界模型。
+  - 不创建 `requirement_packet.v1`。
+  - 不保存麦克风原始音频。
+  - 不使用浏览器 TTS 可听输出。
+
+## 2026-06-28 V0/V2 测速口径与短句预热
+
+- 修正 `scripts/validate-voice-runtime-tts-chain.cjs` 的 TTS 测速口径：
+  - 旧口径在流式服务下容易只记录 headers 耗时。
+  - 新口径记录 `headers_ms`、`first_audio_chunk_ms`、`first_audio_payload_chunk_ms`、`total_audio_ms`、`response_chunk_arrival_ms`。
+  - WAV 流的第一个 44-byte chunk 是 header，不再把它当成可听音频首帧。
+- 修正浏览器预览一次性 CosyVoice TTS：
+  - `latency_ms` 改为等待 `arrayBuffer()` 完成后记录，避免只显示 headers 时间。
+- 最新 runtime TTS 报告：
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-runtime-tts-chain-validation-1782637290762.json`
+  - `headers_ms=11`
+  - `first_audio_chunk_ms=11`
+  - `first_audio_payload_chunk_ms=7503`
+  - `total_audio_ms=9311`
+- 回归 runtime TTS 报告：
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-runtime-tts-chain-validation-1782637533224.json`
+  - `headers_ms=10`
+  - `first_audio_payload_chunk_ms=7263`
+  - `total_audio_ms=9034`
+- 新增 V2 短句缓存预热脚本：
+  - 命令：`npm.cmd run voice:cache:prewarm`
+  - 脚本：`D:\zhineng\sightflow-desktop-agent-main\scripts\prewarm-status-dialogue-tts-cache.cjs`
+  - 缓存目录：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-audio-cache`
+- 首轮预热报告：
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-tts-cache-prewarm-20260628090356.json`
+  - `generated_count=4`
+  - `cache_hit_count=0`
+- 复跑预热报告：
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-tts-cache-prewarm-20260628090407.json`
+  - `generated_count=0`
+  - `cache_hit_count=4`
+- 回归预热报告：
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-tts-cache-prewarm-20260628090523.json`
+  - `generated_count=0`
+  - `cache_hit_count=4`
+- 完整闭环回归报告：
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628090551.json`
+  - `first_tts_ms=28`
+  - `total_tts_ms=41`
+  - `cached_chunk_count=2`
+  - `browser_tts_used=false`
+  - `same_voice_profile=true`
+- 当前判断：
+  - V0 的 TTS 测速已能区分 headers、WAV header chunk、首个可听 payload chunk 和完整音频。
+  - V2 已具备常用短句预生成入口，且复跑可验证缓存命中。
+
+## 2026-06-28 UI Ack 短句缓存对齐
+
+- 发现问题：真实 UI 提交链路中的即时确认语为 `speech_transcript` 与 `text` 两条不同 ack，但早前预热列表没有覆盖这两条精确文本，导致第一次真实首响仍可能走慢速 CosyVoice 生成。
+- 已补强核心常量：
+  - `STATUS_DIALOGUE_VOICE_ACK_TEXT`
+  - `buildStatusDialogueVoiceAckText`
+- `ZhinengConsole.tsx` 中 `buildStatusDialogueVoiceAck` 现在代理核心常量，提交链路仍在模型请求前调用 `speakVoiceAck`，并继续进入 `playVoicePlanThroughQueue`，不绕过同音色队列。
+- `prewarm-status-dialogue-tts-cache.cjs` 已加入真实 UI 的两条 ack 短句：
+  - `ack_speech_transcript_checking`
+  - `ack_text_checking`
+- `validate-status-dialogue-voice-stream-loop.cjs` 已新增 `tts_ack_cache_probe`，检查两条 UI ack 是否 cache hit、是否低延迟、是否仍为同一 voice profile。
+- 最新验证：
+  - `npm.cmd run voice:pipeline:validate` 通过。
+  - `npm.cmd run voice:cache:prewarm` 首跑报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-tts-cache-prewarm-20260628091603.json`，`generated_count=2`，`cache_hit_count=4`。
+  - `npm.cmd run voice:cache:prewarm` 复跑报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-tts-cache-prewarm-20260628091613.json`，`generated_count=0`，`cache_hit_count=6`。
+  - `npm.cmd run voice:stream-loop:validate` 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628091624.json`。
+  - 关键结果：`ack_cache_all_hit=true`，`ack_cache_low_latency=true`，`ack_cache_hit_count=2`，`first_tts_ms=2`，`cached_chunk_count=2`，`browser_tts_used=false`，`same_voice_profile=true`。
+- 边界保持：
+  - 不创建 `requirement_packet.v1`。
+  - 不写世界模型。
+  - 不保存麦克风原始音频。
+  - 不重新启用浏览器可听 TTS fallback。
+- 构建与测速回归：
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+  - `http://[::1]:5173/?window=zhineng-graph` 返回 `200`。
+  - `npm.cmd run voice:runtime:validate` 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-runtime-tts-chain-validation-1782638418491.json`。
+  - 该报告显示未缓存新句子仍为慢路径：`first_audio_payload_chunk_ms=7413`，`total_audio_ms=9420`，因此后续低延迟优化仍应继续围绕缓存命中率、更短可播放单元、真实流式 adapter 或更快 TTS 后端推进。
+
+## 2026-06-28 正式巡检开场句缓存
+
+- 新增正式巡检开场句，与即时 ack 分离：
+  - ack 负责“收到输入”。
+  - formal opening 负责“开始巡检结论”，用于模型 `voice` 字段的第一句和本地 fallback `voiceText` 的第一句。
+- 新增核心常量和选择函数：
+  - `STATUS_DIALOGUE_VOICE_OPENING_TEXT`
+  - `buildStatusDialogueVoiceOpeningText`
+- `buildStatusDialogueUserPrompt` 已加入 `voice_opening_policy.selected_first_sentence`，真实模型应在首句保留该状态含义，但不再要求逐字精确复读。
+- `STATUS_DIALOGUE_SYSTEM_PROMPT` 已补充规则：如果 user JSON 包含 `voice_opening_policy.selected_first_sentence`，`voice` 字段首句需覆盖该状态含义，并允许自然变体。
+- 本地 fallback 也会用同一开场句作为 `voiceText` 第一语句。
+- 预热脚本已加入 4 条正式开场句，并保持同一 `voice.cosyvoice.local.default` profile。
+- 验证：
+  - `npm.cmd run voice:pipeline:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782638797154.json`。
+  - `npm.cmd run voice:cache:prewarm` 首跑报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-tts-cache-prewarm-20260628092718.json`，`generated_count=4`，`cache_hit_count=6`。
+  - `npm.cmd run voice:cache:prewarm` 复跑报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-tts-cache-prewarm-20260628092730.json`，`generated_count=0`，`cache_hit_count=10`。
+  - 完整闭环首跑：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628092740.json`，`formal_opening_first_sentence=true`，`formal_opening_cache_hit=true`，`formal_opening_low_latency=true`，`first_tts_ms=2`，`total_tts_ms=10217`。
+  - 完整闭环复跑：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628092814.json`，`runtime_voice_cache_hits=2`，`first_tts_ms=3`，`total_tts_ms=5`，`cached_chunk_count=2`。
+  - `npm.cmd run voice:stream-ipc:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782638916130.json`。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+  - `http://[::1]:5173/?window=zhineng-graph` 返回 `200`。
+- 当前判断：
+  - V2 已覆盖即时 ack 和正式巡检开场句。
+  - V3 的模型流式首句可以使用预热正式开场句进入 TTS 队列。
+  - 剩余首次出现的新句仍可能慢，但已经具备首次生成后缓存证据，复跑可降到毫秒级 TTS。
+  - 边界仍保持：不创建 `requirement_packet.v1`，不写世界模型，不保存麦克风原始音频，不重新启用浏览器可听 TTS fallback。
+
+## 2026-06-28 V3 多句伪流式播放队列
+
+- 已将模型 `voice` 字段流式解析从“只发第一句”升级为“每个完整句子都发 `sentence_ready`”。
+- 核心契约更新：
+  - `VoiceResponseTextStreamState.emitted_sentence_count`
+  - `VoiceResponseTextStreamState.emitted_text_length`
+  - `VoiceResponseTextStreamEvent.type='sentence_ready'`
+  - `sentence_index`
+  - `spoken_prefix`
+- Renderer 更新：
+  - `requestStatusDialogueModel` 使用 `onStreamingVoiceSentence`。
+  - 每个完整句子都构造 `voice_response_plan.v1` 并进入 `playVoicePlanThroughQueue`。
+  - 最终回复根据 `spoken_prefix` 去重，只播放未提前播过的剩余文本。
+- 验证：
+  - `npm.cmd run voice:pipeline:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782639351989.json`。
+  - `npm.cmd run voice:stream-loop:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628093634.json`。
+  - 关键结果：`streamed_sentence_count_at_least_two=true`，`streamed_sentences_tts_ok=true`，`streamed_sentences_no_final_duplicate=true`，`first_tts_ms=4`，`total_tts_ms=8`，`cached_chunk_count=2`。
+  - `npm.cmd run voice:stream-ipc:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782639440440.json`，`renderer_stream_sentences_to_queue=true`。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+  - `http://[::1]:5173/?window=zhineng-graph` 返回 `200`。
+- 当前判断：
+  - V3 已不只覆盖第一句，而是覆盖多句完整句子的提前入队。
+  - V4 播放队列继续负责串行播放和状态统计。
+  - 未缓存全新句子的首包慢仍需要 V5/后端 TTS adapter 继续优化。
+
+## 2026-06-28 V0/V4 句级延迟 Trace
+
+- 已扩展 `voice_latency_trace.v1`：
+  - 新增 `segments` 数组。
+  - 每个 segment 对应一个 `voice_output_chunk.v1` 或流式句子。
+  - 记录 `cache_hit`、`tts_ms`、`playback_ms`、`first_frame_ms`、`total_stream_ms`、`status` 和 `error`。
+- Renderer 队列更新：
+  - `playVoicePlanThroughQueue` 在 chunk 成功播放时记录 `status=spoken`。
+  - TTS 合成失败、播放失败或 stale queue token 时记录 `status=error/skipped`。
+  - `tts_queue_complete` 日志包含 `latency_segments`。
+- 验证：
+  - `npm.cmd run voice:pipeline:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782639700174.json`。
+  - `npm.cmd run voice:stream-loop:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628094204.json`。
+  - 关键结果：`latency_segments_cover_streamed_sentences=true`，`latency_trace.segments` 包含 2 个句级记录。
+  - 第 1 句：`cache_hit=true`，`tts_ms=4`，`playback_ms=2810`。
+  - 第 2 句：`cache_hit=true`，`tts_ms=4`，`playback_ms=3518`。
+  - `npm.cmd run voice:stream-ipc:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782639749649.json`。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+  - `http://[::1]:5173/?window=zhineng-graph` 返回 `200`。
+- 当前判断：
+  - V0 不再只有整轮总耗时，已经能追踪每个句子的 TTS 和播放耗时。
+  - V4 播放队列具备句级成功/失败/跳过证据。
+  - 后续 V5 可以基于 segment 判断是否需要更换后端 adapter、优化 chunk 大小或调整缓存策略。
+
+## 2026-06-28 V0-V6 统一审计门槛
+
+- 新增统一审计命令：
+  - `npm.cmd run voice:v0-v6:audit`
+  - `npm.cmd run voice:v0-v6:audit:strict`
+- 审计脚本：
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\audit-status-dialogue-voice-v0-v6.cjs`
+- 最新非 strict 审计：
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-voice-v0-v6-audit-20260628132751.json`
+  - `overall_status=incomplete`
+  - `incomplete_required_ids=["V5_real_low_latency_tts_acceptance"]`
+- 最新 strict 审计：
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-voice-v0-v6-audit-20260628132825.json`
+  - strict 模式按预期返回失败，因为真实低延迟 TTS 服务验收还没有完成。
+- 最新真实配置探针：
+  - 命令：`npm.cmd run voice:generic-tts-stream:validate:configured`
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\generic-streaming-tts-configured-unconfigured-20260628132827.json`
+  - 结果：未配置真实流式 TTS，缺少 `adapter_id`、`base_url`、`endpoint_path`、`model`、`voice`。
+- 最新 configured mock 探针：
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\generic-streaming-tts-validation-configured-mock-20260628132757.json`
+  - `first_audio_payload_ms=76`
+  - `same_voice_profile=true`
+  - `selected_candidate_id=custom_streaming_tts_http`
+- 最新链路回归：
+  - `npm.cmd run voice:pipeline:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782653277343.json`。
+  - `npm.cmd run typecheck` 通过。
+- 边界复核：
+  - `src` 和 `scripts` 中未发现新的可听浏览器 TTS fallback、`requirement_packet.v1` 创建、世界模型写入触发点。
+- 当前结论：
+  - V0、V1、V2、V3、V4、V6 以及 V5 的工具无关 streaming adapter / configured mock 入口已有当前自动化证据。
+  - V5 不能标记为完整完成，直到真实低延迟 TTS 服务通过 `voice:generic-tts-stream:validate:configured` 且 `voice:v0-v6:audit:strict` 通过。
+  - 后续线程不得把 mock、configured mock 或 CosyVoice 慢速 chunked 探针误判为“真实低延迟 TTS 已验收”。
+
+## 2026-06-28 V5 Edge Read Aloud WebSocket 真实流式验收
+
+- 新增真实远程流式 TTS 验证脚本：
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\validate-edge-readaloud-streaming-tts.cjs`
+  - 命令：`npm.cmd run voice:edge-tts-stream:validate`
+- 新增可替换候选：
+  - `edge_readaloud_websocket`
+  - transport：`websocket`
+  - role：`live_dialogue_primary`
+  - 默认声音：`zh-CN-XiaoxiaoNeural`
+- 验证报告：
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\edge-readaloud-streaming-validation-20260628134821035.json`
+  - `real_service=true`
+  - `native_streaming_supported=true`
+  - `same_voice_profile=true`
+  - `first_audio_payload_ms=916`
+  - `interactive_first_audio_ms=1500`
+  - `audio_frame_count=22`
+  - `audio_bytes=15408`
+  - `browser_tts_used=false`
+- 统一审计：
+  - `npm.cmd run voice:v0-v6:audit:strict` 通过。
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-voice-v0-v6-audit-20260628135223.json`
+  - `overall_status=complete`
+  - `incomplete_required_ids=[]`
+- 回归验证：
+  - `npm.cmd run voice:pipeline:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\voice-output-pipeline-validation-1782654414802.json`。
+  - `npm.cmd run voice:stream-ipc:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782654500008.json`。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+- 边界：
+  - 该路径是真实远程 WebSocket 流式 TTS 探针，不是浏览器 `speechSynthesis`。
+  - 不创建 `requirement_packet.v1`。
+  - 不写世界模型。
+  - 不保存麦克风原始音频。
+  - 当前只证明 V5 真实流式低延迟验收成立；是否切换 GUI 默认播音路径仍需单独设计和确认。
+- 当前结论：
+  - V0-V6 的自动化验收已由 strict 审计证明为 complete。
+  - 后续 UI 默认路径、声音克隆、高质量音色策略和实机听感仍属于下一阶段优化，不改变本轮 V0-V6 完成结论。
+
+## 2026-06-28 Model Stream IPC Missing Handler Fallback Fix
+
+- 问题现象：
+  - GUI / 预览中出现 `No handler registered for 'zhineng:status-dialogue:complete:stream'`。
+  - 界面直接进入 `local fallback`，导致真实模型链路没有继续尝试。
+- 原因：
+  - renderer 已调用新的流式模型 IPC：`zhineng:status-dialogue:complete:stream`。
+  - 当前运行中的 Electron main 进程可能仍是旧进程，或尚未注册该 handler。
+  - renderer 原先没有捕获 stream invoke 异常，因此异常越过后续非流式 `zhineng:status-dialogue:complete` fallback。
+- 修复：
+  - `requestStatusDialogueModel` 捕获 stream invoke 错误。
+  - 当错误为 handler 缺失时记录 `stream_ipc_unavailable`。
+  - 继续调用非流式 `zhineng:status-dialogue:complete`，避免直接退回本地 fallback。
+- 修改文件：
+  - `D:\zhineng\sightflow-desktop-agent-main\src\renderer\src\zhineng-console\ZhinengConsole.tsx`
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\validate-status-dialogue-stream-ipc.cjs`
+- 验证：
+  - `npm.cmd run voice:stream-ipc:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-ipc-validation-1782655395865.json`。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+  - `npm.cmd run voice:v0-v6:audit:strict` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-voice-v0-v6-audit-20260628140500.json`。
+  - `npm.cmd run voice:stream-loop:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260628140502.json`。
+- 边界：
+  - 浏览器预览没有 Electron IPC 时仍只能走预览 fallback。
+  - Electron GUI 若仍使用旧 main 进程，需要刷新或重启窗口后才能使用新增 stream handler；即使没有重启，新 renderer 也会降级到非流式模型 IPC。
+
+## 2026-06-29 Dialogue Policy v1 规则收拢
+
+- 新增文档：`dialogue-policy.v1.md`。
+- 已将用户确认的执行前置系统规则写入 policy：
+  - 执行新目标前先检查同级模块、同功能板块、相近子粒子和相近契约。
+  - 新目标若能作为现有功能扩展、延申、套用、补字段、补状态或补映射，必须优先在同一板块内完成。
+  - 不得因为实现便利而新建并列规则、并列板块或并列星云。
+- 已确认当前对话规则源共有 7 类：
+  - `STATUS_DIALOGUE_SYSTEM_PROMPT`
+  - `contracts.ts`
+  - `conversation-memory.ts`
+  - `xiaozhi-voice-bridge.ts`
+  - `voice-response-plan.ts`
+  - `voice-output-pipeline.ts`
+  - `status-dialogue-system` 3D 星云定义
+- 已新增统一派生格式方案：`patrol_finding_insert.v1`。
+  - 它用于把星云、软件、状态卡、模块事件、任务、语音运行时和系统 policy 转成可进入对话、TTS 或日志的插入项。
+  - 它不替代 `module_status_card.v1`、`status_snapshot.v1` 或 `module_status_event.v1`。
+- 已按用户最新确认调整需求传递边界：
+  - 未来用户确认后允许生成 `requirement_packet.v1`。
+  - 未来用户确认后允许写入 `world_model_requirement_inbox`。
+  - 主体状态对话框仍不直接改写世界模型事实状态，需经过 `world_model_review_gate`。
+- 3D 粒子 OS 归属保持为 `status-dialogue-system`。
+  - 当前未发现并列的同功能主对话星云。
+  - 后续新增 policy、巡检插入、需求传递和小智状态机映射都应作为该星云下的子能力表达。
+- 本次只更新文档和计划记录，未修改运行时代码，未创建真实 `requirement_packet.v1`，未写入世界模型。
+
+## 2026-06-29 SCHEME-0007 Phase 1-3 事件播报链路
+
+- 目标：把“重大事件/星云变化/模块完成/风险/故障/确认节点”接入主体状态对话框，形成只读事件快照和最小语音播报编排。
+- Phase 1 已完成：新增 `src/core/status-dialogue/status-events.ts`，定义并导出 `module_status_event.v1`、`system_event_snapshot.v1`、`voice_event_broadcast_request.v1`、`voice_broadcast_queue_state.v1`、`voice_script_patch.v1`。
+- Phase 2 已完成：新增主进程只读 IPC `zhineng:status-dialogue:events:get`，读取 `runtime/status-events/*.json`；路径限制在项目根内；不创建、不修改、不删除事件文件。
+- Phase 3 已完成：`ZhinengConsole.tsx` 加载事件快照，将系统事件转换成巡检插入项和语音脚本补丁；模型 prompt 和本地 fallback 都能看到 `system_event_snapshot.v1`；右侧设置面板已显示事件状态摘要。
+- 验证：
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+  - 核心函数模拟验证通过：critical 事件可生成 `interrupt_now` 播报请求、`queued` 队列状态和 `urgent` 语音脚本补丁。
+  - 边界检索已确认代码落点包含 `module_status_event`、`system_event_snapshot`、`voice_event_broadcast_request`、`voice_broadcast_queue_state`、`voice_script_patch`、`zhineng:status-dialogue:events:get` 和 `runtime/status-events`。
+- 边界保持：
+  - 不创建 `requirement_packet.v1`。
+  - 不写世界模型。
+  - 不执行外部动作。
+  - 不替代 `module_status_card.v1` 和 `status_snapshot.v1`。
+- 下一步编排：
+  - Phase 4：完善事件队列 GUI、手动重播、队列 trace 和播报状态。
+  - Phase 5：补齐 `status-dialogue-system` 星云下的事件链路子粒子和 3D 映射。
+  - Phase 6：建立 `system_feedback_route_manifest.v1`，作为未来新增系统接入状态卡和状态事件的强制清单。
+
+## 2026-06-29 SCHEME-0007 Phase 4-6 事件播报完整化
+
+- Phase 4 已完成首轮实现：
+  - 右下角主体状态对话框设置面板新增事件播报队列可视区。
+  - 可见字段包括 `voice_broadcast_queue_state.v1`、request 数量、critical/high 计数、trace、source、replay count、`voice_event_broadcast_request.v1` 和 `voice_script_patch.v1`。
+  - 新增 `refresh events` 和 `play queue`，用于刷新只读事件快照和手动重播当前事件播报队列。
+  - 带 `voice_script_patch.v1` 的最终播报不再被短句模式裁剪，避免多事件播报只剩第一句。
+- Phase 5 已完成首轮实现：
+  - `status-dialogue-system` 星云新增 10 个事件链路子粒子，覆盖 ingress、snapshot、priority gate、queue、script composer、interrupt/resume、trace、feedback router、module event contract 和 manifest。
+  - 每个子粒子都包含输入、输出、refs、owner、gate 和 compass，能从星云目录追溯到契约和代码落点。
+- Phase 6 已完成首轮实现：
+  - 新增 `system_feedback_route_manifest.v1` 契约、默认构建、归一化和校验函数。
+  - 新增说明文件：`system-feedback-route-manifest.v1.md`。
+  - 未来新增系统必须声明状态卡出口、状态事件出口、TTL、严重级别映射、播报策略、隐私边界和 fallback 行为。
+- 持续播报验证：
+  - 新增命令：`npm.cmd run voice:event-broadcast:validate`。
+  - 验证报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-event-broadcast-validation-20260629075531.json`。
+  - 结果：3 个事件生成 3 段可播报脚本补丁；播放模式覆盖 `interrupt_now`、`after_current_sentence`、`merge_into_current_reply`；所有补丁保持 `voice_profile_lock=true`。
+- 当前已验证：
+  - `npm.cmd run voice:event-broadcast:validate` 通过。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+  - 最新事件播报验证报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-event-broadcast-validation-20260629080210.json`。
+  - 浏览器真实预览已验证：`http://[::1]:5173/?window=zhineng-graph` 可打开，右下角 `Subject Status Dialogue` 存在，设置面板可展开。
+  - GUI 事件队列可视区已验证：可见 `queue`、`req`、`urgent`、`trace`、`refresh events`、`play queue`、`broadcast queue idle` 和 `voice_script_patch.v1` 状态。
+  - 3D 粒子 OS 可视化已验证：页面显示 `19 个星云`、`288 个内容星点`；canvas 尺寸约 `1278x618`，截图像素检查 `nonDarkRatio=0.798`、`colorishRatio=0.062`，确认非空白且存在彩色粒子分布。
+- 边界保持：
+  - 不创建 `requirement_packet.v1`。
+  - 不写世界模型。
+  - 不执行外部动作。
+  - 不保存原始音频。
+  - 仍只读取 `runtime/status-events` 摘要事件。
+
+## 2026-06-29 语音卡顿与多次输入有效性复核
+
+- 当前目标状态：
+  - 上一轮 `/goal` 已完成，当前没有活跃 `/goal`。
+  - 本轮复核对象是主体状态对话框语音链路的真实体验：卡顿、多次语音输入只有一次有效、优化成果是否真实进入 GUI。
+- 真实日志证据：
+  - 日志文件：`D:\zhineng\runtime\status-dialogue-logs\voice-flow-20260629.jsonl`。
+  - 真实 GUI 云端 STT 成功样本：`chrome_stt_complete latency_ms=6436`，事件为 `ready/start/audio_start/interim/result`。
+  - 真实 GUI 云端 STT 失败/取消样本：`chrome_stt_complete latency_ms=23484`，`fallback_reason=cancelled`，事件为 `ready/start/audio_start/end`。
+  - 真实 GUI TTS 冷合成样本：ack 句 `total_tts_ms=6817`，最终句 `total_tts_ms=12489`，因此用户体感仍明显卡顿。
+- 原因确认：
+  - 之前的 `voice:cache:prewarm` 和 `voice:stream-loop:validate` 使用 repo 内缓存：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-audio-cache`。
+  - Electron GUI 主进程使用系统根缓存：`D:\zhineng\runtime\voice-audio-cache`。
+  - 两个缓存目录不一致，导致自动化验证显示缓存命中，但 GUI 实际仍冷合成。
+  - 本地 Whisper STT 每轮通过 Python 子进程加载模型，`slowest_stage=stt`；最新闭环验证 STT 仍为 `12085ms`，所以 STT 仍是剩余主要卡点。
+- 已修复内容：
+  - `scripts/prewarm-status-dialogue-tts-cache.cjs` 的缓存目录已改为 `ZHINENG_PROJECT_ROOT/runtime/voice-audio-cache`，默认即 `D:\zhineng\runtime\voice-audio-cache`。
+  - `scripts/validate-status-dialogue-voice-stream-loop.cjs` 的缓存读取路径已同步到同一目录。
+  - 预热池新增真实 GUI 高频巡检句：
+    - `所有模块都没接入，但我正在扫描，目前是空载状态。`
+    - `所有19个模块都未连接状态卡，正在等待它们发布状态。`
+    - `我已完成只读状态巡逻，仍有状态卡缺失，需要继续补齐。`
+- 验证结果：
+  - `npm.cmd run voice:cache:prewarm` 首次对齐后生成 `10` 条缓存，再次运行命中 `10/10`。
+  - 新增高频句后再次预热生成 `3` 条缓存，随后运行命中 `13/13`。
+  - 最新闭环报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260629084638.json`。
+  - 最新闭环结果：`cached_chunk_count=2`，`total_tts_ms=8`，`first_tts_ms=4`，`slowest_stage=stt`，`stt_ms=12085`。
+  - `npm.cmd run voice:stream-ipc:validate` 通过。
+  - `npm.cmd run typecheck` 通过。
+- 当前结论：
+  - TTS 缓存路径不一致导致的 GUI 冷合成卡顿已修复。
+  - 多次语音输入只有一次有效的主要风险仍在 STT 会话阶段：云端 STT 一轮可占用 6-24 秒；对话忙碌时 STT 按钮会被禁用；本地 Whisper fallback 为冷启动子进程，仍不适合流畅多轮。
+  - 下一步应独立进入“STT 会话队列/连续输入/云端 STT 稳定性”专项，而不是继续扩大 TTS 预热。
+# 2026-06-29 STT 专项 S1 输入队列基础（最新）
+
+- 当前活跃 `/goal`：
+  - `进入 STT 专项：云端 STT 稳定性、输入队列、连续监听、TTS 播放期间接收输入、以及本地 Whisper 常驻服务。`
+  - 本条记录只覆盖 S1 输入队列基础，不代表整个 `/goal` 完成。
+- 新增方案文档：
+  - `D:\zhineng\thread-requirements\3d-point-cloud-graph-v2.2\subject-status-dialogue-module\stt-specialist-roadmap.v1.md`
+- 已核对的真实原因：
+  - 云端 Chrome STT 成功样本约 `6436ms`。
+  - 云端 Chrome STT 失败/取消样本约 `23484ms`。
+  - 本地 Whisper fallback 仍是冷启动子进程，闭环验证中 `stt_ms=12085`。
+  - 旧 `submitDialogue` 在 `dialogueBusy` 时直接 return，会丢弃忙碌期间到达的语音转写。
+  - 旧 UI 在 `dialogueBusy` 时禁用 STT、文本输入和发送按钮，不符合“边播边接收输入”的目标。
+- S1 已实现：
+  - 新增 `StatusDialogueInputKind`、`StatusDialogueQueuedInput`、`StatusDialogueInputQueueState`。
+  - 新增 `dialogueBusyRef` 和 `pendingDialogueInputQueueRef`。
+  - 新增 `enqueueDialogueInput` 与 `takeNextDialogueInput`。
+  - 忙碌期间新输入进入短队列，当前回复结束后自动取下一条进入同一对话链路。
+  - STT 按钮不再因为 `dialogueBusy` 禁用。
+  - 文本输入不再因为 `dialogueBusy` 禁用。
+  - 忙碌时提交按钮显示 `queue`。
+  - 右侧设置面板 `speech io` 区域显示 `input queue` 状态。
+- 新增验证：
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\validate-status-dialogue-stt-input-queue.cjs`
+  - `npm.cmd run voice:stt-input-queue:validate`
+- 当前边界：
+  - 队列上限 5 条。
+  - 不保存原始音频。
+  - 不改变模型 IPC。
+  - 不写世界模型。
+  - 不创建 `requirement_packet.v1`。
+- 剩余未完成：
+  - 云端 STT 失败分类和可控重试。
+  - 连续监听与 wake window 完整链路。
+  - TTS 播放期间输入优先级和回声边界。
+  - 本地 Whisper 常驻服务。
+## 2026-06-29 STT 专项 S2 云端 STT 稳定性（最新）
+
+- 当前活跃 `/goal`：
+  - `进入 STT 专项：云端 STT 稳定性、输入队列、连续监听、TTS 播放期间接收输入、以及本地 Whisper 常驻服务。`
+  - 本条记录只覆盖 S2 云端 STT 稳定性首轮，不代表完整 `/goal` 完成。
+- 已实现：
+  - 主进程 `Chrome STT Bridge` 收到 `end` 且没有 transcript 时立即完成，不再等待 24 秒超时。
+  - `audio_start + end + no transcript` 归类为 `no_speech`。
+  - `end + no audio` 归类为 `ended_without_audio`。
+  - Renderer 新增 `StatusDialogueCloudSttHealthState`。
+  - Renderer 新增 `classifyChromeSttFailure`，覆盖 `no_speech`、`network`、`permission`、`timeout`、`cancelled`、`launch_failed`、`bridge_failed`、`service_unavailable`、`ended_without_audio`、`empty_result`。
+  - 设置面板新增 `cloud stt stability status`，显示 cloud STT 类别、恢复动作、events 数量和 retry 次数。
+  - 可恢复错误显示 `retry cloud` 可控重试入口。
+  - 不可恢复或切换场景保留 `use local` 快速切换入口。
+  - 新增 `cloud_stt_failure_classified` 日志事件。
+- 新增验证：
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\validate-status-dialogue-cloud-stt-stability.cjs`
+  - `npm.cmd run voice:cloud-stt-stability:validate`
+- 当前边界：
+  - 不保存原始音频。
+  - 不创建 `requirement_packet.v1`。
+  - 不写世界模型。
+  - 不改变现有 `zhineng:status-dialogue:chrome-stt:transcribe` IPC 名称。
+  - 不自动无限重试，只提供可控重试按钮。
+- 剩余未完成：
+  - 对真实 `network`、`service-not-allowed`、`permission` 样本做多轮实机验证。
+  - 将重试策略接入未来连续监听和 W3 wake window。
+  - 本地 Whisper 常驻服务仍未实现。
+## 2026-06-29 STT 专项 S5 本地 Whisper 常驻服务（最新）
+
+- 当前活跃 `/goal`：
+  - `进入 STT 专项：云端 STT 稳定性、输入队列、连续监听、TTS 播放期间接收输入、以及本地 Whisper 常驻服务。`
+  - 本条记录只覆盖 S5 常驻服务首轮入口和回退路径，不代表完整 `/goal` 完成。
+- 已实现：
+  - 新增 `D:\zhineng\sightflow-desktop-agent-main\scripts\local-whisper-service.py`。
+  - 服务只绑定 `127.0.0.1`。
+  - 服务提供 `/health` 与 `/transcribe`。
+  - 服务进程内缓存已加载 Whisper 模型，避免每轮重新 `whisper.load_model`。
+  - 主进程新增 `getStatusDialogueSttServiceScriptPath`、`ensureLocalWhisperService`、`runLocalWhisperServiceTranscription`。
+  - 主进程本地 STT 优先调用 `local_whisper_persistent_service`。
+  - 服务不可用时自动回退旧 `local_whisper_ipc` 子进程。
+  - 应用退出时调用 `stopLocalWhisperService` 清理服务进程。
+  - Renderer 本地 STT 结果类型已允许 `local_whisper_persistent_service`。
+- 新增验证：
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\validate-status-dialogue-local-whisper-service.cjs`
+  - `npm.cmd run voice:local-whisper-service:validate`
+- 当前边界：
+  - 不保存原始音频。
+  - 不创建 `requirement_packet.v1`。
+  - 不写世界模型。
+  - 不删除旧本地 Whisper 子进程 fallback。
+- 剩余未完成：
+  - 真实两轮以上麦克风输入实测，验证第二轮是否显著快于冷启动。
+  - `ZHINENG_STT_SERVICE_PRELOAD=1` 预加载策略验收。
+  - 更低延迟 adapter 候选：`faster-whisper` 或 `whisper.cpp`。
+  - 连续监听和 TTS 播放期间输入优先级编排仍未完成。
+
+## 2026-06-29 STT 专项 S5 本地 Whisper 常驻服务真实探针
+
+- 探针方式：
+  - 启动 `scripts/local-whisper-service.py`，绑定 `127.0.0.1:17959`。
+  - 调用 `/health` 验证服务就绪。
+  - 使用同一测试音频连续调用 `/transcribe` 两次。
+- 测试音频：
+  - `D:\zhineng\sightflow-desktop-agent-main\runtime\verification-audio\chrome-stt-bridge-test-zh-20260625.wav`
+- 模型与设备：
+  - `model=tiny`
+  - `device=cuda`
+- 结果：
+  - 第一轮：`success=true`，`model_load_ms=4019`，`latency_ms=5491`。
+  - 第二轮：`success=true`，`model_load_ms=0`，`latency_ms=546`。
+- 结论：
+  - 常驻服务已经证明第二轮复用模型，不再每轮重新 `whisper.load_model`。
+  - 这只证明服务自身链路，GUI 麦克风入口仍需实机连续两轮验证。
+## 2026-06-29 STT 专项 S4 TTS 播放期间输入边界（最新）
+
+- 当前活跃 `/goal`：
+  - `进入 STT 专项：云端 STT 稳定性、输入队列、连续监听、TTS 播放期间接收输入、以及本地 Whisper 常驻服务。`
+  - 本条记录只覆盖 S4 播放期间输入边界首轮，不代表完整 `/goal` 完成。
+- 已实现：
+  - 输入队列新增 `priority`、`echo_boundary`、`queued_during_tts`、`voice_queue_status`、`wake_stage`。
+  - 新增 `isVoicePlaybackActiveForInput`。
+  - 当 TTS 正在 `queued / synthesizing / playing` 或 voice latency 位于 `ack / tts_generating / playing` 时，新输入进入 `tts_playback_active` 队列。
+  - 播放期间输入默认 `priority=after_current_voice`。
+  - 播放期间输入默认 `echo_boundary=wake_detector_paused_only`。
+  - 模型 busy 结束时如果 TTS 仍在播，不立即取下一条，交由播放完成后处理。
+  - 当 `voicePlaybackQueueState.status=complete` 且队列非空时，自动取下一条继续同一对话链路。
+  - 设置面板 `speech io` 区域显示 `during tts` 与 `echo`。
+  - 新增 `dialogue_input_dequeued_after_tts_complete` 日志事件。
+- 新增验证：
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\validate-status-dialogue-tts-input-boundary.cjs`
+  - `npm.cmd run voice:tts-input-boundary:validate`
+- 当前边界：
+  - 不保存原始音频。
+  - 不创建 `requirement_packet.v1`。
+  - 不写世界模型。
+  - 不实现真正声学回声消除，只建立播放期间输入队列和 wake detector 暂停边界。
+- 剩余未完成：
+  - 真正全双工回声消除。
+  - 插入式提醒与用户输入的冲突优先级。
+  - 播放中断、合并、续播策略。
+  - GUI 实机验证播放期间语音输入多轮链路。
+
+## 2026-06-29 运行实例刷新、本地 Whisper 常驻服务与对话状态补强
+
+- 当前活跃目标：
+  - `进入 STT 专项：云端 STT 稳定性、输入队列、连续监听、TTS 播放期间接收输入、以及本地 Whisper 常驻服务。另外补全对话状态，当前只会说当前状态有缺口，需要先确认。检查小智的对话逻辑是否被应用。`
+  - 本记录不代表完整目标完成，只记录本轮优化和验证结果。
+- 运行实例：
+  - 已停止旧的 2026-06-28 Electron/dev 实例。
+  - 新 dev server 接管 `5173`。
+  - CosyVoice 服务保持在 `127.0.0.1:8000`。
+  - 本地 Whisper 常驻服务已在 `127.0.0.1:17858` 启动，`model=base`，`device=cuda`。
+- 已验证优化：
+  - 输入队列已生效：忙碌或 TTS 播放期间的新输入会进入队列，不再直接丢弃。
+  - TTS 播放期间输入边界已生效：正式 STT/文字输入可排队，wake detector 只做暂停边界。
+  - 小智式状态机已用于 UI、运行日志，并已补入模型 prompt 作为回复编排输入。
+  - 固定开场 `我看到当前状态有缺口，需要先确认。` 已改为按 `missing/stale/conflict/read_error` 数量生成动态开场。
+  - `buildStatusDialogueShortFinalVoice` 不再因缺失状态覆盖真实回复。
+- 真实日志结论：
+  - 2026-06-29 日志显示云端 STT 有一次成功耗时约 `12211ms`，一次 `no-speech` 失败约 `4329ms`。
+  - 日志显示播放期间语音输入被记录为 `stt_input_queued`，后续出现 `dialogue_input_dequeued_after_tts_complete`。
+  - 卡顿主因仍是未命中缓存的 CosyVoice 合成，最近真实 GUI 日志中一轮长回复的 TTS 合成段分别约 `16924ms`、`20273ms`、`5268ms`，整轮播报约 `59362ms`。
+- 当前通过的验证：
+  - `npm.cmd run voice:dialogue-state-policy:validate`
+  - `npm.cmd run voice:stt-input-queue:validate`
+  - `npm.cmd run voice:tts-input-boundary:validate`
+  - `npm.cmd run voice:stream-loop:validate`
+  - 本地 Whisper 常驻服务真实探针：第一轮约 `2005ms`，第二轮约 `636ms`，证明模型复用。
+- 剩余未完成：
+  - GUI 麦克风入口真实多轮验证仍未完全收口。
+  - 连续监听和 W3 wake detector 仍未完成真实验收。
+  - 真正边播边听、回声消除、播放中断、合并、续播策略仍未完成。
+  - 未命中缓存的 CosyVoice 仍不满足低延迟体验，需要进入 TTS 延迟专项或切换低延迟 TTS 路径。
+
+## 2026-06-29 STT 默认快路径与 TTS 播放打断补强
+
+- 本轮针对上一轮复核结论继续推进：
+  - GUI 真实日志全部走 `chrome_stt_bridge`，说明本地 Whisper 常驻服务虽然可用，但默认入口仍在云端 STT。
+  - 播放期间输入已能入队，但必须等当前 TTS 播完，用户体感仍像“多次语音只有一次有效”。
+- 已实现：
+  - 右侧主体状态对话框默认 STT adapter 从 `cloud` 改为 `local`。
+  - 增加一次性迁移：已打开的旧 GUI 状态如果仍是 `cloud` 且未在录音，会自动切到 `local`，并记录 `stt_default_migrated_to_local`。
+  - 本地 STT UI/日志引用从泛化 `local_whisper_ipc` 调整为优先 `local_whisper_persistent_service`，实际结果仍保留 cold subprocess fallback。
+  - `submitDialogue` 增加 `dialogue_input_barge_in`：当只有 TTS 在播、模型不忙且用户有正式语音/文字输入时，打断当前播报并立即进入新一轮对话。
+  - TTS chunk 合成完成后再次检查 token，旧播报被新输入打断时记录 `tts_chunk_skipped_stale_after_synthesis`，不会继续播放过期音频。
+  - 旧 TTS 队列被打断时记录 `tts_queue_interrupted`，避免旧队列覆盖新状态。
+  - 音频 `pause` 在 token 过期时会 resolve，避免打断后旧播放 Promise 挂住。
+- 验证通过：
+  - `npm.cmd run voice:local-whisper-service:validate`
+  - `npm.cmd run voice:stt-input-queue:validate`
+  - `npm.cmd run voice:tts-input-boundary:validate`
+  - `npm.cmd run build`
+  - `npm.cmd run voice:stream-loop:validate`
+- 真实常驻服务探针：
+  - 服务健康：`127.0.0.1:17858/health` 返回 `ok=true`，`loaded_models=["base"]`，`device=cuda`。
+  - 双轮 `/transcribe`：第一轮 `latency_ms=911`，第二轮 `latency_ms=635`，报告写入 `D:\zhineng\sightflow-desktop-agent-main\runtime\verification-reports\status-dialogue-local-whisper-service-runtime-1782727841228.json`。
+- 当前剩余：
+  - 需要用户在右下角 GUI 实机连续说两轮，确认当前入口确实显示并走 `local`。
+  - 需要继续做连续监听/W3 真实验收。
+  - 当前是正式输入打断 TTS，不是完整声学回声消除；真正全双工仍未完成。
+
+## 2026-06-29 W3 唤醒闭环状态证据补强
+
+- 本轮继续补齐当前 `/goal` 中的“连续监听/W3 wake detector”部分。
+- 已核对同级功能：
+  - 已存在 `voice.wake_word_gate`、`voice.wake_detector_adapter`、`xiaozhi_style_wake_config.v1`、`xiaozhi_style_wake_detector_state.v1`。
+  - 已存在 W3.0 `browser_phrase_match_reserved`，因此本轮只延伸现有实现，不新建并列模块。
+- 已实现：
+  - W3 命中 `小张 / 高手 / 小天才` 后记录 `w3_wake_detected`。
+  - W3 打开 `wake_window` 时明确 `dialogue_triggered=false`，表示 detector 不直接提交对话音频。
+  - W3 handoff 到现有 STT 时记录 `w3_wake_handoff_stt`。
+  - `xiaozhi_style_wake_detector_state.v1` 的 `dialogue_triggered` 从固定 `false` 修正为 `boolean`，默认仍为 `false`，handoff 时才为 `true`。
+  - W3 handoff 记录当前 `selectedSttAdapter`，与本轮默认本地 Whisper 快路径对齐。
+  - wake window 关闭进入 cooldown 时将 `dialogue_triggered=false`。
+- 新增验证：
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\validate-status-dialogue-w3-wake-detector.cjs`
+  - `npm.cmd run voice:w3-wake-detector:validate`
+- 验证通过：
+  - `npm.cmd run voice:w3-wake-detector:validate`
+  - `npm.cmd run voice:dialogue-state-policy:validate`
+  - `npm.cmd run voice:stt-input-queue:validate`
+  - `npm.cmd run voice:tts-input-boundary:validate`
+  - `npm.cmd run build`
+- 当前边界：
+  - W3.0 仍是 browser phrase detector，不是真实本地 keyword detector。
+  - 需要用户在 GUI 中点击 `start w3` 并口述唤醒短语完成实机验收。
+  - 不保存原始音频，`store_raw_audio=false`，保留单独确认项作为后续能力。
+
+## 2026-06-29 STT 闭环验证口径修正
+
+- 修正原因：
+  - 旧 `voice:stream-loop:validate` 默认调用 `scripts/local-whisper-transcribe.py`，属于冷启动/单次子进程路径。
+  - GUI 当前目标路径已经改为 `local_whisper_persistent_service`，因此旧闭环报告中的十几秒 STT 不应再作为当前默认链路证据。
+- 已修改：
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\validate-status-dialogue-voice-stream-loop.cjs`
+  - `D:\zhineng\sightflow-desktop-agent-main\scripts\validate-status-dialogue-local-whisper-service.cjs`
+- 新验证口径：
+  - `voice:stream-loop:validate` 默认调用 `http://127.0.0.1:17858/health` 与 `/transcribe`。
+  - 报告新增 `stt_uses_persistent_service` 与 `stt_service_health_ok`。
+  - 如需旧冷启动路径，必须显式传入 `--stt-mode cold`。
+- 最新验证：
+  - `npm.cmd run voice:local-whisper-service:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-reports\status-dialogue-local-whisper-service-1782728712629.json`
+  - `npm.cmd run voice:stream-loop:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260629102514.json`
+- 最新关键数据：
+  - `stt_ms=816`
+  - `stt_uses_persistent_service=true`
+  - `stt_service_health_ok=true`
+  - `model_ms=6`
+  - `first_tts_ms=6`
+  - `total_tts_ms=10`
+  - `slowest_stage=playback`
+- 当前判断：
+  - 自动化闭环中的默认 STT 瓶颈已从旧冷启动路径移除。
+  - 缓存命中场景下 TTS 合成不是瓶颈。
+  - 真实 GUI 卡顿仍需继续用运行日志定位，最近已知慢点仍包括未命中缓存的 CosyVoice 合成和旧云端 STT 样本。
+- 仍未完成：
+  - GUI 右下角悬浮窗麦克风连续两轮以上实机验证。
+  - W3 唤醒短语实机 handoff 验证。
+  - 真正全双工回声消除与边播边听。
+  - 未命中缓存的 CosyVoice 新句低延迟治理。
+
+## 2026-06-29 语音卡顿与多轮输入复核修正
+
+- 当前目标仍在执行中：
+  - 云端 STT 稳定性。
+  - 输入队列。
+  - 连续监听。
+  - TTS 播放期间接收输入。
+  - 本地 Whisper 常驻服务。
+  - 对话状态补强。
+  - 检查小智式对话逻辑是否被应用。
+- 本轮真实日志结论：
+  - 最近 GUI 实操日志仍主要走 `chrome_stt_bridge`，而不是本地 `local_whisper_persistent_service`。
+  - 云端 STT 成功样本约 `12211ms`，失败样本包含 `no_speech`。
+  - 未命中缓存的 CosyVoice 新句合成仍可达到 `16920ms`、`20270ms`、`19079ms`、`28362ms`。
+  - 因此用户感知的主要卡顿来自真实 GUI 的云端 STT 等待和 CosyVoice 冷合成，不来自脚本闭环中已缓存的快速路径。
+- 本轮发现的多轮输入问题：
+  - 播放期间输入已经能入队，但 `submitDialogue` 的 finally 分支使用 React 闭包中的旧 `voicePlaybackQueueState.status` 判断是否可以取下一条。
+  - 旧状态可能导致下一条输入过早出队，进而打断上一轮 TTS，造成“多次输入像只有一次有效”的体验。
+- 本轮修正：
+  - `ZhinengConsole.tsx` 新增 `voicePlaybackQueueStateRef`。
+  - `updateVoicePlaybackQueue` 与 `beginVoiceOutputSession` 同步写入 ref。
+  - `enqueueDialogueInput`、`submitDialogue`、finally 出队判断统一读取最新 ref。
+  - `validate-status-dialogue-tts-input-boundary.cjs` 新增 `playback_state_ref_prevents_stale_queue_drain` 检查。
+- 本轮验证：
+  - `npm.cmd run voice:tts-input-boundary:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-reports\status-dialogue-tts-input-boundary-1782729312993.json`
+  - `npm.cmd run voice:stt-input-queue:validate` 通过。
+  - `npm.cmd run voice:local-whisper-service:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-reports\status-dialogue-local-whisper-service-1782729331833.json`
+  - `npm.cmd run voice:stream-loop:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260629103515.json`
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run voice:tts-stream-runtime:validate` 通过，但结论为 `dialogue_realtime_grade=slow`，`first_audio_payload_chunk_ms_from_request=7814`，`interactive_ready=false`。
+- 当前判断：
+  - 本地 STT 常驻服务链路已具备低延迟条件，最新脚本闭环 `stt_ms=769`。
+  - 多轮输入“被旧播放状态误判”的运行时缺陷已修复。
+  - 语音输出卡顿未完全解决；只要继续使用当前 CosyVoice 高质量适配器生成未缓存新句，实时体验仍会慢。
+  - 下一步应进入 TTS 延迟专项：区分高质量缓存播报、实时对话低延迟播报、长句后台合成，以及 GUI 实机连续多轮验证。
+
+## 2026-06-29 本地 STT 健康状态与真实路径可视化
+
+- 本轮目标：
+  - 解决 GUI 实机测试时无法直观看出当前语音输入到底走 `cloud`、`local_whisper_persistent_service` 还是冷 fallback 的问题。
+  - 不新建并列模块，只扩展现有右侧主体状态对话框 `speech io` 设置区。
+- 已实现：
+  - 主进程新增只读 IPC：`zhineng:status-dialogue:stt:health`。
+  - 新增返回 schema：`status_dialogue_local_stt_health.v1`。
+  - 健康结果包含 `configured`、`reachable`、`status`、`base_url_host`、`model`、`loaded_models`、`default_model`、`device`、`uptime_ms`、`latency_ms`、`service_started`、`error`。
+  - 主进程健康检查会读取 `127.0.0.1:17858/health`，必要时调用现有 `ensureLocalWhisperService(model)`，不读取业务数据、不保存原始音频。
+  - 运行日志新增 `local_stt_health_check`，用于后续真实 GUI 复盘。
+  - renderer 新增 `StatusDialogueLocalSttRuntimeState`，保留 `health`、`busy`、`lastResult` 和 `error`。
+  - `speech io` 面板新增 `local stt service health status` 行，显示 local health、已加载模型数量、device、最近一次 local STT adapter/耗时。
+  - 每次本地 STT 转写结束后，UI 会回写最近一次 `adapter_id`，用于确认是否实际命中 `local_whisper_persistent_service`。
+- 当前验证：
+  - `npm.cmd run voice:local-whisper-service:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-reports\status-dialogue-local-whisper-service-1782729806558.json`
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run voice:stt-input-queue:validate` 通过。
+  - `npm.cmd run voice:tts-input-boundary:validate` 通过。
+  - `npm.cmd run voice:dialogue-state-policy:validate` 通过。
+  - `npm.cmd run voice:w3-wake-detector:validate` 通过。
+  - `npm.cmd run voice:cloud-stt-stability:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-reports\status-dialogue-cloud-stt-stability-1782730137007.json`
+  - `npm.cmd run voice:stream-loop:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\voice-loop-probes\status-dialogue-stream-loop-20260629104859.json`，`stt_ms=912`，`stt_uses_persistent_service=true`。
+  - `npm.cmd run build` 通过。
+  - 浏览器预览验证：`http://[::1]:5173/?window=zhineng-graph` 中右侧设置区已出现 `local stt service health status`；浏览器预览因无 Electron IPC 显示 `local fallback` 属正常边界；3D canvas 非空白，尺寸约 `1278x618`。
+- 边界：
+  - 不保存原始音频。
+  - 不写世界模型。
+  - 不创建 `requirement_packet.v1`。
+  - 不改变 `zhineng:status-dialogue:stt:transcribe` 的转写契约。
+  - 该能力只是让 GUI 的真实 STT 路径可见，仍需用户在右下角 GUI 中做连续两轮以上麦克风实机验证。
+
+## 2026-06-29 当前目标、卡顿原因与优化成果复核
+
+- 当前活跃 `/goal`：
+  - 进入 STT 专项：云端 STT 稳定性、输入队列、连续监听、TTS 播放期间接收输入、本地 Whisper 常驻服务。
+  - 同时补全对话状态，并确认小智式对话逻辑是否被应用。
+- 本次复核命令：
+  - `npm.cmd run voice:runtime-flow:audit` 通过但状态为 `warn`，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-reports\status-dialogue-runtime-voice-flow-audit-1782741012066.json`
+  - `npm.cmd run voice:runtime-flow:retest-preflight` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-reports\status-dialogue-real-gui-retest-preflight-1782741014118.json`
+  - `npm.cmd run voice:local-whisper-service:validate` 通过，报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-reports\status-dialogue-local-whisper-service-1782741012565.json`
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+- 本次真实日志结论：
+  - `expected_runtime_fix_marker_seen=true`，说明最新运行时标记代码已经存在。
+  - `probe_runtime_fix_marker_seen=true`，说明独立探针可以加载最新 renderer。
+  - `real_gui_runtime_fix_marker_seen=false`，说明右下角真实 GUI 仍未证明已经加载最新运行时。
+  - `dominant_stt_path=cloud`，真实日志仍以 Chrome/WebSpeech 云端 STT 为主。
+  - `chrome_stt_avg_ms=8179`，`chrome_stt_max_ms=12211`，云端 STT 本身仍有明显等待。
+  - `tts_synthesis_avg_ms=14017`，`tts_synthesis_max_ms=28362`，CosyVoice 未命中新缓存或新句冷合成仍是主要卡顿源。
+  - `tts_queue_end_to_end_max_ms=59362`，整轮语音队列最长接近 60 秒。
+  - `input_queue_wait_max_ms=13386`，多次输入不是直接丢弃，但会被队列等待拖慢。
+  - `local_stt_events_seen=false`，真实 GUI 日志还没有证明命中 `local_whisper_persistent_service`。
+- 当前优化成果：
+  - 输入队列、TTS 播放期间输入边界、本地 Whisper 常驻服务、运行时标记、GUI 复测预检脚本均已实现并通过静态验证。
+  - 构建可通过，说明当前实现没有类型或打包级错误。
+  - 独立 marker probe 可证明新代码能被加载，但不能代表右下角真实 GUI 已经刷新。
+- 当前仍卡顿的原因：
+  - 右下角真实 GUI 仍需重启/刷新后复测，否则仍可能运行旧状态。
+  - 当前真实日志仍走云端 STT，而不是本地 Whisper 常驻服务低延迟路径。
+  - CosyVoice 新句冷合成仍可能达到十几秒到二十几秒。
+  - 当前只是“播放期间输入可排队/可打断的基础”，不是完整全双工回声消除。
+- 下一步必须做的真实验证：
+  - 受控重启右下角 GUI，使其自动打开 `?window=zhineng-graph` 并等待真实 runtime marker。
+  - 连续两轮以上麦克风实测，确认日志出现 `local_stt_health_check`、`local_stt_start`、`local_stt_complete`。
+  - 确认 `adapter_id=local_whisper_persistent_service`。
+  - TTS 播放中插入一次语音或文字输入，确认出现 `dialogue_input_barge_in`、`voice_playback_interrupted_for_formal_input` 或过期 TTS 跳过事件。
+
+## 2026-06-29 真实 GUI 重启复测与 local STT 等待验收
+
+- 本轮执行了受控 GUI 重启复测：
+  - 旧脚本第一次执行失败：`spawn EINVAL`，原因是 Windows 下直接 `spawn('npm.cmd', ..., detached)` 不稳定。
+  - 已修复 `scripts/prepare-status-dialogue-real-gui-retest.cjs`：改为通过 `cmd.exe /d /s /c "npm.cmd run dev"` 启动 dev runtime。
+  - 已修复 `scripts/wait-status-dialogue-runtime-marker.cjs`：支持 `--since-ms`，避免真实 marker 在等待进程启动前写入而被 `--since-now` 错过。
+- 修复后 `npm.cmd run voice:runtime-flow:restart-for-retest` 已成功：
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-reports\status-dialogue-real-gui-retest-preflight-1782741619546.json`
+  - 停止旧进程：Electron `59096`、dev parent `35816`。
+  - 启动新进程：报告中的 `pid=27340`；当前运行进程为 dev parent `70292`、Electron main `63152`。
+  - 捕获真实 GUI marker：`2026-06-29T14:00:18.920Z`。
+  - marker 关键字段：`default_stt_adapter=local`、`stt_model=base`、`electron_ipc_available=true`、`marker_probe=false`。
+- 本地 STT 服务状态：
+  - 日志出现 `local_stt_health_check`。
+  - `adapter_id=local_whisper_persistent_service`。
+  - `status=ready`、`reachable=true`、`loaded_models=["base"]`、`device=cuda`、`latency_ms=34`。
+- 新增真实麦克风 local STT 等待脚本：
+  - 文件：`D:\zhineng\sightflow-desktop-agent-main\scripts\wait-status-dialogue-local-stt-transcription.cjs`
+  - npm 命令：
+    - `npm.cmd run voice:runtime-flow:wait-local-stt`
+    - `npm.cmd run voice:runtime-flow:check-local-stt`
+  - 成功标准：
+    - 已选择 local adapter。
+    - 本地 STT health ready。
+    - 出现 `local_stt_recording_started` 和 `local_stt_recording_stopped`。
+    - 出现 `local_stt_transcribe_request`。
+    - 出现 `local_stt_start` 和 `local_stt_complete`。
+    - `local_stt_complete.adapter_id=local_whisper_persistent_service`。
+    - `local_stt_complete.success=true` 且 `transcript_length>0`。
+    - renderer 侧 `local_stt_transcribe_result` 同样成功并命中 persistent service。
+- 当前 `check-local-stt` 结果：
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-reports\status-dialogue-local-stt-realtime-wait-1782741850790.json`
+  - 通过项：`adapter_selected_local=true`、`health_ready=true`。
+  - 缺失项：`recording_started`、`recording_stopped`、`transcribe_requested`、`main_transcribe_started`、`main_transcribe_completed_persistent`、`renderer_transcribe_completed_persistent`。
+  - 结论：真实 GUI 已加载新 runtime，本地 STT 服务已 ready，但还没有用户点击 STT 后的真实麦克风转写证据。
+- 本轮验证：
+  - `node --check scripts\wait-status-dialogue-local-stt-transcription.cjs` 通过。
+  - `node --check scripts\wait-status-dialogue-runtime-marker.cjs` 通过。
+  - `node --check scripts\prepare-status-dialogue-real-gui-retest.cjs` 通过。
+  - `npm.cmd run voice:runtime-flow:retest-preflight` 通过。
+  - `npm.cmd run voice:runtime-flow:restart-for-retest` 通过。
+  - `npm.cmd run voice:runtime-flow:check-marker` 通过。
+  - `npm.cmd run voice:local-whisper-service:validate` 通过，已包含 local STT 等待脚本检查。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+- 当前未完成：
+  - 仍需在右下角 GUI 中实际点击 STT 并说话至少两轮。
+  - 实测时运行 `npm.cmd run voice:runtime-flow:wait-local-stt`，等待并确认真实麦克风输入是否进入 `local_whisper_persistent_service`。
+  - 仍需 TTS 播放中插入输入，确认是否出现正式输入打断或过期 TTS 跳过事件。
+
+## 2026-06-29 STT 专项目标完成度审计脚本
+
+- 新增目标级审计脚本：
+  - 文件：`D:\zhineng\sightflow-desktop-agent-main\scripts\audit-status-dialogue-goal-completion.cjs`
+  - 命令：`npm.cmd run voice:goal:audit`
+  - 报告 schema：`status_dialogue_goal_completion_audit.v1`
+- 审计目的：
+  - 按当前 `/goal` 逐项判断证据状态，不再把局部验证误认为目标完成。
+  - 区分 `proved`、`partial`、`missing`。
+  - 输出下一步还需要的实证。
+- 当前审计结果：
+  - 报告：`D:\zhineng\sightflow-desktop-agent-main\runtime\verification-reports\status-dialogue-goal-completion-audit-1782742150000.json`
+  - `result=incomplete`
+  - `proved=4`
+  - `partial=4`
+  - `missing=0`
+  - `total=8`
+- 已证明项：
+  - 右下角真实 GUI 加载最新运行时。
+  - 输入队列不丢弃忙碌期间输入。
+  - 对话状态补全与状态快照进入回复上下文。
+  - 小智式对话逻辑应用。
+- 仍为 partial 的项：
+  - 云端 STT 稳定性：仍存在超过 `8000ms` 的慢样本和失败样本。
+  - 连续监听 / W3 wake detector：源码和静态验证已具备，但还没有真实 `w3_wake_detected + w3_wake_handoff_stt` runtime 证据。
+  - TTS 播放期间接收输入：已证明播放期间输入可排队，但还没有正式打断或过期 TTS 跳过事件。
+  - 本地 Whisper 常驻服务：health ready，但还没有真实麦克风录音和 persistent service 转写完成证据。
+- 本轮验证：
+  - `node --check scripts\audit-status-dialogue-goal-completion.cjs` 通过。
+  - `npm.cmd run voice:goal:audit` 通过并输出 `incomplete`。
+  - `npm.cmd run voice:dialogue-state-policy:validate` 通过。
+  - `npm.cmd run voice:w3-wake-detector:validate` 通过。
+  - `npm.cmd run voice:local-whisper-service:validate` 通过。
+  - `npm.cmd run voice:stt-input-queue:validate` 通过。
+  - `npm.cmd run voice:tts-input-boundary:validate` 通过。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+- 下一步实测命令：
+  - `npm.cmd run voice:runtime-flow:wait-local-stt`
+  - 然后在右下角 GUI 点击 STT，说一句完整中文。
+  - 若该命令通过，再进行 TTS 播放中插入输入测试和 W3 唤醒短语实测。
+## 2026-06-29 STT专项复核：当前目标、卡顿原因与真实验证状态
+
+- 当前活跃目标仍未完成：
+  - 云端 STT 稳定性。
+  - 输入队列。
+  - 连续监听 / W3 wake detector。
+  - TTS 播放期间接收输入。
+  - 本地 Whisper 常驻服务。
+  - 对话状态补全。
+  - 小智式对话逻辑应用检查。
+- 本轮实际验证命令：
+  - `npm.cmd run voice:goal:audit` 通过，但结果为 `incomplete`：`proved=4`、`partial=4`、`missing=0`。
+  - `npm.cmd run voice:runtime-flow:audit` 通过，但状态为 `warn`。
+  - `npm.cmd run voice:runtime-flow:check-marker` 通过：真实 GUI marker 为 `marker_probe=false`，`default_stt_adapter=local`。
+  - `npm.cmd run voice:runtime-flow:check-local-stt` 未通过：还没有真实录音、转写和 renderer 转写结果事件。
+  - `npm.cmd run voice:runtime-flow:wait-local-stt` 等待 120 秒未捕获新语音事件，说明本轮等待窗口内没有新的 STT 触发证据。
+  - `npm.cmd run voice:local-whisper-service:validate` 通过。
+  - `npm.cmd run voice:tts-input-boundary:validate` 通过。
+  - `npm.cmd run voice:cloud-stt-stability:validate` 通过。
+  - `npm.cmd run voice:w3-wake-detector:validate` 通过。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+- 当前优化成果：
+  - 真实 GUI 已能加载最新 runtime marker。
+  - 本地 Whisper 常驻服务 health ready，最新日志中 `adapter_id=local_whisper_persistent_service`、`device=cuda`、`loaded_models=["base"]`、`latency_ms=34`。
+  - 输入队列、TTS 输入边界、云端 STT 分类、W3 结构、小智式状态事件均具备静态验证。
+  - 代码构建通过，说明当前优化未破坏类型和打包。
+- 当前仍卡顿的真实原因：
+  - 历史云端 STT 样本仍慢：`chrome_stt_avg_ms=8179`，`chrome_stt_max_ms=12211`。
+  - 历史 CosyVoice 新句合成仍慢：`tts_synthesis_avg_ms=14017`，`tts_synthesis_max_ms=28362`。
+  - 历史整轮语音队列最长约 `59362ms`，输入排队最长约 `13386ms`。
+  - 最新真实 GUI 启动后只看到 UI 加载、STT adapter 选择和 local STT health；没有看到真实 `local_stt_recording_started`、`local_stt_start`、`local_stt_complete`。
+  - 因此当前不能证明“多次语音输入稳定进入本地 STT 并进入对话链路”。
+- 关于“多次语音输入只有一次有效”的当前判断：
+  - 旧问题已经从“忙碌时直接丢弃输入”改为“进入队列或可中断 TTS”。
+  - 但真实日志尚未出现 `voice_playback_interrupted_for_formal_input`、`dialogue_input_barge_in` 或过期 TTS 跳过事件。
+  - 如果用户在网页预览页测试，当前页面显示 `voice off`，且浏览器预览没有完整 Electron IPC，本地 STT/TTS 不能代表右下角 GUI 的真实链路。
+  - 如果用户在右下角 GUI 测试，需要继续用 `voice:runtime-flow:wait-local-stt` 同步捕获至少两轮真实麦克风事件。
+- 下一步准入条件：
+  - 在右下角 Electron GUI 中执行两轮真实 STT 输入，并让 `voice:runtime-flow:wait-local-stt` 通过。
+  - 通过标准为出现 `local_stt_recording_started`、`local_stt_recording_stopped`、`local_stt_transcribe_request`、`local_stt_start`、`local_stt_complete`、`local_stt_transcribe_result`。
+  - `local_stt_complete.adapter_id` 必须为 `local_whisper_persistent_service`，且 `success=true`、`transcript_length>0`。
+  - 随后再验证 TTS 播放中插入输入是否触发正式打断或过期语音跳过。
+
+## 2026-06-29 STT真实验证诊断脚本补强
+
+- 问题：
+  - 原 `voice:runtime-flow:wait-local-stt` 在 `--since-now` 模式下，把已存在的 local adapter 和 health ready 也放进当前等待窗口判断。
+  - 这会导致报告无法区分“前置服务没有 ready”和“用户没有触发真实 STT”。
+  - 对当前目标不利，因为我们需要精确判断多次语音输入无效到底发生在点击、录音、转写还是提交链路。
+- 已修正：
+  - `scripts/wait-status-dialogue-local-stt-transcription.cjs` 现在分成两类事件：
+    - `runtimeEvents`：非 probe 的全部运行事件，用于判断前置状态，如 local adapter 和 health。
+    - `actionEvents`：当前等待窗口内事件，用于判断真实 STT 点击、录音、转写。
+  - 新增检查：
+    - `stt_start_requested`
+    - `local_recording_start_requested`
+  - 新增结果分类：
+    - `local_adapter_not_selected`
+    - `local_stt_health_not_ready`
+    - `no_stt_start_request_after_wait`
+    - `stt_request_not_routed_to_local`
+    - `local_recording_failed`
+    - `local_transcription_failed`
+    - `local_recording_not_requested_after_click`
+    - `local_recording_not_started`
+    - `local_recording_not_stopped`
+    - `local_transcribe_not_requested`
+    - `missing_local_stt_transcription`
+  - 报告新增 `event_window`，明确当前窗口内捕获到多少动作事件。
+- 本轮证据：
+  - `npm.cmd run voice:runtime-flow:check-local-stt` 现在返回 `no_stt_start_request_after_wait`。
+  - 该结果同时证明：
+    - `adapter_selected_local=true`
+    - `health_ready=true`
+    - `stt_start_requested=false`
+  - 因此当前失败点不是 Whisper 服务，也不是本地转写，而是没有捕获到真实 STT 触发事件。
+- 验证通过：
+  - `node --check scripts\wait-status-dialogue-local-stt-transcription.cjs`
+  - `node --check scripts\validate-status-dialogue-local-whisper-service.cjs`
+  - `npm.cmd run voice:local-whisper-service:validate`
+  - `npm.cmd run voice:tts-input-boundary:validate`
+  - `npm.cmd run voice:cloud-stt-stability:validate`
+  - `npm.cmd run voice:w3-wake-detector:validate`
+  - `npm.cmd run typecheck`
+  - `npm.cmd run build`
+- 当前结论：
+  - 真实 GUI 已加载 local STT 前置状态。
+  - 下一次实测必须以 `no_stt_start_request_after_wait` 为分界：如果用户点击右下角 GUI 的 STT 后仍是该结果，问题在 GUI 按钮/窗口/测试面；如果进入 recording 或 transcription 结果，再继续定位下游。
+
+## 2026-06-29 STT实测前置 preflight 命令
+
+- 新增命令：
+  - `npm.cmd run voice:runtime-flow:stt-retest-preflight`
+- 归属：
+  - 该命令没有新建并列模块，仍复用 `scripts/wait-status-dialogue-local-stt-transcription.cjs`。
+  - 作用是实测前置诊断，不是 STT 完成证明。
+- 输出 schema：
+  - `status_dialogue_local_stt_retest_preflight.v1`
+- 当前最新输出：
+  - `ready_for_operator_action=true`
+  - `completion_proof=false`
+  - `result=ready_for_operator_stt_test`
+  - `next_action=click_right_bottom_electron_gui_stt_and_speak_one_complete_chinese_sentence`
+- 边界：
+  - preflight 只证明右下角真实 GUI 已加载 local STT 前置状态，且本地 Whisper health ready。
+  - preflight 不证明麦克风录音、不证明本地转写、不证明 W3 handoff、不证明 TTS 播放期间输入打断。
+  - 完整 STT 证明仍必须运行 `npm.cmd run voice:runtime-flow:wait-local-stt`，并在右下角 Electron GUI 中点击 STT 后说一句完整中文。
+- 本轮验证：
+  - `npm.cmd run voice:runtime-flow:stt-retest-preflight` 通过。
+  - `npm.cmd run voice:local-whisper-service:validate` 通过。
+  - `npm.cmd run voice:tts-input-boundary:validate` 通过。
+  - `npm.cmd run voice:cloud-stt-stability:validate` 通过。
+  - `npm.cmd run voice:w3-wake-detector:validate` 通过。
+  - `npm.cmd run voice:goal:audit` 通过但结果仍为 `incomplete`。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+
+## 2026-06-29 目标审计加入人工实测 readiness
+
+- 已更新：
+  - `scripts/audit-status-dialogue-goal-completion.cjs`
+  - `scripts/validate-status-dialogue-local-whisper-service.cjs`
+- 新增审计字段：
+  - `manual_retest_readiness.local_stt`
+- 输出 schema：
+  - `status_dialogue_goal_manual_retest_readiness.v1`
+- 当前最新审计状态：
+  - `voice:goal:audit` 仍输出 `result=incomplete`。
+  - `summary.proved=4`
+  - `summary.partial=4`
+  - `summary.missing=0`
+  - `manual_retest_readiness.local_stt.ready_for_operator_action=true`
+  - `manual_retest_readiness.local_stt.completion_proof=false`
+  - `manual_retest_readiness.local_stt.result=ready_for_operator_stt_test`
+- 该字段的意义：
+  - 目标审计现在不只列缺口，也能告诉后续线程当前是否已经具备人工实测条件。
+  - 该字段不会降低完成标准；`completion_proof=false` 时不得把 local STT 写成已跑通。
+  - 下一步仍必须通过真实右下角 Electron GUI 的麦克风输入，产生 `local_stt_recording_started`、`local_stt_complete` 和 `local_stt_transcribe_result`。
+- 本轮验证：
+  - `node --check scripts\audit-status-dialogue-goal-completion.cjs`
+  - `node --check scripts\validate-status-dialogue-local-whisper-service.cjs`
+  - `npm.cmd run voice:goal:audit`
+  - `npm.cmd run voice:local-whisper-service:validate`
+  - `npm.cmd run voice:runtime-flow:stt-retest-preflight`
+  - `npm.cmd run voice:tts-input-boundary:validate`
+  - `npm.cmd run voice:cloud-stt-stability:validate`
+  - `npm.cmd run voice:w3-wake-detector:validate`
+  - `npm.cmd run typecheck`
+  - `npm.cmd run build`
+
+## 2026-06-29 右下角 GUI STT 受控点击实测
+
+- 本轮动作：
+  - 通过 Windows 主窗口句柄确认 Electron 主窗口存在：`MainWindowTitle=人类社交辅助系统v.0.1.0`。
+  - 截图确认窗口内右侧 `Subject Status Dialogue` 面板和 `STT` 按钮可见。
+  - 使用一次受控鼠标点击触发 `STT` 按钮。
+  - 点击前记录时间戳：`1782744404864`。
+- 本轮真实运行证据：
+  - `stt_start_requested` 出现，`selected_adapter=local`。
+  - `local_stt_recording_start_request` 出现，`adapter_id=local_whisper_persistent_service`。
+  - `local_stt_recording_started` 出现。
+  - `local_stt_recording_stopped` 出现，`sample_count=282624`，`chunk_count=69`。
+  - `local_stt_transcribe_request` 出现。
+  - `local_stt_start` 出现。
+  - `local_stt_complete` 出现，`adapter_id=local_whisper_persistent_service`，`latency_ms=566`。
+  - `local_stt_transcribe_result` 出现。
+- 本轮失败点：
+  - `local_stt_complete.success=false`
+  - `local_stt_complete.transcript_length=0`
+  - `error=local STT returned no transcript`
+  - 原因判断：本轮是自动点击验证，没有真实口述内容，因此只能证明入口、录音和本地 Whisper 调用链路，不能证明完整语音转文字成功。
+- 已更新诊断分类：
+  - `scripts/wait-status-dialogue-local-stt-transcription.cjs` 新增 `local_transcription_failed_or_empty`。
+  - `voice:runtime-flow:stt-retest-preflight` 在空转写后仍可输出 `ready_for_operator_action=true`，但 `completion_proof=false`。
+  - `voice:goal:audit` 当前输出：
+    - `manual_retest_readiness.local_stt.ready_for_operator_action=true`
+    - `manual_retest_readiness.local_stt.completion_proof=false`
+    - `manual_retest_readiness.local_stt.next_action=retry_right_bottom_gui_stt_with_audible_speech_or_inspect_empty_transcript`
+- 当前结论：
+  - 已证明右下角 GUI 的 STT 按钮能触发本地 STT 链路。
+  - 已证明本地 Whisper 常驻服务被真实 GUI 调用，耗时约 `566ms`。
+  - 未证明完整语音转文字成功，因为缺少真实可识别语音输入。
+  - 目标仍为 `incomplete`。
+- 下一步：
+  - 运行 `npm.cmd run voice:runtime-flow:wait-local-stt`。
+  - 用户在右下角 Electron GUI 中点击 `STT`，清楚说一句完整中文。
+  - 通过标准仍是 `local_stt_complete.success=true`、`transcript_length>0`，且 renderer 侧 `local_stt_transcribe_result.success=true`。
+
+## 2026-06-29 STT/TTS 当前优化成果复核
+
+- 当前 active goal 仍未完成，范围是：
+  - 云端 STT 稳定性。
+  - 输入队列。
+  - 连续监听 / W3 wake detector。
+  - TTS 播放期间接收输入。
+  - 本地 Whisper 常驻服务。
+  - 对话状态补全。
+  - 小智式对话逻辑是否实际应用。
+- 本轮复核命令：
+  - `npm.cmd run voice:runtime-flow:stt-retest-preflight` 通过。
+  - `npm.cmd run voice:goal:audit` 通过，但结果为 `incomplete`。
+  - `npm.cmd run voice:local-whisper-service:validate` 通过。
+  - `npm.cmd run voice:tts-input-boundary:validate` 通过。
+  - `npm.cmd run voice:runtime-flow:audit` 通过，但状态为 `warn`。
+  - `npm.cmd run voice:stream-loop:validate` 通过。
+  - `npm.cmd run typecheck` 通过。
+- 当前已证明的优化成果：
+  - 真实右下角 GUI 已加载当前 runtime，`default_stt_adapter=local`。
+  - 本地 Whisper 常驻服务可用，最近 health latency 为 `18ms`。
+  - STT 按钮可触发真实链路：`stt_start_requested -> local_stt_recording_started -> local_stt_transcribe_request -> local_stt_start -> local_stt_complete -> local_stt_transcribe_result`。
+  - 本地 Whisper 常驻服务被真实 GUI 调用，最近一次本地转写耗时 `688ms`。
+  - 输入队列、TTS 输入边界、小智式状态事件均已通过静态/脚本验证。
+  - 闭环探针在缓存命中时可走快路径：`stt_ms=896`、`first_tts_ms=4`、`total_tts_ms=11`、`cached_chunk_count=2`。
+- 当前仍卡顿的证据：
+  - `tts_synthesis_avg_ms=14017`。
+  - `tts_synthesis_max_ms=28362`。
+  - `tts_queue_end_to_end_max_ms=59362`。
+  - `tts_queue_total_tts_max_ms=42465`。
+  - `input_queue_wait_max_ms=13386`。
+  - 历史云端 STT 仍有 `chrome_stt_avg_ms=8179`、`chrome_stt_max_ms=12211`。
+  - 缓存命中探针不等于真实 GUI 新句体验；真实 GUI 仍可能命中 CosyVoice 冷合成长尾。
+- 多次语音输入只有一次有效的当前判断：
+  - 旧问题已经从“忙碌时直接丢输入”改为“输入进入队列或可打断 TTS”。
+  - 真实日志仍未观察到 `voice_playback_interrupted_for_formal_input` 或过期 TTS 跳过事件，因此播放中插入输入的真实 GUI 验收尚未完成。
+  - 最近一次受控点击录音能量接近静音：`audio_rms=0.000269`、`audio_peak=0.00128`、`audio_dbfs=-71`、`non_silent_ratio=0`，所以本地 Whisper 返回空文本不能证明 STT 链路失败。
+- 当前结论：
+  - STT 链路入口、录音、常驻 Whisper 调用已被证明。
+  - 完整真实语音转文字仍未被证明，必须用真实口述产生 `success=true` 和 `transcript_length>0`。
+  - TTS 卡顿的主因仍是 CosyVoice 本地高质量合成冷路径和队列等待，不是本地 Whisper 服务本身。
+  - 目标不能标记完成。
+
+## 2026-06-29 TTS 播放中输入打断受控探针
+
+- 本轮目标：
+  - 补齐 “TTS 播放期间接收正式输入” 的运行证据。
+  - 不依赖人工卡时间点，不改正式 UI 默认行为。
+  - 不写世界模型，不创建 `requirement_packet.v1`，不保存原始音频。
+- 新增代码入口：
+  - renderer 读取 URL state 中的 `status_dialogue_runtime_probe=tts_input_interrupt`。
+  - 仅测试态会启动 `status_dialogue_tts_input_interrupt_probe_start`。
+  - 探针将 voice queue 置为 `playing`，再提交一条正式文本输入。
+  - 正式链路必须输出：
+    - `voice_playback_interrupted_for_formal_input`
+    - `tts_queue_interrupted`
+    - `dialogue_input_queued`
+    - `status_dialogue_tts_input_interrupt_probe_complete`
+- 新增命令：
+  - `npm.cmd run voice:runtime-flow:probe-tts-input-interrupt`
+- 审计边界修正：
+  - `runtime_probe` 不能再被当成真实右下角 GUI runtime marker。
+  - `voice:goal:audit` 的真实 GUI、local STT、W3、云端 STT 证据只读取非 probe 事件。
+  - `tts_during_input` 允许读取该受控 probe，因为它直接运行同一 renderer 输入打断链路。
+  - `wait-marker` 与 `wait-local-stt` 已排除 `runtime_probe`，避免后续 STT 验收被隐藏测试窗口污染。
+- 本轮运行证据：
+  - `voice_playback_interrupted_for_formal_input` 出现，`previous_voice_status=playing`、`previous_voice_stage=playing`。
+  - `tts_queue_interrupted` 出现。
+  - `dialogue_input_queued` 出现，`queued_during_tts=true`、`reason=dialogue_busy_tts_interrupted`。
+  - `voice:runtime-flow:audit` 中：
+    - `formal_input_interrupt_seen=true`
+    - `stale_tts_skip_or_interrupt_seen=true`
+    - `controlled_tts_input_probe_event_count=25`
+  - `voice:goal:audit` 从 `proved=4 / partial=4` 更新为 `proved=5 / partial=3`，但总结果仍为 `incomplete`。
+- 本轮验证：
+  - `npm.cmd run voice:runtime-flow:probe-tts-input-interrupt` 通过。
+  - `npm.cmd run voice:tts-input-boundary:validate` 通过。
+  - `npm.cmd run voice:runtime-flow:audit` 通过，状态仍为 `warn`。
+  - `npm.cmd run voice:goal:audit` 通过，结果仍为 `incomplete`。
+  - `npm.cmd run voice:runtime-flow:stt-retest-preflight` 通过，仍为人工 STT ready 状态。
+  - `npm.cmd run voice:local-whisper-service:validate` 通过。
+  - `npm.cmd run voice:cloud-stt-stability:validate` 通过。
+  - `npm.cmd run voice:w3-wake-detector:validate` 通过。
+  - `npm.cmd run build` 通过。
+- 当前剩余缺口：
+  - 云端 STT 仍缺当前窗口稳定样本，历史慢样本仍存在。
+  - W3 仍缺真实 `w3_wake_detected + w3_wake_handoff_stt` 运行证据。
+  - local Whisper 仍缺真实可听麦克风输入的 `success=true`、`transcript_length>0`。
+  - TTS 卡顿仍存在，主因仍是 CosyVoice 冷合成长尾；本轮只证明播放中输入能被打断和入队，不等于解决高质量 TTS 延迟。
+## 2026-06-29 STT 专项：v3 本地录音 VAD 门控与浏览器预览边界
+
+- 当前目标仍未完成，继续保持 `/goal` active。
+- 本轮定位结论：
+  - 真实 GUI 已重启到 `STATUS_DIALOGUE_STT_RUNTIME_FIX_MARKER=stt-local-observability-2026-06-29-v3`。
+  - 右下角 Electron GUI 的 `default_stt_adapter=local`，`local_whisper_persistent_service` health 为 `ready`。
+  - 当前内置浏览器页 `http://[::1]:5173/?window=zhineng-graph` 是 browser preview，页面显示 `ELECTRON_IPC_BRIDGE` 缺失；它不能证明本地 Whisper STT 链路。
+  - `voice-flow` 运行日志只能由 Electron IPC 写入，browser preview 点击 STT 不会进入本地 STT 审计日志。
+- 本轮实现：
+  - 本地 STT 录音由固定 6 秒窗口升级为 VAD 门控窗口。
+  - 新参数：
+    - `STATUS_DIALOGUE_LOCAL_STT_MAX_WINDOW_MS=11000`
+    - `STATUS_DIALOGUE_LOCAL_STT_MIN_AUDIO_MS=350`
+    - `STATUS_DIALOGUE_LOCAL_STT_RMS_THRESHOLD=0.006`
+    - `STATUS_DIALOGUE_LOCAL_STT_PEAK_THRESHOLD=0.035`
+    - `STATUS_DIALOGUE_LOCAL_STT_MIN_VOICE_MS=180`
+    - `STATUS_DIALOGUE_LOCAL_STT_SILENCE_TAIL_MS=900`
+  - 新增运行事件：
+    - `local_stt_voice_detected`
+    - `local_stt_silence_detected`
+  - `local_stt_recording_started` 现在记录音频 track 设置摘要。
+  - `local_stt_recording_stopped` 现在记录 `voice_detected`、`voice_ms`、`recorded_ms`、`peak_rms`、`peak_level`、首尾人声时间等字段。
+  - 未检测到足够人声时不再调用 Whisper，避免空录音进入转写和对话链路。
+  - speech io 面板新增 runtime boundary 行：
+    - desktop GUI 显示 `desktop ipc / runtime log`
+    - browser preview 显示 `browser preview / preview only / local proof unavailable`
+- 审计脚本同步：
+  - `wait-status-dialogue-local-stt-transcription.cjs` 默认从最新真实 GUI marker 后检查动作事件，避免旧失败日志污染当前判断。
+  - `voice:local-whisper-service:validate` 覆盖 v3 marker、VAD 门控事件和静音事件。
+  - `voice:runtime-flow:audit` 增加 `local_stt_voice_detected_count` 与 `local_stt_silence_detected_count`。
+  - `voice:goal:audit` 增加当前静音门控失败证据，但不会把静音门控误判为 STT 完成。
+- 本轮验证：
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+  - `npm.cmd run voice:local-whisper-service:validate` 通过。
+  - `npm.cmd run voice:runtime-flow:probe-marker` 通过。
+  - `npm.cmd run voice:runtime-flow:restart-for-retest` 执行后，`voice:runtime-flow:check-marker` 通过，真实 GUI marker 为 v3。
+  - `npm.cmd run voice:runtime-flow:stt-retest-preflight` 通过，结果为 `ready_for_operator_stt_test`。
+  - `npm.cmd run voice:runtime-flow:wait-local-stt` 等待 120 秒后未捕捉到新的 `stt_start_requested`，说明本轮未在右下角 Electron GUI 产生新的 STT 点击事件。
+- 当前仍缺少的完成证据：
+  - 右下角 Electron GUI 中真实麦克风输入后出现：
+    - `stt_start_requested`
+    - `local_stt_recording_start_request`
+    - `local_stt_recording_started`
+    - `local_stt_voice_detected`
+    - `local_stt_transcribe_request`
+    - `local_stt_complete success=true transcript_length>0`
+  - W3 唤醒词真实 `w3_wake_detected + w3_wake_handoff_stt`。
+  - 云端 STT 当前窗口重试/失败分类。
+  - TTS 卡顿仍由 CosyVoice 合成长尾主导，尚未解决。
+## 2026-06-30 STT 专项复核：目标、卡顿原因与多轮输入验证口径
+
+- 当前 active goal 仍未完成，范围仍是：云端 STT 稳定性、输入队列、连续监听、TTS 播放期间接收输入、本地 Whisper 常驻服务、对话状态补全，以及小智式对话逻辑是否真正应用。
+- 当前真实优化成果：
+  - 右下角 Electron GUI 已加载 `stt-local-observability-2026-06-29-v3`。
+  - 当前默认 STT adapter 是 `local_whisper_persistent_service`，health ready，最近 health latency 约 `7ms`。
+  - 今天已有 2 次真实非 probe 本地 STT 成功样本：`local_stt_complete.success=true`，latency 约 `1273ms` 与 `1325ms`。
+  - 输入队列、TTS 播放中输入打断、W3 handoff、continuous formal STT loop 已有受控 probe 或静态验证。
+  - `voice:stream-loop:validate` 证明缓存/探针路径可低延迟：`stt_ms=733`、`first_tts_ms=8`、`total_tts_ms=16`，但该结果不等于真实 GUI 新句体验。
+- 当前卡顿原因判断：
+  - 本地 Whisper STT 本身不是主要瓶颈，真实成功样本约 1.3s。
+  - 主要瓶颈仍在 TTS 输出链路与播放队列，历史审计仍存在 `tts_synthesis_avg_ms≈13353ms`、`tts_synthesis_max_ms≈15979ms`、`tts_queue_end_to_end_max_ms≈45204ms`。
+  - 当前默认输出虽已切到 `edge_readaloud_stream`，但真实 GUI 最近没有新的完整语音轮次，仍需用新轮实测确认是否还命中 CosyVoice 慢路径或队列长尾。
+- 关于“多次语音输入只有一次有效”的当前证据：
+  - `voice:runtime-flow:check-local-stt` 当前返回 `no_stt_start_request_after_wait`。
+  - 最新真实 GUI marker 之后只看到 adapter/health，没有新的 `stt_start_requested`。
+  - 因此当前第一故障点在“输入触发/连续监听触发没有再次进入正式 STT”，不是 Whisper 转写服务失败。
+- 新增真实多轮验证入口：
+  - `npm.cmd run voice:runtime-flow:continuous-loop-preflight`
+  - `npm.cmd run voice:runtime-flow:wait-continuous-loop`
+  - `npm.cmd run voice:runtime-flow:check-continuous-loop`
+- 本轮继续补强：
+  - 右下角主输入栏新增显式 `loop` / `loop on` 按钮，直接控制 continuous formal STT loop，不再只能在设置面板中启动。
+  - STT 主按钮新增 `stt_button_pointer_down` 运行日志，用于区分“点击没有到真实按钮”和“点击已到按钮但没有进入 startSpeechRecognition”。
+  - `wait-status-dialogue-local-stt-transcription.cjs` 新增 `stt_button_pointer_seen_without_start_request` 诊断分类。
+- 验收口径：
+  - 默认要求 `--min-turns 2`。
+  - 必须看到 `continuous_voice_session_enabled`、`continuous_voice_session_resume_scheduled`、`continuous_voice_session_resume_stt`。
+  - 必须看到至少两轮 `stt_start_requested -> local_stt_recording_started -> local_stt_transcribe_request -> local_stt_transcribe_result.success=true`。
+  - 如果只返回 `continuous_loop_not_started`，下一步是右下角 GUI 点击 `start loop`，然后说两句完整中文。
+  - 如果 `check-local-stt` 返回 `no_stt_start_request_after_wait` 且没有 `stt_button_pointer_down`，说明没有点到真实 Electron GUI 的 STT 主按钮。
+  - 如果返回 `stt_button_pointer_seen_without_start_request`，说明点击到 STT 主按钮但入口 handler 没进入，需要检查前端事件绑定。
+- 本轮新增后的验证结果：
+  - `node --check scripts\wait-status-dialogue-local-stt-transcription.cjs` 通过。
+  - `node --check scripts\wait-status-dialogue-continuous-loop.cjs` 通过。
+  - `node --check scripts\validate-status-dialogue-continuous-listening.cjs` 通过。
+  - `npm.cmd run voice:continuous-listening:validate` 通过，新增 `stt_entry_observability_available=true`。
+  - `npm.cmd run voice:runtime-flow:check-local-stt` 当前仍为 `no_stt_start_request_after_wait`，且没有 `stt_button_pointer_down`，说明当前窗口没有真实点击到 STT 主按钮。
+  - `npm.cmd run voice:runtime-flow:continuous-loop-preflight` 通过，`next_action=click_start_loop_and_speak_two_complete_chinese_sentences`。
+  - `npm.cmd run voice:runtime-flow:check-continuous-loop` 当前仍为 `continuous_loop_not_started`。
+  - `npm.cmd run typecheck` 通过。
+  - `npm.cmd run build` 通过。
+  - `npm.cmd run voice:runtime-flow:probe-continuous-loop` 通过，日志写入 `status_dialogue_continuous_voice_loop_probe_observed`。
+  - `npm.cmd run voice:goal:audit` 通过但结果仍是 `incomplete`，`proved=6 / partial=2 / missing=0`。
+
+## 2026-06-30 真实 GUI loop 入口实测
+
+- 执行动作：
+  - 运行 `npm.cmd run voice:runtime-flow:restart-for-retest`，真实右下角 GUI 已重启。
+  - `npm.cmd run voice:runtime-flow:check-marker` 通过，最新非 probe marker 为 `2026-06-30T02:57:27.859Z`。
+  - 截图确认主输入栏已显示 `loop` 按钮：`runtime/verification-reports/status-dialogue-gui-after-loop-button.png`。
+  - 自动点击主输入栏 `loop` 按钮一次，随后再次点击停止。
+- 真实运行证据：
+  - `continuous_voice_session_enabled` 出现。
+  - `continuous_voice_session_resume_scheduled` 出现。
+  - `continuous_voice_session_resume_stt` 出现。
+  - `stt_start_requested` 出现，`selected_adapter=local`。
+  - `local_stt_recording_start_request` 出现。
+  - `local_stt_recording_started` 出现，设备为默认麦克风。
+  - `xiaozhi_style_voice_bridge_event` 出现 `hello`、`listen_start`、`listen_detect`。
+  - 因无人声输入，`local_stt_silence_detected` 出现：`audio_dbfs=-68`、`voice_ms=0`、`recorded_ms=10923`。
+  - `continuous_voice_session_disabled` 出现，表示 loop 已被关闭。
+- 诊断脚本修正：
+  - `scripts/wait-status-dialogue-continuous-loop.cjs` 已加入 `continuous_voice_session_disabled` 和 `local_stt_silence_detected` 判定。
+  - 当前 `check-continuous-loop` 结果修正为 `continuous_loop_stopped_after_silence`，不再误判为仍处于 `paused_error`。
+- 当前结论：
+  - 主输入栏 `loop` 入口真实可达。
+  - continuous formal STT loop 能真实进入本地 STT 录音链路。
+  - 未证明连续两轮成功转写，因为本轮没有真实人声输入。
+  - 下一步需要用户在 loop 启动后说两句完整中文，使用 `npm.cmd run voice:runtime-flow:wait-continuous-loop` 采集成功证据。
+- 本轮验证：
+  - `npm.cmd run voice:goal:audit` 通过，但结果仍为 `incomplete`，`proved=6 / partial=2 / missing=0`。
+  - `npm.cmd run voice:runtime-flow:audit` 通过，状态为 `warn`。
+  - `npm.cmd run voice:runtime-flow:check-local-stt` 未通过，结果为 `no_stt_start_request_after_wait`。
+  - `npm.cmd run voice:runtime-flow:stt-retest-preflight` 通过，表示具备人工 STT 复测前置条件。
+  - `npm.cmd run voice:continuous-listening:validate` 通过。
+  - `npm.cmd run voice:stream-loop:validate` 通过。
+## 2026-07-01 Remote STT unavailable fallback runtime proof
+
+- Goal scope:
+  - Continue the active STT hardening goal.
+  - This work only strengthens the remote/cloud STT failure boundary.
+  - It does not claim real cloud STT recognition stability.
+- Problem found:
+  - Static code already had `remote_stt_unavailable_skip_to_local`.
+  - Runtime proof was missing.
+  - Initial probe implementation exposed a React state race: after `selectSttAdapter('remote')`, a later callback could still read stale `local` adapter/remote-health state.
+- Implemented fix:
+  - Added `remote_stt_unavailable` runtime probe mode in `ZhinengConsole.tsx`.
+  - Added synchronous refs for current STT adapter and remote STT runtime state.
+  - Updated the normal `startSpeechRecognition` entry to read the refs so immediate adapter changes do not use stale closures.
+  - Updated `refreshRemoteSttHealth()` to return the health result and to update its ref before state commit.
+  - The `remote_stt_unavailable` probe now waits for remote health `not_configured` and then calls the normal STT entry; it does not call local transcription directly.
+- Test CLI:
+  - Added `runStatusDialogueRemoteSttUnavailableProbe()` in `scripts/test-cli.ts`.
+  - Added npm script `voice:runtime-flow:probe-remote-stt-unavailable`.
+  - The probe fails if unavailable remote STT attempts a remote transcription upload.
+  - The passing path must include:
+    - `status_dialogue_remote_stt_unavailable_probe_ready`
+    - `stt_start_requested`
+    - `remote_stt_unavailable_skip_to_local`
+    - `local_stt_start`
+    - `local_stt_complete`
+    - `local_stt_transcribe_result`
+- Validation:
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed and now checks the new probe registration.
+  - `npm.cmd run voice:runtime-flow:probe-remote-stt-unavailable` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - Runtime audit now sees `status_dialogue_remote_stt_unavailable_probe_ready=2` and `remote_stt_unavailable_skip_to_local=2`.
+  - Direct log check confirms latest probe completed at `2026-07-01T12:16:23.788Z`, no `remote_stt_unavailable_probe_unexpected_remote_upload`, and all key fallback events are present.
+  - `npm.cmd run voice:goal:audit` still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+- Remaining gap:
+  - Real cloud/remote STT recognition is still not proven stable because current configured remote probe still lacks real API key/base URL/model configuration and historical cloud/remote failure evidence remains.
+  - This fix proves fast, safe fallback when remote STT is unavailable; it does not prove remote STT itself is stable.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No new dialogue module.
+  - No raw audio persistence.
+
+## 2026-07-01 STT/TTS runtime check and short TTS chunk fix
+
+- Current active goal remains incomplete:
+  - STT focus includes cloud STT stability, input queue, continuous listening, TTS-time input, local Whisper persistent service, dialogue-state completion, and Xiaozhi-style dialogue logic verification.
+  - Latest `voice:goal:audit` result is `incomplete`, with `proved=7 / partial=1 / missing=0 / total=8`.
+- Current verified optimization results:
+  - Real GUI runtime marker is present.
+  - Default runtime STT adapter is local.
+  - Local Whisper persistent service health is ready.
+  - Real microphone STT has succeeded through `local_whisper_persistent_service`.
+  - Latest checked success sample: `local_stt_complete.success=true`, `latency_ms=442`, `transcript_length=11`.
+  - Xiaozhi-style bridge stages are present in runtime logs.
+  - TTS input interrupt and input queue boundary remain statically and probe-verified.
+- Current lag diagnosis:
+  - Runtime audit still reports `status=warn`.
+  - Dominant bottleneck is `tts_queue_end_to_end_latency`.
+  - Latest audit still includes historical slow queue evidence: `tts_queue_end_to_end_max_ms=52232`, `tts_queue_total_tts_max_ms=11625`, `tts_queue_total_playback_max_ms=22219`.
+  - A concrete runtime failure was found in the TTS queue: a one-character voice chunk entered Edge Read Aloud streaming TTS and timed out after 10000 ms, stretching the full voice queue to nearly 30 seconds in that turn.
+- Current multi-turn input diagnosis:
+  - One-shot STT is proven.
+  - Continuous formal STT loop is not started in the current real GUI window.
+  - `voice:runtime-flow:check-continuous-loop` currently returns `continuous_loop_not_started`.
+  - Therefore "multiple voice inputs only one is effective" is currently not proven as Whisper failure; the observed gap is that subsequent turns are not entering the continuous-loop path.
+- Implemented fix:
+  - Updated `src/core/status-dialogue/voice-output-pipeline.ts`.
+  - `segmentVoiceResponsePlan` now merges or skips orphan punctuation and too-short voice fragments before they become `voice_output_chunk.v1`.
+  - Duplicate terminal punctuation such as `。.` is absorbed instead of spoken as a strange tail.
+  - This keeps the fix in the shared voice pipeline rather than adding a GUI-only workaround.
+- Validation:
+  - `node -r ts-node/register scripts/validate-voice-output-pipeline.cjs` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`, because it still reads pre-fix runtime slow samples.
+  - `npm.cmd run voice:runtime-flow:check-local-stt` passed.
+  - `npm.cmd run voice:runtime-flow:check-continuous-loop` failed as expected with `continuous_loop_not_started`.
+  - `npm.cmd run build` passed.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No new parallel dialogue module.
+  - No raw audio persistence added.
+- Next verification:
+  - Restart or refresh the real GUI so it loads the new TTS chunking fix.
+  - Run a new voice turn and confirm there are no one-character `tts_chunk_synthesis_start` events.
+  - Start `loop` and speak at least two complete Chinese sentences, then run `npm.cmd run voice:runtime-flow:check-continuous-loop`.
+
+## 2026-07-01 Continuous STT two-turn probe and lag diagnosis
+
+- Active goal remains incomplete:
+  - Scope is still cloud/remote STT stability, input queue, continuous listening, input during TTS playback, local Whisper persistent service, dialogue-state completion, and Xiaozhi-style logic verification.
+  - `npm.cmd run voice:goal:audit` still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+- Current answer to "why is voice still laggy":
+  - The newest controlled evidence shows STT itself can complete quickly in the happy path.
+  - The dominant lag signal remains TTS queue/playback, not single-turn local STT.
+  - Runtime audit still reports `status=warn` and `known_bottlenecks=["tts_queue_end_to_end_latency"]`.
+  - Historical slow samples remain in the audit window: `tts_queue_end_to_end_max_ms=52232`, `tts_queue_total_tts_max_ms=11625`, `tts_queue_total_playback_max_ms=22219`.
+  - Continuous listening intentionally waits while dialogue, TTS playback, or the input queue is active. Long spoken output therefore delays the next listening turn.
+- Current answer to "why multiple voice inputs only one is effective":
+  - One-shot local STT is proven.
+  - Real operator continuous two-turn success is still not proven.
+  - A new controlled two-turn probe now proves the code path can do two consecutive formal STT turns when audio, STT, and mocked model/TTS are stable.
+  - This means the remaining user-facing issue is more likely runtime conditions around loop enablement, TTS wait, and real operator timing than a hard failure in the local Whisper transcription function.
+- Implemented fix / verification hardening:
+  - Added runtime probe mode `continuous_voice_two_turn` in `ZhinengConsole.tsx`.
+  - The probe uses the existing `startSpeechRecognition -> local STT -> submitDialogue -> resume` path.
+  - It does not create a new STT subsystem and does not bypass the GUI dialogue path.
+  - Added `status_dialogue_continuous_voice_two_turn_probe_turn` and `status_dialogue_continuous_voice_two_turn_probe_complete` runtime events.
+  - Added `runStatusDialogueContinuousVoiceTwoTurnProbe()` in `scripts/test-cli.ts`.
+  - Added `voice:runtime-flow:probe-continuous-two-turn` to `package.json`.
+  - Updated `voice:continuous-listening:validate` and `voice:goal:audit` so scheduler-only evidence is not confused with two-turn formal STT evidence.
+  - Fixed the two-turn test TTS stream stub to emit one audio frame plus one final frame, preventing artificial `tts_stream_frame_wait_timeout`.
+- Latest controlled probe result:
+  - `npm.cmd run voice:runtime-flow:probe-continuous-two-turn` passed.
+  - Latest runtime log window has:
+    - `continuous_voice_session_resume_stt`: 2
+    - `local_stt_transcribe_result.success=true`: 2
+    - `status_dialogue_continuous_voice_two_turn_probe_turn`: 2
+    - `status_dialogue_continuous_voice_two_turn_probe_complete.success=true`: 1
+    - `tts_stream_frame_wait_timeout`: 0 in the latest two-turn probe window
+  - Latest measured probe window elapsed about `6732ms`; observed probe record reported `latency_ms=8004`.
+- Validation:
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run voice:runtime-flow:probe-continuous-two-turn` passed after TTS stream stub correction.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`; warning remains because historical slow TTS queue samples are still in the current log set.
+  - `npm.cmd run voice:goal:audit` passed but remains `incomplete`.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No new same-level dialogue module.
+  - No raw audio persistence.
+- Next real verification:
+  - Use the actual right-bottom Electron GUI, enable `loop`, speak two complete Chinese sentences, and then run `npm.cmd run voice:runtime-flow:check-continuous-loop`.
+  - If real GUI still feels laggy after this probe, optimize the next phase around TTS spoken budget, queue cancellation, and listening resume policy rather than continuing to tune one-shot STT.
+
+## 2026-07-01 Runtime audit precision and remote STT configuration check
+
+- Active goal remains incomplete:
+  - The current completion audit still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+  - The remaining partial item is `cloud_stt_stability`.
+- TTS lag evidence is now split by window:
+  - Updated `scripts/audit-status-dialogue-runtime-voice-flow.cjs` to report both current real GUI TTS queue metrics and latest controlled continuous two-turn probe TTS queue metrics.
+  - Latest audit still has `status=warn`.
+  - Current real GUI window still contains slow TTS queue samples:
+    - `current_real_tts_queue_complete_count=3`
+    - `current_real_tts_queue_slow_count=2`
+    - `current_real_tts_queue_end_to_end_max_ms=52232`
+    - `current_real_tts_queue_total_tts_max_ms=11625`
+    - `current_real_tts_queue_total_playback_max_ms=22219`
+  - Latest controlled continuous two-turn probe is not slow:
+    - `latest_continuous_two_turn_tts_queue_complete_count=3`
+    - `latest_continuous_two_turn_tts_queue_slow_count=0`
+    - `latest_continuous_two_turn_tts_queue_end_to_end_max_ms=783`
+    - `latest_continuous_two_turn_tts_queue_total_tts_max_ms=20`
+    - `latest_continuous_two_turn_tts_queue_total_playback_max_ms=300`
+    - `latest_continuous_two_turn_tts_timeout_count=0`
+  - Current interpretation: latest controlled code path is fast, but the real GUI still has slow TTS queue evidence in the current window. A fresh real GUI voice turn is required before claiming user-facing lag is fixed.
+- Remote/cloud STT evidence:
+  - Ran `npm.cmd run voice:runtime-flow:probe-remote-stt-configured`; it failed as expected from missing configuration.
+  - Latest wait report: `status-dialogue-remote-stt-wait-1782909194114.json`.
+  - Result: `failed`, `next_action=configure_remote_stt_api_key_base_url_and_model`.
+  - Latest runtime events show:
+    - `remote_stt_health_check.configured=false`
+    - `reachable=false`
+    - `status=fallback`
+    - `base_url_host=not_configured`
+    - `model=whisper-1`
+    - `error=remote STT is not configured`
+    - `fallback_reason=remote_stt_not_configured`
+  - Checked actual env names used by code; all are absent:
+    - `SIGHTFLOW_STATUS_DIALOGUE_STT_API_KEY`
+    - `STATUS_DIALOGUE_STT_API_KEY`
+    - `SIGHTFLOW_STATUS_DIALOGUE_STT_BASE_URL`
+    - `STATUS_DIALOGUE_STT_BASE_URL`
+    - `SIGHTFLOW_STATUS_DIALOGUE_STT_MODEL`
+    - `STATUS_DIALOGUE_STT_MODEL`
+    - `SIGHTFLOW_STATUS_DIALOGUE_STT_ENDPOINT`
+    - `STATUS_DIALOGUE_STT_ENDPOINT`
+    - `SIGHTFLOW_STATUS_DIALOGUE_STT_REMOTE_ENABLED`
+    - `STATUS_DIALOGUE_STT_REMOTE_ENABLED`
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+
+## 2026-07-01 Latest status pointer: runtime voice diagnostic integrated
+
+- Latest implementation status:
+  - `status_dialogue_runtime_voice_diagnostic.v1` is now part of the subject status dialogue context.
+  - Main IPC `zhineng:status-dialogue:runtime-voice-diagnostic:get` reads the latest real voice retest suite report as read-only evidence.
+  - Renderer refreshes the diagnostic at startup and before each dialogue model request.
+  - Right-side settings panel now exposes `voice diag` and a `voice diagnostic` detail section.
+  - Model prompt and local fallback now include the real voice retest result, entry diagnosis, real-turn status, remote STT missing config and goal audit summary.
+- Latest verification:
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:goal:audit` remains `result=incomplete`.
+  - `npm.cmd run voice:runtime-flow:real-voice-suite` remains expected incomplete:
+    - `next_action=click_inside_right_bottom_gui_or_check_window_focus_overlay`
+    - `remote_config_missing=remote_stt_api_key`
+- Latest remaining gaps:
+  - Need a fresh real right-bottom GUI closed-loop voice turn after the current marker.
+  - Need `remote_stt_api_key` before real remote/cloud STT stability can be proven.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No microphone or audio upload from diagnostic reading.
+  - No new same-level dialogue module.
+
+## 2026-07-03 Execution status bar and delayed ACK implementation
+
+- Confirmed implementation scope:
+  - Extend the existing `status-dialogue-system` renderer and validation lane.
+  - Do not create a parallel dialogue rule source or same-level module.
+  - Keep STT, model, patrol snapshot, TTS and playback adapters unchanged.
+- Implemented UI state:
+  - Added `status_dialogue_execution_state.v1` in `ZhinengConsole.tsx`.
+  - Added a visible main-panel execution status bar between the global snapshot and conversation memory surfaces.
+  - The visible stages are:
+    - listening
+    - transcribing
+    - understanding
+    - patrolling
+    - generating
+    - speaking
+    - complete
+  - The bar shows a pulsing execution dot and the current action, for example:
+    - preparing Cloudflare STT recording;
+    - calling Chrome STT Bridge;
+    - reading status cards and event snapshots;
+    - generating reply;
+    - generating or playing TTS chunks.
+- Implemented ACK behavior:
+  - Default acknowledgement is visual through the execution status bar.
+  - The previous per-turn immediate spoken ACK is not called inside `submitDialogue`.
+  - A short spoken hint is only scheduled when the model response exceeds `STATUS_DIALOGUE_VOICE_ACK_DELAY_MS=1500`.
+  - The delayed spoken hint is cancelled when a streaming sentence, model result, model error or turn completion arrives.
+- Implemented verification:
+  - Added `scripts/validate-status-dialogue-execution-ui-ack.cjs`.
+  - Added npm script `voice:execution-ui-ack:validate`.
+  - The validator checks renderer state contract, STT/model/TTS state updates, CSS status bar, layout rows, delayed ACK events and package script registration.
+- Latest verification:
+  - `npm.cmd run voice:execution-ui-ack:validate` passed.
+    - Latest report: `runtime/verification-reports/status-dialogue-execution-ui-ack-1783054749576.json`
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+    - Latest report: `runtime/verification-reports/status-dialogue-state-policy-1783054749606.json`
+  - `npm.cmd run voice:event-broadcast:validate` passed.
+    - Latest report: `runtime/voice-loop-probes/status-dialogue-event-broadcast-validation-20260703045912.json`
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - Browser page check against `http://[::1]:5173/?window=zhineng-graph` passed:
+    - `.zg-dialogue-execution-status` exists.
+    - `.zg-execution-pulse` exists.
+    - Stage labels are `听取 / 转写 / 理解 / 巡检 / 生成 / 播放 / 完成`.
+    - Status bar order is snapshot -> execution status -> conversation memory.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No STT/TTS adapter replacement.
+  - No new same-level dialogue module.
+  - Current work is UI observability and ACK policy wiring only.
+
+## 2026-07-03 Minimal morph execution icon revision
+
+- Reason for revision:
+  - The previous visible execution surface was too close to a player/progress bar.
+  - It consumed a full row in the right-side dialogue window.
+  - The desired direction is a minimal system-state icon whose shape changes across the whole flow.
+- Implemented revision:
+  - Removed the separate player-like execution status row from the main dialogue panel.
+  - Moved execution visibility into the right side of the global snapshot row.
+  - Replaced visible text and seven step chips with one compact morphing icon.
+  - The icon keeps `status_dialogue_execution_state.v1`, `aria-label`, `data-phase`, `data-step`, tooltip, and log evidence for traceability.
+  - The icon shape now maps phases as:
+    - `listening`: microphone/ring form.
+    - `transcribing`: waveform bars.
+    - `understanding`: connected node form.
+    - `patrolling`: radar sweep.
+    - `generating`: spark/star form.
+    - `speaking`: speaker/wave form.
+    - `complete`: check/ring form.
+    - `error`: crossed error form.
+- Verification rule update:
+  - `scripts/validate-status-dialogue-execution-ui-ack.cjs` now requires the minimal morph icon.
+  - It also rejects the previous player-like elements:
+    - `zg-execution-pulse`
+    - `zg-execution-copy`
+    - `zg-execution-steps`
+    - `STATUS_DIALOGUE_EXECUTION_STEPS.map`
+- Latest verification:
+  - `npm.cmd run voice:execution-ui-ack:validate` passed.
+    - Latest report: `runtime/verification-reports/status-dialogue-execution-ui-ack-1783055251584.json`
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+    - Latest report: `runtime/verification-reports/status-dialogue-state-policy-1783055278316.json`
+  - `npm.cmd run voice:event-broadcast:validate` passed.
+    - Latest report: `runtime/voice-loop-probes/status-dialogue-event-broadcast-validation-20260703050801.json`
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - Browser page check against `http://[::1]:5173/?window=zhineng-graph` passed:
+    - `.zg-dialogue-execution-status` exists.
+    - `.zg-execution-glyph` exists.
+    - The icon has `role=img`, `data-phase=complete`, `data-step=6` in idle state.
+    - The icon is inside `.zg-dialogue-snapshot`.
+    - The icon size is `30 x 30`.
+    - Old player-like elements are absent:
+      - `.zg-execution-steps`
+      - `.zg-execution-copy`
+      - `.zg-execution-pulse`
+- Boundary:
+  - No STT/TTS adapter replacement.
+  - No model prompt or dialogue policy change.
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - This is a UI expression revision over the already wired execution state.
+
+## 2026-07-03 DialogueTurnIntent gate and event-broadcast downgrade
+
+- Implemented scope:
+  - Added `dialogue_turn_intent.v1` under the existing `dialogue-policy.v1` rule source.
+  - Added turn intents: `direct_question`, `execution_request`, `capability_question`, `status_patrol`, `voice_control`, `ambient_or_unclear`, `casual_chat`.
+  - Renderer prompt now requires: answer the user's current intent first, then insert patrol/status evidence only when `dialogue_turn_intent.should_run_patrol=true`.
+  - Local fallback now applies the same rule, so model failure no longer forces every input into the fixed patrol template.
+  - Ambient/background-like transcripts now ask for confirmation and skip patrol.
+  - Event broadcast queue remains visible for UI traceability, but TTS speech patches are filtered to relevant `critical/blocked` status events only.
+  - Weak event speech such as punctuation-only lines or plain `当前完成度是 100%` is silenced before TTS.
+- Verification:
+  - `npm.cmd run typecheck` passed.
+  - `node scripts\validate-status-dialogue-state-policy.cjs` passed.
+  - `node scripts\validate-status-dialogue-event-broadcast.cjs` passed.
+  - Direct intent probe passed:
+    - Background transcript -> `ambient_or_unclear`, `should_run_patrol=false`.
+    - `你是否能够按照我的言语来进行执行动作` -> `capability_question`, `should_run_patrol=true`.
+    - `检查当前语音TTS延迟` -> `voice_control`, `should_run_patrol=true`.
+    - `当前状态怎么样` -> `status_patrol`, `should_run_patrol=true`.
+    - `你好` -> `casual_chat`, `should_run_patrol=false`.
+- Not implemented yet, pending user confirmation:
+  - Right-bottom dialogue execution/thinking animated status icon.
+  - Deterministic ACK speech strategy for every confirmed task phase.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No new same-level dialogue module.
+  - No change to STT/TTS adapter selection.
+  - No change to real action execution permissions.
+
+## 2026-07-03 TTS latency and dialogue tone correction
+
+- Trigger:
+  - User confirmed the 11:42 turn was manually closed, so the missing final playback for that turn is not treated as a runtime failure.
+  - Current focus is TTS latency, overly long event broadcast insertion, and stiff repeated opening language.
+- Implemented scope:
+  - Reduced speakable event broadcast cap from `36` chars to `24` chars.
+  - Reduced final non-stream voice cap from `58` chars to `44` chars.
+  - Increased normal TTS chunk size from `26` chars to `42` chars and min chunk size from `8` to `12`, reducing tiny sentence fragments while keeping high-quality TTS.
+  - Changed ACK from fixed text to stable per-turn variants for text and speech input.
+  - Changed model voice-opening rule from exact repeated first sentence to preserving status meaning with natural wording variation.
+  - Event broadcast no longer prepends itself to the full model `voiceText`; it is reserved as a concise spoken insert.
+  - Event broadcast speech sanitizes technical English identifiers and status/log words before TTS.
+  - `voice.final_budgeted` prevents already-budgeted stream-final voice from being re-expanded with event inserts.
+  - Audit budget expectations were updated to the new `24/44` caps.
+- Boundary:
+  - Existing `subject-status-dialogue-system` only.
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No STT provider change.
+- Required verification:
+  - `npm.cmd run typecheck`
+  - `npm.cmd run build`
+  - `npm.cmd run voice:dialogue-state-policy:validate`
+  - `npm.cmd run voice:runtime-flow:probe-tts-voice-budget`
+  - Restart real GUI, then collect at least two fresh user voice turns and run `npm.cmd run voice:runtime-flow:audit`.
+- Verification result:
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:probe-tts-voice-budget` completed; probe marker loaded the new `24/44` caps.
+  - `npm.cmd run voice:runtime-flow:restart-for-retest` completed; real GUI marker now reports `tts_event_broadcast_voice_max_chars=24` and `tts_final_voice_max_chars=44`.
+  - `npm.cmd run voice:runtime-flow:wait-edge-tts` passed:
+    - `edge_stream_started=true`
+    - `edge_stream_ready=true`
+    - `edge_stream_completed=true`
+    - `queue_completed=true`
+    - `probe_completed_success=true`
+    - latest probe `total_tts_ms=1252`, `total_playback_ms=3299`, `chunks=1`, `failed_count=0`
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+    - `latest_real_tts_budget_caps_seen=true`
+    - `current_real_slow_tts_queue_seen=false`
+    - remaining bottleneck is `historical_tts_queue_end_to_end_latency`
+    - still needs two fresh real user voice turns after restart for user-turn latency evidence.
+
+## 2026-07-02 Latest status pointer: Cloudflare Workers AI STT probe passed
+
+- Latest implementation status:
+  - Cloudflare Workers AI provider preset is implemented as `cloudflare_workers_ai`.
+  - Real remote STT probe passed with `@cf/openai/whisper-large-v3-turbo`.
+  - The probe used process-level environment variables only; the API token was not persisted.
+  - Fixed the remote STT/TTS URL join bug that dropped baseURL path segments such as `/client/v4` and `/v1`.
+- Latest verification:
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:probe-remote-stt-configured` passed.
+  - Latest probe report:
+    - `runtime/verification-reports/status-dialogue-remote-stt-wait-1782964893998.json`
+    - `success=true`
+    - `transcript_length=27`
+    - remote STT latency about `2961ms`
+    - total configured probe latency about `4197ms`
+- Current remaining gap:
+  - Cloudflare STT is verified but not yet persisted as the default GUI adapter.
+  - A separate apply step is required before claiming the right-bottom GUI is using Cloudflare by default.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No API key value stored in reports or documentation.
+  - No new same-level dialogue module.
+
+## 2026-07-02 Latest status pointer: Cloudflare STT persisted and selected by GUI
+
+- Latest implementation status:
+  - Cloudflare STT settings were formally persisted under `chatProvider.config.statusDialogueStt`.
+  - Added GUI startup remote health check and first-load default selection:
+    - If remote STT is `configured + ready + reachable`, the normal GUI switches from `local` to `remote`.
+    - Probe mode is excluded from this auto-default rule.
+    - The change does not open the microphone or upload audio by itself.
+- Latest verification:
+  - `npm.cmd run voice:remote-stt-config:validate` passed from settings-only sources.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:probe-remote-stt-configured` passed.
+  - Normal GUI restart passed with `node scripts/prepare-status-dialogue-real-gui-retest.cjs --execute`.
+  - Runtime evidence:
+    - `remote_stt_health_result`: ready, configured, reachable, host `api.cloudflare.com`.
+    - `stt_default_remote_configured`: selected `remote`, reason `remote_stt_configured_and_ready`.
+    - `stt_adapter_runtime_selected`: selected `remote`, reason `configured_remote_stt_default`.
+- Current remaining gap:
+  - Controlled GUI/Electron remote STT with verification audio is proven.
+  - Real operator microphone input through the right-bottom GUI still requires a fresh user voice turn.
+  - `voice:goal:audit` remains `incomplete` because `dialogue_input_queue` and real operator remote STT stability have not yet been proven in the current window.
+- Boundary:
+  - API key is stored only in local app settings for runtime use.
+  - API key value is not stored in source, reports, or documentation.
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+
+## 2026-07-02 Latest status pointer: real STT log review fixed startup race
+
+- Latest implementation status:
+  - User performed a real STT click and speech turn in the right-bottom GUI.
+  - Log review confirmed the turn was successful but used local Whisper, not Cloudflare.
+  - Root cause was a startup race: GUI initialized as `local`, user clicked STT before remote health selected `remote`.
+  - Fixed by initializing GUI STT adapter as `remote` and preserving a known-unavailable fallback to `local`.
+- Latest verification:
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - Normal GUI restart passed with `node scripts/prepare-status-dialogue-real-gui-retest.cjs --execute`.
+  - Latest real runtime marker:
+    - `ts=2026-07-02T12:59:03.854Z`
+    - `default_stt_adapter=remote`
+  - Latest STT entry snapshot:
+    - `selected_adapter=remote`
+  - Latest remote STT health:
+    - `status=ready`
+    - `configured=true`
+    - `reachable=true`
+    - `base_url_host=api.cloudflare.com`
+- Current remaining gap:
+  - Need one more real operator STT click after this fix to prove actual microphone audio now routes to Cloudflare.
+  - Current real TTS still shows latency:
+    - `end_to_end_ms=32215`
+    - `total_tts_ms=3484`
+    - `total_playback_ms=12243`
+  - TTS slowness is now a separate voice output/event-broadcast issue, not a Cloudflare STT configuration issue.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+
+## 2026-07-02 Remote STT real probe, proxy route, and key-source correction
+
+- User-authorized command:
+  - `npm.cmd run voice:runtime-flow:probe-remote-stt-configured`
+- First real probe finding:
+  - The probe failed before transcription because `remote_stt_health` used a direct host `HEAD` check.
+  - Node/Electron `fetch` did not use the machine proxy environment by default.
+  - Runtime evidence showed:
+    - `configured=true`
+    - `base_url_host=api.openai.com`
+    - `error=This operation was aborted`
+    - no audio upload in the initial health-gated attempt.
+- Implemented health-gate correction:
+  - The explicitly authorized configured probe now treats host health as advisory.
+  - The real transcription POST is used as the definitive configured-probe check.
+  - Ordinary health checks remain no-audio-upload checks.
+- Implemented proxy route correction:
+  - Added `https-proxy-agent` as an explicit dependency.
+  - Remote STT upload now honors `HTTPS_PROXY` / `ALL_PROXY` unless blocked by `NO_PROXY`.
+  - Runtime logs record only `proxy_host`, not proxy credentials or API keys.
+  - Verified proxy route was selected:
+    - `remote_stt_proxy_route_selected`
+    - `proxy_host=127.0.0.1:15715`
+- Real endpoint/key finding:
+  - A guarded curl comparison through the same proxy reached OpenAI and returned `401 invalid_api_key`.
+  - This proved the previous provider-key fallback was too broad:
+    - the existing general chat provider key belongs to the current chat provider host;
+    - current STT base URL is `api.openai.com`;
+    - the STT-specific key is empty.
+  - Therefore the API key did not disappear, but it is not a valid OpenAI-compatible STT key for the configured STT host.
+- Implemented key-source correction:
+  - General `chatProvider.config.apiKey` may now be reused for remote STT only when the STT baseURL host matches `chatProvider.config.baseURL`.
+  - If hosts differ, config validation blocks provider-key fallback and reports:
+    - `provider_api_key_fallback_blocked=chatProvider.config.apiKey host does not match statusDialogueStt.baseURL`
+    - `missing=remote_stt_api_key`
+  - Updated:
+    - `src/main/index.ts`
+    - `scripts/validate-status-dialogue-remote-stt-config.cjs`
+    - `scripts/configure-status-dialogue-remote-stt.cjs`
+    - `scripts/audit-status-dialogue-goal-completion.cjs`
+- Latest verification:
+  - `npm.cmd run voice:remote-stt-config:validate`
+    - `ready_for_remote_probe=false`
+    - `missing=remote_stt_api_key`
+    - provider-key fallback blocked because hosts do not match.
+  - `node scripts/configure-status-dialogue-remote-stt.cjs`
+    - dry-run passed;
+    - `ready_for_remote_probe=false`;
+    - warning explains provider key was not reused because STT host differs.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:probe-remote-stt-configured`
+    - now fails fast with the correct boundary:
+      - `configured=false`
+      - `error=remote STT is not configured`
+      - `fallback_reason=remote_stt_not_configured`
+      - `next_action=configure_remote_stt_api_key`
+  - `npm.cmd run voice:goal:audit`
+    - remains `result=incomplete`;
+    - `cloud_stt_stability=partial`;
+    - `remote_config_missing=remote_stt_api_key`;
+    - `dialogue_input_queue` remains missing runtime queue/dequeue evidence.
+- Current interpretation:
+  - Remote STT networking/proxy path is code-ready.
+  - Remote STT must not be called stable yet.
+  - A valid STT-specific OpenAI-compatible key must be provided through one of:
+    - `SIGHTFLOW_STATUS_DIALOGUE_STT_API_KEY`
+    - `STATUS_DIALOGUE_STT_API_KEY`
+    - `OPENAI_STT_API_KEY`
+    - `OPENAI_API_KEY`
+    - or `chatProvider.config.statusDialogueStt.apiKey`
+  - After the key is configured, rerun:
+    - `npm.cmd run voice:remote-stt-config:validate`
+    - `npm.cmd run voice:runtime-flow:probe-remote-stt-configured`
+    - `npm.cmd run voice:goal:audit`
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No API key value stored in reports or documentation.
+  - The only authorized upload was the configured remote STT verification WAV during the real probe.
+
+## 2026-07-02 Free STT provider added: Cloudflare Workers AI
+
+- Added provider support:
+  - `cloudflare_workers_ai`
+  - default model `@cf/openai/whisper-large-v3-turbo`
+- Reason:
+  - Cloudflare Workers AI has an official free-start/free-allocation path and official Whisper ASR models.
+  - It can be attached to the existing `statusDialogueStt` remote STT lane without creating a new same-level module.
+- Runtime support:
+  - Main process now handles Cloudflare Workers AI STT as a provider under the existing remote STT adapter.
+  - Request body uses Cloudflare REST style JSON/base64 audio for `whisper-large-v3-turbo`.
+  - Existing proxy handling is preserved.
+- Config support:
+  - `provider: "cloudflare_workers_ai"`
+  - `accountId`
+  - `apiKey`
+  - `baseURL=https://api.cloudflare.com/client/v4`
+  - `model=@cf/openai/whisper-large-v3-turbo`
+- New commands:
+  - `npm.cmd run voice:remote-stt-config:prepare-cloudflare`
+  - `npm.cmd run voice:remote-stt-config:apply-cloudflare-defaults`
+- Current Cloudflare gate:
+  - `remote_stt_api_key`
+  - `remote_stt_cloudflare_account_id`
+- Documentation:
+  - `free-stt-provider-cloudflare-workers-ai-2026-07-02.md`
+  - `remote-stt-latest-status-2026-07-02.md`
+- Verification:
+  - Cloudflare dry-run passed.
+  - Cloudflare env preflight passed and correctly reports missing token/account ID.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+- Boundary:
+  - No active settings overwrite was performed.
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No API key value stored in reports or documentation.
+
+## 2026-07-01 Runtime voice diagnostic entry snapshot enrichment
+
+- Scope:
+  - Extended the existing `status_dialogue_runtime_voice_diagnostic.v1` surface instead of creating a parallel status-dialogue rule or module.
+  - Added latest STT entry diagnosis details from `status-dialogue-real-stt-entry-diagnosis-*.json` into the same read-only diagnostic object.
+- Implemented:
+  - `StatusDialogueRuntimeVoiceDiagnostic.summary.entry_snapshot`.
+  - `entry_diagnosis_result`.
+  - `entry_diagnosis_next_action`.
+  - `entry_report_path`.
+  - UI fields in the right-side `voice diagnostic` settings area:
+    - `button`
+    - `target`
+    - `hit`
+  - Prompt/fallback mapping for:
+    - STT button found/disabled state.
+    - STT button center coordinate.
+    - STT center hit target.
+    - missing status refs `right_bottom_gui_stt_button_click` and `stt_button_center:<x,y>`.
+- Latest real GUI evidence after restart:
+  - Latest real marker:
+    - `ts=2026-07-01T15:20:02.830Z`
+    - `runtime_fix_marker=stt-local-observability-2026-06-29-v3`
+    - `tts_spoken_budget_marker=tts-spoken-budget-2026-07-01-v2`
+    - `default_stt_adapter=local`
+    - `default_voice_output_mode=edge_readaloud_stream`
+  - Latest entry snapshot:
+    - `stt_button_found=true`
+    - `stt_button_disabled=false`
+    - `stt_button_center=423,491`
+    - `stt_button_center_hit=button/start speech input`
+    - `panel_rect=389,77,352,444`
+  - Latest STT entry diagnosis:
+    - `result=stt_button_visible_without_real_pointer_after_marker`
+    - `next_action=click_reported_stt_button_center_or_check_external_window_focus`
+    - `stt_start=0`
+    - `button_click=0`
+    - `recording_started=0`
+- Verification:
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:local-whisper-service:validate` passed.
+  - `npm.cmd run voice:runtime-flow:restart-for-retest` passed and opened a fresh real GUI marker.
+  - `npm.cmd run voice:runtime-flow:diagnose-stt-entry` returned the expected incomplete entry state:
+    - `stt_button_visible_without_real_pointer_after_marker`.
+  - `npm.cmd run voice:runtime-flow:real-voice-suite` remains incomplete because no real STT click/turn was observed after the latest marker.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:remote-stt-config:validate` passed with `ready_for_remote_probe=false`.
+  - `npm.cmd run voice:goal:audit` remains `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+  - Browser preview verification passed:
+    - `http://[::1]:5173/?window=zhineng-graph` opens.
+    - Canvas is nonblank-sized: `1278x618`.
+    - `start speech input` button exists and is enabled.
+    - Opening `toggle subject status settings` shows the `runtime voice diagnostic` section.
+    - Browser preview correctly reports `electron ipc unavailable`; `button/target/hit` fields render as fallback state instead of crashing.
+- Current interpretation:
+  - The right-bottom GUI is running and the STT button is visible, enabled, and unobstructed at its center.
+  - The current unproved real-GUI gap is not a missing button; it is lack of observed real pointer/click/STT-start events after the fresh runtime marker.
+  - The current active STT path is local Whisper persistent service.
+  - Remote/cloud STT is still blocked by missing `remote_stt_api_key`.
+  - TTS latency claims still need a fresh real GUI voice turn after the current marker; current audit says the remaining slow queue evidence is historical, while latest controlled probes are fast.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No microphone opening or audio upload by diagnostic reading.
+  - No new same-level dialogue module.
+
+## 2026-07-02 Remote STT API key source fallback fix
+
+- Issue:
+  - The user had already configured a provider API key, but remote/cloud STT config checks still reported `remote_stt_api_key` missing.
+- Evidence:
+  - Current settings file exists:
+    - `C:\Users\zhang\AppData\Roaming\zhineng-social-assistant-desktop\settings.json`
+  - `chatProvider.config.apiKey` is present.
+  - `chatProvider.config.statusDialogueStt.apiKey` is empty.
+  - No accepted STT API key environment variable is present in the current shell.
+  - A previous `voice:remote-stt-config:apply-defaults` run wrote non-secret STT defaults at `2026-07-01T14:23:07.918Z` with `nonsecret_defaults_only=true`, leaving the STT-specific key empty by design.
+- Root cause:
+  - The API key was not gone.
+  - The remote STT path was reading only STT-specific key sources:
+    - `statusDialogueStt.apiKey`
+    - STT/OpenAI environment variables
+  - It did not accept the already configured general provider key:
+    - `chatProvider.config.apiKey`
+- Fix:
+  - Main process `getStatusDialogueRemoteSttConfig()` now falls back to `settings.chatProvider.config.apiKey` when the STT-specific key is empty.
+  - Remote STT config validator now reports `settings.chatProvider.config.apiKey` as a valid API key source.
+  - Remote STT configure script dry-run/apply path now also preserves/uses the general provider key as fallback.
+  - Goal audit embedded remote STT preflight now uses the same fallback rule.
+- Verification:
+  - `npm.cmd run voice:remote-stt-config:validate` passed:
+    - `ready_for_remote_probe=true`
+    - `sources.api_key=settings.chatProvider.config.apiKey`
+    - `missing=[]`
+  - `node scripts/configure-status-dialogue-remote-stt.cjs` dry-run passed:
+    - `api_key_source=settings.chatProvider.config.apiKey`
+    - `ready_for_remote_probe=true`
+    - `changed=false`
+  - `npm.cmd run voice:goal:audit` passed but remains incomplete:
+    - remote STT config is now ready;
+    - cloud STT stability still needs an explicit real remote probe;
+    - current summary is `proved=6 / partial=1 / missing=1 / total=8`.
+  - `npm.cmd run build` passed.
+- Boundary:
+  - No API key value was printed or stored in reports beyond redacted preview.
+  - No audio upload was performed.
+  - No remote transcription probe was executed.
+  - No world model write.
+  - No `requirement_packet.v1`.
+- Next required confirmation:
+  - User confirmation is needed before running `npm.cmd run voice:runtime-flow:probe-remote-stt-configured`, because that command uploads the local verification WAV to the configured remote STT endpoint.
+
+## 2026-07-01 STT entry snapshot observability
+
+- Purpose:
+  - Reduce the real GUI STT entry diagnosis from a vague "no pointer activity" result to a concrete button/focus/hit-target diagnosis.
+  - Preserve the existing STT/TTS chain and add observability only.
+- Renderer update:
+  - Added `status_dialogue_stt_entry_snapshot`.
+  - The snapshot records:
+    - selected STT adapter and model;
+    - voice listening/input/busy states;
+    - continuous loop and wake stage;
+    - queue state;
+    - Electron IPC availability;
+    - STT button found/disabled/title/aria label;
+    - STT button rectangle and center point;
+    - center hit element;
+    - pointer hit element when available;
+    - patrol panel rectangle;
+    - active element;
+    - viewport size.
+  - Snapshot is emitted once after mount and again when STT pointer/click reaches the button.
+- Diagnosis update:
+  - `scripts/diagnose-status-dialogue-real-stt-entry.cjs` now reads `status_dialogue_stt_entry_snapshot`.
+  - New diagnosis outcomes:
+    - `stt_button_not_rendered_after_marker`
+    - `stt_button_disabled_after_marker`
+    - `stt_button_center_obstructed_after_marker`
+    - `stt_button_visible_without_real_pointer_after_marker`
+- Validation:
+  - `npm.cmd run voice:local-whisper-service:validate` passed.
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:restart-for-retest` refreshed the real GUI.
+  - Latest real GUI marker:
+    - `ts=2026-07-01T15:07:39.094Z`
+    - `default_stt_adapter=local`
+    - `tts_spoken_budget_marker=tts-spoken-budget-2026-07-01-v2`
+    - `electron_ipc_available=true`
+  - Latest entry snapshot:
+    - `stt_button_found=true`
+    - `stt_button_disabled=false`
+    - `stt_button_center={x:423,y:491}`
+    - `stt_button_center_hit=button.zg-dialogue-stt-button`
+    - `panel_found=true`
+  - `npm.cmd run voice:runtime-flow:diagnose-stt-entry` now reports:
+    - `result=stt_button_visible_without_real_pointer_after_marker`
+    - `next_action=click_reported_stt_button_center_or_check_external_window_focus`
+  - `npm.cmd run voice:runtime-flow:real-voice-suite` now reports:
+    - `result=incomplete`
+    - `pre_entry=stt_button_visible_without_real_pointer_after_marker`
+    - `post_entry=stt_button_visible_without_real_pointer_after_marker`
+    - `next_action=click_reported_stt_button_center_or_check_external_window_focus`
+    - `remote_config_missing=remote_stt_api_key`
+  - `npm.cmd run voice:goal:audit` remains:
+    - `result=incomplete`
+    - `proved=7 / partial=1 / missing=0 / total=8`
+- Current interpretation:
+  - The STT button is present, enabled and not visually obstructed at its center point.
+  - The latest real GUI window has still not received a real pointer/click/STT-start event after the marker.
+  - Next manual proof should click the reported STT button center or check whether an external window/focus layer is receiving clicks instead of the graph window.
+  - Remote/cloud STT stability remains blocked by missing `remote_stt_api_key`.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No microphone opening from snapshot logging.
+  - No audio upload from snapshot logging.
+  - No new same-level dialogue module.
+
+## 2026-07-01 Runtime voice diagnostic context and UI integration
+
+- Purpose:
+  - Make the subject status dialogue explain the latest real voice retest state directly, instead of only saying that the current status has gaps.
+  - Keep the diagnostic read-only and inside the existing `status-dialogue-system` boundary.
+- Contract update:
+  - Added `STATUS_DIALOGUE_RUNTIME_VOICE_DIAGNOSTIC_SCHEMA`.
+  - Added `StatusDialogueRuntimeVoiceDiagnostic`.
+  - Added optional `runtimeVoiceDiagnostic` to `StatusDialogueContext`.
+- Main process update:
+  - Added read-only IPC:
+    - `zhineng:status-dialogue:runtime-voice-diagnostic:get`
+  - Reads the latest:
+    - `runtime/verification-reports/status-dialogue-real-voice-retest-suite-*.json`
+  - Returns only compact diagnostic fields:
+    - result
+    - next action
+    - entry diagnosis
+    - real turn status
+    - runtime audit status
+    - remote STT config readiness
+    - remote STT missing fields
+    - goal audit summary
+- Renderer update:
+  - Added `requestStatusDialogueRuntimeVoiceDiagnostic`.
+  - Loads diagnostic once during panel startup.
+  - Refreshes diagnostic again before every dialogue model request.
+  - Injects diagnostic into:
+    - `StatusDialogueContext.runtimeVoiceDiagnostic`
+    - model prompt field `runtime_voice_diagnostic`
+    - local fallback reply
+    - local fallback `voiceText`
+    - local fallback thoughts/status refs/missing status
+    - right-side settings panel `voice diagnostic`
+    - compact runtime status line `voice diag`
+- Current visible meaning:
+  - The panel can now show:
+    - `result=incomplete`
+    - `entry=no_graph_window_pointer_activity_after_marker`
+    - `turns=waiting_for_real_voice_turns`
+    - `next_action=click_inside_right_bottom_gui_or_check_window_focus_overlay`
+    - `remote_config_missing=remote_stt_api_key`
+    - `goal_result=incomplete`
+- Validation:
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `node --check scripts/validate-status-dialogue-state-policy.cjs` passed.
+  - `node --check scripts/run-status-dialogue-real-voice-retest-suite.cjs` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:goal:audit` passed but remains `result=incomplete`.
+  - `npm.cmd run voice:runtime-flow:real-voice-suite` still returns expected incomplete state:
+    - `result=incomplete`
+    - `next_action=click_inside_right_bottom_gui_or_check_window_focus_overlay`
+    - `remote_config_missing=remote_stt_api_key`
+- Current remaining goal gaps:
+  - Real cloud/remote STT stability is still unproved because `remote_stt_api_key` is missing.
+  - Latest real GUI window still has no current post-marker closed-loop voice turn evidence.
+  - Latest real voice suite still indicates no right-bottom GUI pointer/click/STT-start event after the marker.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No microphone opening from diagnostic read.
+  - No audio upload from diagnostic read.
+  - No new same-level dialogue module.
+
+## 2026-07-01 Current voice optimization outcome check
+
+- Current active thread goal:
+  - STT specialist scope remains active.
+  - Required scope includes remote/cloud STT stability, input queue, continuous listening, TTS-during-input boundary, local Whisper persistent service, dialogue-state context, and Xiaozhi-style logic.
+- Current completion gate:
+  - `npm.cmd run voice:goal:audit`
+  - Result remains `incomplete`.
+  - Summary remains `proved=7 / partial=1 / missing=0 / total=8`.
+  - Remaining partial item is still `cloud_stt_stability`.
+- Current remote/cloud STT state:
+  - `npm.cmd run voice:remote-stt-config:validate` passed as a preflight command.
+  - `ready_for_remote_probe=false`.
+  - Missing required config:
+    - `remote_stt_api_key`
+  - Current default runtime adapter remains `local_whisper_persistent_service`.
+  - Cloud/remote STT must not be claimed as stable until a real configured remote probe succeeds.
+- Current real voice retest suite:
+  - Command:
+    - `npm.cmd run voice:runtime-flow:real-voice-suite`
+  - Latest result:
+    - `runtime/verification-reports/status-dialogue-real-voice-retest-suite-1782917421127.json`
+    - `result=incomplete`
+    - `next_action=click_inside_right_bottom_gui_or_check_window_focus_overlay`
+  - Suite summary:
+    - `pre_entry=no_graph_window_pointer_activity_after_marker`
+    - `turns=waiting_for_real_voice_turns`
+    - `post_entry=no_graph_window_pointer_activity_after_marker`
+    - `runtime_audit=warn`
+    - `remote_config_ready_for_probe=false`
+    - `remote_config_missing=remote_stt_api_key`
+    - `goal_result=incomplete`
+- Current entry-path diagnosis:
+  - Command:
+    - `npm.cmd run voice:runtime-flow:diagnose-stt-entry`
+  - Result:
+    - `no_graph_window_pointer_activity_after_marker`
+  - Missing after latest real right-bottom GUI marker:
+    - `graph_window_pointer_seen`
+    - `button_pointer_seen`
+    - `button_click_seen`
+    - `stt_start_seen`
+    - `recording_request_seen`
+    - `recording_started_seen`
+    - `transcribe_request_seen`
+    - `stt_success_seen`
+    - `dialogue_chain_seen`
+    - `tts_queue_seen`
+    - `xiaozhi_events_seen`
+- Current latency interpretation:
+  - Runtime audit still reports `status=warn`.
+  - Historical slow TTS queue remains in the log set:
+    - `historical_tts_queue_end_to_end_latency`
+    - historical max `tts_queue_end_to_end_max_ms=52232`
+    - historical max `tts_queue_total_tts_max_ms=11625`
+    - historical max `tts_queue_total_playback_max_ms=22219`
+  - The latest controlled continuous two-turn probe is fast:
+    - `latest_continuous_two_turn_tts_queue_end_to_end_max_ms=798`
+    - `latest_continuous_two_turn_tts_queue_total_tts_max_ms=20`
+    - `latest_continuous_two_turn_tts_queue_total_playback_max_ms=324`
+  - The latest controlled TTS voice-budget probe is fast:
+    - `latest_tts_voice_budget_queue_end_to_end_max_ms=806`
+    - `latest_tts_voice_budget_queue_total_tts_max_ms=30`
+    - `latest_tts_voice_budget_queue_total_playback_max_ms=483`
+  - There is no fresh post-marker real user voice turn in the latest window, so the user's current perceived lag is not yet proven in the current real-turn log path.
+- Current feature-level validators:
+  - `npm.cmd run voice:stt-input-queue:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run voice:w3-wake-detector:validate` passed.
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+- Current conclusion:
+  - The implemented optimization exists and passes controlled validation.
+  - The current real GUI problem is not proven as STT transcription failure or current TTS synthesis slowness.
+  - The immediate blocker is entry-path capture/focus: current logs do not show the right-bottom GUI button/pointer path reaching STT start after the latest marker.
+  - The cloud STT path is still blocked by missing `remote_stt_api_key`.
+  - A separate improvement is still needed so the dialogue window can read and explain the latest real voice retest report directly instead of only saying that status is missing.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+
+## 2026-07-01 Remote STT controlled configuration writer
+
+- Purpose:
+  - Make the remaining remote/cloud STT stability work executable once the real API key is available.
+  - Avoid hand-editing `%APPDATA%/zhineng-social-assistant-desktop/settings.json`.
+  - Keep key handling redacted in command reports.
+- Existing same-level module check:
+  - Extended the existing `status-dialogue-system` remote STT lane.
+  - No new parallel STT module was created.
+- Code update:
+  - Added `scripts/configure-status-dialogue-remote-stt.cjs`.
+  - Added package commands:
+    - `npm.cmd run voice:remote-stt-config:prepare`
+    - `npm.cmd run voice:remote-stt-config:apply`
+  - Updated `scripts/validate-status-dialogue-cloud-stt-stability.cjs` so the config writer is part of the cloud/remote STT stability structure check.
+- Tool behavior:
+  - Default mode is dry-run.
+  - `--apply` is required before writing settings.
+  - `--api-key-env <ENV_NAME>` is supported so the API key does not need to be placed directly in the command line.
+  - When applying, it writes:
+    - `chatProvider.config.statusDialogueStt.enabled`
+    - `chatProvider.config.statusDialogueStt.apiKey`
+    - `chatProvider.config.statusDialogueStt.baseURL`
+    - `chatProvider.config.statusDialogueStt.endpointPath`
+    - `chatProvider.config.statusDialogueStt.model`
+    - `chatProvider.config.statusDialogueStt.timeoutMs`
+  - Before writing, it creates a backup:
+    - `settings.json.status-dialogue-stt-backup-*.bak`
+  - Reports redact API keys.
+  - The tool performs no network request and uploads no audio.
+- Validation:
+  - `node --check scripts/configure-status-dialogue-remote-stt.cjs` passed.
+  - `node --check scripts/validate-status-dialogue-cloud-stt-stability.cjs` passed.
+  - `npm.cmd run voice:remote-stt-config:prepare` passed in dry-run mode:
+    - `changed=false`
+    - `missing=["remote_stt_api_key"]`
+  - Temporary APPDATA apply test passed:
+    - `apply_changed=true`
+    - `validate_ready=true`
+    - no full test key appeared in generated reports.
+  - Temporary APPDATA test directory was removed.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed with `remote_stt_config_writer_registered=true`.
+  - `npm.cmd run voice:remote-stt-config:validate` passed against the real app settings and still reports:
+    - `ready_for_remote_probe=false`
+    - missing:
+      - `remote_stt_enable_flag`
+      - `remote_stt_api_key`
+      - `remote_stt_base_url_or_full_endpoint`
+  - `npm.cmd run voice:goal:audit` passed but remains incomplete:
+    - `proved=7 / partial=1 / missing=0 / total=8`
+- Next command when a real API key is available:
+  - Set an environment variable with the key.
+  - Run:
+    - `npm.cmd run voice:remote-stt-config:apply -- --api-key-env <ENV_NAME>`
+    - `npm.cmd run voice:remote-stt-config:validate`
+    - `npm.cmd run voice:runtime-flow:probe-remote-stt-configured`
+    - `npm.cmd run voice:goal:audit`
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No network request was made by prepare/apply/config validation.
+
+## 2026-07-01 Remote STT configuration source alignment
+
+- Purpose:
+  - Move the remaining `cloud_stt_stability` partial item closer to real API verification.
+  - Prevent config preflight from falsely reporting "missing" when remote STT is configured through app settings instead of environment variables.
+- Existing same-level module check:
+  - Extended the existing remote STT validator and existing `voice:runtime-flow` command set.
+  - No new parallel STT module was created.
+- Code update:
+  - `scripts/validate-status-dialogue-remote-stt-config.cjs` now reads both:
+    - environment variables; and
+    - app settings from `%APPDATA%/zhineng-social-assistant-desktop/settings.json`.
+  - App settings source matches the main process config path:
+    - `chatProvider.config.statusDialogueStt`
+    - `chatProvider.config.status_dialogue_stt`
+  - The validator now tolerates a UTF-8 BOM in `settings.json`.
+  - Output now includes:
+    - accepted env source names;
+    - app settings source path;
+    - redacted API key metadata;
+    - minimum environment template;
+    - app settings template;
+    - validation command sequence.
+- Documentation update:
+  - Added `remote-stt-configuration-runbook.v1.md`.
+  - It defines:
+    - supported config sources;
+    - env template;
+    - app settings template;
+    - validation commands;
+    - completion evidence;
+    - current boundary.
+- Validation:
+  - `node --check scripts/validate-status-dialogue-remote-stt-config.cjs` passed.
+  - `npm.cmd run voice:remote-stt-config:validate` passed against the real app settings.
+  - Real app settings currently contain no `statusDialogueStt` keys.
+  - Temporary APPDATA settings test passed:
+    - `ready_for_remote_probe=true`
+    - sources resolved to `settings.chatProvider.config.statusDialogueStt.*`
+    - API key was redacted in output.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+  - `npm.cmd run voice:goal:audit` passed but remains incomplete:
+    - `proved=7 / partial=1 / missing=0 / total=8`
+    - remaining partial item is still `cloud_stt_stability`.
+- Current missing real configuration:
+  - `remote_stt_enable_flag`
+  - `remote_stt_api_key`
+  - `remote_stt_base_url_or_full_endpoint`
+- Next required evidence:
+  - Add real remote STT config by env or app settings.
+  - Run:
+    - `npm.cmd run voice:remote-stt-config:validate`
+    - `npm.cmd run voice:runtime-flow:probe-remote-stt-configured`
+    - `npm.cmd run voice:goal:audit`
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No network request was made by config validation.
+
+## 2026-07-01 Goal audit now includes remote config and real-turn readiness
+
+- Purpose:
+  - Make `npm.cmd run voice:goal:audit` the single high-level gate for the current STT specialist objective.
+  - Avoid requiring separate manual inspection of remote STT config reports and real two-turn voice reports before deciding the next step.
+- Code update:
+  - `scripts/audit-status-dialogue-goal-completion.cjs` now embeds:
+    - `remote_stt_config_preflight`;
+    - `manual_retest_readiness.real_voice_turns`.
+  - The embedded remote STT config preflight is read-only:
+    - no audio upload;
+    - no network request;
+    - API key is redacted;
+    - reads env and app settings with the same source shape as the main process.
+  - The embedded real-turn readiness checks the current window after the latest real `tts-spoken-budget-2026-07-01-v2` marker:
+    - STT starts;
+    - STT successes;
+    - dialogue chain events;
+    - TTS queue completions;
+    - STT-to-TTS paired turns;
+    - STT/TTS failures;
+    - slow TTS queue;
+    - Xiaozhi bridge events.
+- Validation:
+  - `node --check scripts/audit-status-dialogue-goal-completion.cjs` passed.
+  - `npm.cmd run voice:goal:audit` passed and now prints:
+    - `remote_stt_config_preflight.ready_for_remote_probe=false`;
+    - missing remote config:
+      - `remote_stt_enable_flag`
+      - `remote_stt_api_key`
+      - `remote_stt_base_url_or_full_endpoint`
+    - `manual_retest_readiness.real_voice_turns.ready_for_operator_action=true`;
+    - `manual_retest_readiness.real_voice_turns.next_action=run_two_real_voice_turns_in_right_bottom_gui`.
+  - `npm.cmd run voice:remote-stt-config:validate` agrees with the embedded goal audit preflight.
+  - `npm.cmd run voice:runtime-flow:real-turns-preflight` agrees with the embedded goal audit real-turn readiness.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+- Current `voice:goal:audit` status:
+  - `result=incomplete`
+  - `proved=7 / partial=1 / missing=0 / total=8`
+  - The remaining partial item is still `cloud_stt_stability`.
+- Current next evidence from the goal audit:
+  - Configure real remote STT.
+  - Run the configured remote STT probe.
+  - Run two real right-bottom GUI voice turns.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+
+## 2026-07-01 Real voice-turn verifier for post-restart testing
+
+- Purpose:
+  - Close the verification gap between "GUI is ready" and "two real voice turns actually completed".
+  - Avoid treating historical slow TTS logs or an empty post-restart window as proof of current failure.
+- New verifier:
+  - `scripts/wait-status-dialogue-real-voice-turns.cjs`
+  - Package commands:
+    - `npm.cmd run voice:runtime-flow:real-turns-preflight`
+    - `npm.cmd run voice:runtime-flow:check-real-turns`
+    - `npm.cmd run voice:runtime-flow:wait-real-turns`
+- What it checks after the latest real TTS-budget marker:
+  - real GUI marker exists;
+  - real TTS budget marker exists;
+  - STT adapter or local STT health exists;
+  - at least 2 STT starts;
+  - at least 2 successful STT transcripts;
+  - dialogue chain evidence exists;
+  - at least 2 TTS queue completions;
+  - at least 2 STT-to-TTS paired turns;
+  - no STT failures;
+  - no TTS failures;
+  - no slow TTS queue by the current thresholds:
+    - `end_to_end_ms >= 8000`
+    - `total_tts_ms >= 5000`
+    - `total_playback_ms >= 8000`
+  - Xiaozhi-style bridge events exist in the same current window.
+- Current verification result:
+  - `node --check scripts/wait-status-dialogue-real-voice-turns.cjs` passed.
+  - `npm.cmd run voice:runtime-flow:real-turns-preflight` passed:
+    - `ready_for_operator_action=true`
+    - `next_action=run_two_real_voice_turns_in_right_bottom_gui`
+  - `npm.cmd run voice:runtime-flow:check-real-turns` correctly failed:
+    - `result=waiting_for_real_voice_turns`
+    - missing:
+      - `stt_start_seen`
+      - `stt_success_seen`
+      - `dialogue_chain_seen`
+      - `tts_queue_complete_seen`
+      - `closed_loop_turns_seen`
+      - `xiaozhi_events_seen`
+  - Latest post-marker event window still only contains runtime loaded, adapter selected, and local health.
+- Current interpretation:
+  - The system is ready for a real two-turn operator test.
+  - The current evidence does not prove post-restart multi-turn failure.
+  - The current evidence also does not prove post-restart multi-turn success because no real voice turns have occurred after the latest marker.
+- Next required operator action:
+  - In the right-bottom GUI, run two complete voice turns.
+  - Then run:
+    - `npm.cmd run voice:runtime-flow:check-real-turns`
+    - `npm.cmd run voice:runtime-flow:audit`
+    - `npm.cmd run voice:goal:audit`
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+- Next required evidence:
+  - Provide/configure remote STT API key, base URL, model, and enable flag, then rerun `npm.cmd run voice:runtime-flow:probe-remote-stt-configured`.
+  - Run a fresh real GUI voice/TTS turn to determine whether current real GUI TTS queue remains slow after the chunking and stream-stub fixes.
+
+## 2026-07-01 Current voice lag and multi-input result check
+
+- Active goal:
+  - Still active and not complete.
+  - Scope remains STT stability, input queue, continuous listening, input during TTS playback, local Whisper persistent service, dialogue-state completion, and Xiaozhi-style state logic.
+  - Latest `npm.cmd run voice:goal:audit` still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+  - The only partial item remains `cloud_stt_stability`.
+- Latest controlled optimization result:
+  - Re-ran `npm.cmd run voice:runtime-flow:probe-continuous-two-turn`.
+  - The controlled two-turn path passed again.
+  - Latest controlled window:
+    - `continuous_voice_session_resume_stt`: 2.
+    - `local_stt_complete.success=true`: 2.
+    - `local_stt_transcribe_result.success=true`: 2.
+    - `status_dialogue_continuous_voice_two_turn_probe_turn`: 2.
+    - `status_dialogue_continuous_voice_two_turn_probe_complete.success=true`: 1.
+    - Latest two-turn TTS queue max: `end_to_end_ms=798`, `total_tts_ms=20`, `total_playback_ms=324`, `tts_stream_frame_wait_timeout=0`.
+  - Interpretation: the existing code path can perform two consecutive formal STT turns and fast TTS in the controlled probe.
+- Why the user-facing voice still feels laggy:
+  - Latest `npm.cmd run voice:runtime-flow:audit` still reports `status=warn`.
+  - Current bottleneck remains `tts_queue_end_to_end_latency`.
+  - Current real GUI window still contains slow TTS queue evidence:
+    - `current_real_tts_queue_complete_count=3`.
+    - `current_real_tts_queue_slow_count=2`.
+    - `current_real_tts_queue_end_to_end_max_ms=52232`.
+    - `current_real_tts_queue_total_tts_max_ms=11625`.
+    - `current_real_tts_queue_total_playback_max_ms=22219`.
+  - The real slow path is not explained by local Whisper transcription alone. It is mainly the spoken-output queue: streamed sentences, final voice replay/budget, event-broadcast speech, and playback duration.
+  - Continuous listening intentionally waits for dialogue, TTS, and queued input to become idle. Long TTS playback therefore delays the next listening turn.
+- Why multiple voice inputs may look like only one input works:
+  - Real operator logs currently show only one formal non-probe `stt_start_requested` voice turn after the real GUI runtime marker.
+  - The controlled two-turn proof is probe evidence, not yet a fresh operator GUI proof.
+  - If the second input happens while dialogue or TTS is still active, the code queues or pauses it instead of opening a new STT turn immediately.
+  - If the previous voice error remains hard, continuous listening enters `paused_error` until the operator retries.
+  - Therefore the current confirmed user-facing risk is state gating around TTS/dialogue/queue/error, not microphone hardware.
+- Remote/cloud STT state:
+  - Current default STT path remains local.
+  - Remote STT health still reports `remote STT is not configured` when probed.
+  - Cloud/Web Speech success is not present in the latest audit.
+  - Goal completion cannot be claimed until remote/cloud STT has real configured-window success evidence or the goal is explicitly narrowed away from cloud STT.
+- Validation commands run:
+  - `npm.cmd run voice:continuous-listening:validate` passed.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed as source/guard validation.
+  - `npm.cmd run voice:runtime-flow:probe-continuous-two-turn` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:goal:audit` passed with `result=incomplete`.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+- Next practical fix direction:
+  - First reduce real GUI spoken-output latency: prevent long final replay, cap event-broadcast speech, skip one-character TTS chunks, and make barge-in cancel active playback deterministically.
+  - Then run a real GUI two-turn manual test and audit it separately from controlled probes.
+  - In parallel, add remote STT configuration preflight/aliases and only claim cloud STT after a configured real probe succeeds.
+
+## 2026-07-01 Remote STT preflight aliases and TTS budget tightening
+
+- Active goal:
+  - Still active and not complete.
+  - Latest `npm.cmd run voice:goal:audit` still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+  - Remaining partial item is still `cloud_stt_stability`.
+- Remote/OpenAI-compatible STT progress:
+  - Extended the existing `getStatusDialogueRemoteSttConfig()` path instead of adding a new adapter.
+  - Dedicated status-dialogue STT env vars still take priority.
+  - Added OpenAI-compatible fallback env aliases:
+    - `OPENAI_STT_API_KEY`
+    - `OPENAI_API_KEY`
+    - `OPENAI_STT_BASE_URL`
+    - `OPENAI_BASE_URL`
+    - `OPENAI_AUDIO_TRANSCRIPTIONS_ENDPOINT`
+    - `OPENAI_STT_ENDPOINT`
+    - `OPENAI_STT_MODEL`
+    - `OPENAI_AUDIO_MODEL`
+    - `OPENAI_STT_TIMEOUT_MS`
+    - `OPENAI_STT_REMOTE_ENABLED`
+  - Full transcription endpoint URLs are now accepted and can provide the host for health checks.
+  - Boundary remains conservative: remote STT still needs an explicit enable flag or app setting; generic OpenAI env vars alone do not silently upload audio.
+- New remote STT preflight:
+  - Added `scripts/validate-status-dialogue-remote-stt-config.cjs`.
+  - Added `npm.cmd run voice:remote-stt-config:validate`.
+  - The preflight is read-only:
+    - no audio upload;
+    - no network request;
+    - API keys are redacted;
+    - output report goes to `runtime/verification-reports/status-dialogue-remote-stt-config-*.json`.
+  - With current environment, result is `ready_for_remote_probe=false` and missing:
+    - `remote_stt_enable_flag`
+    - `remote_stt_api_key`
+    - `remote_stt_base_url_or_full_endpoint`
+  - With temporary fake env aliases, result becomes `ready_for_remote_probe=true`, proving alias resolution works without using real secrets.
+- TTS latency progress:
+  - Event broadcast inserts no longer force `speakDialogue()` to use full model `voiceText`.
+  - Non-full voice modes now speak a compact budget:
+    - short event insertion;
+    - short final conclusion;
+    - total final voice cap `STATUS_DIALOGUE_FINAL_VOICE_MAX_CHARS = 58` at that stage; superseded on 2026-07-04 by the complete patrol-summary cap `180`.
+  - `STATUS_DIALOGUE_EVENT_BROADCAST_VOICE_MAX_CHARS` reduced from `48` to `36`.
+  - Full text remains visible in the dialogue UI; only the audible TTS path is shortened.
+  - Streaming final voice now uses the same final max cap, so post-stream replay cannot grow into a long queue.
+- Validation:
+  - `node --check scripts/validate-status-dialogue-remote-stt-config.cjs` passed.
+  - `npm.cmd run voice:remote-stt-config:validate` passed with `ready_for_remote_probe=false` for current env.
+  - Temporary fake env alias preflight passed with `ready_for_remote_probe=true`.
+  - `npm.cmd run voice:cloud-stt-stability:validate` passed.
+  - `npm.cmd run voice:event-broadcast:validate` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run voice:runtime-flow:probe-tts-voice-budget` passed.
+  - `npm.cmd run voice:runtime-flow:probe-remote-stt-unavailable` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:audit` still reports `status=warn` because current real GUI logs still contain older slow TTS queue samples.
+  - `npm.cmd run voice:goal:audit` still reports incomplete because real configured cloud/remote STT evidence is missing.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+- Next required evidence:
+  - Restart/refresh the real GUI so the new TTS budget code is loaded.
+  - Run a fresh real GUI voice turn and confirm the new `tts_final_voice_budget_applied` event has `event_patch_count` and short `final_voice_length`.
+  - Configure real remote STT env/app settings, then run:
+    - `npm.cmd run voice:remote-stt-config:validate`
+    - `npm.cmd run voice:runtime-flow:probe-remote-stt-configured`
+    - `npm.cmd run voice:goal:audit`
+
+## 2026-07-01 TTS budget audit and dialogue-state confirmation
+
+- Active goal:
+  - Still active and not complete.
+  - Latest `npm.cmd run voice:goal:audit` still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+  - Remaining partial item is still `cloud_stt_stability`.
+- TTS budget audit progress:
+  - Extended `scripts/audit-status-dialogue-runtime-voice-flow.cjs` to inspect the latest `tts_voice_budget` probe window.
+  - New audit fields:
+    - `latest_tts_voice_budget_probe_complete_seen`
+    - `latest_tts_voice_budget_final_cap_seen`
+    - `latest_tts_voice_budget_queue_fast_seen`
+    - `latest_tts_voice_budget_final_voice_max_chars`
+    - `latest_tts_voice_budget_event_voice_max_chars`
+    - `latest_tts_voice_budget_concise_final_max_chars`
+    - `latest_tts_voice_budget_queue_end_to_end_max_ms`
+  - Latest audit now proves the controlled TTS budget path:
+    - `latest_tts_voice_budget_probe_complete_seen=true`
+    - `latest_tts_voice_budget_final_cap_seen=true`
+    - `latest_tts_voice_budget_queue_fast_seen=true`
+    - `latest_tts_voice_budget_final_voice_max_chars=0`
+    - `latest_tts_voice_budget_event_voice_max_chars=0`
+    - `latest_tts_voice_budget_concise_final_max_chars=6`
+    - `latest_tts_voice_budget_queue_end_to_end_max_ms=777`
+  - Interpretation:
+    - The newest controlled TTS budget path is short and fast.
+    - The real GUI still needs a fresh retest because current real logs still contain older slow TTS queue samples.
+- Dialogue-state and Xiaozhi-style state confirmation:
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - Confirmed current source has:
+    - `xiaozhi_style_voice_bridge_state.v1` injected into model context.
+    - Prompt boundary that Xiaozhi state affects stage/warmth/handoff timing, but does not replace patrol evidence.
+    - `buildStatusDialogueStateLines()` feeding local fallback reply and voice summary.
+    - State-specific opening/evidence/attention/next-step lines, so output should not collapse to only "status gap".
+    - `reduceXiaozhiStyleVoiceBridgeEvent`, `buildXiaozhiStyleDialoguePolicyMapping`, and `XIAOZHI_STYLE_DIALOGUE_POLICY_STAGE_ORDER` available.
+- Validation:
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run voice:remote-stt-config:validate` passed with `ready_for_remote_probe=false`.
+  - `npm.cmd run voice:goal:audit` passed but remains incomplete.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+- Next required evidence:
+  - Fresh real GUI TTS turn after restart/refresh, to replace older real slow queue samples.
+  - Real remote/cloud STT credentials and one configured probe success, to complete `cloud_stt_stability`.
+
+## 2026-07-01 STT click during TTS and current optimization audit
+
+- Active goal:
+  - Still active and not complete.
+  - Current target remains the STT specialist scope:
+    - cloud/remote STT stability;
+    - input queue;
+    - continuous listening;
+    - receiving formal input while TTS is playing;
+    - local Whisper persistent service;
+    - dialogue state confirmation;
+    - Xiaozhi-style dialogue logic confirmation.
+  - Latest `npm.cmd run voice:goal:audit` still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+  - Remaining partial item is still `cloud_stt_stability`.
+- Current lag diagnosis:
+  - Latest real GUI window still shows old/current real TTS queue latency:
+    - `current_real_tts_queue_end_to_end_max_ms=13380`
+    - `current_real_tts_queue_total_tts_max_ms=2278`
+    - `current_real_tts_queue_total_playback_max_ms=6157`
+  - The latest real GUI runtime marker does not yet include `tts-spoken-budget-2026-07-01-v2`.
+  - Therefore the current user-visible lag must be treated as either:
+    - an old real GUI window that has not been refreshed/restarted into the newest TTS budget build; or
+    - a still-live real GUI queue issue that needs a fresh post-restart real turn to prove.
+- Fix implemented:
+  - Added `STATUS_DIALOGUE_TTS_BUDGET_RUNTIME_MARKER = "tts-spoken-budget-2026-07-01-v2"`.
+  - `status_dialogue_ui_runtime_loaded` now reports:
+    - `tts_spoken_budget_marker`;
+    - `tts_budget_final_cap_enabled`;
+    - `tts_streaming_voice_max_chars`;
+    - `tts_event_broadcast_voice_max_chars`;
+    - `tts_final_voice_max_chars`.
+  - `startSpeechRecognition()` now calls `interruptVoicePlaybackForFormalInput("speech_transcript", "stt_button_during_tts_playback", 0)` before opening STT when TTS is active.
+  - This means manual STT no longer waits until after playback; playback is interrupted before local recording to reduce missed clicks and speaker echo.
+- New controlled verification:
+  - Added renderer runtime probe `stt_click_during_tts`.
+  - Added test command:
+    - `npm.cmd run voice:runtime-flow:probe-stt-click-during-tts`
+  - The probe sets TTS state to `playing`, calls the existing `startSpeechRecognition()` path, uses fake microphone audio, and requires:
+    - `voice_playback_interrupted_for_formal_input`
+    - `tts_queue_interrupted`
+    - `local_stt_recording_started`
+    - `local_stt_transcribe_request`
+    - `local_stt_transcribe_result`
+  - Latest probe passed:
+    - `status_dialogue_stt_click_during_tts_probe_complete`
+    - `latency_ms=4208`
+    - boundary: STT click interrupts TTS before local recording.
+- Audit updates:
+  - `scripts/audit-status-dialogue-runtime-voice-flow.cjs` now reports:
+    - `expected_tts_budget_runtime_marker_seen`
+    - `real_gui_tts_budget_runtime_marker_seen`
+    - `latest_runtime_tts_budget_caps_seen`
+    - `latest_real_tts_budget_caps_seen`
+    - `latest_stt_click_during_tts_probe_complete_seen`
+    - `latest_stt_click_during_tts_interrupt_seen`
+    - `latest_stt_click_during_tts_local_transcription_seen`
+  - `scripts/wait-status-dialogue-runtime-marker.cjs` now supports:
+    - `--require-tts-budget-marker`
+- Validation:
+  - `node --check scripts/audit-status-dialogue-runtime-voice-flow.cjs` passed.
+  - `node --check scripts/wait-status-dialogue-runtime-marker.cjs` passed.
+  - `node --check scripts/test-cli.ts` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run voice:runtime-flow:probe-stt-click-during-tts` passed.
+  - `node scripts/wait-status-dialogue-runtime-marker.cjs --wait-ms 0 --allow-probe --require-tts-budget-marker` passed.
+  - `npm.cmd run voice:runtime-flow:probe-tts-voice-budget` passed.
+  - `npm.cmd run voice:runtime-flow:probe-tts-input-interrupt` passed.
+  - `npm.cmd run voice:tts-input-boundary:validate` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:remote-stt-config:validate` passed with `ready_for_remote_probe=false`.
+  - `npm.cmd run voice:goal:audit` passed but remains incomplete.
+  - `npm.cmd run build` passed.
+- Current audit result:
+  - Proved in controlled probes:
+    - latest TTS spoken-budget cap is active in probe;
+    - latest TTS budget queue is fast;
+    - STT click during TTS interrupts playback and reaches local transcription;
+    - Xiaozhi bridge stages are still present.
+  - Not proved in real GUI:
+    - real right-bottom GUI has not emitted `tts-spoken-budget-2026-07-01-v2`.
+    - `node scripts/wait-status-dialogue-runtime-marker.cjs --wait-ms 0 --require-tts-budget-marker` fails without `--allow-probe`.
+  - Still incomplete:
+    - real cloud/remote STT configuration is missing:
+      - `remote_stt_enable_flag`
+      - `remote_stt_api_key`
+      - `remote_stt_base_url_or_full_endpoint`
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+  - The new probe extends the existing status-dialogue runtime probe system only.
+- Next required evidence:
+  - Restart or refresh the real right-bottom GUI.
+  - Confirm real GUI marker:
+    - `node scripts/wait-status-dialogue-runtime-marker.cjs --since-now --require-tts-budget-marker`
+  - Run one fresh real voice turn and then:
+    - `npm.cmd run voice:runtime-flow:audit`
+  - Configure real remote STT before claiming cloud/remote STT stability.
+
+## 2026-07-01 Real GUI restart and current latency evidence update
+
+- Supersedes the previous "not proved in real GUI" item for the TTS budget marker.
+- Script hardening:
+  - `scripts/prepare-status-dialogue-real-gui-retest.cjs` now starts the dev runtime with stdout/stderr log files instead of fully ignored stdio.
+  - The same script now requires both:
+    - a fresh runtime marker; and
+    - a still-alive runtime process table after the marker.
+  - `npm.cmd run voice:runtime-flow:restart-for-retest` now runs with `--require-tts-budget-marker`.
+- Real GUI restart evidence:
+  - Latest restart report:
+    - `runtime/verification-reports/status-dialogue-real-gui-retest-preflight-1782911699157.json`
+    - `result=marker_found`
+    - `post_start_runtime_process_count=6`
+    - main Electron process observed after marker: `54484`
+    - electron-vite dev process observed after marker: `75516`
+  - Latest real runtime marker:
+    - `ts=2026-07-01T13:14:54.766Z`
+    - `marker_probe=false`
+    - `tts_spoken_budget_marker=tts-spoken-budget-2026-07-01-v2`
+    - `tts_budget_final_cap_enabled=true`
+    - `tts_event_broadcast_voice_max_chars=36`
+    - `tts_final_voice_max_chars=58`
+    - `default_stt_adapter=local`
+    - `electron_ipc_available=true`
+  - 5173 is listening again under process `75516`.
+- Current audit result after restart:
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `real_gui_tts_budget_runtime_marker_seen=true`.
+  - `latest_real_tts_budget_caps_seen=true`.
+  - `current_real_slow_tts_queue_seen=false`.
+  - `current_real_tts_queue_complete_count=0`, so there is not yet a fresh post-restart real user voice-turn queue sample.
+  - Remaining bottleneck is classified as historical:
+    - `historical_tts_queue_end_to_end_latency`.
+- Current STT result after restart:
+  - `npm.cmd run voice:goal:audit` still reports `result=incomplete`, `proved=7 / partial=1 / missing=0 / total=8`.
+  - Latest real local STT health:
+    - `adapter_id=local_whisper_persistent_service`
+    - `status=ready`
+    - `latency_ms=24`
+  - Remaining partial item is still `cloud_stt_stability`.
+  - `npm.cmd run voice:remote-stt-config:validate` reports `ready_for_remote_probe=false`.
+  - Missing remote/cloud STT configuration:
+    - `remote_stt_enable_flag`
+    - `remote_stt_api_key`
+    - `remote_stt_base_url_or_full_endpoint`
+- Current interpretation:
+  - The newest TTS spoken-budget optimization is now loaded in the real right-bottom GUI.
+  - Current logs do not show a post-restart real slow TTS queue, but they also do not yet include a fresh user voice-turn queue sample after the restart.
+  - Multiple-input instability is more likely from stale pre-restart runtime state or cloud STT not being configured than from the current local STT health check.
+  - Cloud/remote STT is not active by default; the current active adapter is local.
+- Next required evidence:
+  - User runs two or more fresh voice turns in the restarted GUI.
+  - Then run:
+    - `npm.cmd run voice:runtime-flow:audit`
+    - `npm.cmd run voice:goal:audit`
+  - Configure remote/cloud STT before claiming cloud recognition stability.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+
+## 2026-07-01 Latest status pointer: runtime voice diagnostic integrated
+
+- Latest implementation status:
+  - `status_dialogue_runtime_voice_diagnostic.v1` is now part of the subject status dialogue context.
+  - Main IPC `zhineng:status-dialogue:runtime-voice-diagnostic:get` reads the latest real voice retest suite report as read-only evidence.
+  - Renderer refreshes the diagnostic at startup and before each dialogue model request.
+  - Right-side settings panel now exposes `voice diag` and a `voice diagnostic` detail section.
+  - Model prompt and local fallback now include the real voice retest result, entry diagnosis, real-turn status, remote STT missing config and goal audit summary.
+- Latest verification:
+  - `npm.cmd run voice:dialogue-state-policy:validate` passed.
+  - `npm.cmd run typecheck` passed.
+  - `npm.cmd run build` passed.
+  - `npm.cmd run voice:runtime-flow:audit` passed with `status=warn`.
+  - `npm.cmd run voice:goal:audit` remains `result=incomplete`.
+  - `npm.cmd run voice:runtime-flow:real-voice-suite` remains expected incomplete:
+    - `next_action=click_inside_right_bottom_gui_or_check_window_focus_overlay`
+    - `remote_config_missing=remote_stt_api_key`
+- Latest remaining gaps:
+  - Need a fresh real right-bottom GUI closed-loop voice turn after the current marker.
+  - Need `remote_stt_api_key` before real remote/cloud STT stability can be proven.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No raw audio persistence.
+  - No microphone or audio upload from diagnostic reading.
+  - No new same-level dialogue module.
+
+## 2026-07-03 MCP capability gateway plan drafted
+
+- Added plan document:
+  - `mcp-capability-gateway-implementation-plan.v1.md`
+- Decision captured:
+  - Do not rewrite weather/search/calculation as bespoke tools.
+  - Build a `capability_gateway.v1` layer that routes dialogue requests to MCP / API / local read-only adapters.
+  - Keep the work inside the existing `status-dialogue-system`.
+  - Current phase remains read-only.
+- Planned phases:
+  - Phase 1: capability contracts and registry skeleton.
+  - Phase 2: capability intent router after `DialogueTurnIntent`.
+  - Phase 3: local read-only lookup abilities.
+  - Phase 4: real MCP adapter integration after separate confirmation.
+  - Phase 5: GUI/TTS result composition.
+  - Phase 6: 3D particle OS child nodes.
+- Pending user confirmation:
+  - Whether to execute Phase 1/2 first.
+  - Which MCP source to prioritize for Web research: Tavily or Exa.
+  - Which integration platform to prioritize: Pipedream or Composio.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No external action execution.
+  - No new same-level dialogue module.
+
+## 2026-07-03 Confirmed execution status UI and delayed ACK implementation
+
+- User confirmed implementation of the final two dialogue-observability items:
+  - Visible execution status in the right-side Subject Status Dialogue main panel.
+  - Visual-first ACK policy with delayed spoken hint only when the model response is late.
+- Runtime/UI implementation:
+  - `status_dialogue_execution_state.v1` remains the single renderer state contract.
+  - Main panel now shows an execution status bar after the global snapshot row.
+  - The bar contains a morphing execution icon, current phase label, current action text, and the ordered phase row:
+    - listening
+    - transcribing
+    - understanding
+    - patrolling
+    - generating
+    - speaking
+    - complete
+  - STT, model understanding, patrol snapshot refresh, generation, TTS playback and completion paths update the same execution state.
+- ACK implementation:
+  - Default per-turn acknowledgement is visual through the execution status bar.
+  - `submitDialogue` no longer performs an immediate spoken ACK for every turn.
+  - A short spoken hint is scheduled only after `STATUS_DIALOGUE_VOICE_ACK_DELAY_MS=1500`.
+  - The delayed spoken hint is cancelled when a stream sentence, model result, model error, or turn finish arrives first.
+- Verification updates:
+  - `scripts/validate-status-dialogue-execution-ui-ack.cjs` is aligned to the current target:
+    - status bar required;
+    - morph icon required;
+    - phase row required;
+    - old pulse/player-like classes rejected;
+    - delayed ACK event logs required.
+  - Latest passing reports:
+    - `runtime/verification-reports/status-dialogue-execution-ui-ack-1783089276256.json`
+    - `runtime/verification-reports/status-dialogue-state-policy-1783089276024.json`
+    - `runtime/verification-reports/status-dialogue-tts-input-boundary-1783089276260.json`
+- Commands passed:
+  - `npm.cmd run voice:execution-ui-ack:validate`
+  - `npm.cmd run voice:dialogue-state-policy:validate`
+  - `npm.cmd run voice:tts-input-boundary:validate`
+  - `npm.cmd run typecheck`
+  - `npm.cmd run build`
+  - `npm.cmd run voice:runtime-flow:probe-marker`
+  - `npm.cmd run voice:runtime-flow:audit`
+- Runtime audit note:
+  - `voice:runtime-flow:audit` passed with `status=warn`.
+  - New execution/ACK events are visible in logs:
+    - `status_dialogue_execution_state_updated`
+    - `status_dialogue_visual_ack_shown`
+    - `status_dialogue_delayed_voice_ack_cancelled`
+  - Existing real GUI TTS queue latency remains a separate follow-up:
+    - `current_real_tts_queue_end_to_end_max_ms=15845`
+    - `current_real_tts_queue_total_playback_max_ms=5915`
+  - The audit still recommends a real GUI retest for input during active TTS playback.
+- Browser visual verification note:
+  - In-app browser DOM verification timed out during this run.
+  - HTTP/Vite availability and executable/static checks passed, but a fresh screenshot-level visual confirmation still needs manual GUI/browser refresh.
+- Boundary:
+  - No STT/TTS adapter change.
+  - No world model write.
+  - No `requirement_packet.v1` creation.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+
+## 2026-07-04 ACK cancellation, shortest voice path, and simulated module-feedback insert
+
+- Scope:
+  - Implement the next voice-loop optimization inside the existing `status-dialogue-system`.
+  - Keep current STT/TTS adapters unchanged.
+  - Keep the module status-feedback insert as a controlled simulation and reusable contract path, not as fake runtime facts.
+- Implemented:
+  - Added `src/core/status-dialogue/voice-event-orchestrator.ts`.
+  - Exported it through `src/core/status-dialogue-contracts.ts`.
+  - `requestStatusDialogueModel` now reports early stream activity through `onModelStreamActivity`.
+  - The delayed spoken ACK is cancelled when the model emits the first stream delta or the first voice-field progress, not only when a full stream sentence is ready.
+  - Post-stream final speech now uses `buildShortestNecessaryPostStreamVoice`.
+  - Streamed sentence, event insert speech, and final voice are deduped into the shortest necessary TTS path.
+  - Removed the old local final-voice duplicate gate from `ZhinengConsole.tsx`.
+- Simulated module feedback:
+  - `buildSimulatedModuleFeedbackVoicePatch` creates a normal `voice_script_patch.v1`.
+  - The simulation supports:
+    - `interrupt_now` for critical/blocked events.
+    - `after_current_sentence` for directly relevant updates.
+    - `merge_into_current_reply` for previously focused module updates.
+    - `idle_reminder` for background updates.
+  - Example target line:
+    - `你之前关注的任务图谱有更新，任务图谱现在是构建完成。`
+  - This proves how future real module events can enter the same voice queue without creating a parallel event system.
+- Verification added:
+  - `scripts/validate-status-dialogue-voice-shortest-path.cjs`.
+  - npm command:
+    - `npm.cmd run voice:shortest-path:validate`
+- Verification passed:
+  - `npm.cmd run voice:shortest-path:validate`
+  - `npm.cmd run voice:tts-input-boundary:validate`
+  - `npm.cmd run voice:execution-ui-ack:validate`
+  - `npm.cmd run voice:dialogue-state-policy:validate`
+  - `npm.cmd run voice:event-broadcast:validate`
+  - `npm.cmd run voice:runtime-flow:probe-tts-voice-budget`
+  - `npm.cmd run voice:runtime-flow:audit`
+  - `npm.cmd run typecheck`
+  - `npm.cmd run build`
+- Current controlled probe evidence:
+  - `tts_shortest_voice_path_selected` was observed in the runtime voice log.
+  - Latest controlled TTS voice-budget queue:
+    - `end_to_end_ms=561`
+    - `total_tts_ms=30`
+    - `total_playback_ms=502`
+    - `slow_queue=false`
+- Runtime audit note:
+  - The audit still returns `status=warn` because the current real GUI log contains older slow TTS queue samples.
+  - A fresh right-bottom GUI retest is still required after restarting or refreshing the app.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No external module status fabrication during normal runtime.
+  - No STT/TTS adapter change.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+
+## 2026-07-04 Real two-turn duplicate speech and broken-clause follow-up
+
+- Source evidence:
+  - Latest real GUI log:
+    - `D:\zhineng\runtime\status-dialogue-logs\voice-flow-20260704.jsonl`
+  - User tested two turns around:
+    - `2026-07-04T03:59:19Z`
+    - `2026-07-04T03:59:45Z`
+- Diagnosis:
+  - Delayed ACK is now correctly cancelled on first model stream delta.
+  - The remaining repetition came from semantic overlap between the streamed first sentence and the post-stream final voice.
+  - The broken clause came from passing an already truncated final voice into the shortest-path decision:
+    - observed phrase shape: `但当前阶段不会直接执行外…`
+- Implemented:
+  - `buildShortestNecessaryPostStreamVoice` now:
+    - skips generic process narration after a streamed answer;
+    - detects voice/intent capability overlap between streamed and final speech;
+    - extracts only the contrast or boundary clause, such as `但当前阶段不会直接执行外部动作。`;
+    - truncates at speech boundaries before adding an ellipsis.
+  - `ZhinengConsole.tsx` now passes the full `voiceText/reply` to the post-stream shortest-path function before shortening.
+- Regression cases added:
+  - `generic_process_after_stream`
+  - `capability_boundary_after_stream`
+- Verification passed:
+  - `npm.cmd run voice:shortest-path:validate`
+  - `npm.cmd run voice:tts-input-boundary:validate`
+  - `npm.cmd run voice:execution-ui-ack:validate`
+  - `npm.cmd run voice:dialogue-state-policy:validate`
+  - `npm.cmd run voice:runtime-flow:probe-tts-voice-budget`
+  - `npm.cmd run voice:runtime-flow:audit`
+  - `npm.cmd run typecheck`
+  - `npm.cmd run build`
+- Current runtime note:
+  - Latest controlled TTS voice-budget probe remains fast:
+    - `end_to_end_ms=455`
+    - `total_tts_ms=30`
+    - `total_playback_ms=408`
+  - Runtime audit still reports `status=warn` because the current real GUI log contains pre-fix slow TTS samples.
+  - A fresh right-bottom GUI retest is required after the app is restarted or refreshed.
+- Boundary:
+  - No STT/TTS adapter change.
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No external module status fabrication.
+
+## 2026-07-04 Real two-turn close interruption and patrol feedback bridge check
+
+- Source evidence:
+  - Latest real GUI voice log:
+    - `D:\zhineng\runtime\status-dialogue-logs\voice-flow-20260704.jsonl`
+  - User tested two voice turns around:
+    - `2026-07-04T04:12:52Z`
+    - `2026-07-04T04:13:19Z`
+  - The user manually closed voice output during the second reply.
+- Diagnosis:
+  - Remote STT was active for the tested turns; the first turn logged `remote_stt_start` and `remote_stt_complete`.
+  - Starting a new formal STT turn during TTS already interrupts the active TTS queue correctly:
+    - observed `voice_playback_interrupted_for_formal_input`
+    - observed `tts_queue_interrupted`
+  - Clicking the graph close button only logged `status_dialogue_global_pointer_down` on `.zg-graph-close-button`; it did not previously log a TTS queue interrupt or terminal queue state.
+  - Existing module status events were read into `voice_event_broadcast_queue_compiled`, but `patch_ids` stayed empty during status patrol turns because the renderer filter did not allow `policyDecision.intent_lane === 'status_patrol'`.
+- Implemented:
+  - `ZhinengConsole.tsx` now routes graph close through the shared voice interruption path before closing the graph.
+  - New graph-close interrupt log event:
+    - `voice_playback_interrupted_for_graph_close`
+  - Graph close now also logs `tts_queue_interrupted` and publishes a Xiaozhi `abort` bridge event before invoking close.
+  - `shouldSpeakVoiceEventBroadcast` now allows `policyDecision.intent_lane === 'status_patrol'`, so status patrol turns can produce speakable event patches.
+  - Validation now includes `graph_close_interrupts_tts_before_close`.
+- Real status feedback bridge check:
+  - The active read-only feedback files are under project root:
+    - `D:\zhineng\runtime\status-cards`
+    - `D:\zhineng\runtime\status-events`
+  - `D:\zhineng\runtime\status-events\dialogue_system_patrol.json` contains `module_status_event.v1` with:
+    - `severity=blocked`
+    - `recommended_broadcast.speakable=true`
+    - `recommended_broadcast.mode=immediate`
+  - A read-only probe over `D:\zhineng\runtime\status-events` found:
+    - `events_total=17`
+    - `events_fresh=17`
+    - `request_count=5`
+    - `patch_count=5`
+    - all generated patches keep `voice_profile_lock=true`
+  - Conclusion: one real module status feedback path is already usable for patrol voice testing; no fake external module is required.
+- Verification passed:
+  - `npm.cmd run voice:event-broadcast:validate`
+  - `npm.cmd run voice:shortest-path:validate`
+  - `npm.cmd run voice:tts-input-boundary:validate`
+  - `npm.cmd run typecheck`
+  - `npm.cmd run build`
+- Current blockers / retest points:
+  - A fresh GUI retest is still required to observe the new runtime log events:
+    - `voice_playback_interrupted_for_graph_close`
+    - non-empty `patch_ids` during a `status_patrol` turn.
+  - The latest runtime audit still contains older slow GUI TTS samples; TTS latency optimization remains a separate open issue.
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No external action channel.
+  - No STT/TTS adapter change.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+
+## 2026-07-04 Traditional Chinese STT patrol intent normalization
+
+- Source evidence:
+  - Real GUI voice turn at `2026-07-04T06:43:39` transcribed the intended phrase `检查当前状态巡检` as traditional Chinese:
+    - `檢查當前狀態巡檢`
+  - Before the fix this was routed as:
+    - `turn_intent=ambient_or_unclear`
+    - `should_run_patrol=false`
+    - `patch_ids=[]`
+    - spoken voice: `这句话的意图我还不清楚，先不执行动作。`
+- Implemented:
+  - `dialogue-policy.ts` now normalizes common Traditional/Simplified Chinese variants at the policy entry point.
+  - The same normalization is used by:
+    - `deriveDialogueTurnIntent`
+    - `deriveDialoguePolicyIntentLane`
+  - Normalized turns add evidence:
+    - `common_chinese_variant_normalized`
+- Validation cases added:
+  - `檢查當前狀態巡檢`
+  - `檢查當前運行狀態`
+- Verification passed:
+  - `npm.cmd run voice:event-broadcast:validate`
+    - report: `runtime\voice-loop-probes\status-dialogue-event-broadcast-validation-20260704070253.json`
+    - both Traditional Chinese cases produced:
+      - `turn_intent=status_patrol`
+      - `should_run_patrol=true`
+      - non-empty `patch_ids`
+      - `event_patch_count=1`
+  - `npm.cmd run voice:dialogue-state-policy:validate`
+  - `npm.cmd run typecheck`
+  - `npm.cmd run build`
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No external action channel.
+  - No STT/TTS adapter change.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+
+## 2026-07-04 Patrol voice completeness and unspoken event queue
+
+- Implemented small closed loops:
+  - Patrol voice clipping now prefers complete sentence or clause boundaries instead of hard-cutting half a sentence.
+  - `patch_ids` non-empty now keeps at least one module-status insertion in the final TTS path.
+  - `source_drift`, `blocked`, and known module IDs are converted to natural Chinese before speech filtering.
+  - Added `unspoken_patrol_events` to short conversation memory; unspoken patrol inserts are carried into the next dialogue turn.
+  - Final spoken patrol summary now has four required points:
+    - current conclusion.
+    - fresh/stale status card count.
+    - missing module count.
+    - highest priority blocker/module event.
+- Bottom-layer design confirmation:
+  - The existing `module_status_event.v1 -> voice_event_broadcast_request.v1 -> voice_script_patch.v1 -> TTS` chain is the right extension point.
+  - The frontend should only clean and budget speech; semantic translation belongs in the status-event/voice-script layer.
+  - No new same-level dialogue-policy or broadcast module is needed for this fix.
+- Blockers / retest points:
+  - GUI retest is still required to confirm runtime logs show non-empty `patch_ids` and non-zero `event_patch_count` after a real voice patrol turn.
+  - TTS end-to-end latency remains a separate open optimization item; this change improves completeness and continuity, not synthesis speed.
+  - STT may still misrecognize words such as `系统`; this fix does not change STT adapter behavior.
+- Verification arrays added:
+  - `status_patrol_phrase_regression`:
+    - `检查当前运行状态`
+    - `当前运行状态怎么样`
+    - `运行状态`
+  - `naturalBlockedPatches`:
+    - source module `audit`
+    - severity `blocked`
+    - reason token `source_drift`
+    - expected voice contains `审计模块`, `阻塞`, `源引用漂移`
+  - `no_punctuation_patrol_clip`:
+    - no punctuation input still ends with a complete spoken period.
+    - output must not contain `...` or `…`.
+- Verification passed:
+  - `npm.cmd run voice:event-broadcast:validate`
+    - report: `runtime\voice-loop-probes\status-dialogue-event-broadcast-validation-20260704062242.json`
+  - `npm.cmd run voice:shortest-path:validate`
+    - report: `runtime\verification-reports\status-dialogue-voice-shortest-path-1783146038416.json`
+  - `npm.cmd run voice:tts-input-boundary:validate`
+    - report: `runtime\verification-reports\status-dialogue-tts-input-boundary-1783146035284.json`
+  - `npm.cmd run voice:dialogue-state-policy:validate`
+    - report: `runtime\verification-reports\status-dialogue-state-policy-1783146124408.json`
+  - `npm.cmd run typecheck`
+  - `npm.cmd run build`
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No external action channel.
+  - No STT/TTS adapter change.
+  - No raw audio persistence.
+  - No new same-level dialogue module.
+
+## 2026-07-04 Operational status phrase priority fix
+
+- Source evidence:
+  - Real GUI transcript `检查当前运行状态` was previously routed as:
+    - `turn_intent=execution_request`
+    - `intent_lane=requirement_alignment`
+  - This made real module status events enter `voice_event_broadcast_queue_compiled` as request IDs, but kept:
+    - `patch_ids=[]`
+    - `event_patch_count=0`
+- Implemented:
+  - `dialogue-policy.ts` now detects operational-status wording before execution-request routing.
+  - The following phrases are prioritized as read-only patrol:
+    - `检查当前运行状态`
+    - `当前运行状态怎么样`
+    - `运行状态`
+  - The fix is intentionally narrow:
+    - `运行状态` is patrol.
+    - real execution/deploy/modify/test requests still use the execution-request path.
+- Verification added:
+  - `scripts/validate-status-dialogue-event-broadcast.cjs` now calls the real policy decision and voice-event patch builders for the three phrases.
+  - Required assertions:
+    - `turn_intent=status_patrol`
+    - `intent_lane=status_patrol`
+    - `should_run_patrol=true`
+    - `patch_ids` is non-empty
+    - `event_patch_count > 0`
+- Verification passed:
+  - `npm.cmd run voice:event-broadcast:validate`
+    - each target phrase produced `event_patch_count=1`
+  - `npm.cmd run voice:dialogue-state-policy:validate`
+  - `npm.cmd run voice:shortest-path:validate`
+  - `npm.cmd run typecheck`
+  - `npm.cmd run build`
+- Retest expectation:
+  - After GUI refresh/restart, saying `检查当前运行状态` should produce:
+    - `turn_intent=status_patrol`
+    - non-empty `patch_ids` in `voice_event_broadcast_queue_compiled`
+    - `event_patch_count > 0` in `tts_final_voice_budget_applied`
+- Boundary:
+  - No world model write.
+  - No `requirement_packet.v1`.
+  - No external action channel.
+  - No STT/TTS adapter change.
+  - No raw audio persistence.
+  - No new same-level dialogue module.

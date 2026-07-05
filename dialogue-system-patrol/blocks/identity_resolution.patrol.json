@@ -1,0 +1,174 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "identity_resolution",
+  "display_name": "Identity Resolution",
+  "owner": "process_tree",
+  "source_dir": "docs",
+  "process_tree_node_id": "identity_resolution",
+  "registration_status": "process_tree_status:implemented_v1",
+  "gate": "system_patrol_coverage_gate",
+  "compass": "system_patrol.identity_resolution",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "validated",
+  "updated_at": "2026-07-01T11:39:08.902Z",
+  "ttl_ms": 604800000,
+  "change_session_id": "system_patrol_blocks_init_20260701",
+  "data_flow": {
+    "inputs": [
+      "docs/15-系统流程树与扩展问题台账.md",
+      "docs/12-人物与事件存储方案.md",
+      "schemas/intake-observation.schema.json",
+      "schemas/channel-identity.schema.json",
+      "schemas/person-identity-link.schema.json",
+      "schemas/person-match-candidate.schema.json",
+      "schemas/candidate-person.schema.json",
+      "schemas/person-role-binding.schema.json",
+      "schemas/scene-relationship-weight.schema.json",
+      "schemas/cold-start-person-introduction.schema.json",
+      "schemas/possibility-branch.schema.json",
+      "schemas/relationship-graph-reference-sync.schema.json",
+      "schemas/identity-resolution-audit.schema.json",
+      "packages/identity-resolution/src/identity-resolution.mjs",
+      "packages/identity-resolution/src/cold-start-person-introduction.mjs",
+      "packages/possibility-branch/src/possibility-branch.mjs",
+      "packages/possibility-branch/tests/possibility-branch.test.mjs",
+      "packages/identity-resolution/src/index.mjs",
+      "packages/identity-resolution/tests/identity-resolution.test.mjs",
+      "packages/identity-resolution/tests/cold-start-person-introduction.test.mjs",
+      "scripts/run-identity-resolution-demo.mjs",
+      "scripts/run-cold-start-person-introduction-demo.mjs",
+      "scripts/run-possibility-branch-demo.mjs",
+      "scripts/audit-identity-resolution.mjs",
+      "scripts/write-identity-confirmation-ui.mjs",
+      "scripts/run-identity-confirmation-ui-demo.mjs",
+      "runtime/identity-resolution-demos/**",
+      "runtime/cold-start-person-introduction/**",
+      "runtime/possibility-branches/**",
+      "runtime/identity-resolution-audits/**",
+      "runtime/identity-confirmation-ui/**",
+      "runtime/desktop-inbox-real/**"
+    ],
+    "processing": [
+      "Map WeChat names, contact-book hints, web accounts, thread titles, handles and hashed sensitive values into ChannelIdentity records, then link confirmed identities to stable Person.person_id before RawEvent writeback."
+    ],
+    "outputs": [
+      "ChannelIdentity",
+      "PersonIdentityLink",
+      "PersonMatchCandidate",
+      "IdentityResolution",
+      "IdentityConfirmationUi",
+      "CandidatePerson",
+      "PersonRoleBinding",
+      "SceneRelationshipWeight",
+      "ColdStartPersonIntroduction",
+      "PossibilityBranchAnalysis",
+      "RelationshipGraphReferenceSync",
+      "identity_confirmation_queue",
+      "identity_person_index",
+      "channel_identity_index",
+      "thread_person_index",
+      "IdentityResolutionAudit"
+    ],
+    "dependencies": [
+      "examples/system-process-tree.json",
+      "dialogue-system-patrol/registry/system-patrol-registry.json"
+    ]
+  },
+  "state": {
+    "headline": "Identity Resolution: patrol block initialized from process tree status implemented_v1.",
+    "current_task": "Maintain summary-only patrol coverage and expose dialogue-readable state.",
+    "progress": 1,
+    "blockers": [],
+    "risks": [
+      "Sightflow and real WeChat adapters still need stable extraction for handle, remark name, contact-card evidence and hashed phone/email values.",
+      "In-app identity confirmation UI v1 can render pending ambiguous candidates, produce a decision JSON/identity:confirm command and apply the selected decision; real-source extraction and richer merge/rollback review remain future extensions.",
+      "Group-chat identity splitting, cross-platform organization identity and long-term merge/rollback policies remain future extensions."
+    ],
+    "next": [
+      "Review this generated patrol block before treating it as a deep module interpretation.",
+      "Refresh validation with npm.cmd run system-patrol:validate.",
+      "Publish dialogue-readable output with npm.cmd run system-patrol:publish."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "examples/system-process-tree.json",
+      "docs/15-系统流程树与扩展问题台账.md",
+      "docs/12-人物与事件存储方案.md",
+      "schemas/intake-observation.schema.json",
+      "schemas/channel-identity.schema.json",
+      "schemas/person-identity-link.schema.json",
+      "schemas/person-match-candidate.schema.json",
+      "schemas/candidate-person.schema.json",
+      "schemas/person-role-binding.schema.json"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:publish",
+      "npm.cmd run process-tree:validate"
+    ],
+    "latest_validation_refs": [
+      "runtime/dialogue-system-patrol-validations/latest.json"
+    ]
+  },
+  "boundaries": {
+    "mode": "controlled_write_runtime_summary",
+    "allowed_reads": [
+      "examples/system-process-tree.json",
+      "docs/15-系统流程树与扩展问题台账.md",
+      "docs/12-人物与事件存储方案.md",
+      "schemas/intake-observation.schema.json",
+      "schemas/channel-identity.schema.json",
+      "schemas/person-identity-link.schema.json",
+      "schemas/person-match-candidate.schema.json",
+      "schemas/candidate-person.schema.json",
+      "schemas/person-role-binding.schema.json"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/identity_resolution.json",
+      "runtime/status-events/identity_resolution.json",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**"
+    ],
+    "forbidden_actions": [
+      "no business module rewrite from patrol initialization",
+      "no dialogue reader rewrite from patrol initialization",
+      "no external platform action",
+      "no raw private payload publication"
+    ],
+    "confirmation_gates": [
+      "user confirmation required before protocol migration",
+      "user confirmation required before process-tree and Obsidian registration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The module is represented in the process tree.",
+      "The patrol block was initialized from process-tree summary evidence.",
+      "Current status is summary-only and should cite source refs."
+    ],
+    "must_not_infer": [
+      "Do not infer raw runtime facts that are not present in evidence refs.",
+      "Do not treat generated patrol text as a full source-code review.",
+      "Do not claim external actions or business outcomes from patrol coverage alone."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "sha256:1636c99d21d03f27d3842473bb5dec2e77e6c92d48181ba40b4afce21dcffea6",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-05T13:12:46.780Z",
+    "source_hash_refs": [
+      "docs/12-人物与事件存储方案.md",
+      "docs/15-系统流程树与扩展问题台账.md",
+      "examples/system-process-tree.json",
+      "schemas/candidate-person.schema.json",
+      "schemas/channel-identity.schema.json",
+      "schemas/intake-observation.schema.json",
+      "schemas/person-identity-link.schema.json",
+      "schemas/person-match-candidate.schema.json",
+      "schemas/person-role-binding.schema.json"
+    ],
+    "source_hash_excluded_refs": []
+  }
+}

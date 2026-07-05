@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DecisionRequest",
+  "type": "object",
+  "required": ["goal_input", "social_graph"],
+  "properties": {
+    "goal_input": { "$ref": "./social-goal-input.schema.json" },
+    "social_graph": { "$ref": "./social-graph.schema.json" },
+    "user_preferences": {
+      "type": "object",
+      "properties": {
+        "risk_tolerance": { "type": "string", "enum": ["low", "medium", "high"] },
+        "budget_sensitivity": { "type": "string", "enum": ["low", "medium", "high"] },
+        "relationship_priority": { "type": "string", "enum": ["low", "medium", "high"] },
+        "goal_urgency": { "type": "string", "enum": ["low", "medium", "high"] },
+        "automation_comfort": { "type": "string", "enum": ["low", "medium", "high"] },
+        "preferred_channels": { "type": "array", "items": { "type": "string" } },
+        "disliked_actions": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

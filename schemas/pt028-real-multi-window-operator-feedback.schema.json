@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-real-multi-window-operator-feedback.schema.json",
+  "title": "pt028_real_multi_window_operator_feedback.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "feedback_batch_id",
+    "created_at",
+    "reviewer",
+    "window_feedback_records",
+    "human_special_review"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_real_multi_window_operator_feedback.v1" },
+    "feedback_batch_id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "reviewer": {
+      "type": "object",
+      "required": ["reviewer_id", "reviewed_at"],
+      "properties": {
+        "reviewer_id": { "type": "string" },
+        "role": { "type": "string" },
+        "reviewed_at": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "window_feedback_records": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "feedback_id",
+          "window_id",
+          "target_person_id",
+          "source_type",
+          "operator_decision",
+          "target_response_signal",
+          "state_path",
+          "real_window_observed",
+          "state_target_verified",
+          "prompt_only_confirmed",
+          "no_real_send_attempted",
+          "privacy_boundary_confirmed",
+          "reviewed_at",
+          "evidence_refs"
+        ],
+        "properties": {
+          "feedback_id": { "type": "string" },
+          "window_id": { "type": "string" },
+          "app_type": { "type": "string" },
+          "target_person_id": { "type": "string" },
+          "target_display_name": { "type": "string" },
+          "source_type": {
+            "enum": ["real_operator_feedback", "human_reviewed_real_window_feedback"]
+          },
+          "operator_decision": {
+            "enum": [
+              "prompt_accepted_for_manual_edit",
+              "prompt_rejected",
+              "needs_context_before_progression",
+              "hold_and_show_safety_prompt",
+              "manual_reply_sent_outside_system",
+              "not_reviewed"
+            ]
+          },
+          "target_response_signal": {
+            "enum": [
+              "warm_or_positive",
+              "neutral_or_unknown",
+              "insufficient_context",
+              "pressure_or_boundary_risk",
+              "negative_or_uncomfortable"
+            ]
+          },
+          "state_path": { "type": "string" },
+          "state_snapshot": { "type": "object" },
+          "real_window_observed": { "type": "boolean" },
+          "state_target_verified": { "type": "boolean" },
+          "prompt_only_confirmed": { "type": "boolean" },
+          "no_real_send_attempted": { "type": "boolean" },
+          "privacy_boundary_confirmed": { "type": "boolean" },
+          "reviewed_at": { "type": "string" },
+          "evidence_refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          },
+          "candidate_observation_ref": { "type": ["string", "null"] },
+          "candidate_observation_id": { "type": ["string", "null"] },
+          "candidate_state_ref": { "type": ["string", "null"] },
+          "candidate_state_id": { "type": ["string", "null"] },
+          "candidate_evidence_prefilled": { "type": "boolean" },
+          "candidate_state_prefilled": { "type": "boolean" },
+          "candidate_requires_operator_confirmation": {
+            "type": "boolean",
+            "description": "true means the row is still only candidate-prefilled evidence; final readiness requires this to be false or absent after human verification."
+          },
+          "notes": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "human_special_review": {
+      "type": "object",
+      "required": [
+        "approved_for_final_special_acceptance",
+        "reviewer_id",
+        "reviewed_at",
+        "approval_scope",
+        "notes"
+      ],
+      "properties": {
+        "approved_for_final_special_acceptance": { "type": "boolean" },
+        "reviewer_id": { "type": "string" },
+        "reviewed_at": { "type": "string" },
+        "approval_scope": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

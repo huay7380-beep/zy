@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/read-only-source-collection.schema.json",
+  "title": "ReadOnlySourceCollection",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "collection_id",
+    "created_at",
+    "gate_decision",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "source",
+    "summary",
+    "observations",
+    "failed_sources",
+    "checks",
+    "required_failures",
+    "warning_failures",
+    "next_commands",
+    "stop_or_adjust_when"
+  ],
+  "properties": {
+    "schema_version": { "const": "read_only_source_collection.v1" },
+    "collection_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": { "type": "string", "minLength": 1 },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "source": {
+      "type": "object",
+      "required": ["root", "manifest_path", "output_dir"],
+      "properties": {
+        "root": { "type": "string", "minLength": 1 },
+        "manifest_path": { "type": ["string", "null"] },
+        "output_dir": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "manifest_sources",
+        "collected_observations",
+        "failed_sources",
+        "source_kind_counts",
+        "missing_recommended_source_kinds",
+        "ready_for_read_only_trial"
+      ],
+      "properties": {
+        "manifest_sources": { "type": "integer", "minimum": 0 },
+        "collected_observations": { "type": "integer", "minimum": 0 },
+        "failed_sources": { "type": "integer", "minimum": 0 },
+        "source_kind_counts": { "type": "object" },
+        "missing_recommended_source_kinds": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "ready_for_read_only_trial": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_id",
+          "source_kind",
+          "observation_id",
+          "source_adapter_id",
+          "source_type",
+          "platform",
+          "observation_path",
+          "raw_event_id",
+          "raw_event_source",
+          "conformance_gate_decision",
+          "ready_for_intake",
+          "real_execution_allowed",
+          "real_send_attempted"
+        ],
+        "properties": {
+          "source_id": { "type": "string", "minLength": 1 },
+          "source_kind": {
+            "type": "string",
+            "enum": [
+              "external_chat_export",
+              "browser_html",
+              "business_api_snapshot"
+            ]
+          },
+          "observation_id": { "type": "string", "minLength": 1 },
+          "source_adapter_id": { "type": "string", "minLength": 1 },
+          "source_type": { "type": "string", "minLength": 1 },
+          "platform": { "type": "string", "minLength": 1 },
+          "privacy_level": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "source_path": { "type": "string" },
+          "observation_path": { "type": "string", "minLength": 1 },
+          "report_path": { "type": "string" },
+          "markdown_path": { "type": "string" },
+          "raw_event_id": { "type": "string", "minLength": 1 },
+          "raw_event_source": { "type": "string", "minLength": 1 },
+          "conformance_gate_decision": { "type": "string" },
+          "ready_for_intake": { "type": "boolean" },
+          "required_failures": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "validation_command": { "type": "string" },
+          "next_bridge_command": { "type": "string" },
+          "real_execution_allowed": { "const": false },
+          "real_send_attempted": { "const": false }
+        },
+        "additionalProperties": true
+      }
+    },
+    "failed_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_id", "source_kind", "required_failure"],
+        "properties": {
+          "source_id": { "type": "string" },
+          "source_kind": { "type": "string" },
+          "source_path": { "type": ["string", "null"] },
+          "required_failure": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "downstream_trial": {
+      "type": "object",
+      "required": ["requested", "skipped"],
+      "properties": {
+        "requested": { "type": "boolean" },
+        "skipped": { "type": "boolean" },
+        "skip_reason": { "type": "string" },
+        "command": { "type": "string" },
+        "exit_code": { "type": ["integer", "null"] },
+        "gate_decision": { "type": "string" },
+        "trial_id": { "type": ["string", "null"] },
+        "real_execution_allowed": { "type": "boolean" },
+        "real_send_attempted": { "type": "boolean" },
+        "raw_observation_count": { "type": ["integer", "null"], "minimum": 0 },
+        "effective_observation_count": { "type": ["integer", "null"], "minimum": 0 },
+        "generated_pilot_import_ready_for_decision": { "type": "boolean" },
+        "generated_pilot_import_ready_for_closed_loop_mvp": { "type": "boolean" },
+        "graph_loop_gate_decision": { "type": ["string", "null"] },
+        "required_failures": { "type": "array", "items": { "type": "string" } },
+        "json_path": { "type": ["string", "null"] },
+        "markdown_path": { "type": ["string", "null"] },
+        "generated_pilot_import_path": { "type": ["string", "null"] },
+        "graph_loop_verification_path": { "type": ["string", "null"] },
+        "stderr": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "checks": { "type": "array", "items": { "type": "object" } },
+    "required_failures": { "type": "array", "items": { "type": "string" } },
+    "warning_failures": { "type": "array", "items": { "type": "string" } },
+    "next_commands": { "type": "array", "items": { "type": "string" } },
+    "stop_or_adjust_when": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

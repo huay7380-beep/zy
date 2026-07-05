@@ -1,0 +1,46 @@
+{
+  "schema_version": "capability_project_card.v1",
+  "project_id": "example_project",
+  "name": "",
+  "summary": "",
+  "source": {
+    "type": "github_or_release_or_local_archive",
+    "url": "",
+    "retrieved_at": "",
+    "local_path": "capability-upgrade-registry/projects/example_project",
+    "download_path": ""
+  },
+  "version": {
+    "tag": "",
+    "commit": "",
+    "release_date": ""
+  },
+  "license": {
+    "name": "",
+    "file_path": "",
+    "usage_fit": "unknown",
+    "notes": ""
+  },
+  "candidate_for_modules": [
+    {
+      "module_path": "packages/example-module",
+      "replacement_type": "enhance_or_wrap_or_replace",
+      "process_family": "",
+      "analogy_pattern": "",
+      "reason": ""
+    }
+  ],
+  "fit_requirements": {
+    "required_input_contracts": [],
+    "required_output_contracts": [],
+    "latency_expectation": "",
+    "effectiveness_expectation": "",
+    "maximum_acceptable_replacement_complexity": "low_or_medium_or_high",
+    "previous_requirements_refs": []
+  },
+  "capabilities": [],
+  "risks": [],
+  "dependencies": [],
+  "provenance_notes": "",
+  "next_action": "write_evaluation_report"
+}

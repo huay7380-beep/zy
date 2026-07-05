@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DesktopContextBridge",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "bridge_id",
+    "gate_decision",
+    "observation_count",
+    "pilot_import_batch",
+    "context_snapshot",
+    "expert_matrix_analysis",
+    "theoretical_prediction",
+    "independent_review",
+    "message_draft",
+    "real_execution_allowed"
+  ],
+  "properties": {
+    "schema_version": { "const": "desktop_context_bridge.v1" },
+    "bridge_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string" },
+    "gate_decision": { "const": "desktop_context_ready_for_decision_trial" },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "observation_count": { "type": "integer", "minimum": 1 },
+    "raw_observation_count": { "type": "integer", "minimum": 1 },
+    "effective_observation_count": { "type": "integer", "minimum": 1 },
+    "duplicate_suppressed_count": { "type": "integer", "minimum": 0 },
+    "duplicate_observation_groups": {
+      "type": "array",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "observation_groups": {
+      "type": "array",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "observation_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "raw_observation_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "pilot_import_batch": { "$ref": "./pilot-import-batch.schema.json" },
+    "candidate_intimate_relationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "candidate_relationship_id",
+          "status",
+          "relationship_family",
+          "type_code",
+          "requires_user_confirmation"
+        ],
+        "properties": {
+          "schema_version": { "const": "candidate_intimate_relationship.v1" },
+          "candidate_relationship_id": { "type": "string", "minLength": 1 },
+          "status": { "const": "candidate" },
+          "relationship_family": { "const": "romantic_intimacy" },
+          "type_code": { "const": "romantic_intimacy_candidate" },
+          "scene": { "const": "social_intimacy" },
+          "from_person_id": { "type": "string", "minLength": 1 },
+          "to_person_id": { "type": "string", "minLength": 1 },
+          "target_display_name": { "type": "string", "minLength": 1 },
+          "linked_relationship_id": { "type": "string", "minLength": 1 },
+          "evidence_signals": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "requires_user_confirmation": { "const": true }
+        },
+        "additionalProperties": true
+      }
+    },
+    "normalized_import_summary": { "type": "object", "additionalProperties": true },
+    "context_snapshot": { "$ref": "./context-snapshot.schema.json" },
+    "decision_id": { "type": "string", "minLength": 1 },
+    "expert_matrix_analysis": { "$ref": "./expert-matrix-analysis.schema.json" },
+    "theoretical_prediction": { "type": "object", "additionalProperties": true },
+    "independent_review": { "type": "object", "additionalProperties": true },
+    "message_draft": { "type": "object", "additionalProperties": true },
+    "checks": {
+      "type": "array",
+      "items": { "type": "object", "additionalProperties": true }
+    }
+  },
+  "additionalProperties": true
+}

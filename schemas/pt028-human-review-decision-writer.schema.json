@@ -1,0 +1,418 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-human-review-decision-writer.schema.json",
+  "title": "pt028_human_review_decision_writer.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "writer_id",
+    "created_at",
+    "gate_decision",
+    "ready_for_finalization",
+    "source",
+    "checks",
+    "required_failures",
+    "human_review_fill_plan",
+    "next_commands",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "writes_real_feedback_target",
+    "output_paths"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_human_review_decision_writer.v1" },
+    "writer_id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "gate_decision": {
+      "enum": [
+        "human_review_sheet_template_written",
+        "human_review_sheet_input_missing",
+        "human_review_sheet_check_needs_attention",
+        "human_review_sheet_check_ready",
+        "human_review_decision_needs_attention",
+        "human_review_decision_ready_for_finalization"
+      ]
+    },
+    "check_only": { "type": "boolean" },
+    "review_sheet_ready_for_decision_generation": { "type": "boolean" },
+    "ready_for_finalization": { "type": "boolean" },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "writes_real_feedback_target": { "const": false },
+    "source": {
+      "type": "object",
+      "required": [
+        "review_pack_path",
+        "session_path",
+        "decision_template_path"
+      ],
+      "additionalProperties": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "status", "required", "evidence"],
+        "properties": {
+          "check_id": { "type": "string" },
+          "status": { "enum": ["passed", "failed"] },
+          "required": { "type": "boolean" },
+          "evidence": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": { "type": "array", "items": { "type": "string" } },
+    "review_sheet_input_status": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "review_path_requested",
+        "review_sheet_path",
+        "review_sheet_exists",
+        "review_sheet_loaded",
+        "template_fallback_path",
+        "missing_input_failure",
+        "next_action"
+      ],
+      "properties": {
+        "schema_version": { "const": "pt028_review_sheet_input_status.v1" },
+        "review_path_requested": { "type": "boolean" },
+        "review_sheet_path": { "type": ["string", "null"] },
+        "review_sheet_exists": { "type": "boolean" },
+        "review_sheet_loaded": { "type": "boolean" },
+        "template_fallback_path": { "type": "string" },
+        "missing_input_failure": {
+          "type": ["string", "null"],
+          "enum": [
+            "review_sheet_input_not_requested",
+            "review_sheet_target_missing",
+            "review_sheet_unreadable_or_invalid",
+            null
+          ]
+        },
+        "next_action": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "review_sheet_diagnostics": {
+      "type": ["object", "null"],
+      "properties": {
+        "schema_version": { "const": "pt028_human_review_sheet_diagnostics.v1" },
+        "expected_window_review_count": { "type": "integer", "minimum": 0 },
+        "actual_window_review_count": { "type": "integer", "minimum": 0 },
+        "unique_target_count": { "type": "integer", "minimum": 0 },
+        "missing_global_confirmations": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "missing_task_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "failed_required_checks": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "window_review_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["row_index", "failed_checks", "evidence_ref_count", "ready"],
+            "properties": {
+              "row_index": { "type": "integer", "minimum": 0 },
+              "task_id": { "type": ["string", "null"] },
+              "decision_template_record_pointer": { "type": ["string", "null"] },
+              "window_id": { "type": ["string", "null"] },
+              "target_person_id": { "type": ["string", "null"] },
+              "target_display_name_hint": { "type": ["string", "null"] },
+              "failed_checks": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "evidence_ref_count": { "type": "integer", "minimum": 0 },
+              "ready": { "type": "boolean" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "decision_placeholder_paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "template_initial_diagnostics": {
+      "type": ["object", "null"],
+      "properties": {
+        "schema_version": { "const": "pt028_human_review_sheet_diagnostics.v1" },
+        "expected_window_review_count": { "type": "integer", "minimum": 0 },
+        "actual_window_review_count": { "type": "integer", "minimum": 0 },
+        "unique_target_count": { "type": "integer", "minimum": 0 },
+        "missing_global_confirmations": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "missing_task_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "failed_required_checks": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "window_review_diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["row_index", "failed_checks", "evidence_ref_count", "ready"],
+            "properties": {
+              "row_index": { "type": "integer", "minimum": 0 },
+              "task_id": { "type": ["string", "null"] },
+              "decision_template_record_pointer": { "type": ["string", "null"] },
+              "window_id": { "type": ["string", "null"] },
+              "target_person_id": { "type": ["string", "null"] },
+              "target_display_name_hint": { "type": ["string", "null"] },
+              "failed_checks": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "evidence_ref_count": { "type": "integer", "minimum": 0 },
+              "ready": { "type": "boolean" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "decision_placeholder_paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "human_review_fill_plan": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "source_files",
+        "target_files",
+        "current_review_sheet",
+        "required_global_confirmation_paths",
+        "required_final_review_paths",
+        "window_row_tasks",
+        "current_diagnostics_summary",
+        "command_order",
+        "boundary_policy"
+      ],
+      "properties": {
+        "schema_version": { "const": "pt028_human_review_fill_plan.v1" },
+        "purpose": { "type": "string" },
+        "source_files": {
+          "type": "object",
+          "required": [
+            "template_json_path",
+            "worksheet_markdown_path",
+            "worksheet_html_path"
+          ],
+          "properties": {
+            "template_json_path": { "type": "string" },
+            "worksheet_markdown_path": { "type": "string" },
+            "worksheet_html_path": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "target_files": {
+          "type": "object",
+          "required": [
+            "filled_review_sheet_target_path",
+            "real_feedback_target_path",
+            "active_review_sheet_path"
+          ],
+          "properties": {
+            "filled_review_sheet_target_path": { "type": "string" },
+            "real_feedback_target_path": { "type": "string" },
+            "requested_review_sheet_path": { "type": ["string", "null"] },
+            "active_review_sheet_path": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "current_review_sheet": {
+          "type": "object",
+          "required": ["exists", "loaded"],
+          "properties": {
+            "exists": { "type": "boolean" },
+            "loaded": { "type": "boolean" },
+            "input_status": { "type": "object" }
+          },
+          "additionalProperties": true
+        },
+        "required_global_confirmation_paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "required_final_review_paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "window_row_tasks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "row_index",
+              "decision_template_record_pointer",
+              "source_window",
+              "required_boolean_paths",
+              "required_value_paths",
+              "current_failed_checks",
+              "ready"
+            ],
+            "properties": {
+              "row_index": { "type": "integer", "minimum": 0 },
+              "task_id": { "type": ["string", "null"] },
+              "decision_template_record_pointer": { "type": "string" },
+              "source_window": { "type": "object" },
+              "required_boolean_paths": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "required_value_paths": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "allowed_operator_decision_values": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "allowed_target_response_signal_values": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "current_failed_checks": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "ready": { "type": "boolean" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "current_diagnostics_summary": {
+          "type": "object",
+          "required": [
+            "source",
+            "expected_window_review_count",
+            "actual_window_review_count",
+            "unique_target_count",
+            "missing_global_confirmations",
+            "missing_task_ids",
+            "failed_required_checks",
+            "unready_window_row_count"
+          ],
+          "properties": {
+            "source": {
+              "enum": [
+                "submitted_review_sheet",
+                "template_initial_diagnostics"
+              ]
+            },
+            "expected_window_review_count": { "type": "integer", "minimum": 0 },
+            "actual_window_review_count": { "type": "integer", "minimum": 0 },
+            "unique_target_count": { "type": "integer", "minimum": 0 },
+            "missing_global_confirmations": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "missing_task_ids": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "failed_required_checks": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "unready_window_row_count": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": true
+        },
+        "command_order": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["step_id", "command", "writes_target_file"],
+            "properties": {
+              "step_id": { "type": "string" },
+              "command": { "type": "string" },
+              "writes_target_file": { "type": "boolean" },
+              "notes": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "next_commands": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "boundary_policy": {
+          "type": "object",
+          "required": [
+            "fill_plan_writes_real_review_sheet",
+            "fill_plan_writes_real_feedback_target",
+            "writer_writes_real_feedback_target",
+            "automatic_send_allowed",
+            "prompt_only_required",
+            "human_review_required"
+          ],
+          "properties": {
+            "fill_plan_writes_real_review_sheet": { "const": false },
+            "fill_plan_writes_real_feedback_target": { "const": false },
+            "writer_writes_real_feedback_target": { "const": false },
+            "automatic_send_allowed": { "const": false },
+            "prompt_only_required": { "const": true },
+            "human_review_required": { "const": true }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "next_commands": { "type": "array", "items": { "type": "string" } },
+    "controlled_preflight_chain": {
+      "type": ["object", "null"],
+      "properties": {
+        "schema_version": { "const": "pt028_human_review_controlled_preflight_chain.v1" },
+        "coverage_ready": { "type": "boolean" },
+        "preflight_ready": { "type": "boolean" },
+        "ready_for_controlled_target_write": { "type": "boolean" },
+        "required_failures": { "type": "array", "items": { "type": "string" } },
+        "runs": { "type": "object" },
+        "boundary_policy": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+    "boundary_policy": { "type": "object" },
+    "output_paths": {
+      "type": "object",
+      "required": [
+        "json_path",
+        "markdown_path",
+        "review_sheet_template_path",
+        "review_sheet_markdown_path",
+        "review_sheet_html_path",
+        "latest_path"
+      ],
+      "properties": {
+        "json_path": { "type": "string" },
+        "markdown_path": { "type": "string" },
+        "review_sheet_template_path": { "type": "string" },
+        "review_sheet_markdown_path": { "type": "string" },
+        "review_sheet_html_path": { "type": "string" },
+        "decision_output_path": { "type": ["string", "null"] },
+        "latest_path": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

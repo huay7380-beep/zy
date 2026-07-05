@@ -1,0 +1,25 @@
+{
+  "observation_id": "intake_obs_external_chat_export_001",
+  "source_adapter_id": "external_chat_export.sample",
+  "source_type": "file",
+  "platform": "external_chat_export",
+  "captured_at": "2026-06-16T09:30:00+08:00",
+  "content_text": "2026-06-16 09:00 User: Can we confirm the project review next week?\n2026-06-16 09:02 Customer: Please send the security whitelist first. email [redacted_email]",
+  "content_summary": "External chat export shows the customer asking for security whitelist material before confirming the project review.",
+  "participants_hint": ["user", "customer_contact"],
+  "thread_hint": {
+    "thread_title": "Customer Project Chat",
+    "export_format": "txt"
+  },
+  "raw_artifact_refs": [
+    "runtime/user-inputs/external-chat-export.real.txt"
+  ],
+  "privacy_level": "redacted_text",
+  "confidence": 0.82,
+  "metadata": {
+    "sample_only": true,
+    "real_execution_allowed": false,
+    "real_send_attempted": false,
+    "source_saved_file_only": true
+  }
+}

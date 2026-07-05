@@ -1,0 +1,31 @@
+{
+  "send_command_id": "send_command_sightflow_001",
+  "event_id": "intake_obs_sightflow_wechat_001",
+  "decision_id": "decision_desktop_intake_sample_001",
+  "trigger_id": "trigger_desktop_intake_sample_001",
+  "target_platform": "wechat",
+  "target_person_id": "person_client_a",
+  "target_thread_hint": {
+    "channel": "wechat",
+    "conversation_title": "张总",
+    "target_display_name": "张总"
+  },
+  "message_draft": "张总，明天下午可以先让技术负责人看接口清单。我这边先把预算和白名单问题整理成一页，方便你们内部确认。",
+  "requires_user_confirmation": true,
+  "user_confirmed": false,
+  "real_execution_allowed": false,
+  "safety_checks": {
+    "window_matches": true,
+    "thread_matches": true,
+    "draft_matches": true,
+    "permission_granted": false,
+    "notes": [
+      "dry-run sample; real send is intentionally blocked"
+    ]
+  },
+  "created_at": "2026-06-10T08:33:00+08:00",
+  "metadata": {
+    "executor": "sightflow_desktop",
+    "dry_run": true
+  }
+}

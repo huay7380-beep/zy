@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PersonRoleBinding",
+  "type": "object",
+  "required": [
+    "binding_id",
+    "graph_id",
+    "scene",
+    "role",
+    "role_status",
+    "tags",
+    "confidence",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "binding_id": { "type": "string", "minLength": 1 },
+    "graph_id": { "type": "string", "minLength": 1 },
+    "scene": { "type": "string", "minLength": 1 },
+    "role": { "type": "string", "minLength": 1 },
+    "role_status": {
+      "type": "string",
+      "enum": ["candidate", "confirmed", "rejected", "archived"]
+    },
+    "candidate_person_id": { "type": ["string", "null"] },
+    "person_id": { "type": ["string", "null"] },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "source_observation_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "metadata": { "type": "object" },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}

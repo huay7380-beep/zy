@@ -1,0 +1,166 @@
+{
+  "schema_version": "skill_creation_gate.v1",
+  "gate_id": "skill_creation_gate_cross_border_product_visual_director_20260628",
+  "created_at": "2026-06-28T12:29:25+08:00",
+  "requested_goal": "Create a reusable Skill that can judge and direct cross-border B2B product visuals, product image reconstruction, copywriting, QA scoring and product page generation for private-label structured cabling products.",
+  "requested_by": "user",
+  "must_execute_capabilities": [
+    "classify product category and buyer context",
+    "extract product visual selling points",
+    "choose product image direction by usage surface",
+    "write B2B product page copy",
+    "score product page and image quality",
+    "produce a one-page confirmation product page"
+  ],
+  "proposed_skill": {
+    "name": "cross-border-product-visual-director",
+    "intended_trigger": "Use when product images, catalogue pages, product detail pages, B2B ecommerce visuals, private-label product pages, product image reconstruction, or product visual QA need domain-specific direction for cross-border ecommerce.",
+    "expected_outputs": [
+      "visual brief",
+      "category-specific image direction",
+      "product page module plan",
+      "copywriting blocks",
+      "visual QA scorecard",
+      "implementation checklist"
+    ],
+    "owner_module_or_project": "cross-border-ecommerce-ai-route"
+  },
+  "required_search_sources": [
+    "available_session_skills",
+    "local_codex_skills",
+    "installed_plugins_and_connectors",
+    "tool_search_when_available",
+    "repository_modules_and_scripts",
+    "capability-upgrade-registry",
+    "local_tool_catalogs_such_as_cli_anything",
+    "reputable_external_software_or_open_source_projects_when_network_research_is_appropriate"
+  ],
+  "search_results": [
+    {
+      "source": "available_session_skills",
+      "query_or_path": "Session skill list",
+      "candidate_name": "imagegen",
+      "candidate_type": "skill",
+      "candidate_location": "C:/Users/zhang/.codex/skills/.system/imagegen/SKILL.md",
+      "fit_summary": "Useful for raster image generation or editing, but it does not define B2B structured-cabling product aesthetics, product-page modules, category rules or QA scoring.",
+      "decision": "adapt",
+      "reason": "Keep as an execution helper, not as the directing Skill.",
+      "license_or_security_notes": "Local system Skill."
+    },
+    {
+      "source": "available_session_skills",
+      "query_or_path": "Session skill list",
+      "candidate_name": "frontend-design",
+      "candidate_type": "skill",
+      "candidate_location": "C:/Users/zhang/.codex/skills/frontend-design/SKILL.md",
+      "fit_summary": "Useful for polished page implementation and visual QA, but lacks cross-border B2B product image strategy and category-specific product photography guidance.",
+      "decision": "adapt",
+      "reason": "Use for page implementation verification after the visual director Skill chooses the product page direction.",
+      "license_or_security_notes": "Local Skill."
+    },
+    {
+      "source": "local_codex_skills",
+      "query_or_path": "C:/Users/zhang/.codex/skills/**/SKILL.md",
+      "candidate_name": "existing local Skills",
+      "candidate_type": "skill",
+      "candidate_location": "C:/Users/zhang/.codex/skills",
+      "fit_summary": "No existing Skill specifically covers product visual direction, product image reconstruction, industrial B2B ecommerce product page copy and QA scoring.",
+      "decision": "reject",
+      "reason": "Existing Skills are execution/general workflow helpers, not a domain-specific product visual director.",
+      "license_or_security_notes": "Local files only."
+    },
+    {
+      "source": "tool_search_when_available",
+      "query_or_path": "image generation product photography ecommerce product page visual design skill plugin connector",
+      "candidate_name": "available plugin/tool metadata",
+      "candidate_type": "plugin_or_connector",
+      "candidate_location": "tool_search result set",
+      "fit_summary": "No exact callable plugin was found for this private-label structured cabling visual director role. Exposed tools are general GitHub/node REPL capabilities, not product visual direction.",
+      "decision": "reject",
+      "reason": "No domain-specific ready plugin is available in the current callable tool list.",
+      "license_or_security_notes": "No new plugin requested or installed."
+    },
+    {
+      "source": "repository_modules_and_scripts",
+      "query_or_path": "D:/zhineng/cross-border-ecommerce-ai-route and D:/zhineng/scripts",
+      "candidate_name": "cross-border ecommerce stage/control artifacts",
+      "candidate_type": "repo_module",
+      "candidate_location": "D:/zhineng/cross-border-ecommerce-ai-route",
+      "fit_summary": "The project contains templates, product intake and runtime previews, but not a reusable Skill with visual direction rules and QA workflow.",
+      "decision": "adapt",
+      "reason": "Reuse the project artifacts as inputs and output location, but create the Skill for future repeatable guidance.",
+      "license_or_security_notes": "Local project artifacts."
+    },
+    {
+      "source": "capability-upgrade-registry",
+      "query_or_path": "D:/zhineng/capability-upgrade-registry",
+      "candidate_name": "skill_creation_gate.v1",
+      "candidate_type": "repo_module",
+      "candidate_location": "D:/zhineng/capability-upgrade-registry/templates/skill-creation-gate.template.json",
+      "fit_summary": "Provides governance and gate recording, not the product visual director itself.",
+      "decision": "adapt",
+      "reason": "Use the gate for evidence and approval, then proceed with Skill creation.",
+      "license_or_security_notes": "Local governance module."
+    },
+    {
+      "source": "reputable_external_software_or_open_source_projects",
+      "query_or_path": "AI product photography and ecommerce product page tools",
+      "candidate_name": "Photoroom, Flair AI, Canva, Adobe Firefly, Pebblely",
+      "candidate_type": "software",
+      "candidate_location": "https://www.photoroom.com/ ; https://flair.ai/ ; https://www.canva.com/ ; https://www.adobe.com/products/firefly.html ; https://pebblely.com/",
+      "fit_summary": "These tools can help generate or edit product visuals, but they do not encode this project's private visual rules, cabling product taxonomy, product-page workflow or main-system control requirements.",
+      "decision": "adapt",
+      "reason": "Treat as optional execution/reference tools; create a local Skill to drive standards, prompts, QA and product-page decisions.",
+      "license_or_security_notes": "External SaaS terms and data handling must be reviewed before uploading real supplier/product assets."
+    }
+  ],
+  "decision_order_result": {
+    "reuse_existing_skill_or_tool": "rejected_for_full_goal_but_adapt_execution_helpers",
+    "wrap_or_adapt_existing_capability": "accepted_for_imagegen_frontend_design_and_project_artifacts",
+    "install_or_request_existing_plugin_or_connector": "not_applicable",
+    "create_new_skill": "allowed"
+  },
+  "creation_allowed_when_checked": [
+    "no_existing_skill_or_software_satisfies_the_required_goal",
+    "existing_candidate_cannot_be_safely_adapted_as_the_directing_workflow",
+    "the_needed_workflow_is_private_project_specific_and_requires_local_instructions",
+    "the_gate_record_is_written_before_skill_files_are_created"
+  ],
+  "creation_blockers": [],
+  "final_decision": {
+    "decision": "create_new_skill",
+    "confidence": "high",
+    "reason": "Existing skills and SaaS tools can execute pieces, but none provide the reusable local judgment layer for cross-border B2B structured cabling product visuals, copy and QA.",
+    "approved_next_step": "Create C:/Users/zhang/.codex/skills/cross-border-product-visual-director and test it by generating one product page under cross-border-ecommerce-ai-route/runtime."
+  },
+  "validation_plan": {
+    "dry_run_prompt": "Use $cross-border-product-visual-director to turn QXKJ-1035 into a private-label B2B product page confirmation draft.",
+    "expected_behavior": [
+      "reads product/category context",
+      "chooses visual direction before layout",
+      "creates product page copy and modules",
+      "runs visual QA scorecard",
+      "keeps outputs under cross-border-ecommerce-ai-route/runtime"
+    ],
+    "required_files_if_created": [
+      "SKILL.md",
+      "references/category-visual-rules.md",
+      "references/brand-style-system.md",
+      "references/copywriting-rules.md",
+      "references/qa-rubric.md",
+      "scripts/product_visual_brief.py",
+      "scripts/visual_qa_score.py"
+    ],
+    "required_validation_commands": [
+      "python C:/Users/zhang/.codex/skills/.system/skill-creator/scripts/quick_validate.py C:/Users/zhang/.codex/skills/cross-border-product-visual-director",
+      "python C:/Users/zhang/.codex/skills/cross-border-product-visual-director/scripts/product_visual_brief.py --help",
+      "python C:/Users/zhang/.codex/skills/cross-border-product-visual-director/scripts/visual_qa_score.py --help"
+    ]
+  },
+  "human_confirmation": {
+    "required": true,
+    "status": "requested_by_user_for_current_build",
+    "confirmed_by": "user",
+    "confirmed_at": "2026-06-28T12:29:25+08:00"
+  }
+}

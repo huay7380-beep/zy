@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/mvp-stress-test.schema.json",
+  "title": "MvpStressTest",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "stress_id",
+    "created_at",
+    "runs",
+    "success",
+    "failed",
+    "gate_decision",
+    "source",
+    "metrics",
+    "quality",
+    "process_tree_validation",
+    "hard_exit_signals",
+    "continue_when",
+    "stop_or_adjust_when",
+    "failures",
+    "iterations"
+  ],
+  "properties": {
+    "schema_version": { "const": "mvp_stress_test.v1" },
+    "stress_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "runs": { "type": "integer", "minimum": 1 },
+    "success": { "type": "integer", "minimum": 0 },
+    "failed": { "type": "integer", "minimum": 0 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "stress_passed_continue_to_user_materials",
+        "stress_failed_adjust_before_expansion"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "workspace_root",
+        "import_path",
+        "user_feedback_path",
+        "process_tree_path"
+      ],
+      "properties": {
+        "workspace_root": { "type": "string" },
+        "import_path": { "type": "string" },
+        "user_feedback_path": { "type": "string" },
+        "process_tree_path": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "metrics": {
+      "type": "object",
+      "required": ["total_ms", "avg_ms", "min_ms", "max_ms", "p95_ms"],
+      "properties": {
+        "total_ms": { "type": "number" },
+        "avg_ms": { "type": "number" },
+        "min_ms": { "type": "number" },
+        "max_ms": { "type": "number" },
+        "p95_ms": { "type": "number" }
+      },
+      "additionalProperties": true
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": { "type": "number" }
+    },
+    "process_tree_validation": {
+      "type": "object",
+      "required": ["gate_decision", "required_failures", "warning_failures"],
+      "properties": {
+        "gate_decision": { "type": "string" },
+        "required_failures": { "type": "array", "items": { "type": "string" } },
+        "warning_failures": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "hard_exit_signals": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "continue_when": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "stop_or_adjust_when": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "iterations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["iteration", "status", "duration_ms"],
+        "properties": {
+          "iteration": { "type": "integer", "minimum": 1 },
+          "status": { "type": "string", "enum": ["pass", "fail"] },
+          "duration_ms": { "type": "number" },
+          "run_id": { "type": "string" },
+          "failure": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

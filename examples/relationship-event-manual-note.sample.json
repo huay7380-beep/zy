@@ -1,0 +1,21 @@
+{
+  "source_id": "manual_note_relationship_001",
+  "source_type": "manual",
+  "platform": "operator_note",
+  "adapter_id": "manual.operator_note",
+  "captured_at": "2026-07-01T20:00:00+08:00",
+  "content_text": "Manual note: target joked 'are we dating now?' and the user wants to maintain warmth without claiming a confirmed relationship. Keep the next response low-pressure and evidence-based.",
+  "content_summary": "Manual relationship note records a relationship label probe and a low-pressure boundary requirement.",
+  "participants_hint": ["user", "romantic_target_hint"],
+  "thread_hint": {
+    "thread_title": "manual relationship maintenance note",
+    "thread_key": "manual:relationship-note:001"
+  },
+  "raw_artifact_refs": [],
+  "privacy_level": "redacted_text",
+  "metadata": {
+    "sample_only": true,
+    "real_execution_allowed": false,
+    "real_send_attempted": false
+  }
+}

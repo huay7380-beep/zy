@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/mvp-external-input-readiness.schema.json",
+  "title": "MvpExternalInputReadiness",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "readiness_id",
+    "created_at",
+    "source_kit_id",
+    "gate_decision",
+    "ready_for_real_input_trial",
+    "item_results",
+    "required_failures",
+    "next_actions",
+    "continue_when",
+    "stop_or_adjust_when"
+  ],
+  "properties": {
+    "schema_version": { "const": "mvp_external_input_readiness.v1" },
+    "readiness_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "source_kit_id": { "type": "string", "minLength": 1 },
+    "input_kit_path": { "type": ["string", "null"] },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "external_inputs_ready_for_mvp_self_agent",
+        "external_inputs_need_attention",
+        "external_inputs_waiting_for_materials"
+      ]
+    },
+    "ready_for_real_input_trial": { "type": "boolean" },
+    "item_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["issue_id", "status", "ready", "evidence", "next_action"],
+        "properties": {
+          "issue_id": { "type": "string" },
+          "target_path": { "type": "string" },
+          "companion_preview_path": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["ready", "missing", "needs_attention", "invalid", "unsupported"]
+          },
+          "ready": { "type": "boolean" },
+          "validation_command": { "type": "string" },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "next_action": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "continue_when": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "stop_or_adjust_when": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

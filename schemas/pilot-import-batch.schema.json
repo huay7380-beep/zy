@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PilotImportBatch",
+  "type": "object",
+  "required": [
+    "import_id",
+    "people",
+    "relationships",
+    "records"
+  ],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "import_id": { "type": "string", "minLength": 1 },
+    "goal": {
+      "type": "object",
+      "properties": {
+        "initial_goal": { "type": "string" },
+        "scene": { "type": "string" },
+        "primary_person_id": { "type": "string" },
+        "target_person_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "people": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "relationships": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "source",
+          "occurred_at",
+          "speaker_person_id",
+          "content"
+        ],
+        "properties": {
+          "record_id": { "type": "string", "minLength": 1 },
+          "event_id": { "type": "string" },
+          "event_kind": {
+            "type": "string",
+            "enum": [
+              "raw_interaction",
+              "web_observation",
+              "manual_note",
+              "notification_result",
+              "imported_record"
+            ]
+          },
+          "source": { "type": "string", "minLength": 1 },
+          "channel": { "type": "string", "minLength": 1 },
+          "direction": {
+            "type": "string",
+            "enum": ["inbound", "outbound", "system", "unknown"]
+          },
+          "content_type": { "type": "string", "minLength": 1 },
+          "source_ref": { "type": "object" },
+          "occurred_at": { "type": "string", "minLength": 1 },
+          "speaker_person_id": { "type": "string", "minLength": 1 },
+          "participant_person_ids": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "target_person_ids": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "content": { "type": "string", "minLength": 1 },
+          "content_summary": { "type": "string" },
+          "linked_person_ids": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "linked_relationship_ids": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "metadata": { "type": "object" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "semantic_hints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "event_type_code",
+          "event_level"
+        ],
+        "properties": {
+          "hint_id": { "type": "string" },
+          "event_id": { "type": "string" },
+          "raw_record_ids": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "raw_event_ids": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "event_type_code": { "type": "string", "minLength": 1 },
+          "summary": { "type": "string", "minLength": 1 },
+          "graph_updates": { "type": "object", "additionalProperties": true },
+          "event_level": { "type": "string", "enum": ["P1", "P2", "P3"] },
+          "status": {
+            "type": "string",
+            "enum": ["candidate", "confirmed", "rejected", "archived"]
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "weight": { "type": "number", "minimum": 0, "maximum": 1 },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "linked_person_ids": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "linked_relationship_ids": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "occurred_at": { "type": "string" },
+          "requires_confirmation": { "type": "boolean" },
+          "metadata": { "type": "object" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "feedback_records": {
+      "type": "array",
+      "items": { "type": "object" }
+    }
+  },
+  "additionalProperties": false
+}

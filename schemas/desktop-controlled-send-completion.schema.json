@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DesktopControlledSendCompletion",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "completion_id",
+    "gate_decision",
+    "verification_mode",
+    "real_send_verified",
+    "simulated_send_verified",
+    "audit_event_ready",
+    "feedback_entry_ready",
+    "trial_path",
+    "result_path",
+    "required_failures",
+    "command_summary",
+    "send_result_summary",
+    "audit_record",
+    "feedback_entry_template",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "desktop_controlled_send_completion.v1" },
+    "completion_id": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "controlled_send_completed",
+        "controlled_send_simulation_completed",
+        "controlled_send_completion_failed"
+      ]
+    },
+    "verification_mode": {
+      "type": "string",
+      "enum": ["real", "simulated"]
+    },
+    "real_send_verified": { "type": "boolean" },
+    "simulated_send_verified": { "type": "boolean" },
+    "audit_event_ready": { "type": "boolean" },
+    "feedback_entry_ready": { "type": "boolean" },
+    "trial_path": { "type": "string", "minLength": 1 },
+    "result_path": { "type": "string", "minLength": 1 },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "command_summary": {
+      "type": "object",
+      "required": [
+        "send_command_id",
+        "event_id",
+        "decision_id",
+        "trigger_id",
+        "target_platform",
+        "target_person_id",
+        "target_thread_hint",
+        "message_draft_length",
+        "message_draft_sha256"
+      ],
+      "properties": {
+        "send_command_id": { "type": ["string", "null"] },
+        "event_id": { "type": ["string", "null"] },
+        "decision_id": { "type": ["string", "null"] },
+        "trigger_id": { "type": ["string", "null"] },
+        "target_platform": { "type": ["string", "null"] },
+        "target_person_id": { "type": ["string", "null"] },
+        "target_thread_hint": {
+          "anyOf": [
+            { "type": "null" },
+            { "type": "object" }
+          ]
+        },
+        "message_draft_length": { "type": ["integer", "null"], "minimum": 0 },
+        "message_draft_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "send_result_summary": {
+      "type": "object",
+      "required": [
+        "send_result_id",
+        "send_command_id",
+        "status",
+        "executed_at",
+        "evidence_refs",
+        "target_verification",
+        "metadata"
+      ],
+      "properties": {
+        "send_result_id": { "type": "string", "minLength": 1 },
+        "send_command_id": { "type": "string", "minLength": 1 },
+        "status": {
+          "type": "string",
+          "enum": ["blocked", "previewed", "sent", "failed"]
+        },
+        "executed_at": { "type": "string", "minLength": 1 },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "target_verification": { "type": "object" },
+        "metadata": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
+    "audit_record": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "object" }
+      ]
+    },
+    "feedback_entry_template": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "object" }
+      ]
+    },
+    "created_at": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}

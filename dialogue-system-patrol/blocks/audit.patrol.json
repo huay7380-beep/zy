@@ -1,0 +1,247 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "audit",
+  "display_name": "审计",
+  "owner": "process_tree",
+  "source_dir": "schemas",
+  "process_tree_node_id": "audit",
+  "registration_status": "process_tree_status:implemented_skeleton",
+  "gate": "system_patrol_coverage_gate",
+  "compass": "system_patrol.audit",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "validated",
+  "updated_at": "2026-07-01T11:39:08.902Z",
+  "ttl_ms": 604800000,
+  "change_session_id": "system_patrol_blocks_init_20260701",
+  "data_flow": {
+    "inputs": [
+      "schemas/storage-audit.schema.json",
+      "data/audit/storage-audit.jsonl",
+      "runtime/state/current-status.json",
+      "runtime/state/operator-note.md",
+      "runtime/state/run-events.jsonl",
+      "docs/03-运行状态笔记.md",
+      "packages/storage-runtime/src/storage-runtime.mjs",
+      "packages/agent-runtime/src/state-notebook.mjs",
+      "packages/mvp-runtime/src/mvp-runtime.mjs",
+      "scripts/run-mvp-loop.mjs",
+      "packages/mvp-runtime/src/mvp-audit.mjs",
+      "scripts/audit-mvp-completion.mjs",
+      "runtime/audits/mvp-completion-audit.json",
+      "runtime/audits/mvp-completion-audit.md",
+      "schemas/platform-snapshot-validation.schema.json",
+      "scripts/validate-platform-snapshot.mjs",
+      "runtime/platform-snapshot-validations/**",
+      "schemas/mvp-self-agent-preflight.schema.json",
+      "packages/mvp-runtime/src/mvp-self-agent.mjs",
+      "scripts/run-mvp-self-agent-cycle.mjs",
+      "runtime/self-agent-preflights/**",
+      "schemas/process-tree-validation.schema.json",
+      "packages/mvp-runtime/src/process-tree-validation.mjs",
+      "scripts/validate-process-tree.mjs",
+      "runtime/process-tree-validations/**",
+      "schemas/mvp-stress-test.schema.json",
+      "packages/mvp-runtime/src/mvp-stress.mjs",
+      "scripts/stress-mvp-loop.mjs",
+      "runtime/mvp-stress-tests/**",
+      "schemas/mvp-external-input-templates.schema.json",
+      "scripts/init-mvp-external-input-templates.mjs",
+      "runtime/user-inputs/templates/**",
+      "runtime/input-templates/**",
+      "schemas/mvp-objective-audit.schema.json",
+      "packages/mvp-runtime/src/mvp-objective-audit.mjs",
+      "scripts/audit-mvp-objective.mjs",
+      "runtime/objective-audits/**",
+      "schemas/mvp-real-input-trial.schema.json",
+      "packages/mvp-runtime/src/mvp-real-input-trial.mjs",
+      "scripts/run-mvp-real-input-trial.mjs",
+      "runtime/real-input-trials/**",
+      "schemas/mvp-status-dashboard.schema.json",
+      "packages/mvp-runtime/src/mvp-status-dashboard.mjs",
+      "scripts/write-mvp-status-dashboard.mjs",
+      "runtime/status-dashboards/**",
+      "schemas/goal-oriented-interaction-backtest.schema.json",
+      "packages/mvp-runtime/src/goal-oriented-interaction-backtest.mjs",
+      "scripts/run-goal-oriented-backtest.mjs",
+      "runtime/goal-oriented-backtests/**",
+      "tupu/07-理论与代码工程回测一致性结果.md",
+      "schemas/tool-adapter-capability.schema.json",
+      "schemas/tool-call-plan.schema.json",
+      "schemas/tool-call-result.schema.json",
+      "schemas/tool-intake-bridge.schema.json",
+      "packages/tool-runtime/src/tool-runtime.mjs",
+      "packages/tool-runtime/src/tool-intake-bridge.mjs",
+      "scripts/run-tool-runtime-demo.mjs",
+      "scripts/bridge-tool-intake.mjs",
+      "schemas/outbound-send-command.schema.json",
+      "schemas/outbound-send-result.schema.json",
+      "examples/outbound-send-command.sample.json",
+      "scripts/run-desktop-send-dry-run.mjs",
+      "runtime/desktop-send-dry-runs/**",
+      "schemas/identity-resolution-audit.schema.json",
+      "scripts/audit-identity-resolution.mjs",
+      "runtime/identity-resolution-audits/**",
+      "schemas/pt028-event-stream-health.schema.json",
+      "scripts/validate-pt028-event-stream-health.mjs",
+      "runtime/pt028-event-stream-health/**",
+      "schemas/pt028-final-special-review-pack.schema.json",
+      "scripts/write-pt028-final-special-review-pack.mjs",
+      "runtime/pt028-final-special-review-packs/**",
+      "schemas/pt028-human-review-decision-writer.schema.json",
+      "scripts/write-pt028-human-review-decision.mjs",
+      "runtime/pt028-human-review-decisions/**",
+      "schemas/pt028-acceptance-status.schema.json",
+      "scripts/write-pt028-acceptance-status.mjs",
+      "runtime/pt028-acceptance-statuses/**",
+      "schemas/pt028-operator-acceptance-handoff.schema.json",
+      "scripts/write-pt028-operator-acceptance-handoff.mjs",
+      "runtime/pt028-operator-acceptance-handoffs/**",
+      "schemas/pt028-operator-next-step.schema.json",
+      "scripts/write-pt028-operator-next-step.mjs",
+      "runtime/pt028-operator-next-steps/**",
+      "schemas/pt028-operator-handoff-refresh-chain.schema.json",
+      "scripts/run-pt028-operator-handoff-refresh.mjs",
+      "runtime/pt028-operator-handoff-refresh-chains/**"
+    ],
+    "processing": [
+      "记录每次写入、回写、索引重建和失败，保证流程可检查、可复盘。"
+    ],
+    "outputs": [
+      "StorageAudit",
+      "runtime_state",
+      "mvp_completion_audit",
+      "platform_snapshot_validation",
+      "MvpSelfAgentPreflight",
+      "mvp_self_agent_preflight",
+      "ProcessTreeValidation",
+      "process_tree_validation",
+      "MvpStressTest",
+      "mvp_stress_test",
+      "MvpExternalInputTemplates",
+      "mvp_external_input_templates",
+      "MvpObjectiveAudit",
+      "mvp_objective_audit",
+      "MvpRealInputTrial",
+      "mvp_real_input_trial",
+      "MvpStatusDashboard",
+      "mvp_status_dashboard",
+      "GoalOrientedInteractionBacktest",
+      "goal_oriented_interaction_backtest",
+      "SocialToolCallPlan",
+      "SocialToolCallResult",
+      "IdentityResolutionAudit",
+      "pt028_event_stream_health",
+      "pt028_final_special_review_pack",
+      "pt028_human_review_decision_writer",
+      "pt028_human_review_fill_plan",
+      "pt028_human_review_fill_plan_summary",
+      "pt028_operator_action_queue",
+      "pt028_operator_action_queue_summary",
+      "pt028_operator_next_step",
+      "pt028_acceptance_status"
+    ],
+    "dependencies": [
+      "examples/system-process-tree.json",
+      "dialogue-system-patrol/registry/system-patrol-registry.json"
+    ]
+  },
+  "state": {
+    "headline": "审计: patrol block initialized from process tree status implemented_skeleton.",
+    "current_task": "Maintain summary-only patrol coverage and expose dialogue-readable state.",
+    "progress": 1,
+    "blockers": [],
+    "risks": [
+      "业务审计和运行状态已经分工，但还没有统一查看入口。",
+      "统一 MVP 闭环脚本已完成，后续需要接真实或近真实样本。",
+      "已支持 node scripts/run-mvp-loop.mjs --all 批量运行三条结构闭环并输出门禁指标。",
+      "闭环完成后已输出 real_user_review 和 optimization_result，用于真实用户视角回顾和优化。"
+    ],
+    "next": [
+      "Review this generated patrol block before treating it as a deep module interpretation.",
+      "Refresh validation with npm.cmd run system-patrol:validate.",
+      "Publish dialogue-readable output with npm.cmd run system-patrol:publish."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "examples/system-process-tree.json",
+      "schemas/storage-audit.schema.json",
+      "data/audit/storage-audit.jsonl",
+      "runtime/state/current-status.json",
+      "runtime/state/operator-note.md",
+      "runtime/state/run-events.jsonl",
+      "docs/03-运行状态笔记.md",
+      "packages/storage-runtime/src/storage-runtime.mjs",
+      "packages/agent-runtime/src/state-notebook.mjs"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:publish",
+      "npm.cmd run process-tree:validate"
+    ],
+    "latest_validation_refs": [
+      "runtime/dialogue-system-patrol-validations/latest.json"
+    ]
+  },
+  "boundaries": {
+    "mode": "controlled_write_runtime_summary",
+    "allowed_reads": [
+      "examples/system-process-tree.json",
+      "schemas/storage-audit.schema.json",
+      "data/audit/storage-audit.jsonl",
+      "runtime/state/current-status.json",
+      "runtime/state/operator-note.md",
+      "runtime/state/run-events.jsonl",
+      "docs/03-运行状态笔记.md",
+      "packages/storage-runtime/src/storage-runtime.mjs",
+      "packages/agent-runtime/src/state-notebook.mjs"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/audit.json",
+      "runtime/status-events/audit.json",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**"
+    ],
+    "forbidden_actions": [
+      "no business module rewrite from patrol initialization",
+      "no dialogue reader rewrite from patrol initialization",
+      "no external platform action",
+      "no raw private payload publication"
+    ],
+    "confirmation_gates": [
+      "user confirmation required before protocol migration",
+      "user confirmation required before process-tree and Obsidian registration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The module is represented in the process tree.",
+      "The patrol block was initialized from process-tree summary evidence.",
+      "Current status is summary-only and should cite source refs."
+    ],
+    "must_not_infer": [
+      "Do not infer raw runtime facts that are not present in evidence refs.",
+      "Do not treat generated patrol text as a full source-code review.",
+      "Do not claim external actions or business outcomes from patrol coverage alone."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "sha256:4111a7e1f2a35b9c8cdfc7d511162d5e84a1e4f66e3245a7d746513ec0820a74",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-05T13:12:46.780Z",
+    "source_hash_refs": [
+      "data/audit/storage-audit.jsonl",
+      "docs/03-运行状态笔记.md",
+      "examples/system-process-tree.json",
+      "packages/agent-runtime/src/state-notebook.mjs",
+      "packages/storage-runtime/src/storage-runtime.mjs",
+      "schemas/storage-audit.schema.json"
+    ],
+    "source_hash_excluded_refs": [
+      "runtime/state/current-status.json",
+      "runtime/state/operator-note.md",
+      "runtime/state/run-events.jsonl"
+    ]
+  }
+}

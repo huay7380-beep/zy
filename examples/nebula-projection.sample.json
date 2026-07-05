@@ -1,0 +1,44 @@
+{
+  "schema_version": "nebula_projection.v1",
+  "projection_id": "nebula_projection_sample",
+  "source_run_id": "relationship_event_graph_phase_run_sample",
+  "created_at": "2026-07-01T20:00:01+08:00",
+  "source_only": true,
+  "writes_fact_state": false,
+  "allowed_node_types": ["person", "source", "event", "tag", "confirmation_gate"],
+  "allowed_operation_intents": ["inspect", "expand", "open_evidence", "request_confirmation"],
+  "forbidden_operations": ["write_relationship_state", "confirm_identity", "execute_external_action"],
+  "nodes": [
+    {
+      "node_id": "confirmation_confirmation_gate_sample",
+      "node_type": "confirmation_gate",
+      "label": "relationship_state_write"
+    }
+  ],
+  "edges": [],
+  "visual_profiles": [
+    {
+      "schema_version": "nebula_visual_profile.v1",
+      "projection_id": "nebula_projection_sample",
+      "node_id": "confirmation_confirmation_gate_sample",
+      "source_weight_profile_ref": "weight_profile_sample",
+      "visual_weight_level": "V5",
+      "node_size": 22,
+      "brightness": 0.82,
+      "opacity": 0.92,
+      "color_channel": "red",
+      "border_style": "double_ring_requires_confirmation",
+      "pulse_state": "medium_pending_user_confirmation",
+      "label_priority": "V5",
+      "explainability": {
+        "why_visible": "blocked pending user confirmation",
+        "source_refs": ["runtime/source-archives/sample/raw.txt"]
+      }
+    }
+  ],
+  "visual_operation_intent": {
+    "operation": "inspect",
+    "writes_fact_state": false,
+    "external_action_allowed": false
+  }
+}

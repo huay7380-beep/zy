@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DesktopControlledSendTrial",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "trial_id",
+    "gate_decision",
+    "ready_for_real_controlled_send",
+    "real_send_attempted",
+    "input_path",
+    "box_regions_path",
+    "box_regions_ready",
+    "box_regions_required",
+    "box_regions_failures",
+    "box_regions_required_failures",
+    "handoff",
+    "required_failures",
+    "next_actions",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "desktop_controlled_send_trial.v1" },
+    "trial_id": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "controlled_send_waiting_for_command",
+        "controlled_send_not_ready",
+        "controlled_send_ready_for_test_window"
+      ]
+    },
+    "ready_for_real_controlled_send": { "type": "boolean" },
+    "real_send_attempted": { "const": false },
+    "input_path": { "type": "string", "minLength": 1 },
+    "template_path": { "type": "string" },
+    "box_regions_path": { "type": "string", "minLength": 1 },
+    "box_regions_ready": { "type": "boolean" },
+    "box_regions_required": { "type": "boolean" },
+    "box_regions_template_path": { "type": "string" },
+    "box_regions_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "box_regions_required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "box_regions_summary": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "object" }
+      ]
+    },
+    "handoff": {
+      "type": "object",
+      "required": [
+        "command_path",
+        "readiness_path",
+        "box_regions_path",
+        "result_path",
+        "sightflow_workdir",
+        "runner_environment_contract",
+        "runner_command_with_box_regions",
+        "runner_command_with_vision_api",
+        "completion_command",
+        "audit_command",
+        "notes"
+      ],
+      "properties": {
+        "command_path": { "type": "string", "minLength": 1 },
+        "readiness_path": { "type": "string", "minLength": 1 },
+        "box_regions_path": { "type": "string", "minLength": 1 },
+        "result_path": { "type": "string", "minLength": 1 },
+        "sightflow_workdir": { "type": "string", "minLength": 1 },
+        "runner_environment_contract": {
+          "type": "object",
+          "required": [
+            "contract_version",
+            "ready_for_runner",
+            "allow_real_controlled_send_required",
+            "required_env",
+            "path_bindings",
+            "recognition_mode_policy",
+            "readiness_gate",
+            "command_snapshot_required_fields",
+            "operator_rule"
+          ],
+          "properties": {
+            "contract_version": { "const": "controlled_send_runner_environment.v1" },
+            "ready_for_runner": { "type": "boolean" },
+            "allow_real_controlled_send_required": { "const": true },
+            "required_env": {
+              "type": "object",
+              "required": [
+                "ALLOW_REAL_CONTROLLED_SEND",
+                "CONTROLLED_SEND_COMMAND_PATH",
+                "CONTROLLED_SEND_READINESS_PATH",
+                "CONTROLLED_SEND_RESULT_PATH"
+              ],
+              "properties": {
+                "ALLOW_REAL_CONTROLLED_SEND": { "const": "true" },
+                "CONTROLLED_SEND_COMMAND_PATH": { "type": "string", "minLength": 1 },
+                "CONTROLLED_SEND_READINESS_PATH": { "type": "string", "minLength": 1 },
+                "CONTROLLED_SEND_RESULT_PATH": { "type": "string", "minLength": 1 }
+              },
+              "additionalProperties": false
+            },
+            "path_bindings": {
+              "type": "object",
+              "required": [
+                "command_path_must_equal",
+                "readiness_path_must_equal",
+                "result_path_must_equal",
+                "box_regions_path_must_equal"
+              ],
+              "properties": {
+                "command_path_must_equal": { "type": "string", "minLength": 1 },
+                "readiness_path_must_equal": { "type": "string", "minLength": 1 },
+                "result_path_must_equal": { "type": "string", "minLength": 1 },
+                "box_regions_path_must_equal": { "type": "string", "minLength": 1 }
+              },
+              "additionalProperties": false
+            },
+            "recognition_mode_policy": {
+              "type": "object",
+              "required": [
+                "exactly_one_required",
+                "box_regions_env",
+                "box_regions_expected_path",
+                "vision_api_env",
+                "vision_api_value_placeholder",
+                "forbidden_combination"
+              ],
+              "properties": {
+                "exactly_one_required": { "const": true },
+                "box_regions_env": { "const": "CONTROLLED_SEND_BOX_REGIONS_PATH" },
+                "box_regions_expected_path": { "type": "string", "minLength": 1 },
+                "vision_api_env": { "const": "CONTROLLED_SEND_VISION_API_KEY" },
+                "vision_api_value_placeholder": { "type": "string", "minLength": 1 },
+                "forbidden_combination": {
+                  "type": "array",
+                  "contains": { "const": "CONTROLLED_SEND_BOX_REGIONS_PATH" },
+                  "items": { "type": "string", "minLength": 1 }
+                }
+              },
+              "additionalProperties": false
+            },
+            "readiness_gate": {
+              "type": "object",
+              "required": [
+                "schema_version",
+                "gate_decision",
+                "ready_for_real_controlled_send",
+                "real_send_attempted",
+                "required_failures"
+              ],
+              "properties": {
+                "schema_version": { "const": "desktop_controlled_send_trial.v1" },
+                "gate_decision": { "const": "controlled_send_ready_for_test_window" },
+                "ready_for_real_controlled_send": { "const": true },
+                "real_send_attempted": { "const": false },
+                "required_failures": {
+                  "type": "array",
+                  "maxItems": 0
+                }
+              },
+              "additionalProperties": false
+            },
+            "command_snapshot_required_fields": {
+              "type": "array",
+              "contains": { "const": "message_draft_sha256" },
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "operator_rule": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "runner_command_with_box_regions": { "type": "string", "minLength": 1 },
+        "runner_command_with_vision_api": { "type": "string", "minLength": 1 },
+        "completion_command": { "type": "string", "minLength": 1 },
+        "audit_command": { "type": "string", "minLength": 1 },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "command": {
+      "type": "object",
+      "required": [
+        "send_command_id",
+        "event_id",
+        "decision_id",
+        "trigger_id",
+        "target_platform",
+        "target_person_id",
+        "target_thread_hint",
+        "message_draft_length",
+        "message_draft_sha256"
+      ],
+      "properties": {
+        "send_command_id": { "type": "string", "minLength": 1 },
+        "event_id": { "type": "string", "minLength": 1 },
+        "decision_id": { "type": "string", "minLength": 1 },
+        "trigger_id": { "type": "string", "minLength": 1 },
+        "target_platform": { "type": "string", "minLength": 1 },
+        "target_person_id": { "type": ["string", "null"] },
+        "target_thread_hint": { "type": "object" },
+        "message_draft_length": { "type": "integer", "minimum": 1 },
+        "message_draft_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": true
+    },
+    "dry_run_send_result": { "type": "object" },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "created_at": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}

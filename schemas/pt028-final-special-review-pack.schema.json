@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-final-special-review-pack.schema.json",
+  "title": "pt028_final_special_review_pack.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "review_pack_id",
+    "created_at",
+    "gate_decision",
+    "ready_for_human_special_review",
+    "review_scope",
+    "evidence_summary",
+    "human_review_field_guide",
+    "checks",
+    "required_failures",
+    "review_actions",
+    "next_commands",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "writes_real_feedback_target"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_final_special_review_pack.v1" },
+    "review_pack_id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "gate_decision": { "type": "string" },
+    "ready_for_human_special_review": { "type": "boolean" },
+    "review_scope": {
+      "type": "object",
+      "required": [
+        "requires_human_special_review",
+        "decision_template_path",
+        "target_feedback_path"
+      ],
+      "properties": {
+        "requires_human_special_review": { "type": "boolean" },
+        "decision_template_path": { "type": ["string", "null"] },
+        "target_feedback_path": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "evidence_summary": { "type": "object" },
+    "human_review_field_guide": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "language",
+        "decision_template_path",
+        "target_feedback_path",
+        "low_latency_event_stream_review",
+        "event_stream_review_summary",
+        "feedback_collection_review_summary",
+        "operator_confirmation_required_fields",
+        "window_record_required_fields",
+        "window_task_map",
+        "human_special_review_required_fields",
+        "after_template_completion"
+      ],
+      "properties": {
+        "schema_version": { "const": "pt028_human_review_field_guide.v1" },
+        "language": { "const": "zh-CN" },
+        "decision_template_path": { "type": ["string", "null"] },
+        "target_feedback_path": { "type": ["string", "null"] },
+        "low_latency_event_stream_review": { "type": "object" },
+        "event_stream_review_summary": {
+          "type": "object",
+          "required": [
+            "schema_version",
+            "event_health_gate_decision",
+            "event_count",
+            "unique_window_count",
+            "unique_target_count",
+            "input_mode",
+            "ipc_channel",
+            "prompt_only_boundary_preserved",
+            "real_execution_allowed",
+            "real_send_attempted",
+            "writes_real_feedback_target"
+          ],
+          "properties": {
+            "schema_version": { "const": "pt028_human_review_event_stream_summary.v1" },
+            "event_health_gate_decision": { "type": ["string", "null"] },
+            "event_stream_gate_decision": { "type": ["string", "null"] },
+            "event_count": { "type": ["integer", "null"], "minimum": 0 },
+            "unique_window_count": { "type": ["integer", "null"], "minimum": 0 },
+            "unique_target_count": { "type": ["integer", "null"], "minimum": 0 },
+            "input_mode": { "type": ["string", "null"] },
+            "ipc_channel": { "type": ["string", "null"] },
+            "target_dispatch_latency_ms": { "type": ["integer", "null"], "minimum": 0 },
+            "debounce_ms": { "type": ["integer", "null"], "minimum": 0 },
+            "fallback_poll_interval_ms": { "type": ["integer", "null"], "minimum": 0 },
+            "prompt_only_boundary_preserved": { "type": "boolean" },
+            "required_failures": { "type": "array", "items": { "type": "string" } },
+            "real_execution_allowed": { "const": false },
+            "real_send_attempted": { "const": false },
+            "writes_real_feedback_target": { "const": false }
+          },
+          "additionalProperties": true
+        },
+        "feedback_collection_review_summary": {
+          "type": "object",
+          "required": [
+            "schema_version",
+            "session_gate_decision",
+            "session_ready_for_operator_feedback_collection",
+            "task_count",
+            "distinct_target_count",
+            "coverage_gate_decision",
+            "ready_for_confirmation_preflight",
+            "matched_task_count",
+            "confirmed_task_count",
+            "unconfirmed_task_ids",
+            "real_execution_allowed",
+            "real_send_attempted",
+            "writes_real_feedback_target"
+          ],
+          "properties": {
+            "schema_version": { "const": "pt028_human_review_feedback_collection_summary.v1" },
+            "session_gate_decision": { "type": ["string", "null"] },
+            "session_ready_for_operator_feedback_collection": { "type": "boolean" },
+            "task_count": { "type": ["integer", "null"], "minimum": 0 },
+            "distinct_target_count": { "type": ["integer", "null"], "minimum": 0 },
+            "coverage_gate_decision": { "type": ["string", "null"] },
+            "ready_for_confirmation_preflight": { "type": "boolean" },
+            "matched_task_count": { "type": ["integer", "null"], "minimum": 0 },
+            "confirmed_task_count": { "type": ["integer", "null"], "minimum": 0 },
+            "unconfirmed_task_ids": { "type": "array", "items": { "type": "string" } },
+            "first_unconfirmed_failed_checks": { "type": "array", "items": { "type": "string" } },
+            "coverage_required_failures": { "type": "array", "items": { "type": "string" } },
+            "real_execution_allowed": { "const": false },
+            "real_send_attempted": { "const": false },
+            "writes_real_feedback_target": { "const": false }
+          },
+          "additionalProperties": true
+        },
+        "operator_confirmation_required_fields": { "type": "array", "items": { "type": "object" } },
+        "window_record_required_fields": { "type": "array", "items": { "type": "string" } },
+        "window_task_map": { "type": "array", "items": { "type": "object" } },
+        "human_special_review_required_fields": { "type": "array", "items": { "type": "object" } },
+        "after_template_completion": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "status", "required", "evidence"],
+        "properties": {
+          "check_id": { "type": "string" },
+          "status": { "enum": ["passed", "failed"] },
+          "required": { "type": "boolean" },
+          "evidence": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": { "type": "array", "items": { "type": "string" } },
+    "review_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action_id", "status", "owner", "instructions"],
+        "properties": {
+          "action_id": { "type": "string" },
+          "status": { "type": "string" },
+          "owner": { "type": "string" },
+          "instructions": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    },
+    "next_commands": { "type": "array", "items": { "type": "string" } },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "writes_real_feedback_target": { "const": false }
+  },
+  "additionalProperties": true
+}

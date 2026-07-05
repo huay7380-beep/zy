@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.zhineng/schemas/commerce-node.schema.json",
+  "title": "Cross Border Ecommerce Node",
+  "type": "object",
+  "required": [
+    "node_id",
+    "label",
+    "layer",
+    "purpose",
+    "owner_role",
+    "status",
+    "inputs",
+    "outputs",
+    "control_actions",
+    "required_human_gates",
+    "event_writeback",
+    "audit_evidence"
+  ],
+  "properties": {
+    "node_id": {
+      "type": "string",
+      "pattern": "^cbx_[0-9]{2}_[a-z0-9_]+$"
+    },
+    "label": {
+      "type": "string"
+    },
+    "layer": {
+      "type": "string",
+      "enum": [
+        "strategy",
+        "compliance",
+        "site",
+        "content",
+        "commercial",
+        "growth",
+        "sales",
+        "finance",
+        "fulfillment",
+        "customer_success",
+        "audit"
+      ]
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "owner_role": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "blocked", "ready_for_review", "confirmed", "implemented", "audited"]
+    },
+    "source_docs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "inputs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "outputs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "control_actions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "required_human_gates": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "event_writeback": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "audit_evidence": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

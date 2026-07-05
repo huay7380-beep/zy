@@ -1,0 +1,21 @@
+{
+  "schema_version": "confirmation_gate.v1",
+  "gate_id": "confirmation_gate_sample",
+  "gate_type": "relationship_state_write",
+  "subject_ref": "nested_event_sample",
+  "proposed_change": {
+    "action": "review_candidate_only",
+    "relationship_state_write_allowed": false
+  },
+  "evidence_refs": ["runtime/source-archives/sample/raw.txt"],
+  "verification_refs": [],
+  "required_confirmations": ["multi_verification_passed", "user_final_confirmation"],
+  "status": "blocked_pending_user_confirmation",
+  "allowed_operations": [],
+  "created_at": "2026-07-01T20:00:01+08:00",
+  "expires_at": null,
+  "decided_by": null,
+  "decision": null,
+  "apply_once_token": null,
+  "audit_refs": []
+}

@@ -1,0 +1,26 @@
+{
+  "version": "0.1.0",
+  "source": "事件图谱-基于人际关系图谱.md",
+  "event_types": [
+    { "event_type_code": "business_meeting", "label": "商务会议", "category": "社会与契约事件", "default_level": "P2" },
+    { "event_type_code": "contract_signing", "label": "签约/续约", "category": "社会与契约事件", "default_level": "P2" },
+    { "event_type_code": "service_request", "label": "服务请求", "category": "社会与契约事件", "default_level": "P3" },
+    { "event_type_code": "payment_transaction", "label": "支付/借贷/还款", "category": "社会与契约事件", "default_level": "P2" },
+    { "event_type_code": "conflict", "label": "冲突/争吵", "category": "通用事件", "default_level": "P2" },
+    { "event_type_code": "help", "label": "帮助/援助", "category": "通用事件", "default_level": "P2" },
+    { "event_type_code": "invitation", "label": "邀请", "category": "通用事件", "default_level": "P3" },
+    { "event_type_code": "personal_relationship_signal", "label": "私人关系定义候选", "category": "通用事件", "default_level": "P3" },
+    { "event_type_code": "rejection", "label": "拒绝", "category": "通用事件", "default_level": "P3" },
+    { "event_type_code": "celebration", "label": "庆祝", "category": "通用事件", "default_level": "P3" },
+    { "event_type_code": "betrayal", "label": "背叛", "category": "负向与博弈事件", "default_level": "P1" },
+    { "event_type_code": "information_leak", "label": "信息泄露", "category": "负向与博弈事件", "default_level": "P1" },
+    { "event_type_code": "regular_patronage", "label": "常客消费", "category": "社会与契约事件", "default_level": "P3" },
+    { "event_type_code": "neighbor_dispute", "label": "邻里纠纷", "category": "地缘与成长事件", "default_level": "P2" },
+    { "event_type_code": "community_activity", "label": "社区活动", "category": "地缘与成长事件", "default_level": "P3" }
+  ],
+  "candidate_thresholds": {
+    "auto_confirm_min": 0.85,
+    "confirmation_queue_min": 0.55,
+    "p1_requires_confirmation": true
+  }
+}

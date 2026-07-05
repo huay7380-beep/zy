@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>世界核心八扇区认知布局预览</title>
+    <link rel="stylesheet" href="cognitive-sector-layout.css" />
+  </head>
+  <body>
+    <main class="layout-shell">
+      <header class="topbar">
+        <div>
+          <strong>世界核心八扇区认知布局</strong>
+          <span>理想结构预览 · 不连接原系统 · 不写入状态</span>
+        </div>
+        <nav class="actions" aria-label="layout controls">
+          <button id="playThinking" type="button">思维流</button>
+          <button id="playDecision" type="button">决策流</button>
+          <button id="playFeedback" type="button">反馈流</button>
+          <button id="viewHome" type="button">复位</button>
+          <button id="viewTop" type="button">俯视</button>
+        </nav>
+      </header>
+
+      <section class="workspace">
+        <aside class="side-panel left">
+          <header>
+            <span>layout</span>
+            <strong>八扇区闭环</strong>
+          </header>
+          <div class="toggle-list" id="toggleList"></div>
+          <div class="rule-box">
+            <strong>坐标规则</strong>
+            <span>扇区 = 类型</span>
+            <span>远近 = 目标相关性</span>
+            <span>高度 = 认知状态</span>
+            <span>大小 = 重要性</span>
+            <span>亮度 = 激活度</span>
+            <span>透明度 = 置信度</span>
+          </div>
+        </aside>
+
+        <section class="stage" id="stage" tabindex="0" aria-label="rotatable cognitive 3d layout">
+          <svg id="sectorLayer" class="sector-layer" aria-hidden="true"></svg>
+          <svg id="edgeLayer" class="edge-layer" aria-hidden="true"></svg>
+          <div id="nodeLayer" class="node-layer"></div>
+          <div class="height-label high">治理 / 预测 / 候选</div>
+          <div class="height-label mid">当前目标 / 当前状态</div>
+          <div class="height-label low">证据 / 输入 / 历史</div>
+          <div id="cameraState" class="camera-state"></div>
+        </section>
+
+        <aside class="side-panel right">
+          <header>
+            <span>inspector</span>
+            <strong id="focusTitle">世界核心</strong>
+          </header>
+          <div id="inspector" class="inspector"></div>
+          <div class="adjacency">
+            <strong>相邻逻辑</strong>
+            <ol>
+              <li>输入紧邻证据：外部观测必须先成为可追溯证据。</li>
+              <li>证据紧邻状态：证据用于更新当前世界模型。</li>
+              <li>状态紧邻推理：推理必须基于当前状态。</li>
+              <li>推理紧邻决策：预测结果进入候选选择。</li>
+              <li>决策紧邻自我：行动前必须经过边界审查。</li>
+              <li>自我紧邻行动：权限决定能否进入执行。</li>
+              <li>行动紧邻反馈：每个执行必须产生结果。</li>
+              <li>反馈回到输入：结果重新进入观察和记忆。</li>
+            </ol>
+          </div>
+        </aside>
+      </section>
+
+      <footer class="footer">
+        <span>Preview only</span>
+        <span>World core gravity layout</span>
+        <span>8 sectors · 5 height bands · 4 radius rings</span>
+      </footer>
+    </main>
+
+    <script src="cognitive-sector-layout.js"></script>
+  </body>
+</html>

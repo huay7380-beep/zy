@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PlatformDryRunConnector",
+  "type": "object",
+  "required": [
+    "connector_id",
+    "contract_version",
+    "platform",
+    "mode",
+    "real_execution_allowed",
+    "required_markers",
+    "send_block_markers",
+    "forbidden_markers"
+  ],
+  "properties": {
+    "connector_id": { "type": "string" },
+    "contract_version": { "const": "platform_dry_run_connector.v1" },
+    "platform": { "type": "string" },
+    "mode": { "const": "dry_run" },
+    "real_execution_allowed": { "const": false },
+    "required_markers": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "send_block_markers": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "forbidden_markers": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "evidence_required": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "schema_version": "capability_replacement_plan.v1",
+  "plan_id": "example_project__target_module__replacement_plan",
+  "evaluation_report": "capability-upgrade-registry/evaluations/example_project-target_module.json",
+  "target_module": "packages/example-module",
+  "replacement_mode": "adapter_first",
+  "requirements_alignment": {
+    "previous_requirements_refs": [],
+    "must_preserve_behaviors": [],
+    "allowed_behavior_changes": [],
+    "schema_migrations": [],
+    "user_or_operator_workflow_changes": []
+  },
+  "io_contract_preservation": {
+    "input_contracts": [],
+    "output_contracts": [],
+    "error_contracts": [],
+    "compatibility_strategy": "preserve_or_adapter_or_versioned_migration",
+    "breaking_change_allowed": false
+  },
+  "latency_and_effectiveness_targets": {
+    "latency_budget_ms": null,
+    "throughput_target": "",
+    "effectiveness_metric": "",
+    "minimum_acceptable_result": ""
+  },
+  "replacement_complexity": {
+    "estimated_files_touched": 0,
+    "schema_changes_required": false,
+    "runtime_state_changes_required": false,
+    "gui_changes_required": false,
+    "operator_process_changes_required": false,
+    "complexity_level": "low_or_medium_or_high"
+  },
+  "migration_steps": [],
+  "dry_run_plan": {
+    "commands": [],
+    "expected_outputs": [],
+    "must_not_write": [
+      "data/**",
+      "runtime/state/**",
+      "real external platforms"
+    ]
+  },
+  "tests": {
+    "required_commands": [],
+    "manual_checks": [],
+    "io_contract_tests": [],
+    "latency_tests": [],
+    "effectiveness_tests": [],
+    "regression_tests_for_previous_requirements": []
+  },
+  "rollback": {
+    "strategy": "",
+    "files_to_restore_or_disable": [],
+    "fallback_module": ""
+  },
+  "confirmation_gate": {
+    "human_confirmation_required": true,
+    "approval_record_path": "",
+    "ready_for_main_system_change": false
+  }
+}

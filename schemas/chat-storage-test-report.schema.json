@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ChatStorageTestReport",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "report_id",
+    "created_at",
+    "gate_decision",
+    "metrics",
+    "checks",
+    "required_failures"
+  ],
+  "properties": {
+    "schema_version": { "const": "chat_storage_test_report.v1" },
+    "report_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "chat_storage_ready",
+        "chat_storage_needs_fix"
+      ]
+    },
+    "metrics": {
+      "type": "object",
+      "required": [
+        "people_count",
+        "relationship_count",
+        "raw_event_count",
+        "semantic_event_count",
+        "semantic_coverage",
+        "key_fact_coverage"
+      ],
+      "properties": {
+        "people_count": { "type": "integer", "minimum": 0 },
+        "relationship_count": { "type": "integer", "minimum": 0 },
+        "raw_event_count": { "type": "integer", "minimum": 0 },
+        "semantic_event_count": { "type": "integer", "minimum": 0 },
+        "semantic_coverage": { "type": "number", "minimum": 0, "maximum": 1 },
+        "key_fact_coverage": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": true
+    },
+    "checks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/check" }
+    },
+    "query_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["query_id", "gate_decision", "counts"],
+        "properties": {
+          "query_id": { "type": "string", "minLength": 1 },
+          "gate_decision": {
+            "type": "string",
+            "enum": ["query_passed", "query_failed"]
+          },
+          "criteria": { "type": "object" },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "raw_events": { "type": "integer", "minimum": 0 },
+              "semantic_events": { "type": "integer", "minimum": 0 },
+              "people": { "type": "integer", "minimum": 0 },
+              "relationships": { "type": "integer", "minimum": 0 }
+            },
+            "additionalProperties": true
+          },
+          "expected": { "type": "object" },
+          "raw_event_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "semantic_event_type_codes": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "code_audit_checks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/check" }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "output_files": { "type": "object" },
+    "storage_write": { "type": "object" }
+  },
+  "$defs": {
+    "check": {
+      "type": "object",
+      "required": ["check_id", "label", "severity", "status", "passed"],
+      "properties": {
+        "check_id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "severity": {
+          "type": "string",
+          "enum": ["required", "recommended"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pass", "fail"]
+        },
+        "passed": { "type": "boolean" },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "fix": {
+          "type": ["string", "null"]
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

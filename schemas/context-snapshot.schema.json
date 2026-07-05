@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ContextSnapshot",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "snapshot_id",
+    "source",
+    "goal",
+    "relationship_snapshot",
+    "event_snapshot",
+    "decision_inputs",
+    "context_sufficiency_score",
+    "context_sufficiency_level"
+  ],
+  "properties": {
+    "schema_version": { "const": "context_snapshot.v1" },
+    "snapshot_id": { "type": "string", "minLength": 1 },
+    "source": { "type": "string", "minLength": 1 },
+    "built_at": { "type": "string", "minLength": 1 },
+    "goal": { "type": "object", "additionalProperties": true },
+    "relationship_snapshot": { "type": "object", "additionalProperties": true },
+    "event_snapshot": { "type": "object", "additionalProperties": true },
+    "decision_inputs": { "type": "object", "additionalProperties": true },
+    "retrieval_reasons": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "target_context_windows": {
+      "type": "array",
+      "description": "Per-target temporal context windows used by independent expert analysis.",
+      "items": {
+        "type": "object",
+        "required": ["target_person_id", "windows"],
+        "properties": {
+          "target_person_id": { "type": ["string", "null"] },
+          "target_display_name": { "type": ["string", "null"] },
+          "windows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["window_id", "label", "item_count", "items"],
+              "properties": {
+                "window_id": {
+                  "type": "string",
+                  "enum": ["today", "last_7_days", "last_30_days", "historical"]
+                },
+                "label": { "type": "string", "minLength": 1 },
+                "max_age_days": { "type": ["number", "null"], "minimum": 0 },
+                "min_age_days": { "type": ["number", "null"], "minimum": 0 },
+                "item_count": { "type": "integer", "minimum": 0 },
+                "items": {
+                  "type": "array",
+                  "items": { "type": "object", "additionalProperties": true }
+                },
+                "summary": { "type": "string" }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "context_sufficiency_score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "context_sufficiency_level": { "type": "string", "enum": ["low", "medium", "high"] },
+    "context_sufficiency_checks": {
+      "type": "array",
+      "items": { "type": "object", "additionalProperties": true }
+    }
+  },
+  "additionalProperties": true
+}

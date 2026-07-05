@@ -1,0 +1,30 @@
+{
+  "contract": "pdp_site_responsive_build_pack.v1",
+  "generated_at": "2026-07-04T00:00:00+08:00",
+  "product_folder_id": "QXJ-1007",
+  "source_product_id": "QXKJ-1007",
+  "product_name": "UTP Toolless Keystone Jack",
+  "canonical_folder": "D:/zhineng/chanpinye/products/QXJ-1007",
+  "standard_refs": {
+    "layout_standard": "../../standards/pdp-layout-standard.v1.md",
+    "layout_contract": "../../standards/pdp-layout-standard.v1.json",
+    "color_system": "../../standards/pdp-color-system.v1.json"
+  },
+  "page_files": {
+    "html": "index.html",
+    "data": "product-spec-page-data.json",
+    "build_pack": "pdp-build-pack.json",
+    "primary_image": "assets/products/qxkj-1007-1890.jpg",
+    "pdf_export": "exports/QXKJ-1007-product-specification-draft.pdf",
+    "qa_report": "qa/qa-report.json"
+  },
+  "migration_note": "Folder name follows the user requested QXJ-1007 label. Source files and product facts still identify the original model as QXKJ-1007.",
+  "blocked_external_actions": [
+    "publish_to_live_site",
+    "send_to_customer",
+    "claim_certification_without_files",
+    "submit_external_form"
+  ],
+  "human_review_required": true,
+  "real_external_actions_executed": false
+}

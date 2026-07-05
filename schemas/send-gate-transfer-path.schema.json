@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SendGateTransferPath",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "current_mode",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "required_gates"
+  ],
+  "properties": {
+    "schema_version": { "const": "send_gate_transfer_path.v1" },
+    "current_mode": {
+      "enum": ["blocked_prompt_only", "controlled_send_preview_candidate"]
+    },
+    "real_execution_allowed": { "type": "boolean" },
+    "real_send_attempted": { "type": "boolean" },
+    "transfer_payload": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    },
+    "blocked_payload_visible_to_user": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    },
+    "required_gates": {
+      "type": "array",
+      "items": { "type": "string" },
+      "contains": { "const": "operator_confirmation" }
+    }
+  },
+  "additionalProperties": true
+}

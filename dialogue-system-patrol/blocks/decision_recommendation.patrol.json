@@ -1,0 +1,216 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "decision_recommendation",
+  "display_name": "决策建议",
+  "owner": "process_tree",
+  "source_dir": "docs",
+  "process_tree_node_id": "decision_recommendation",
+  "registration_status": "process_tree_status:implemented_skeleton",
+  "gate": "system_patrol_coverage_gate",
+  "compass": "system_patrol.decision_recommendation",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "validated",
+  "updated_at": "2026-07-01T11:39:08.902Z",
+  "ttl_ms": 604800000,
+  "change_session_id": "system_patrol_blocks_init_20260701",
+  "data_flow": {
+    "inputs": [
+      "docs/07-事件判定与决策集群.md",
+      "docs/08-权重决策与技能接口.md",
+      "knowledge/decision-cluster/agent-cluster.json",
+      "knowledge/decision-cluster/decision-criteria.json",
+      "packages/decision-cluster/src/decision-cluster.mjs",
+      "packages/decision-cluster/src/romantic-gui-state.mjs",
+      "packages/decision-cluster/tests/decision-cluster.test.mjs",
+      "packages/mvp-runtime/src/desktop-context-bridge.mjs",
+      "scripts/run-desktop-context-bridge.mjs",
+      "schemas/context-snapshot.schema.json",
+      "schemas/expert-matrix-analysis.schema.json",
+      "schemas/romantic-goal-analysis.schema.json",
+      "schemas/romantic-expert-sentence-review.schema.json",
+      "scripts/audit-pt028-romantic-flow.mjs",
+      "scripts/write-pt028-gui-decision-state.mjs",
+      "runtime/pt028-audits/**",
+      "runtime/pt028-gui-decision-states/**",
+      "schemas/desktop-context-bridge.schema.json",
+      "schemas/possibility-branch.schema.json",
+      "packages/possibility-branch/src/possibility-branch.mjs",
+      "packages/possibility-branch/tests/possibility-branch.test.mjs",
+      "scripts/run-possibility-branch-demo.mjs",
+      "runtime/possibility-branches/**",
+      "docs/17-目标流程代码一致性与专家评估矩阵材料.md",
+      "schemas/expert-context-pack.schema.json",
+      "schemas/parallel-expert-run-log.schema.json",
+      "schemas/romantic-relationship-coordinator.schema.json",
+      "schemas/frontend-display-contract.schema.json",
+      "schemas/send-gate-transfer-path.schema.json",
+      "schemas/pt028-event-stream-health.schema.json",
+      "scripts/validate-pt028-event-stream-health.mjs",
+      "runtime/pt028-event-stream-health/**",
+      "schemas/pt028-final-special-review-pack.schema.json",
+      "scripts/write-pt028-final-special-review-pack.mjs",
+      "runtime/pt028-final-special-review-packs/**",
+      "schemas/pt028-human-review-decision-writer.schema.json",
+      "scripts/write-pt028-human-review-decision.mjs",
+      "runtime/pt028-human-review-decisions/**",
+      "schemas/pt028-acceptance-status.schema.json",
+      "scripts/write-pt028-acceptance-status.mjs",
+      "runtime/pt028-acceptance-statuses/**",
+      "schemas/pt028-operator-acceptance-handoff.schema.json",
+      "scripts/write-pt028-operator-acceptance-handoff.mjs",
+      "runtime/pt028-operator-acceptance-handoffs/**",
+      "schemas/pt028-operator-next-step.schema.json",
+      "scripts/write-pt028-operator-next-step.mjs",
+      "runtime/pt028-operator-next-steps/**",
+      "schemas/pt028-operator-handoff-refresh-chain.schema.json",
+      "scripts/run-pt028-operator-handoff-refresh.mjs",
+      "runtime/pt028-operator-handoff-refresh-chains/**"
+    ],
+    "processing": [
+      "由策略小组 Agent 综合目标、关系、事件、偏好、技能、风险和反馈可观测性，给出推荐行动和可人工确认的具体草稿。"
+    ],
+    "outputs": [
+      "agent_opinions",
+      "parallel_expert_analysis",
+      "context_snapshot",
+      "expert_matrix_analysis",
+      "independent_context_analysis",
+      "expert_weight_integration",
+      "theoretical_prediction",
+      "independent_review",
+      "deliberation",
+      "base_weights",
+      "weights",
+      "weight_revision",
+      "ranked_options",
+      "recommended_option",
+      "message_draft",
+      "intimate_relationship_reply_playbook",
+      "romantic_goal_analysis",
+      "romantic_expert_sentence_review",
+      "pt028_romantic_flow_audit",
+      "skill_plan",
+      "evidence_pack",
+      "feedback_plan",
+      "validation_plan",
+      "context_sufficiency_score",
+      "possibility_branch_analysis",
+      "expert_context_packs",
+      "parallel_expert_run_log",
+      "romantic_relationship_coordinator",
+      "frontend_display_contract",
+      "send_gate_transfer_path",
+      "pt028_event_stream_health",
+      "pt028_final_special_review_pack",
+      "pt028_human_review_decision_writer",
+      "pt028_human_review_fill_plan",
+      "pt028_human_review_fill_plan_summary",
+      "pt028_operator_action_queue",
+      "pt028_operator_action_queue_summary",
+      "pt028_operator_next_step",
+      "pt028_acceptance_status"
+    ],
+    "dependencies": [
+      "examples/system-process-tree.json",
+      "dialogue-system-patrol/registry/system-patrol-registry.json"
+    ]
+  },
+  "state": {
+    "headline": "决策建议: patrol block initialized from process tree status implemented_skeleton.",
+    "current_task": "Maintain summary-only patrol coverage and expose dialogue-readable state.",
+    "progress": 1,
+    "blockers": [],
+    "risks": [
+      "当前定义 9 个基础 Agent，运行时已显式输出 9 个基础 Agent 意见。",
+      "已新增 8 个 specialist expert 和 parallel_expert_analysis.v1，按目标、渠道、桌面发送、身份门禁、风险、文化语境和证据质量信号选择并行专家。",
+      "已新增 context_snapshot.v1、expert_matrix_analysis.v2、theoretical_prediction_value.v1 和 independent_reasonable_legal_safety_review.v1；新版专家矩阵按 parallel_expert_matrix_execution.v1 fan-out 并行分析，理论探索和审查层分离。",
+      "已新增 context_snapshot.target_context_windows、expert_independent_context_analysis.v1、expert_weight_integration.v1 和 expert_adjusted_decision_weights.v1；每个专家按目标对象的 today、last_7_days、last_30_days 和 historical 时间窗独立分析后，再汇总为可审计的规则型权重修正。"
+    ],
+    "next": [
+      "Review this generated patrol block before treating it as a deep module interpretation.",
+      "Refresh validation with npm.cmd run system-patrol:validate.",
+      "Publish dialogue-readable output with npm.cmd run system-patrol:publish."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "examples/system-process-tree.json",
+      "docs/07-事件判定与决策集群.md",
+      "docs/08-权重决策与技能接口.md",
+      "knowledge/decision-cluster/agent-cluster.json",
+      "knowledge/decision-cluster/decision-criteria.json",
+      "packages/decision-cluster/src/decision-cluster.mjs",
+      "packages/decision-cluster/src/romantic-gui-state.mjs",
+      "packages/decision-cluster/tests/decision-cluster.test.mjs",
+      "packages/mvp-runtime/src/desktop-context-bridge.mjs"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:publish",
+      "npm.cmd run process-tree:validate"
+    ],
+    "latest_validation_refs": [
+      "runtime/dialogue-system-patrol-validations/latest.json"
+    ]
+  },
+  "boundaries": {
+    "mode": "controlled_write_runtime_summary",
+    "allowed_reads": [
+      "examples/system-process-tree.json",
+      "docs/07-事件判定与决策集群.md",
+      "docs/08-权重决策与技能接口.md",
+      "knowledge/decision-cluster/agent-cluster.json",
+      "knowledge/decision-cluster/decision-criteria.json",
+      "packages/decision-cluster/src/decision-cluster.mjs",
+      "packages/decision-cluster/src/romantic-gui-state.mjs",
+      "packages/decision-cluster/tests/decision-cluster.test.mjs",
+      "packages/mvp-runtime/src/desktop-context-bridge.mjs"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/decision_recommendation.json",
+      "runtime/status-events/decision_recommendation.json",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**"
+    ],
+    "forbidden_actions": [
+      "no business module rewrite from patrol initialization",
+      "no dialogue reader rewrite from patrol initialization",
+      "no external platform action",
+      "no raw private payload publication"
+    ],
+    "confirmation_gates": [
+      "user confirmation required before protocol migration",
+      "user confirmation required before process-tree and Obsidian registration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The module is represented in the process tree.",
+      "The patrol block was initialized from process-tree summary evidence.",
+      "Current status is summary-only and should cite source refs."
+    ],
+    "must_not_infer": [
+      "Do not infer raw runtime facts that are not present in evidence refs.",
+      "Do not treat generated patrol text as a full source-code review.",
+      "Do not claim external actions or business outcomes from patrol coverage alone."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "sha256:050d38631463394f414da8f8ff55d0471b3da2418c05e498e6e6213594ed5d16",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-05T13:12:46.780Z",
+    "source_hash_refs": [
+      "docs/07-事件判定与决策集群.md",
+      "docs/08-权重决策与技能接口.md",
+      "examples/system-process-tree.json",
+      "knowledge/decision-cluster/agent-cluster.json",
+      "knowledge/decision-cluster/decision-criteria.json",
+      "packages/decision-cluster/src/decision-cluster.mjs",
+      "packages/decision-cluster/src/romantic-gui-state.mjs",
+      "packages/decision-cluster/tests/decision-cluster.test.mjs",
+      "packages/mvp-runtime/src/desktop-context-bridge.mjs"
+    ],
+    "source_hash_excluded_refs": []
+  }
+}

@@ -1,0 +1,175 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "module-build-timeline-event.schema.json",
+  "title": "Module Build Timeline Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "event_id",
+    "generated_at",
+    "module_id",
+    "operation_id",
+    "sequence",
+    "phase",
+    "status",
+    "summary",
+    "construction_depth",
+    "source_refs",
+    "evidence_refs",
+    "validation_refs",
+    "source_hash",
+    "module_gate",
+    "dialogue_visibility",
+    "boundaries"
+  ],
+  "properties": {
+    "schema": {
+      "const": "module_build_timeline_event.v1"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "module_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9._:-]+$"
+    },
+    "operation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "phase": {
+      "enum": [
+        "module_registered",
+        "design_started",
+        "contract_declared",
+        "implementation_changed",
+        "validation_started",
+        "validation_failed",
+        "validation_passed",
+        "publication_done",
+        "dialogue_visibility_ready",
+        "source_drift_checked",
+        "source_drift_updated",
+        "hook_checked",
+        "ci_checked",
+        "blocked",
+        "completed"
+      ]
+    },
+    "status": {
+      "enum": ["started", "in_progress", "blocked", "failed", "passed", "completed", "skipped"]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "construction_depth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "patrol_block_updated",
+        "data_flow_updated",
+        "status_surface_updated",
+        "validation_run",
+        "dialogue_index_updated"
+      ],
+      "properties": {
+        "level": {
+          "enum": [
+            "module_shell",
+            "contract",
+            "data_flow",
+            "runtime_surface",
+            "validation",
+            "dialogue_surface"
+          ]
+        },
+        "patrol_block_updated": {
+          "type": "boolean"
+        },
+        "data_flow_updated": {
+          "type": "boolean"
+        },
+        "status_surface_updated": {
+          "type": "boolean"
+        },
+        "validation_run": {
+          "type": "boolean"
+        },
+        "dialogue_index_updated": {
+          "type": "boolean"
+        }
+      }
+    },
+    "source_refs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "validation_refs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "source_hash": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "hash", "report_ref"],
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "hash": {
+          "type": ["string", "null"]
+        },
+        "report_ref": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "module_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "report_ref"],
+      "properties": {
+        "decision": {
+          "type": "string"
+        },
+        "report_ref": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "dialogue_visibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["index_ref", "included"],
+      "properties": {
+        "index_ref": {
+          "type": "string"
+        },
+        "included": {
+          "type": "boolean"
+        }
+      }
+    },
+    "boundaries": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

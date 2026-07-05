@@ -1,0 +1,100 @@
+{
+  "contract": "structured_cabling_product_master.template.v1",
+  "record_status": "draft|needs_review|approved|blocked|retired",
+  "source": {
+    "source_file": "{{catalogue_pdf_path}}",
+    "source_page": "{{page_number_or_range}}",
+    "factory_brand": "{{factory_brand_visible_in_source}}",
+    "factory_model": "{{factory_model_or_item_no}}",
+    "source_confidence": "visual_seed|ocr_reviewed|factory_confirmed|lab_confirmed"
+  },
+  "brand_mapping": {
+    "public_brand": "{{new_brand_name}}",
+    "public_sku": "{{own_sku}}",
+    "public_model": "{{own_model}}",
+    "factory_model_internal_only": true,
+    "private_label_allowed": "{{yes_no_pending}}",
+    "brand_assets_status": "not_started|draft|approved|blocked"
+  },
+  "classification": {
+    "family_id": "{{keystone_jack|patch_panel|cable_management|110_cabling_system|face_plate|surface_mount_box|plug_patch_cord|telecommunication_accessories|power_distribution_unit}}",
+    "category_path": ["{{site_category}}", "{{series}}"],
+    "b2b_use_case": ["data_center", "office_cabling", "telecom_room", "low_voltage_project", "distributor_stock"],
+    "target_buyer": ["installer", "distributor", "system_integrator", "project_contractor", "oem_private_label"]
+  },
+  "technical_spec": {
+    "grade": "{{CAT5E|CAT6|CAT6A|CAT7|CAT8|blank|na}}",
+    "shielding": "{{UTP|STP|FTP|SFTP|blank|na}}",
+    "ports": "{{ports_or_na}}",
+    "rack_unit": "{{1U|0.5U|2U|na}}",
+    "size": "{{dimensions}}",
+    "material": "{{ABS|PC|metal|aluminum_alloy|phosphor_bronze|other}}",
+    "color_options": ["white", "black", "blue", "{{other}}"],
+    "termination": "{{toolless|punch_down|inline_coupler|crimp|na}}",
+    "wire_gauge": "{{awg_or_na}}",
+    "jacket": "{{PVC|LSZH|na}}",
+    "electrical_rating": {
+      "required_for_pdu": true,
+      "rated_voltage": "{{voltage}}",
+      "rated_current": "{{current}}",
+      "plug_country_type": "{{us|uk|eu|germany|france|australia|china|south_africa|italy|other}}"
+    }
+  },
+  "commercial": {
+    "moq": "{{moq}}",
+    "sample_available": "{{true_false}}",
+    "sample_lead_time": "{{days}}",
+    "bulk_lead_time": "{{days}}",
+    "cost_currency": "CNY",
+    "unit_cost": "{{factory_cost}}",
+    "price_tiers": [
+      {
+        "qty_min": "{{quantity}}",
+        "target_unit_price_usd": "{{price}}"
+      }
+    ],
+    "target_margin_floor": "{{margin_percent}}"
+  },
+  "packaging_logistics": {
+    "unit_pack": "{{bag|box|bulk|custom}}",
+    "carton_qty": "{{qty}}",
+    "carton_size_cm": "{{l_w_h}}",
+    "carton_gw_kg": "{{gross_weight}}",
+    "barcode_required": "{{yes_no_pending}}",
+    "shipping_notes": "{{notes}}"
+  },
+  "compliance": {
+    "target_markets": ["{{country_or_region}}"],
+    "hs_code_candidates": [],
+    "certificate_requests": ["RoHS", "REACH", "CE_if_applicable", "CPR_if_cable_for_EU_construction", "UL_or_ETL_if_US_power_product"],
+    "certificate_files": [],
+    "label_requirements": [],
+    "blocked_claims": [],
+    "professional_review_required": true
+  },
+  "content": {
+    "en_title": "{{title}}",
+    "short_description": "{{one_sentence_value}}",
+    "seo_keywords": [],
+    "faq": [],
+    "images": {
+      "source_images": [],
+      "white_background": [],
+      "detail": [],
+      "application_scene": [],
+      "packaging": []
+    },
+    "downloads": {
+      "datasheet": "{{path}}",
+      "catalogue": "{{path}}",
+      "test_report": "{{path}}"
+    }
+  },
+  "operations": {
+    "site_publish_gate": "human_approval_required",
+    "quote_gate": "price_and_terms_approval_required",
+    "outbound_message_gate": "human_approval_required",
+    "last_reviewed_at": "{{yyyy-mm-dd}}",
+    "reviewer": "{{name}}"
+  }
+}

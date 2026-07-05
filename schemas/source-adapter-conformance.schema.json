@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SourceAdapterConformance",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "validation_id",
+    "gate_decision",
+    "ready_for_intake",
+    "adapter_id",
+    "source_adapter_id",
+    "source_type",
+    "platform",
+    "required_failures",
+    "capability_summary",
+    "observation_summary",
+    "raw_event_preview",
+    "evidence_refs",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "source_adapter_conformance.v1" },
+    "validation_id": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "source_adapter_conformant",
+        "source_adapter_not_conformant"
+      ]
+    },
+    "ready_for_intake": { "type": "boolean" },
+    "adapter_id": { "type": "string", "minLength": 1 },
+    "source_adapter_id": { "type": "string", "minLength": 1 },
+    "source_type": { "type": "string", "minLength": 1 },
+    "platform": { "type": "string", "minLength": 1 },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "capability_summary": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "object" }
+      ]
+    },
+    "observation_summary": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "object" }
+      ]
+    },
+    "raw_event_preview": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "object" }
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "created_at": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}

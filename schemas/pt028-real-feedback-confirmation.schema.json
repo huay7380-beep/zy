@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-real-feedback-confirmation.schema.json",
+  "title": "pt028_real_feedback_confirmation.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "confirmation_id",
+    "created_at",
+    "gate_decision",
+    "writes_real_feedback_target_allowed",
+    "writes_real_feedback_target",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "target_feedback_path",
+    "checks",
+    "required_failures"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_real_feedback_confirmation.v1" },
+    "confirmation_id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "gate_decision": {
+      "enum": [
+        "operator_confirmation_required_before_target_write",
+        "ready_to_write_real_feedback_target"
+      ]
+    },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "writes_real_feedback_target_allowed": { "type": "boolean" },
+    "writes_real_feedback_target": { "type": "boolean" },
+    "target_feedback_path": { "type": ["string", "null"] },
+    "target_feedback_exists": { "type": "boolean" },
+    "allow_overwrite_existing_target": { "type": "boolean" },
+    "source": {
+      "type": "object",
+      "properties": {
+        "root": { "type": "string" },
+        "decision_id": { "type": ["string", "null"] },
+        "workpack_id": { "type": ["string", "null"] },
+        "feedback_batch_id": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "operator_confirmation_status": {
+      "type": "object",
+      "required": [
+        "approved_to_write_real_feedback_target",
+        "confirm_real_windows_observed",
+        "confirm_target_binding",
+        "confirm_prompt_only",
+        "confirm_no_real_send",
+        "confirm_privacy_boundary",
+        "confirm_human_special_review",
+        "reviewer_ready"
+      ],
+      "properties": {
+        "approved_to_write_real_feedback_target": { "type": "boolean" },
+        "confirm_real_windows_observed": { "type": "boolean" },
+        "confirm_target_binding": { "type": "boolean" },
+        "confirm_prompt_only": { "type": "boolean" },
+        "confirm_no_real_send": { "type": "boolean" },
+        "confirm_privacy_boundary": { "type": "boolean" },
+        "confirm_human_special_review": { "type": "boolean" },
+        "reviewer_ready": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "readiness_summary": {
+      "type": "object",
+      "required": [
+        "gate_decision",
+        "calibration_ready",
+        "final_acceptance_ready",
+        "required_failures",
+        "window_count",
+        "unique_target_count",
+        "human_special_review_ready"
+      ],
+      "properties": {
+        "readiness_id": { "type": "string" },
+        "gate_decision": { "type": "string" },
+        "calibration_ready": { "type": "boolean" },
+        "final_acceptance_ready": { "type": "boolean" },
+        "required_failures": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "window_count": { "type": "number" },
+        "unique_target_count": { "type": "number" },
+        "human_special_review_ready": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "status", "severity", "evidence"],
+        "properties": {
+          "check_id": { "type": "string" },
+          "status": { "enum": ["passed", "open"] },
+          "severity": { "type": "string" },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_commands": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

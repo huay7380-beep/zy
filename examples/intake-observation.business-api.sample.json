@@ -1,0 +1,26 @@
+{
+  "observation_id": "intake_obs_business_api_snapshot_001",
+  "source_adapter_id": "business_api.sample",
+  "source_type": "api",
+  "platform": "business_system",
+  "captured_at": "2026-06-16T09:45:00+08:00",
+  "content_text": "endpoint=crm.project_status record_id=acct_001 stage=waiting_for_customer_review next_action=prepare whitelist evidence owner.email=[redacted_email] api_key=[redacted]",
+  "content_summary": "Saved business-system JSON snapshot shows the project waiting for customer review and requiring whitelist evidence.",
+  "participants_hint": ["user", "business_system"],
+  "thread_hint": {
+    "endpoint": "crm.project_status",
+    "record_id": "acct_001",
+    "thread_title": "CRM Project Status"
+  },
+  "raw_artifact_refs": [
+    "runtime/user-inputs/business-api-snapshot.real.json"
+  ],
+  "privacy_level": "redacted_text",
+  "confidence": 0.86,
+  "metadata": {
+    "sample_only": true,
+    "real_execution_allowed": false,
+    "real_send_attempted": false,
+    "source_saved_file_only": true
+  }
+}

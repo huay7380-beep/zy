@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>世界系统三维需求 OS - 立体认知扇区预览 v2</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./cognitive-sector-layout-v2.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../sightflow-desktop-agent-main/node_modules/three/build/three.module.js",
+          "three/addons/": "../../sightflow-desktop-agent-main/node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main id="appShell">
+      <section id="threeStage" aria-label="三维认知扇区星云预览"></section>
+      <section id="labelLayer" aria-hidden="true"></section>
+
+      <header class="topbar">
+        <div class="brand">
+          <span>世界系统三维需求 OS</span>
+          <strong>立体认知扇区预览 v2</strong>
+        </div>
+        <nav class="modebar" aria-label="流动模式">
+          <button class="mode-button active" type="button" data-mode="overview">总览</button>
+          <button class="mode-button" type="button" data-mode="thinking">思维流</button>
+          <button class="mode-button" type="button" data-mode="decision">决策流</button>
+          <button class="mode-button" type="button" data-mode="feedback">反馈流</button>
+          <button class="mode-button" type="button" data-mode="all">全链路</button>
+        </nav>
+      </header>
+
+      <aside class="panel left-panel" aria-label="扇区与图层">
+        <div class="panel-title">
+          <span>立体扇区</span>
+          <strong>8 chambers</strong>
+        </div>
+        <div id="sectorList" class="sector-list"></div>
+        <div class="switch-grid" aria-label="显示开关">
+          <label><input id="toggleChambers" type="checkbox" checked />扇区舱室</label>
+          <label><input id="toggleStatic" type="checkbox" checked />静态模块</label>
+          <label><input id="toggleLabels" type="checkbox" checked />标签</label>
+          <label><input id="toggleThinking" type="checkbox" />思维流</label>
+          <label><input id="toggleDecision" type="checkbox" />决策流</label>
+          <label><input id="toggleFeedback" type="checkbox" />反馈流</label>
+        </div>
+      </aside>
+
+      <aside class="panel right-panel" aria-label="星云详情">
+        <div class="panel-title">
+          <span>当前观察</span>
+          <strong id="inspectorMode">世界核心</strong>
+        </div>
+        <div id="inspector" class="inspector">
+          <h1>世界核心</h1>
+          <p>从中心观察 19 个系统星云。距离表示目标相关性，高度表示认知阶段和时间倾向，体积表示模块类型边界。</p>
+          <dl>
+            <div><dt>静态结构</dt><dd>模块与扇区舱室</dd></div>
+            <div><dt>动态结构</dt><dd>思维流、决策流、反馈流</dd></div>
+            <div><dt>交互</dt><dd>点击任意星云展开子星云</dd></div>
+          </dl>
+        </div>
+        <button id="backToWorld" class="primary-action" type="button" disabled>返回世界核心</button>
+      </aside>
+
+      <footer class="statusbar">
+        <span id="statusText">拖拽旋转，滚轮缩放，点击星云展开当前模块子云。</span>
+        <span>19 nebulae / 8 volumetric sectors / isolated preview</span>
+      </footer>
+    </main>
+
+    <script type="module" src="./cognitive-sector-layout-v2.js"></script>
+  </body>
+</html>

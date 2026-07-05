@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StorageIndex",
+  "type": "object",
+  "required": ["schema_version", "index_type", "rebuilt_at", "source_counts", "entries"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "index_type": {
+      "type": "string",
+      "enum": ["person_event", "relationship_event", "tag_event", "time_event"]
+    },
+    "rebuilt_at": { "type": "string" },
+    "source_counts": {
+      "type": "object",
+      "required": ["raw_events", "semantic_events"],
+      "properties": {
+        "raw_events": { "type": "integer", "minimum": 0 },
+        "semantic_events": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "entries": { "type": "object" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,305 @@
+{
+  "schema_version": "p1_review_decision.v1",
+  "review_gate_id": "p1_schema_to_p2_fixture_gate",
+  "target_phase": "P1_JSON_Schema_Draft",
+  "requested_next_phase": "P2_fixture_and_reverse_validation",
+  "decision_state": "pending_user_decision",
+  "reviewer": null,
+  "decided_at": null,
+  "reviewed_artifacts": [
+    {
+      "path": "18-P1-JSONSchemaDraft.v1-图谱核心对象草案.md",
+      "purpose": "P1 schema draft boundary and review checklist"
+    },
+    {
+      "path": "schema-drafts/P1-GraphCore.schema.json",
+      "purpose": "Merged graph core schema draft"
+    },
+    {
+      "path": "scripts/validate-p1-schema.mjs",
+      "purpose": "P1 schema structure validator"
+    },
+    {
+      "path": "scripts/validate-p1-json-schema-contract.mjs",
+      "purpose": "P1 in-memory JSON Schema contract validator; checks positive and negative samples without generating P2 fixtures"
+    },
+    {
+      "path": "scripts/validate-p1-evidence-readback-coverage.mjs",
+      "purpose": "P1 evidence and source readback coverage validator"
+    },
+    {
+      "path": "scripts/validate-full-roadmap-and-particle-sync.mjs",
+      "purpose": "Full roadmap and particle sync validator"
+    },
+    {
+      "path": "scripts/validate-p0-p12-stage-control.mjs",
+      "purpose": "P0-P12 stage input/output/boundary/drift/test control validator"
+    },
+    {
+      "path": "scripts/validate-current-phase-state.mjs",
+      "purpose": "Current phase preflight validator"
+    },
+    {
+      "path": "scripts/validate-p1-completion-audit.mjs",
+      "purpose": "P1 completion audit validator"
+    },
+    {
+      "path": "scripts/validate-p2-preparation-boundary.mjs",
+      "purpose": "P2 preparation-only boundary validator; proves fixture/runtime/real-data outputs have not started before approval"
+    },
+    {
+      "path": "scripts/validate-p2-fixture-contract.mjs",
+      "purpose": "P2 fixture execution contract validator; checks fixture/reverse-readback/mocking contract without generating fixture data"
+    },
+    {
+      "path": "scripts/validate-generated-artifacts-freshness.mjs",
+      "purpose": "Generated review/control artifact freshness validator; compares current check-mode outputs without creating fixtures or runtime files"
+    },
+    {
+      "path": "scripts/validate-p2-entry-gate.mjs",
+      "purpose": "Top-level P2 entry hard gate; blocks P2 until user approval and all P1 validations pass"
+    }
+  ],
+  "required_validation": [
+    {
+      "command": "node .\\validate-p1-schema.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS"
+    },
+    {
+      "command": "node .\\validate-p1-json-schema-contract.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P1_JSON_SCHEMA_CONTRACT"
+    },
+    {
+      "command": "node .\\validate-p1-evidence-readback-coverage.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_EVIDENCE_READBACK_COVERAGE"
+    },
+    {
+      "command": "node .\\validate-full-roadmap-and-particle-sync.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS"
+    },
+    {
+      "command": "node .\\validate-p0-p12-stage-control.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P0_P12_STAGE_CONTROL"
+    },
+    {
+      "command": "node .\\validate-p0-p12-stage-control.mjs --self-test",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P0_P12_STAGE_CONTROL_SELF_TEST"
+    },
+    {
+      "command": "node .\\validate-p1-review-decision.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_PENDING_OR_PASS_APPROVED"
+    },
+    {
+      "command": "node .\\validate-p1-review-decision.mjs --self-test",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_REVIEW_GATE_STATE_MACHINE"
+    },
+    {
+      "command": "node .\\validate-current-phase-state.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_CURRENT_PHASE_STATE"
+    },
+    {
+      "command": "node .\\validate-p1-completion-audit.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P1_COMPLETION_AUDIT_PENDING_USER_REVIEW_OR_APPROVED_FOR_P2_FIXTURE_ONLY"
+    },
+    {
+      "command": "node .\\validate-p2-preparation-boundary.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P2_PREPARATION_BOUNDARY_BLOCKED_PENDING_USER_DECISION_OR_APPROVED_FOR_FIXTURE_ONLY"
+    },
+    {
+      "command": "node .\\validate-p2-fixture-contract.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P2_FIXTURE_CONTRACT_READY"
+    },
+    {
+      "command": "node .\\validate-p2-fixture-contract.mjs --self-test",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P2_FIXTURE_CONTRACT_SELF_TEST"
+    },
+    {
+      "command": "node .\\validate-generated-artifacts-freshness.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_GENERATED_ARTIFACTS_FRESHNESS"
+    },
+    {
+      "command": "node .\\validate-p2-entry-gate.mjs --self-test",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P2_ENTRY_GATE_SELF_TEST"
+    },
+    {
+      "command": "node .\\validate-p2-entry-gate.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P2_ENTRY_BLOCKED_PENDING_USER_DECISION_OR_APPROVED_FOR_FIXTURE_ONLY"
+    }
+  ],
+  "checklist": [
+    {
+      "id": "source_archive_and_evidence_anchor_are_fact_source",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 1"
+    },
+    {
+      "id": "semantic_event_granularity_is_acceptable",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 2"
+    },
+    {
+      "id": "indexes_support_person_event_time_source_tag_feature_evidence",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 3"
+    },
+    {
+      "id": "narrative_objects_do_not_write_relationship_state",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 4"
+    },
+    {
+      "id": "context_and_causal_layers_do_not_replace_facts",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 5"
+    },
+    {
+      "id": "context_snapshot_is_only_model_context_package",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 6"
+    },
+    {
+      "id": "weight_and_confirmation_gate_do_not_auto_promote",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 7"
+    },
+    {
+      "id": "particle_projection_is_read_only",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 8"
+    },
+    {
+      "id": "boundary_flags_remain_false_for_high_risk_actions",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 9"
+    },
+    {
+      "id": "p1_schema_validator_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p1-schema.mjs"
+    },
+    {
+      "id": "p1_json_schema_contract_validator_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p1-json-schema-contract.mjs"
+    },
+    {
+      "id": "p1_evidence_readback_coverage_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p1-evidence-readback-coverage.mjs"
+    },
+    {
+      "id": "full_roadmap_and_particle_sync_validator_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-full-roadmap-and-particle-sync.mjs"
+    },
+    {
+      "id": "particle_sync_drift_gate_and_checkpoint_checked",
+      "status": "pending",
+      "evidence_ref": "00-总目标与执行控制台.md section 16.5-16.6"
+    },
+    {
+      "id": "p0_p12_stage_control_validator_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p0-p12-stage-control.mjs"
+    },
+    {
+      "id": "p0_p12_stage_control_self_test_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p0-p12-stage-control.mjs --self-test"
+    },
+    {
+      "id": "p1_review_gate_state_machine_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p1-review-decision.mjs --self-test"
+    },
+    {
+      "id": "current_phase_preflight_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-current-phase-state.mjs"
+    },
+    {
+      "id": "p1_completion_audit_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p1-completion-audit.mjs"
+    },
+    {
+      "id": "p2_preparation_boundary_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p2-preparation-boundary.mjs"
+    },
+    {
+      "id": "p2_fixture_contract_self_test_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p2-fixture-contract.mjs --self-test"
+    },
+    {
+      "id": "p2_fixture_contract_output_checks_reviewed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p2-entry-gate.mjs output p2_fixture_contract_output_checks"
+    },
+    {
+      "id": "particle_stage_followup_required_reviewed",
+      "status": "pending",
+      "evidence_ref": "ROOT section 12.7 and 00 section 16.7"
+    },
+    {
+      "id": "generated_artifacts_freshness_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-generated-artifacts-freshness.mjs"
+    },
+    {
+      "id": "p2_entry_gate_passed_or_blocks_pending_user_decision",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p2-entry-gate.mjs"
+    },
+    {
+      "id": "p2_scope_remains_fixture_only",
+      "status": "pending",
+      "evidence_ref": "00-总目标与执行控制台.md section 20.4"
+    }
+  ],
+  "boundary_assertions": {
+    "runtime_entry": "still_blocked",
+    "real_source_entry": "still_blocked",
+    "relationship_state_write": "blocked",
+    "identity_merge": "blocked",
+    "external_action": "blocked",
+    "learning_weight_promotion": "blocked",
+    "particle_write_back": "blocked"
+  },
+  "allowed_outputs_if_approved": [
+    "sales_customer_progress_simulated_fixture",
+    "romantic_relationship_maintenance_simulated_fixture",
+    "public_case_style_complex_multisource_simulated_fixture",
+    "tag_person_event_time_evidence_reverse_validation_report",
+    "mock_particle_projection_readback_validation_report",
+    "p2_gap_backwrite_record"
+  ],
+  "forbidden_outputs": [
+    "real_business_data",
+    "runtime_write",
+    "real_source_ingestion",
+    "relationship_state_write",
+    "identity_merge",
+    "external_action",
+    "learning_weight_promotion",
+    "particle_write_back"
+  ],
+  "notes": []
+}

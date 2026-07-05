@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-gui-event-stream.schema.json",
+  "title": "pt028_gui_event_stream.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "stream_id",
+    "created_at",
+    "gate_decision",
+    "low_latency_policy",
+    "stream_integrity",
+    "events"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_gui_event_stream.v1" },
+    "stream_id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "gate_decision": { "type": "string" },
+    "low_latency_policy": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "desktop_ipc_channel",
+        "file_watch_path",
+        "target_dispatch_latency_ms",
+        "debounce_ms",
+        "fallback_poll_interval_ms",
+        "user_control_policy"
+      ],
+      "properties": {
+        "schema_version": { "const": "pt028_low_latency_gui_policy.v1" },
+        "desktop_ipc_channel": { "const": "zhineng:decision-state:changed" },
+        "file_watch_path": { "type": "string" },
+        "target_dispatch_latency_ms": { "type": "integer", "minimum": 1 },
+        "debounce_ms": { "type": "integer", "minimum": 0 },
+        "fallback_poll_interval_ms": { "type": "integer", "minimum": 1 },
+        "user_control_policy": {
+          "type": "object",
+          "required": ["pause_stop_hide_or_frequency_control_required"],
+          "properties": {
+            "pause_stop_hide_or_frequency_control_required": { "type": "boolean" }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "stream_integrity": {
+      "type": "object",
+      "required": [
+        "state_count",
+        "event_count",
+        "unique_window_count",
+        "unique_target_count",
+        "all_events_prompt_only",
+        "real_execution_allowed",
+        "real_send_attempted"
+      ],
+      "properties": {
+        "state_count": { "type": "integer", "minimum": 0 },
+        "event_count": { "type": "integer", "minimum": 0 },
+        "unique_window_count": { "type": "integer", "minimum": 0 },
+        "unique_target_count": { "type": "integer", "minimum": 0 },
+        "all_events_prompt_only": { "type": "boolean" },
+        "real_execution_allowed": { "type": "boolean" },
+        "real_send_attempted": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "event_id",
+          "event_sequence",
+          "event_type",
+          "created_at",
+          "conversation_window_id",
+          "dock_status_text",
+          "send_gate_mode",
+          "changed_fields"
+        ],
+        "properties": {
+          "schema_version": { "const": "pt028_gui_state_event.v1" },
+          "event_id": { "type": "string" },
+          "event_sequence": { "type": "integer", "minimum": 1 },
+          "event_type": { "type": "string" },
+          "created_at": { "type": "string" },
+          "conversation_window_id": { "type": "string" },
+          "dock_status_text": { "type": ["string", "null"] },
+          "send_gate_mode": { "type": ["string", "null"] },
+          "changed_fields": { "type": "array", "items": { "type": "string" } },
+          "real_execution_allowed": { "type": "boolean" },
+          "real_send_attempted": { "type": "boolean" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

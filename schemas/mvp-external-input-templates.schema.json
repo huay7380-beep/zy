@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/mvp-external-input-templates.schema.json",
+  "title": "MvpExternalInputTemplates",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "template_init_id",
+    "created_at",
+    "source_kit_id",
+    "templates_dir",
+    "readme_path",
+    "overwrite",
+    "templates",
+    "target_files_intentionally_not_written",
+    "next_commands"
+  ],
+  "properties": {
+    "schema_version": { "const": "mvp_external_input_templates.v1" },
+    "template_init_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "source_kit_id": { "type": "string", "minLength": 1 },
+    "input_kit_path": { "type": ["string", "null"] },
+    "templates_dir": { "type": "string" },
+    "readme_path": { "type": "string" },
+    "overwrite": { "type": "boolean" },
+    "templates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "issue_id",
+          "kind",
+          "status",
+          "template_path",
+          "real_target_path",
+          "source_found",
+          "validation_command"
+        ],
+        "properties": {
+          "issue_id": { "type": "string" },
+          "kind": { "type": "string", "enum": ["primary", "companion"] },
+          "status": { "type": "string", "enum": ["written", "kept_existing", "missing_source"] },
+          "template_path": { "type": "string" },
+          "real_target_path": { "type": "string" },
+          "source_template": { "type": "string" },
+          "source_found": { "type": "boolean" },
+          "validation_command": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "target_files_intentionally_not_written": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_commands": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

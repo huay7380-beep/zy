@@ -1,0 +1,77 @@
+{
+  "schema_version": "capability_evaluation_report.v1",
+  "report_id": "example_project__target_module__evaluation",
+  "project_card": "capability-upgrade-registry/manifests/example_project.json",
+  "target_module": {
+    "path": "packages/example-module",
+    "current_role": "",
+    "current_limitations": [],
+    "process_family": "identity_resolution_or_event_ingestion_or_decision_ranking_or_workflow_or_gui_projection",
+    "previous_requirements_refs": []
+  },
+  "process_decomposition": {
+    "inputs": [],
+    "processing_steps": [],
+    "outputs": [],
+    "error_outputs": [],
+    "downstream_consumers": [],
+    "latency_sensitive_events": [],
+    "current_validation_commands": [],
+    "observed_failure_modes": []
+  },
+  "comparison": {
+    "candidate_strengths": [],
+    "candidate_weaknesses": [],
+    "current_system_strengths": [],
+    "current_system_risks_if_replaced": [],
+    "io_contract_delta": "",
+    "latency_delta": "",
+    "effectiveness_delta": "",
+    "replacement_complexity_delta": ""
+  },
+  "scorecard": {
+    "io_contract_consistency": 0,
+    "event_latency_fit": 0,
+    "effectiveness_gain": 0,
+    "replacement_complexity_inverse": 0,
+    "usefulness": 0,
+    "module_fit": 0,
+    "maintenance_health": 0,
+    "license_fit": 0,
+    "security_risk_inverse": 0,
+    "integration_cost_inverse": 0,
+    "replacement_value": 0,
+    "reversibility": 0
+  },
+  "evidence": {
+    "input_output_contract_checks": [],
+    "latency_measurements": [],
+    "effectiveness_measurements": [],
+    "replacement_complexity_notes": [],
+    "analogical_pattern_notes": [],
+    "previous_requirements_alignment": [],
+    "benchmarks": [],
+    "code_review_notes": [],
+    "license_review": "",
+    "security_review": "",
+    "compatibility_notes": []
+  },
+  "recommendation": {
+    "decision": "reject_or_watch_or_wrap_or_enhance_or_replace",
+    "confidence": "low",
+    "reason": "",
+    "replacement_plan_ref": ""
+  },
+  "required_before_replacement": [
+    "process_decomposition",
+    "io_contract_consistency_check",
+    "latency_and_effectiveness_evidence",
+    "analogical_candidate_confirmation",
+    "dry_run",
+    "tests",
+    "previous_requirements_alignment",
+    "replacement_complexity_review",
+    "rollback_plan",
+    "human_confirmation"
+  ]
+}

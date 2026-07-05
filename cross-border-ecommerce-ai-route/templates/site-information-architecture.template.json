@@ -1,0 +1,87 @@
+{
+  "contract": "structured_cabling_site_ia.v1",
+  "site_goal": "Generate qualified B2B RFQs for structured cabling products, OEM/ODM private-label projects, distributor stock programs, and project BOM quotes.",
+  "primary_markets": ["pending_user_confirmation"],
+  "navigation": [
+    {
+      "label": "Products",
+      "path": "/products",
+      "purpose": "Core product family navigation.",
+      "children": [
+        { "label": "Keystone Jacks", "path": "/products/keystone-jacks" },
+        { "label": "Patch Panels", "path": "/products/patch-panels" },
+        { "label": "Cable Management", "path": "/products/cable-management" },
+        { "label": "110 Cabling System", "path": "/products/110-cabling-system" },
+        { "label": "Face Plates", "path": "/products/face-plates" },
+        { "label": "Surface Mount Boxes", "path": "/products/surface-mount-boxes" },
+        { "label": "Patch Cords & RJ45 Plugs", "path": "/products/patch-cords-rj45-plugs" },
+        { "label": "Telecommunication Accessories", "path": "/products/telecommunication-accessories" },
+        { "label": "Power Distribution Units", "path": "/products/power-distribution-units" }
+      ]
+    },
+    {
+      "label": "Solutions",
+      "path": "/solutions",
+      "purpose": "Market and use-case pages for SEO, GEO and buyer education.",
+      "children": [
+        { "label": "Data Center Cabling", "path": "/solutions/data-center-cabling" },
+        { "label": "Office Network Cabling", "path": "/solutions/office-network-cabling" },
+        { "label": "Telecom Room Distribution", "path": "/solutions/telecom-room-distribution" },
+        { "label": "OEM / ODM Private Label", "path": "/solutions/oem-odm-private-label" },
+        { "label": "Distributor Stock Program", "path": "/solutions/distributor-stock-program" }
+      ]
+    },
+    {
+      "label": "Resources",
+      "path": "/resources",
+      "purpose": "Catalogues, datasheets, FAQ and compliance document request pages.",
+      "children": [
+        { "label": "Catalogues", "path": "/resources/catalogues" },
+        { "label": "Datasheets", "path": "/resources/datasheets" },
+        { "label": "FAQ", "path": "/resources/faq" },
+        { "label": "Compliance Documents", "path": "/resources/compliance-documents" }
+      ]
+    },
+    { "label": "Factory & OEM", "path": "/factory-oem", "purpose": "Source capability, private label and project support." },
+    { "label": "RFQ", "path": "/rfq", "purpose": "Primary conversion endpoint." },
+    { "label": "Contact", "path": "/contact", "purpose": "Email, WhatsApp and LinkedIn contact entry." }
+  ],
+  "product_page_contract": {
+    "required_sections": [
+      "hero",
+      "key_specs",
+      "variant_matrix",
+      "application",
+      "downloads",
+      "related_products",
+      "rfq_cta",
+      "faq"
+    ],
+    "required_fields": [
+      "public_sku",
+      "product_family",
+      "grade",
+      "shielding",
+      "ports_or_size",
+      "material",
+      "moq",
+      "lead_time",
+      "certificate_request_policy"
+    ],
+    "structured_data": ["Product", "BreadcrumbList", "FAQPage"]
+  },
+  "rfq_contract": {
+    "required_fields": ["company", "contact_name", "email", "country", "product_family", "quantity", "message"],
+    "family_dynamic_fields": {
+      "keystone_jack": ["grade", "shielding", "termination", "color"],
+      "patch_panel": ["ports", "rack_unit", "grade", "shielding", "loaded_or_blank"],
+      "plug_patch_cord": ["grade", "shielding", "length", "jacket", "color"],
+      "power_distribution_unit": ["target_country", "plug_country_type", "rated_voltage", "rated_current"]
+    }
+  },
+  "publish_gate": {
+    "human_review_required": true,
+    "blocked_if_old_brand_visible": true,
+    "blocked_if_unverified_claims": true
+  }
+}

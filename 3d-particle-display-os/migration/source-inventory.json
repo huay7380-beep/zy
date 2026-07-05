@@ -1,0 +1,47 @@
+{
+  "schema_version": "zhineng_graph_source_inventory.v1",
+  "source_url": "http://[::1]:5173/?window=zhineng-graph",
+  "source_files": [
+    {
+      "path": "D:/zhineng/sightflow-desktop-agent-main/src/renderer/src/zhineng-console/ZhinengConsole.tsx",
+      "symbols": [
+        "WORLD_SYSTEM_CENTER",
+        "WORLD_SYSTEM_NEBULAE",
+        "buildGraphPoints",
+        "graphEdges",
+        "makeSemanticParticleCloud",
+        "ExpandedGraphCanvas",
+        "ZhinengGraphWindow"
+      ]
+    },
+    {
+      "path": "D:/zhineng/sightflow-desktop-agent-main/src/renderer/src/App.tsx",
+      "symbols": ["window=zhineng-graph route", "ZhinengGraphWindow"]
+    },
+    {
+      "path": "D:/zhineng/sightflow-desktop-agent-main/src/main/index.ts",
+      "symbols": ["createZhinengGraphWindow", "zhineng:dock:openGraph", "status-dialogue IPC boundaries"]
+    }
+  ],
+  "observed_runtime_shape": {
+    "canvas_count": 1,
+    "nebula_count": 19,
+    "content_star_count": 258,
+    "main_panels": [
+      "graph header",
+      "expanded graph canvas",
+      "focused particle inspector",
+      "nebula directory",
+      "subject status dialogue",
+      "expanded particle meta",
+      "graph legend",
+      "graph footer"
+    ]
+  },
+  "migration_boundary": {
+    "original_system_modified": false,
+    "ipc_connected": false,
+    "real_graph_read": false,
+    "external_action": false
+  }
+}

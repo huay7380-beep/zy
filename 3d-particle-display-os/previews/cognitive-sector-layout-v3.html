@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>世界系统三维需求 OS - 双层认知落地预览 v3</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./cognitive-sector-layout-v3.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../sightflow-desktop-agent-main/node_modules/three/build/three.module.js",
+          "three/addons/": "../../sightflow-desktop-agent-main/node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main id="appShell">
+      <section id="threeStage" aria-label="双层认知落地三维预览"></section>
+      <section id="labelLayer" aria-hidden="true"></section>
+
+      <header class="topbar">
+        <div class="brand">
+          <span>世界系统三维需求 OS</span>
+          <strong>双层认知落地预览 v3</strong>
+        </div>
+        <nav class="modebar" aria-label="显示模式">
+          <button class="mode-button active" type="button" data-mode="overview">总览</button>
+          <button class="mode-button" type="button" data-mode="process">处理顺序</button>
+          <button class="mode-button" type="button" data-mode="landing">落地功能</button>
+          <button class="mode-button" type="button" data-mode="decision">决策链</button>
+          <button class="mode-button" type="button" data-mode="feedback">反馈链</button>
+        </nav>
+      </header>
+
+      <aside class="panel left-panel" aria-label="认知扇区顺序">
+        <div class="panel-title">
+          <span>内圈处理逻辑</span>
+          <strong>8 sectors</strong>
+        </div>
+        <div id="sectorList" class="sector-list"></div>
+        <div class="switch-grid" aria-label="显示开关">
+          <label><input id="toggleSectors" type="checkbox" checked />内圈扇区</label>
+          <label><input id="toggleLanding" type="checkbox" checked />外圈功能</label>
+          <label><input id="toggleLabels" type="checkbox" checked />标签</label>
+          <label><input id="toggleLinks" type="checkbox" checked />接入线</label>
+          <label><input id="toggleProcess" type="checkbox" />处理流</label>
+          <label><input id="toggleDecision" type="checkbox" />决策流</label>
+          <label><input id="toggleFeedback" type="checkbox" />反馈流</label>
+          <label><input id="toggleShell" type="checkbox" checked />外圈轨道</label>
+        </div>
+      </aside>
+
+      <aside class="panel right-panel" aria-label="详情">
+        <div class="panel-title">
+          <span>当前观察</span>
+          <strong id="inspectorType">双层总览</strong>
+        </div>
+        <div id="inspector" class="inspector">
+          <h1>中心系统 + 八扇区 + 外圈落地</h1>
+          <p>八个扇区只表达认知处理方式和顺序，外圈承载软件、项目、具体需求和端口。流线穿过内圈，再驱动外圈功能。</p>
+          <dl>
+            <div><dt>中心</dt><dd>世界核心与当前总目标</dd></div>
+            <div><dt>内圈</dt><dd>输入、事件、状态、推理、决策、行动、反馈、自我操作</dd></div>
+            <div><dt>外圈</dt><dd>主系统包、功能、项目、端口、需求</dd></div>
+          </dl>
+        </div>
+        <button id="resetView" class="primary-action" type="button">回到总览</button>
+      </aside>
+
+      <footer class="statusbar">
+        <span id="statusText">拖拽旋转，滚轮缩放；点击内圈扇区看处理规则，点击外圈对象看落地功能。</span>
+        <span>inner logic / outer delivery / current system projection</span>
+      </footer>
+    </main>
+
+    <script type="module" src="./cognitive-sector-layout-v3.js"></script>
+  </body>
+</html>

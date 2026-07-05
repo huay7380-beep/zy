@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "system-patrol-validation.schema.json",
+  "title": "System Patrol Validation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "validation_id",
+    "created_at",
+    "gate_decision",
+    "source",
+    "summary",
+    "checks",
+    "module_findings",
+    "required_failures",
+    "warning_failures",
+    "continue_when",
+    "stop_or_adjust_when"
+  ],
+  "properties": {
+    "schema": {
+      "const": "system_patrol_validation.v1"
+    },
+    "validation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "gate_decision": {
+      "enum": ["system_patrol_validated", "system_patrol_bootstrap_warnings", "system_patrol_blocked"]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["check_id", "label", "severity", "status", "passed", "evidence"]
+      }
+    },
+    "module_findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["module_id", "coverage", "patrol_state", "findings"]
+      }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "warning_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "continue_when": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "stop_or_adjust_when": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

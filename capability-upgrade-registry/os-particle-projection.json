@@ -1,0 +1,106 @@
+{
+  "schema_version": "capability_upgrade_os_projection.v1",
+  "module_id": "capability-upgrade-registry",
+  "display_name": "Capability Upgrade Registry",
+  "source_only": true,
+  "particle_region": "execution",
+  "secondary_regions": [
+    "memory",
+    "decision",
+    "self"
+  ],
+  "lens_projection": {
+    "system": {
+      "role": "capability_library_and_upgrade_governance",
+      "shows": [
+        "candidate project registry",
+        "target module mapping",
+        "adapter boundary",
+        "skill creation reuse-search gate",
+        "replacement gate"
+      ]
+    },
+    "memory": {
+      "role": "evidence_store",
+      "shows": [
+        "source URL",
+        "downloaded artifact",
+        "license",
+        "version",
+        "patrol history",
+        "evaluation history",
+        "benchmark evidence"
+      ]
+    },
+    "decision": {
+      "role": "replacement_tradeoff_view",
+      "shows": [
+        "input/output consistency",
+        "event latency",
+        "effectiveness gain",
+        "replacement complexity",
+        "analogical pattern match",
+        "usefulness score",
+        "integration cost",
+        "security risk",
+        "license fit",
+        "skill reuse or creation decision",
+        "recommended action"
+      ]
+    },
+    "self": {
+      "role": "boundary_and_confirmation_gate",
+      "shows": [
+        "read-only default",
+        "no external execution by default",
+        "no Skill creation before reuse search",
+        "dry-run required",
+        "rollback required",
+        "human confirmation required"
+      ]
+    }
+  },
+  "input_contracts": [
+    "capability_patrol_report.v1",
+    "capability_analogical_search_task.v1",
+    "capability_project_card.v1",
+    "capability_evaluation_report.v1",
+    "skill_creation_gate.v1",
+    "capability_replacement_plan.v1"
+  ],
+  "output_contracts": [
+    "visual_operation_intent.v1.inspect",
+    "visual_operation_intent.v1.compare",
+    "visual_operation_intent.v1.open_evidence",
+    "visual_operation_intent.v1.preview_dry_run"
+  ],
+  "forbidden_outputs": [
+    "direct_code_replacement",
+    "direct_skill_creation_without_search",
+    "direct_runtime_state_write",
+    "direct_external_command_execution",
+    "direct_platform_send"
+  ],
+  "edges": [
+    {
+      "to": "capability-composition",
+      "type": "candidate_upgrade_source",
+      "meaning": "Provides evaluated external capabilities for controlled composition or replacement."
+    },
+    {
+      "to": "learning-engine",
+      "type": "feedback_evidence",
+      "meaning": "Feeds practical evaluation results back into long-term capability learning."
+    },
+    {
+      "to": "decision-governance",
+      "type": "replacement_gate",
+      "meaning": "Requires decision review before any module replacement."
+    },
+    {
+      "to": "projection-contracts",
+      "type": "display_projection",
+      "meaning": "Only exposes auditable projection data to the 3D Particle Display OS."
+    }
+  ]
+}

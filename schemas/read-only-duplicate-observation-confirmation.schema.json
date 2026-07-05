@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/read-only-duplicate-observation-confirmation.schema.json",
+  "title": "ReadOnlyDuplicateObservationConfirmation",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "confirmation_id",
+    "gate_decision",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "source",
+    "summary",
+    "groups",
+    "checks",
+    "required_failures",
+    "warning_failures",
+    "next_actions"
+  ],
+  "properties": {
+    "schema_version": { "const": "read_only_duplicate_observation_confirmation.v1" },
+    "confirmation_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "duplicate_observation_confirmation_template_written",
+        "duplicate_observation_confirmation_needs_attention",
+        "duplicate_observation_suppression_confirmed",
+        "duplicate_observation_confirmation_waiting_acceptance"
+      ]
+    },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "source": {
+      "type": "object",
+      "required": ["review_path"],
+      "properties": {
+        "root": { "type": "string" },
+        "review_path": { "type": ["string", "null"] },
+        "decision_path": { "type": ["string", "null"] },
+        "read_only_expansion_status_path": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "review_id",
+        "decision_present",
+        "duplicate_group_count",
+        "accepted_group_count",
+        "duplicate_suppression_confirmed",
+        "operator_confirmation_recorded"
+      ],
+      "properties": {
+        "review_id": { "type": ["string", "null"] },
+        "decision_present": { "type": "boolean" },
+        "duplicate_group_count": { "type": "integer", "minimum": 0 },
+        "accepted_group_count": { "type": "integer", "minimum": 0 },
+        "duplicate_suppression_confirmed": { "type": "boolean" },
+        "operator_confirmation_recorded": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["decision_found", "decision", "paths_match", "accepted"],
+        "properties": {
+          "observation_id": { "type": ["string", "null"] },
+          "decision_found": { "type": "boolean" },
+          "decision": {
+            "type": "string",
+            "enum": ["accept_suppression", "reject_suppression", "needs_more_review"]
+          },
+          "paths_match": { "type": "boolean" },
+          "accepted": { "type": "boolean" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "operator": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    },
+    "unknown_decisions": {
+      "type": "array",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "decision_template": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "severity", "status", "passed", "evidence"],
+        "properties": {
+          "check_id": { "type": "string", "minLength": 1 },
+          "severity": { "type": "string", "enum": ["required", "warning"] },
+          "status": { "type": "string", "enum": ["pass", "fail"] },
+          "passed": { "type": "boolean" },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "warning_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SourceAdapterCapability",
+  "type": "object",
+  "required": [
+    "adapter_id",
+    "adapter_version",
+    "source_type",
+    "platform",
+    "capabilities"
+  ],
+  "properties": {
+    "adapter_id": { "type": "string", "minLength": 1 },
+    "adapter_version": { "type": "string", "minLength": 1 },
+    "source_type": {
+      "type": "string",
+      "enum": ["desktop", "browser", "api", "file", "ocr", "webhook"]
+    },
+    "platform": { "type": "string", "minLength": 1 },
+    "capabilities": {
+      "type": "object",
+      "required": [
+        "can_receive",
+        "can_send",
+        "can_capture_screenshot",
+        "can_read_dom",
+        "can_identify_thread",
+        "can_verify_target",
+        "requires_user_confirmation"
+      ],
+      "properties": {
+        "can_receive": { "type": "boolean" },
+        "can_send": { "type": "boolean" },
+        "can_capture_screenshot": { "type": "boolean" },
+        "can_read_dom": { "type": "boolean" },
+        "can_identify_thread": { "type": "boolean" },
+        "can_verify_target": { "type": "boolean" },
+        "requires_user_confirmation": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": false
+}

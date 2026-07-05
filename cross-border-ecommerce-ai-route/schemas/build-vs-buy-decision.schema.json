@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.zhineng/cross-border-ecommerce/schemas/build-vs-buy-decision.schema.json",
+  "title": "Build vs Buy Decision",
+  "type": "object",
+  "required": [
+    "contract",
+    "capability_id",
+    "node_ids",
+    "business_goal",
+    "decision_status",
+    "candidate_tools",
+    "selected_path",
+    "evidence_requirements",
+    "input_contracts",
+    "output_contracts",
+    "implementation_ban",
+    "fallback_plan",
+    "human_gates",
+    "sync_targets"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "contract": { "const": "build_vs_buy_decision.v1" },
+    "capability_id": { "type": "string", "minLength": 1 },
+    "node_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^cbx_[0-9]{2}_[a-z0-9_]+$" }
+    },
+    "business_goal": { "type": "string", "minLength": 1 },
+    "decision_status": {
+      "enum": [
+        "draft",
+        "tool_selected",
+        "needs_user_confirmation",
+        "blocked_by_missing_tool",
+        "blocked_by_credentials",
+        "approved_for_minimal_glue_code"
+      ]
+    },
+    "candidate_tools": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "tool_id",
+          "tool_type",
+          "priority_rank",
+          "coverage",
+          "license_or_cost",
+          "data_freshness",
+          "risk_notes",
+          "fit"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "tool_id": { "type": "string", "minLength": 1 },
+          "label": { "type": "string" },
+          "tool_type": {
+            "enum": [
+              "existing_project_capability",
+              "mcp",
+              "official_api",
+              "open_source_library",
+              "low_code_workflow",
+              "saas_platform",
+              "minimal_glue_code",
+              "manual_process"
+            ]
+          },
+          "priority_rank": { "type": "integer", "minimum": 1 },
+          "coverage": { "type": "string", "minLength": 1 },
+          "license_or_cost": { "type": "string", "minLength": 1 },
+          "data_freshness": { "type": "string", "minLength": 1 },
+          "risk_notes": { "type": "array", "items": { "type": "string" } },
+          "fit": { "enum": ["preferred", "acceptable", "partial", "rejected"] },
+          "requires_credentials": { "type": "boolean" },
+          "requires_human_enable": { "type": "boolean" }
+        }
+      }
+    },
+    "selected_path": {
+      "type": "object",
+      "required": ["implementation_mode", "selected_tool_ids", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "implementation_mode": {
+          "enum": [
+            "reuse_existing",
+            "use_mcp_or_connector",
+            "use_official_api",
+            "use_open_source_library",
+            "use_low_code_workflow",
+            "use_saas_platform",
+            "use_minimal_glue_code",
+            "manual_only"
+          ]
+        },
+        "selected_tool_ids": { "type": "array", "items": { "type": "string" } },
+        "reason": { "type": "string", "minLength": 1 },
+        "minimal_code_allowed": { "type": "boolean" }
+      }
+    },
+    "rejected_paths": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "evidence_requirements": {
+      "type": "object",
+      "required": ["source_classes", "region_coverage", "freshness", "minimum_independent_sources"],
+      "additionalProperties": false,
+      "properties": {
+        "source_classes": { "type": "array", "items": { "type": "string" } },
+        "region_coverage": { "type": "array", "items": { "type": "string" } },
+        "freshness": { "type": "string", "minLength": 1 },
+        "minimum_independent_sources": { "type": "integer", "minimum": 1 },
+        "gap_output_contract": { "type": "string" }
+      }
+    },
+    "input_contracts": { "type": "array", "items": { "type": "string" } },
+    "output_contracts": { "type": "array", "items": { "type": "string" } },
+    "implementation_ban": { "type": "array", "items": { "type": "string" } },
+    "fallback_plan": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["failure_mode", "fallback_action", "output_contract"],
+        "additionalProperties": false,
+        "properties": {
+          "failure_mode": { "type": "string" },
+          "fallback_action": { "type": "string" },
+          "output_contract": { "type": "string" }
+        }
+      }
+    },
+    "human_gates": { "type": "array", "items": { "type": "string" } },
+    "sync_targets": { "type": "array", "items": { "type": "string" } },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" },
+        "reviewer": { "type": "string" },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

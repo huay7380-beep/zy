@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RomanticRelationshipCoordinator",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "coordinator_decision_id",
+    "coordinator_expert",
+    "input_refs",
+    "synthesis",
+    "frontend_display_contract",
+    "send_gate_transfer_path"
+  ],
+  "properties": {
+    "schema_version": { "const": "romantic_relationship_coordinator_expert.v1" },
+    "coordinator_decision_id": { "type": "string", "minLength": 1 },
+    "coordinator_expert": {
+      "type": "object",
+      "required": ["expert_id", "discipline", "role"],
+      "properties": {
+        "expert_id": { "const": "romantic_relationship_coordinator_expert" },
+        "discipline": { "type": "string" },
+        "role": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "input_refs": { "type": "object", "additionalProperties": true },
+    "synthesis": {
+      "type": "object",
+      "required": ["primary_stage", "final_frontend_action", "summary"],
+      "properties": {
+        "primary_stage": { "type": "string" },
+        "stage_id": { "type": "string" },
+        "progression_intensity": { "type": ["string", "null"] },
+        "transition_decision": { "type": ["string", "null"] },
+        "dialogue_act": { "type": ["string", "null"] },
+        "risk_level": { "type": "string" },
+        "final_frontend_action": {
+          "enum": ["show_prompt_and_log_only", "prepare_controlled_send_preview"]
+        },
+        "summary": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "frontend_display_contract": { "$ref": "frontend-display-contract.schema.json" },
+    "send_gate_transfer_path": { "$ref": "send-gate-transfer-path.schema.json" }
+  },
+  "additionalProperties": true
+}

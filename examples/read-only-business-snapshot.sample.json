@@ -1,0 +1,12 @@
+{
+  "account_id": "acct_sample_001",
+  "stage": "waiting_for_customer_security_review",
+  "next_action": "prepare whitelist evidence and deployment notes",
+  "owner": {
+    "name": "Ops Lead",
+    "email": "ops@example.test"
+  },
+  "auth": {
+    "api_key": "sample-secret-value"
+  }
+}

@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/graph-memory-database.schema.json",
+  "title": "GraphMemoryDatabase",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "database_id",
+    "graph_model",
+    "stores",
+    "unified_io_contract",
+    "migration_policy"
+  ],
+  "properties": {
+    "schema_version": { "const": "graph_memory_database.v1" },
+    "database_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "graph_model": {
+      "type": "object",
+      "required": ["storage_model", "node_types", "edge_types", "payload_policy"],
+      "properties": {
+        "storage_model": {
+          "type": "string",
+          "enum": ["compact_property_graph"]
+        },
+        "node_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "person",
+              "source_identity",
+              "organization",
+              "conversation_thread",
+              "raw_event",
+              "semantic_event",
+              "goal",
+              "context_snapshot",
+              "expert_review",
+              "feedback",
+              "evidence"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "edge_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "has_identity",
+              "participates_in",
+              "mentioned_in",
+              "relates_to",
+              "derived_from",
+              "supports_goal",
+              "updates_state",
+              "reviewed_by",
+              "has_evidence",
+              "supersedes"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "payload_policy": {
+          "type": "object",
+          "required": ["typed_payloads", "raw_content_policy", "expert_review_policy"],
+          "properties": {
+            "typed_payloads": { "const": true },
+            "raw_content_policy": {
+              "type": "string",
+              "enum": ["summary_first_with_evidence_refs"]
+            },
+            "expert_review_policy": {
+              "type": "string",
+              "enum": ["stored_as_context_snapshot_refs_not_facts"]
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "stores": {
+      "type": "object",
+      "required": [
+        "node_store",
+        "edge_store",
+        "evidence_store",
+        "snapshot_store",
+        "audit_store",
+        "required_indexes"
+      ],
+      "properties": {
+        "node_store": { "$ref": "#/$defs/store" },
+        "edge_store": { "$ref": "#/$defs/store" },
+        "evidence_store": { "$ref": "#/$defs/store" },
+        "snapshot_store": { "$ref": "#/$defs/store" },
+        "audit_store": { "$ref": "#/$defs/store" },
+        "required_indexes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "node_type_id",
+              "edge_type_from_to",
+              "person_thread_time",
+              "event_time_type",
+              "source_identity_person",
+              "context_snapshot_goal_person",
+              "expert_review_context",
+              "content_fingerprint"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "unified_io_contract": {
+      "type": "object",
+      "required": ["input_envelope", "output_context", "missing_data_policy"],
+      "properties": {
+        "input_envelope": {
+          "type": "object",
+          "required": [
+            "accepted_inputs",
+            "upstream_boundary",
+            "downstream_boundary",
+            "real_send_blocked"
+          ],
+          "properties": {
+            "accepted_inputs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "IntakeObservation",
+                  "PilotImportBatch",
+                  "RawEvent",
+                  "SemanticEvent",
+                  "FeedbackRecord",
+                  "ManualOperatorNote"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "upstream_boundary": {
+              "type": "string",
+              "enum": ["source_adapter_collects_only"]
+            },
+            "downstream_boundary": {
+              "type": "string",
+              "enum": ["decision_cluster_reads_context_snapshot_only"]
+            },
+            "real_send_blocked": { "const": true }
+          },
+          "additionalProperties": true
+        },
+        "output_context": {
+          "type": "object",
+          "required": [
+            "outputs",
+            "retrieval_reasons_required",
+            "expert_review_refs_included",
+            "short_input_context_policy"
+          ],
+          "properties": {
+            "outputs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ContextSnapshot",
+                  "GraphMemoryEnvelope",
+                  "RelationshipSnapshot",
+                  "EventTimeline",
+                  "ExpertReviewRefs",
+                  "MissingDataGaps"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "retrieval_reasons_required": { "const": true },
+            "expert_review_refs_included": { "const": true },
+            "short_input_context_policy": {
+              "type": "string",
+              "enum": ["expand_from_thread_goal_relationship_recent_events"]
+            }
+          },
+          "additionalProperties": true
+        },
+        "missing_data_policy": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "close_with_current_step_when_sufficient",
+              "reserve_interface_and_weight_when_insufficient",
+              "request_user_confirmation_for_identity_or_high_risk",
+              "do_not_block_theoretical_review_when_send_is_blocked"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "migration_policy": {
+      "type": "object",
+      "required": ["temporary_file_storage_allowed", "db_runtime_required_before_scale"],
+      "properties": {
+        "temporary_file_storage_allowed": { "const": true },
+        "db_runtime_required_before_scale": { "const": true },
+        "migration_inputs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "migration_outputs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "store": {
+      "type": "object",
+      "required": ["logical_name", "key_fields", "payload_format"],
+      "properties": {
+        "logical_name": { "type": "string", "minLength": 1 },
+        "key_fields": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "payload_format": {
+          "type": "string",
+          "enum": ["json_payload"]
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "nebula_visual_profile.v1",
+  "projection_id": "nebula_projection_sample",
+  "node_id": "confirmation_confirmation_gate_sample",
+  "source_weight_profile_ref": "weight_profile_sample",
+  "visual_weight_level": "V5",
+  "node_size": 22,
+  "brightness": 0.82,
+  "opacity": 0.92,
+  "color_channel": "red",
+  "border_style": "double_ring_requires_confirmation",
+  "pulse_state": "medium_pending_user_confirmation",
+  "edge_thickness": 3,
+  "label_priority": "V5",
+  "explainability": {
+    "why_visible": "blocked pending user confirmation",
+    "source_refs": ["runtime/source-archives/sample/raw.txt"]
+  }
+}

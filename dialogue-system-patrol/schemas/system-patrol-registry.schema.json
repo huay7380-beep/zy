@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "system-patrol-registry.schema.json",
+  "title": "System Patrol Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "generated_at",
+    "mode",
+    "source_refs",
+    "default_coverage",
+    "strict_missing_blocks",
+    "entries",
+    "rules"
+  ],
+  "properties": {
+    "schema": {
+      "const": "system_patrol_registry.v1"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "mode": {
+      "enum": ["missing_aware_bootstrap", "strict_required_coverage"]
+    },
+    "source_refs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "default_coverage": {
+      "enum": ["required", "parent_covered", "excluded", "missing"]
+    },
+    "strict_missing_blocks": {
+      "type": "boolean"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "module_id",
+          "display_name",
+          "owner",
+          "source",
+          "coverage",
+          "patrol_block_path",
+          "status_card_output",
+          "status_event_output",
+          "build_timeline_output",
+          "gate",
+          "compass",
+          "ttl_ms"
+        ],
+        "properties": {
+          "module_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9._:-]+$"
+          },
+          "display_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "enum": ["process_tree", "local_bootstrap", "manual"]
+          },
+          "coverage": {
+            "enum": ["required", "parent_covered", "excluded", "missing"]
+          },
+          "process_tree_node_id": {
+            "type": ["string", "null"]
+          },
+          "parent_module_id": {
+            "type": ["string", "null"]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "patrol_block_path": {
+            "type": "string"
+          },
+          "status_card_output": {
+            "type": "string"
+          },
+          "status_event_output": {
+            "type": "string"
+          },
+          "build_timeline_output": {
+            "type": "string"
+          },
+          "gate": {
+            "type": "string",
+            "minLength": 1
+          },
+          "compass": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ttl_ms": {
+            "type": "integer",
+            "minimum": 1000
+          },
+          "notes": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "missing_policy",
+        "normal_module_change_policy",
+        "protocol_migration_policy",
+        "publisher_policy",
+        "build_timeline_policy",
+        "source_hash_policy",
+        "enforcement_entry_policy"
+      ],
+      "properties": {
+        "missing_policy": {
+          "type": "string"
+        },
+        "normal_module_change_policy": {
+          "type": "string"
+        },
+        "protocol_migration_policy": {
+          "type": "string"
+        },
+        "publisher_policy": {
+          "type": "string"
+        },
+        "build_timeline_policy": {
+          "type": "string"
+        },
+        "source_hash_policy": {
+          "type": "string"
+        },
+        "enforcement_entry_policy": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

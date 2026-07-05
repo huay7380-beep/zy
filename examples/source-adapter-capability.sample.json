@@ -1,0 +1,19 @@
+{
+  "adapter_id": "sightflow_desktop.wechat",
+  "adapter_version": "0.1.0",
+  "source_type": "desktop",
+  "platform": "wechat",
+  "capabilities": {
+    "can_receive": true,
+    "can_send": true,
+    "can_capture_screenshot": true,
+    "can_read_dom": false,
+    "can_identify_thread": true,
+    "can_verify_target": true,
+    "requires_user_confirmation": true
+  },
+  "metadata": {
+    "bridge_mode": "zhineng_bridge",
+    "real_execution_default": false
+  }
+}

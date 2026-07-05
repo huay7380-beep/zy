@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/read-only-expansion-trial.schema.json",
+  "title": "ReadOnlyExpansionTrial",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "trial_id",
+    "created_at",
+    "gate_decision",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "source",
+    "bridge",
+    "generated_pilot_import",
+    "graph_loop",
+    "artifacts",
+    "checks",
+    "required_failures",
+    "next_actions"
+  ],
+  "properties": {
+    "schema_version": { "const": "read_only_expansion_trial.v1" },
+    "trial_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "enum": [
+        "read_only_expansion_trial_ready_for_feedback_collection",
+        "read_only_expansion_trial_needs_attention"
+      ]
+    },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "source": {
+      "type": "object",
+      "required": ["root", "source_dirs", "observation_paths", "pilot_import_path"],
+      "additionalProperties": true
+    },
+    "bridge": {
+      "type": "object",
+      "required": [
+        "bridge_id",
+        "gate_decision",
+        "raw_observation_count",
+        "effective_observation_count",
+        "duplicate_suppressed_count",
+        "decision_id",
+        "expert_count",
+        "message_draft_length"
+      ],
+      "additionalProperties": true
+    },
+    "generated_pilot_import": {
+      "type": "object",
+      "required": [
+        "import_id",
+        "records",
+        "feedback_records",
+        "ready_for_decision_trial",
+        "ready_for_closed_loop_mvp"
+      ],
+      "additionalProperties": true
+    },
+    "graph_loop": {
+      "type": "object",
+      "required": [
+        "verification_id",
+        "gate_decision",
+        "required_failures",
+        "closed_loop_complete",
+        "completed_expert_count",
+        "writeback_complete"
+      ],
+      "additionalProperties": true
+    },
+    "artifacts": { "type": "object", "additionalProperties": true },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "severity", "status", "passed", "evidence"],
+        "additionalProperties": true
+      }
+    },
+    "required_failures": { "type": "array", "items": { "type": "string" } },
+    "next_actions": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

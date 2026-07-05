@@ -1,0 +1,74 @@
+{
+  "version": "0.1.0",
+  "trigger_types": [
+    {
+      "trigger_type": "user_initiated",
+      "label": "用户主动触发",
+      "default_activation": "immediate",
+      "requires_user_confirmation": false
+    },
+    {
+      "trigger_type": "scheduled",
+      "label": "定时触发",
+      "default_activation": "scheduled",
+      "requires_user_confirmation": true
+    },
+    {
+      "trigger_type": "profession_routine",
+      "label": "职业例行触发",
+      "default_activation": "recurring",
+      "requires_user_confirmation": true
+    },
+    {
+      "trigger_type": "preference_routine",
+      "label": "偏好例行触发",
+      "default_activation": "recurring",
+      "requires_user_confirmation": true
+    },
+    {
+      "trigger_type": "graph_signal",
+      "label": "图谱信号触发",
+      "default_activation": "conditional",
+      "requires_user_confirmation": true
+    }
+  ],
+  "profession_routines": {
+    "sales": [
+      {
+        "routine_id": "sales_stalled_customer_check",
+        "label": "停滞客户检查",
+        "default_schedule": "weekday 09:00",
+        "conditions": ["7 天未回复", "会议后没有下一步", "预算异议未拆解"],
+        "suggested_goal": "推动客户确认下一步或说明真实卡点"
+      },
+      {
+        "routine_id": "sales_visit_planning",
+        "label": "客户拜访规划",
+        "default_schedule": "weekly monday 10:00",
+        "conditions": ["重点客户", "关系健康度下降", "项目进入评审期"],
+        "suggested_goal": "预约客户拜访或评审会议"
+      }
+    ],
+    "customer_success": [
+      {
+        "routine_id": "cs_health_check",
+        "label": "客户健康度检查",
+        "default_schedule": "weekly friday 16:00",
+        "conditions": ["服务请求积压", "负面事件增加", "续费窗口临近"],
+        "suggested_goal": "安排客户成功回访"
+      }
+    ]
+  },
+  "preference_routines": {
+    "festival_maintenance": {
+      "label": "节日前关系维护",
+      "default_offset_days": -3,
+      "applies_to": ["client", "business_partner", "close_friend", "normal_friend"]
+    },
+    "birthday_reminder": {
+      "label": "生日提醒",
+      "default_offset_days": 0,
+      "applies_to": ["client", "business_partner", "close_friend", "normal_friend", "family"]
+    }
+  }
+}

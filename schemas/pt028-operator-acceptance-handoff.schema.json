@@ -1,0 +1,327 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-operator-acceptance-handoff.schema.json",
+  "title": "pt028_operator_acceptance_handoff.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "handoff_id",
+    "created_at",
+    "gate_decision",
+    "pt028_fully_accepted_for_production",
+    "source",
+    "blocking_items",
+    "required_failures",
+    "event_stream_summary",
+    "feedback_collection_summary",
+    "human_input_targets",
+    "human_review_handoff",
+    "operator_quickstart",
+    "operator_action_queue",
+    "operator_next_actions",
+    "pending_operator_action_count",
+    "pending_operator_actions",
+    "boundary_policy",
+    "output_paths"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_operator_acceptance_handoff.v1" },
+    "handoff_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "enum": [
+        "ready_for_operator_human_review_completion",
+        "operator_handoff_needs_refresh",
+        "pt028_operator_handoff_complete"
+      ]
+    },
+    "pt028_fully_accepted_for_production": { "type": "boolean" },
+    "source": {
+      "type": "object",
+      "required": [
+        "acceptance_status_path",
+        "final_review_pack_path",
+        "human_review_decision_path"
+      ],
+      "additionalProperties": true
+    },
+    "blocking_items": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "event_stream_summary": { "type": "object" },
+    "feedback_collection_summary": { "type": "object" },
+    "review_sheet_initial_diagnostics_summary": {
+      "type": ["object", "null"]
+    },
+    "human_input_targets": {
+      "type": "object",
+      "required": [
+        "filled_review_sheet_target_path",
+        "filled_review_sheet_target_exists",
+        "real_feedback_target_path",
+        "real_feedback_target_exists"
+      ],
+      "additionalProperties": true
+    },
+    "human_review_handoff": {
+      "type": "object",
+      "required": [
+        "final_review_pack_html_path",
+        "review_sheet_template_path",
+        "review_sheet_markdown_path",
+        "review_sheet_html_path",
+        "generated_decision_output_path"
+      ],
+      "properties": {
+        "final_review_pack_html_path": { "type": ["string", "null"] },
+        "review_sheet_template_path": { "type": ["string", "null"] },
+        "review_sheet_markdown_path": { "type": ["string", "null"] },
+        "review_sheet_html_path": { "type": ["string", "null"] },
+        "generated_decision_output_path": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "operator_quickstart": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "status",
+        "primary_next_action_id",
+        "primary_next_action_status",
+        "open_first_path",
+        "open_paths",
+        "target_files",
+        "commands_in_order",
+        "manual_sequence",
+        "boundary_policy"
+      ],
+      "properties": {
+        "schema_version": { "const": "pt028_operator_quickstart.v1" },
+        "status": { "type": "string" },
+        "primary_next_action_id": { "type": ["string", "null"] },
+        "primary_next_action_status": { "type": "string" },
+        "open_first_path": { "type": ["string", "null"] },
+        "open_paths": {
+          "type": "object",
+          "required": [
+            "final_review_pack_html_path",
+            "review_sheet_html_path",
+            "review_sheet_template_path",
+            "generated_decision_output_path"
+          ],
+          "properties": {
+            "final_review_pack_html_path": { "type": ["string", "null"] },
+            "review_sheet_html_path": { "type": ["string", "null"] },
+            "review_sheet_template_path": { "type": ["string", "null"] },
+            "generated_decision_output_path": { "type": ["string", "null"] }
+          },
+          "additionalProperties": false
+        },
+        "target_files": {
+          "type": "object",
+          "required": [
+            "filled_review_sheet_target_path",
+            "filled_review_sheet_target_exists",
+            "real_feedback_target_path",
+            "real_feedback_target_exists"
+          ],
+          "properties": {
+            "filled_review_sheet_target_path": { "type": "string" },
+            "filled_review_sheet_target_exists": { "type": "boolean" },
+            "real_feedback_target_path": { "type": "string" },
+            "real_feedback_target_exists": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        "commands_in_order": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "manual_sequence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["action_id", "status", "artifact_path", "target_path", "command"],
+            "properties": {
+              "action_id": { "type": "string" },
+              "status": { "type": "string" },
+              "artifact_path": { "type": ["string", "null"] },
+              "target_path": { "type": ["string", "null"] },
+              "command": { "type": ["string", "null"] }
+            },
+            "additionalProperties": false
+          }
+        },
+        "boundary_policy": {
+          "type": "object",
+          "required": [
+            "quickstart_is_read_only",
+            "writes_real_user_input_files",
+            "writes_real_feedback_target",
+            "approves_human_review",
+            "real_execution_allowed",
+            "real_send_attempted"
+          ],
+          "properties": {
+            "quickstart_is_read_only": { "const": true },
+            "writes_real_user_input_files": { "const": false },
+            "writes_real_feedback_target": { "const": false },
+            "approves_human_review": { "const": false },
+            "real_execution_allowed": { "const": false },
+            "real_send_attempted": { "const": false }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "operator_action_queue": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "source",
+        "queue_status",
+        "current_action_id",
+        "next_blocking_action_id",
+        "pending_action_count",
+        "actions",
+        "boundary_policy"
+      ],
+      "properties": {
+        "schema_version": { "const": "pt028_operator_action_queue.v1" },
+        "source": { "type": "string" },
+        "queue_status": {
+          "enum": [
+            "operator_action_required",
+            "final_acceptance_complete"
+          ]
+        },
+        "current_action_id": { "type": ["string", "null"] },
+        "next_blocking_action_id": { "type": ["string", "null"] },
+        "pending_action_count": { "type": "integer", "minimum": 0 },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "action_id",
+              "status",
+              "target_path",
+              "command",
+              "writes_target_file",
+              "writes_real_feedback_target",
+              "real_send_allowed",
+              "prompt_only_required"
+            ],
+            "properties": {
+              "action_id": { "type": "string" },
+              "label": { "type": "string" },
+              "status": { "type": "string" },
+              "open_path": { "type": ["string", "null"] },
+              "fallback_open_path": { "type": ["string", "null"] },
+              "target_path": { "type": ["string", "null"] },
+              "command": { "type": ["string", "null"] },
+              "writes_target_file": { "type": "boolean" },
+              "writes_real_feedback_target": { "type": "boolean" },
+              "real_send_allowed": { "const": false },
+              "prompt_only_required": { "const": true }
+            },
+            "additionalProperties": true
+          }
+        },
+        "boundary_policy": {
+          "type": "object",
+          "required": [
+            "read_only_status_report",
+            "writes_real_user_input_files",
+            "writes_real_feedback_target",
+            "real_execution_allowed",
+            "real_send_attempted",
+            "prompt_only_required"
+          ],
+          "properties": {
+            "read_only_status_report": { "const": true },
+            "writes_real_user_input_files": { "const": false },
+            "writes_real_feedback_target": { "const": false },
+            "real_execution_allowed": { "const": false },
+            "real_send_attempted": { "const": false },
+            "prompt_only_required": { "const": true }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "operator_next_actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "status",
+          "owner",
+          "artifact_path",
+          "target_path",
+          "command",
+          "instructions"
+        ],
+        "properties": {
+          "action_id": { "type": "string" },
+          "status": { "type": "string" },
+          "owner": { "type": "string" },
+          "artifact_path": { "type": ["string", "null"] },
+          "target_path": { "type": ["string", "null"] },
+          "command": { "type": ["string", "null"] },
+          "instructions": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "pending_operator_action_count": { "type": "integer", "minimum": 0 },
+    "pending_operator_actions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "boundary_policy": {
+      "type": "object",
+      "required": [
+        "handoff_is_read_only",
+        "writes_real_user_input_files",
+        "writes_real_feedback_target",
+        "approves_human_review",
+        "real_execution_allowed",
+        "real_send_attempted"
+      ],
+      "properties": {
+        "handoff_is_read_only": { "const": true },
+        "writes_real_user_input_files": { "const": false },
+        "writes_real_feedback_target": { "const": false },
+        "approves_human_review": { "const": false },
+        "real_execution_allowed": { "const": false },
+        "real_send_attempted": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "output_paths": {
+      "type": "object",
+      "required": ["json_path", "markdown_path", "html_path", "latest_path"],
+      "properties": {
+        "json_path": { "type": "string" },
+        "markdown_path": { "type": "string" },
+        "html_path": { "type": "string" },
+        "latest_path": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SocialGoalInput",
+  "type": "object",
+  "required": ["initial_goal", "scene", "primary_person_id"],
+  "properties": {
+    "initial_goal": { "type": "string" },
+    "scene": { "type": "string", "enum": ["business", "social", "family", "community", "mixed"] },
+    "primary_person_id": { "type": "string" },
+    "target_person_ids": { "type": "array", "items": { "type": "string" } },
+    "context_input": { "type": "string" },
+    "preferred_channel": { "type": "string" },
+    "deadline": { "type": "string" },
+    "user_constraints": { "type": "array", "items": { "type": "string" } }
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/mvp-real-input-trial.schema.json",
+  "title": "MvpRealInputTrial",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "trial_id",
+    "created_at",
+    "gate_decision",
+    "ready_for_user_special_testing",
+    "ready_for_issue_register_review",
+    "ready_to_expand_sample_or_real_connector",
+    "source",
+    "external_input_readiness",
+    "checks",
+    "required_failures",
+    "expansion_failures",
+    "artifacts",
+    "continue_when",
+    "stop_or_adjust_when",
+    "next_actions"
+  ],
+  "properties": {
+    "schema_version": { "const": "mvp_real_input_trial.v1" },
+    "trial_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "external_inputs_not_ready_stop_before_trial",
+        "real_input_trial_needs_attention",
+        "real_input_trial_complete_waiting_issue_register_review"
+      ]
+    },
+    "ready_for_user_special_testing": { "type": "boolean" },
+    "ready_for_issue_register_review": { "type": "boolean" },
+    "ready_to_expand_sample_or_real_connector": { "type": "boolean" },
+    "source": {
+      "type": "object",
+      "required": ["root", "pilot_import_path", "platform_snapshot_path", "platform_preview_path"],
+      "properties": {
+        "root": { "type": "string" },
+        "input_kit_path": { "type": ["string", "null"] },
+        "pilot_import_path": { "type": ["string", "null"] },
+        "platform_snapshot_path": { "type": ["string", "null"] },
+        "platform_preview_path": { "type": ["string", "null"] },
+        "user_feedback_path": { "type": ["string", "null"] },
+        "process_tree_path": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "external_input_readiness": {
+      "type": "object",
+      "required": ["gate_decision", "ready_for_real_input_trial", "required_failures", "item_results"],
+      "properties": {
+        "gate_decision": { "type": "string" },
+        "ready_for_real_input_trial": { "type": "boolean" },
+        "required_failures": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "item_results": {
+          "type": "array",
+          "items": { "type": "object" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "result_summary": { "type": ["object", "null"] },
+    "completion_audit_summary": { "type": ["object", "null"] },
+    "process_tree_validation_summary": { "type": ["object", "null"] },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "label", "severity", "status", "passed", "evidence"],
+        "properties": {
+          "check_id": { "type": "string" },
+          "label": { "type": "string" },
+          "severity": { "type": "string" },
+          "status": { "type": "string", "enum": ["pass", "fail"] },
+          "passed": { "type": "boolean" },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "next_action": { "type": ["string", "null"] }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "expansion_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "artifacts": { "type": "object" },
+    "continue_when": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "stop_or_adjust_when": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

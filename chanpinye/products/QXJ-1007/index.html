@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QXKJ-1007 Product Specifications</title>
+  <style>
+    :root {
+      --graphite: #151a1e;
+      --deep-teal: #006d77;
+      --copper: #b66a2c;
+      --ice: #f4f7f8;
+      --mist: #d8e1e3;
+      --verified: #2f7d32;
+      --review: #b7791f;
+      --risk: #b8322a;
+      --ink: var(--graphite);
+      --muted: #5d6972;
+      --line: #20272c;
+      --soft: var(--mist);
+      --paper: var(--ice);
+    }
+    * {
+      box-sizing: border-box;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.22;
+    }
+    .viewer {
+      display: grid;
+      gap: 30px;
+      justify-items: center;
+      padding: 28px 16px 60px;
+    }
+    .sheet {
+      position: relative;
+      width: 1020px;
+      min-height: 1320px;
+      background: #fff;
+      padding: 88px 74px 72px;
+      box-shadow: 0 24px 70px rgba(18, 26, 31, .18);
+      overflow: hidden;
+    }
+    .sheet-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 24px;
+      border-bottom: 5px solid var(--deep-teal);
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+    }
+    .spec-label {
+      color: var(--deep-teal);
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.04;
+      text-transform: uppercase;
+    }
+    .spec-label b {
+      display: block;
+      color: var(--deep-teal);
+      font-size: 20px;
+    }
+    .brand-block {
+      text-align: right;
+      color: var(--graphite);
+      line-height: 1.02;
+    }
+    .brand-name {
+      position: relative;
+      display: inline-block;
+      padding-right: 18px;
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+    .brand-name::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: -14px;
+      width: 58px;
+      height: 58px;
+      background: var(--copper);
+      opacity: .96;
+      z-index: -1;
+    }
+    .brand-sub {
+      display: block;
+      margin-top: 3px;
+      font-size: 22px;
+      font-weight: 400;
+    }
+    h1 {
+      margin: 0 0 30px;
+      color: var(--graphite);
+      font-size: 29px;
+      line-height: 1.08;
+      font-weight: 900;
+    }
+    h2 {
+      margin: 0 0 8px;
+      color: var(--deep-teal);
+      font-size: 20px;
+      line-height: 1.05;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    p {
+      margin: 0 0 16px;
+      font-size: 17px;
+    }
+    ul {
+      margin: 0 0 24px;
+      padding-left: 18px;
+      font-size: 17px;
+    }
+    li { margin: 0 0 7px; }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 54px;
+    }
+    .left-flow,
+    .right-flow {
+      min-width: 0;
+    }
+    .product-title {
+      margin-bottom: 26px;
+    }
+    .image-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 26px;
+      align-items: center;
+      margin: 44px 0 44px;
+    }
+    .image-card {
+      display: grid;
+      place-items: center;
+      min-height: 190px;
+      background: #fff;
+      background-repeat: no-repeat;
+      background-size: 235%;
+      overflow: hidden;
+    }
+    .image-card.front-card {
+      background-image: url("assets/products/qxkj-1007-1890.jpg");
+      background-position: 18% 48%;
+    }
+    .image-card.rear-card {
+      background-image: url("assets/products/qxkj-1007-1890.jpg");
+      background-position: 82% 48%;
+    }
+    .image-card img {
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+    .section { margin-bottom: 28px; }
+    .side-model {
+      position: absolute;
+      right: 28px;
+      top: 292px;
+      color: var(--copper);
+      font-size: 24px;
+      font-weight: 900;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      letter-spacing: 1px;
+    }
+    .page-foot {
+      position: absolute;
+      left: 74px;
+      right: 74px;
+      bottom: 36px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      align-items: end;
+      color: #555;
+      font-size: 11px;
+    }
+    .page-foot p { margin: 0; font-size: 11px; }
+    .rev { text-align: right; }
+    .mech-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 44px;
+      margin-top: 16px;
+    }
+    .spec-rows {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 11px 18px;
+      font-size: 17px;
+    }
+    .spec-rows .label { color: #333; }
+    .spec-rows b { font-weight: 900; }
+    .diagram-zone {
+      min-height: 270px;
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 30px;
+      align-items: center;
+      margin-top: 130px;
+    }
+    .dim-card {
+      min-height: 180px;
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+    .dim-card img {
+      width: 100%;
+      max-height: 170px;
+      object-fit: contain;
+      opacity: .82;
+    }
+    .dim-note {
+      position: absolute;
+      color: #777;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .dim-front-top { top: 0; left: 42%; }
+    .dim-front-bottom { bottom: 0; left: 32%; }
+    .dim-side-top { top: -2px; right: 22px; }
+    .dim-side-mid { top: 78px; left: -2px; }
+    .dim-side-bottom { bottom: 0; right: 22px; }
+    .placeholder-line {
+      border: 2px solid #222;
+      width: 86%;
+      height: 118px;
+      display: grid;
+      place-items: center;
+      color: #777;
+      font-size: 12px;
+      text-align: center;
+      padding: 10px;
+    }
+    .part-table-wrap {
+      margin-top: 82px;
+    }
+    .part-title {
+      display: block;
+      background: var(--copper);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+      padding: 8px 9px;
+      text-transform: uppercase;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      color: var(--graphite);
+      background: #e6eef0;
+      text-align: left;
+      padding: 8px 9px;
+      font-weight: 900;
+    }
+    td {
+      border-bottom: 1px solid #333;
+      padding: 7px 9px;
+      vertical-align: top;
+    }
+    .support-note {
+      margin-top: 58px;
+      font-size: 18px;
+    }
+    .contact-band {
+      position: absolute;
+      left: 74px;
+      right: 74px;
+      bottom: 78px;
+      border-top: 2px solid var(--deep-teal);
+      padding-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      font-size: 11px;
+      color: #5c6670;
+    }
+    .contact-band b {
+      display: block;
+      color: var(--deep-teal);
+      font-size: 12px;
+    }
+    .contact-band div:nth-child(n+2) {
+      border-left: 1px solid var(--copper);
+      padding-left: 10px;
+    }
+    .global-line {
+      grid-column: 2 / -1;
+      color: var(--deep-teal);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+    .copy-boundary {
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      max-width: 260px;
+      border: 1px solid #d7e4f2;
+      background: rgba(255,255,255,.95);
+      padding: 10px 12px;
+      color: #36485b;
+      font-size: 12px;
+      box-shadow: 0 14px 34px rgba(0,0,0,.12);
+    }
+    @page {
+      size: 1020px 1320px;
+      margin: 0;
+    }
+    @media print {
+      html,
+      body {
+        width: 1020px;
+        height: auto;
+        margin: 0;
+      }
+      body { background: #fff; }
+      .viewer {
+        display: block;
+        padding: 0;
+        gap: 0;
+      }
+      .sheet {
+        width: 1020px;
+        height: 1320px;
+        min-height: 1320px;
+        box-shadow: none;
+        break-after: page;
+        page-break-after: always;
+      }
+      .sheet:last-child {
+        break-after: auto;
+        page-break-after: auto;
+      }
+      .copy-boundary { display: none; }
+    }
+    @media (max-width: 1060px) {
+      .viewer { align-items: start; overflow-x: auto; justify-items: start; }
+      .sheet { transform-origin: top left; }
+      .copy-boundary { display: none; }
+    }
+    @media (max-width: 560px) {
+      .viewer {
+        justify-items: start;
+        overflow-x: hidden;
+        gap: 14px;
+        padding: 20px 0 42px;
+      }
+      .sheet {
+        transform: scale(.36);
+        transform-origin: top left;
+        margin-left: 12px;
+        margin-bottom: -835px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="viewer">
+    <section class="sheet" aria-label="QXKJ-1007 product specifications page 1">
+      <header class="sheet-header">
+        <div class="spec-label">Product Specifications<b>QXKJ-1007</b></div>
+        <div class="brand-block">
+          <span class="brand-name">PRIVATE LABEL</span>
+          <span class="brand-sub">Network Connectivity</span>
+        </div>
+      </header>
+
+      <h1 class="product-title">QXKJ-1007 CAT6A / CAT6 / CAT5E UTP Toolless Keystone Jack</h1>
+      <div class="side-model">QXKJ-1007</div>
+
+      <div class="two-col">
+        <div class="left-flow">
+          <section class="section">
+            <h2>Application</h2>
+            <p>The QXKJ-1007 UTP toolless keystone jack is designed for structured cabling outlets, unloaded patch panels and modular wall plate applications where RJ45 copper connectivity is required. The family supports CAT6A, CAT6 and CAT5E model selection for project installation, distributor inventory and private-label sourcing.</p>
+          </section>
+
+          <div class="image-row" aria-label="Product views">
+            <div class="image-card front-card">
+              <img class="front-view" src="assets/products/qxkj-1007-1890.jpg" alt="QXKJ-1007 front product view">
+            </div>
+            <div class="image-card rear-card">
+              <img class="rear-view" src="assets/products/qxkj-1007-1890.jpg" alt="QXKJ-1007 rear termination view">
+            </div>
+          </div>
+
+          <section class="section">
+            <h2>Specification</h2>
+            <p>The jack shall be supplied as a UTP toolless RJ45 keystone module with source-listed CAT6A, CAT6 and CAT5E grade options. Termination shall use a toolless IDC structure. Source-imported electrical values include 1.5 Amps current rating, insulation resistance of at least 500 MOhm, contact resistance of no more than 10 mOhm and DC resistance of no more than 0.1 Ohm.</p>
+            <p>Physical construction shall use high-impact flame-retardant plastic listed as UL 94V-0 rated in source text, FR-4 PCB at 1.2 mm thickness, phosphor bronze jack wire with gold over nickel plating and tin-plated phosphor bronze IDC conductor. Certificate files and final market approvals remain confirmation needed before public claim use.</p>
+          </section>
+        </div>
+
+        <div class="right-flow">
+          <section class="section">
+            <h2>Features & Benefits</h2>
+            <ul>
+              <li>Toolless IDC termination for installation without a punch-down tool.</li>
+              <li>One product family covers CAT6A, CAT6 and CAT5E purchasing choices.</li>
+              <li>Accommodates 26 to 23 AWG solid conductors.</li>
+              <li>Plug insertion life source-listed at at least 750 cycles with FCC compliant RJ45 plug.</li>
+              <li>Plug retention force source-listed at at least 11 lbf.</li>
+              <li>FR-4 PCB and phosphor bronze contact construction are listed in the imported source data.</li>
+              <li>Private-label requirements can be quoted by grade, logo, carton mark and package plan.</li>
+              <li>Final certificate and packaging claims are held for human confirmation before publishing.</li>
+            </ul>
+          </section>
+
+          <section class="section">
+            <h2>Design Considerations</h2>
+            <ul>
+              <li>Use with compatible unloaded wall plates, modular outlets or patch panels after fit confirmation.</li>
+              <li>Confirm CAT6A, CAT6 or CAT5E grade requirement before quotation.</li>
+              <li>Confirm target country, certificate file and buyer type before making compliance claims.</li>
+            </ul>
+          </section>
+
+          <section class="section">
+            <h2>Standards & Regulations</h2>
+            <ul>
+              <li>ANSI/TIA-568-C.2 source-listed</li>
+              <li>ISO/IEC 11801:2002/Amd.2:2010 source-listed</li>
+              <li>YD/T 926.3-2009 source-listed</li>
+              <li>ISO/IEC 60603-7 compliant in source text</li>
+              <li>RoHS directive 2002/95/EC compliant in source text</li>
+              <li>Third-party certificate PDFs: confirmation needed</li>
+            </ul>
+          </section>
+
+          <section class="section">
+            <h2>Country Of Origin</h2>
+            <p>Confirmation needed</p>
+          </section>
+        </div>
+      </div>
+
+      <footer class="page-foot">
+        <div>
+          <p>Page 1 of 2</p>
+          <p>Internal private-label draft. Reference layout adapted from a mature technical specification sheet; protected brand assets and original body copy are not reused.</p>
+        </div>
+        <div class="rev">QXKJ-1007 Spec Draft<br>Revised July 2026</div>
+      </footer>
+    </section>
+
+    <section class="sheet" aria-label="QXKJ-1007 product specifications page 2">
+      <header class="sheet-header">
+        <div class="spec-label">Product Specifications<b>QXKJ-1007</b></div>
+        <div class="brand-block">
+          <span class="brand-name">PRIVATE LABEL</span>
+          <span class="brand-sub">Network Connectivity</span>
+        </div>
+      </header>
+      <div class="side-model">QXKJ-1007</div>
+
+      <div class="mech-grid">
+        <section>
+          <h2>Mechanical Specifications</h2>
+          <div class="spec-rows">
+            <div class="label">Dimensions:</div><div>Confirmation needed</div>
+            <div class="label">Materials:</div><div><b>Plastic Parts:</b> High-impact flame-retardant plastic, UL 94V-0 rated in source text.</div>
+            <div></div><div><b>PCB:</b> FR-4, 1.2 mm thickness.</div>
+            <div></div><div><b>Jack Wire:</b> 0.35 mm phosphor bronze, gold over nickel plating.</div>
+            <div></div><div><b>IDC Conductor:</b> 0.5 mm phosphor bronze, tin-plating.</div>
+            <div class="label">Temp. (Storage):</div><div>-40 deg C to 68 deg C</div>
+            <div class="label">Temp. (Operating):</div><div>-10 deg C to 60 deg C</div>
+            <div class="label">Humidity:</div><div>10% to 90% RH</div>
+            <div class="label">Durability:</div><div>200 termination cycles</div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Warranty Information</h2>
+          <p>Warranty terms, support region and private-label responsibility are confirmation needed before publication.</p>
+
+          <div class="diagram-zone" aria-label="Dimension drawing placeholders">
+            <div class="dim-card">
+              <div class="placeholder-line">Front dimension drawing placeholder<br>Factory CAD required</div>
+              <span class="dim-note dim-front-top">width TBD</span>
+              <span class="dim-note dim-front-bottom">height TBD</span>
+            </div>
+            <div class="dim-card">
+              <div class="placeholder-line">Side dimension drawing placeholder<br>Factory CAD required</div>
+              <span class="dim-note dim-side-top">length TBD</span>
+              <span class="dim-note dim-side-mid">height TBD</span>
+              <span class="dim-note dim-side-bottom">depth TBD</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="part-table-wrap">
+        <span class="part-title">Part Number</span>
+        <table aria-label="Part number table">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Single Item</th>
+              <th>Bulk Pack</th>
+              <th>Private Label Pack</th>
+              <th>Review Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>QXKJ-1007 UTP Toolless Keystone Jack, CAT6A</td>
+              <td>QXKJ-1007C6A</td>
+              <td>Confirmation needed</td>
+              <td>Available after logo and carton review</td>
+              <td>Source-listed</td>
+            </tr>
+            <tr>
+              <td>QXKJ-1007 UTP Toolless Keystone Jack, CAT6</td>
+              <td>QXKJ-1007C6</td>
+              <td>Confirmation needed</td>
+              <td>Available after logo and carton review</td>
+              <td>Source-listed</td>
+            </tr>
+            <tr>
+              <td>QXKJ-1007 UTP Toolless Keystone Jack, CAT5E</td>
+              <td>QXKJ-1007C5E</td>
+              <td>Confirmation needed</td>
+              <td>Available after logo and carton review</td>
+              <td>Source-listed</td>
+            </tr>
+            <tr>
+              <td>Color options</td>
+              <td>Confirmation needed</td>
+              <td>Confirmation needed</td>
+              <td>Color label can be mapped after factory confirmation</td>
+              <td>Open item</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="support-note">For further support information, contact the sales or engineering review owner after the product facts are confirmed.</p>
+
+      <div class="contact-band">
+        <div><b>China</b>Factory and export contact<br>confirmation needed</div>
+        <div><b>Asia Pacific</b>Regional contact<br>confirmation needed</div>
+        <div><b>North America</b>Distributor contact<br>confirmation needed</div>
+        <div><b>Europe</b>Compliance contact<br>confirmation needed</div>
+        <div><b>Latin America</b>Sales contact<br>confirmation needed</div>
+        <div><b>Middle East & Africa</b>Project contact<br>confirmation needed</div>
+        <div class="global-line">Products can be prepared for global review after certificates, packaging and country requirements are confirmed.</div>
+      </div>
+
+      <footer class="page-foot">
+        <div>
+          <p>Page 2 of 2</p>
+          <p>Internal draft. Do not publish, send to customer or claim certification without user approval and supporting files.</p>
+        </div>
+        <div class="rev">QXKJ-1007 Spec Draft<br>Revised July 2026</div>
+      </footer>
+    </section>
+  </div>
+
+  <aside class="copy-boundary">Layout logic is rebuilt from the reference spec-sheet format. Original protected body copy and brand assets are not included.</aside>
+</body>
+</html>

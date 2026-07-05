@@ -1,0 +1,203 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "trigger_plan",
+  "display_name": "触发计划",
+  "owner": "process_tree",
+  "source_dir": "docs",
+  "process_tree_node_id": "trigger_plan",
+  "registration_status": "process_tree_status:implemented_in_mvp_loop",
+  "gate": "system_patrol_coverage_gate",
+  "compass": "system_patrol.trigger_plan",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "validated",
+  "updated_at": "2026-07-01T11:39:08.902Z",
+  "ttl_ms": 604800000,
+  "change_session_id": "system_patrol_blocks_init_20260701",
+  "data_flow": {
+    "inputs": [
+      "docs/09-触发引擎与预约通知接口.md",
+      "schemas/trigger-request.schema.json",
+      "schemas/trigger-plan.schema.json",
+      "knowledge/triggers/trigger-policies.json",
+      "packages/trigger-engine/src/trigger-engine.mjs",
+      "schemas/platform-dry-run-connector.schema.json",
+      "packages/trigger-engine/tests/trigger-engine.test.mjs",
+      "schemas/platform-snapshot-validation.schema.json",
+      "examples/platform-snapshot.sample.html",
+      "examples/platform-snapshot-preview.sample.json",
+      "scripts/validate-platform-snapshot.mjs",
+      "scripts/run-trigger-demo.mjs",
+      "runtime/platform-snapshot-validations/**",
+      "docs/16-多来源信息接入与受控发送目标实现文档.md",
+      "schemas/tool-call-plan.schema.json",
+      "schemas/tool-call-result.schema.json",
+      "schemas/tool-intake-bridge.schema.json",
+      "packages/tool-runtime/src/tool-runtime.mjs",
+      "packages/tool-runtime/src/tool-intake-bridge.mjs",
+      "schemas/outbound-send-command.schema.json",
+      "schemas/outbound-send-result.schema.json",
+      "schemas/controlled-send-material-kit.schema.json",
+      "schemas/controlled-send-real-window-readiness.schema.json",
+      "schemas/controlled-send-command-preflight.schema.json",
+      "schemas/desktop-controlled-send-trial.schema.json",
+      "schemas/desktop-controlled-send-completion.schema.json",
+      "schemas/desktop-controlled-send-handoff.schema.json",
+      "schemas/intake-implementation-audit.schema.json",
+      "examples/outbound-send-command.sample.json",
+      "scripts/run-desktop-send-dry-run.mjs",
+      "scripts/init-controlled-send-material-kit.mjs",
+      "scripts/check-controlled-send-real-window-readiness.mjs",
+      "scripts/check-controlled-send-command.mjs",
+      "scripts/prepare-controlled-send-trial.mjs",
+      "scripts/complete-controlled-send-trial.mjs",
+      "scripts/run-controlled-send-simulation.mjs",
+      "scripts/write-controlled-send-handoff.mjs",
+      "scripts/audit-intake-implementation.mjs",
+      "sightflow-desktop-agent-main/src/core/desktop-send-executor.ts",
+      "sightflow-desktop-agent-main/src/core/send-command-types.ts",
+      "sightflow-desktop-agent-main/src/core/rpa/tests/test-send-dry-run.ts",
+      "sightflow-desktop-agent-main/src/core/rpa/tests/test-controlled-send.ts",
+      "sightflow-desktop-agent-main/src/core/rpa/tests/test-controlled-send-real.ts",
+      "sightflow-desktop-agent-main/scripts/test-cli.ts",
+      "runtime/desktop-send-dry-runs/**",
+      "runtime/tool-intake-bridges/**",
+      "runtime/controlled-send-material-kits/**",
+      "runtime/controlled-send-real-window-readiness/**",
+      "runtime/desktop-controlled-send-command-preflights/**",
+      "runtime/desktop-controlled-send-trials/**",
+      "runtime/desktop-controlled-send-completions/**",
+      "runtime/controlled-send-simulations/**",
+      "runtime/desktop-controlled-send-handoffs/**",
+      "runtime/intake-implementation-audits/**",
+      "schemas/send-gate-transfer-path.schema.json"
+    ],
+    "processing": [
+      "把建议转成用户主动、定时、职业例行、偏好例行或图谱信号触发的执行链路、人工确认清单和外部平台动作预览。"
+    ],
+    "outputs": [
+      "TriggerPlan",
+      "message_draft",
+      "skill_steps",
+      "confirmation_gates",
+      "manual_execution_checklist",
+      "notification_plan",
+      "PlatformDryRunConnector",
+      "platform_dry_run_connector_check",
+      "PlatformSnapshotValidation",
+      "platform_snapshot_validation",
+      "TimingDecision",
+      "InteractionProcessPlan",
+      "SocialToolCallPlan",
+      "SocialToolCallResult",
+      "OutboundSendCommand",
+      "OutboundSendResult",
+      "ControlledSendMaterialKit",
+      "ControlledSendRealWindowReadiness",
+      "DesktopControlledSendCompletion",
+      "IntakeImplementationAudit",
+      "send_gate_transfer_path"
+    ],
+    "dependencies": [
+      "examples/system-process-tree.json",
+      "dialogue-system-patrol/registry/system-patrol-registry.json"
+    ]
+  },
+  "state": {
+    "headline": "触发计划: patrol block initialized from process tree status implemented_in_mvp_loop.",
+    "current_task": "Maintain summary-only patrol coverage and expose dialogue-readable state.",
+    "progress": 1,
+    "blockers": [],
+    "risks": [
+      "第一版已支持 AutomationPreview dry-run 受控预览，不真实调用微信、日历或提醒连接器。",
+      "已支持 AutomationPreviewTrial 本地受控试运行、失败恢复建议和本地受控测试页检查，可通过 npm run trigger:page 写出带状态契约和本地确认控件的平台模拟页，并已接入 MVP 批量门禁；真实平台页面仍未接入。",
+      "已新增 manual_execution_checklist，把目标、草稿、平台预览、确认闸门和反馈回写拆成可检查步骤。",
+      "已新增 buildOutboundSendCommand，把 TriggerPlan/AutomationPreview 的 message_draft 转成默认阻断的 OutboundSendCommand，并通过 intake-runtime dry-run 验证不得真实发送。"
+    ],
+    "next": [
+      "Review this generated patrol block before treating it as a deep module interpretation.",
+      "Refresh validation with npm.cmd run system-patrol:validate.",
+      "Publish dialogue-readable output with npm.cmd run system-patrol:publish."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "examples/system-process-tree.json",
+      "docs/09-触发引擎与预约通知接口.md",
+      "schemas/trigger-request.schema.json",
+      "schemas/trigger-plan.schema.json",
+      "knowledge/triggers/trigger-policies.json",
+      "packages/trigger-engine/src/trigger-engine.mjs",
+      "schemas/platform-dry-run-connector.schema.json",
+      "packages/trigger-engine/tests/trigger-engine.test.mjs",
+      "schemas/platform-snapshot-validation.schema.json"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:publish",
+      "npm.cmd run process-tree:validate"
+    ],
+    "latest_validation_refs": [
+      "runtime/dialogue-system-patrol-validations/latest.json"
+    ]
+  },
+  "boundaries": {
+    "mode": "controlled_write_runtime_summary",
+    "allowed_reads": [
+      "examples/system-process-tree.json",
+      "docs/09-触发引擎与预约通知接口.md",
+      "schemas/trigger-request.schema.json",
+      "schemas/trigger-plan.schema.json",
+      "knowledge/triggers/trigger-policies.json",
+      "packages/trigger-engine/src/trigger-engine.mjs",
+      "schemas/platform-dry-run-connector.schema.json",
+      "packages/trigger-engine/tests/trigger-engine.test.mjs",
+      "schemas/platform-snapshot-validation.schema.json"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/trigger_plan.json",
+      "runtime/status-events/trigger_plan.json",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**"
+    ],
+    "forbidden_actions": [
+      "no business module rewrite from patrol initialization",
+      "no dialogue reader rewrite from patrol initialization",
+      "no external platform action",
+      "no raw private payload publication"
+    ],
+    "confirmation_gates": [
+      "user confirmation required before protocol migration",
+      "user confirmation required before process-tree and Obsidian registration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The module is represented in the process tree.",
+      "The patrol block was initialized from process-tree summary evidence.",
+      "Current status is summary-only and should cite source refs."
+    ],
+    "must_not_infer": [
+      "Do not infer raw runtime facts that are not present in evidence refs.",
+      "Do not treat generated patrol text as a full source-code review.",
+      "Do not claim external actions or business outcomes from patrol coverage alone."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "sha256:93039ddcc6c4dfb2f34d92ed599f20a474372c9069649a880b3e884589aa2c45",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-05T13:12:46.780Z",
+    "source_hash_refs": [
+      "docs/09-触发引擎与预约通知接口.md",
+      "examples/system-process-tree.json",
+      "knowledge/triggers/trigger-policies.json",
+      "packages/trigger-engine/src/trigger-engine.mjs",
+      "packages/trigger-engine/tests/trigger-engine.test.mjs",
+      "schemas/platform-dry-run-connector.schema.json",
+      "schemas/platform-snapshot-validation.schema.json",
+      "schemas/trigger-plan.schema.json",
+      "schemas/trigger-request.schema.json"
+    ],
+    "source_hash_excluded_refs": []
+  }
+}

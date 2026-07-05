@@ -1,0 +1,67 @@
+{
+  "contract": "pdp_site_design_qa_report.v1",
+  "generated_at": "2026-07-04T12:05:30+08:00",
+  "product_id": "QXKJ-1007",
+  "review_status": "ready_for_user_review",
+  "score": 86,
+  "passed": true,
+  "dimension_scores": {
+    "product_truth": 22,
+    "category_clarity": 18,
+    "visual_quality": 17,
+    "b2b_conversion": 15,
+    "reusability": 14
+  },
+  "blocking_issues": [],
+  "warnings": [
+    "The imported source image still contains a faint supplier watermark and should be retouched before final private-label use.",
+    "Certificate and compliance files are not attached, so all compliance references remain source-listed and pending confirmation.",
+    "Exact dimensions, available colors, packaging, MOQ and lead time still need factory confirmation.",
+    "Dimension drawings are placeholders because source CAD/dimension art has not been provided.",
+    "Long-form Leviton protected body copy is not reused; this draft clones the layout and section logic only."
+  ],
+  "screenshots": {
+    "desktop_first_review": "chanpinye/products/QXJ-1007/qa/desktop-pdf-layout-page1-1240x1700.png",
+    "desktop_full_review": "chanpinye/products/QXJ-1007/qa/desktop-pdf-layout-full-1240x2900.png",
+    "mobile_first_review": "chanpinye/products/QXJ-1007/qa/mobile-pdf-layout-390x1200.png"
+  },
+  "pdf_export": {
+    "desktop_pdf_path": "chanpinye/products/QXJ-1007/exports/QXKJ-1007-product-specification-draft.pdf",
+    "page_count": 2,
+    "rendered_pages": [
+      "chanpinye/products/QXJ-1007/qa/pdf-new-color-export/page-1.png",
+      "chanpinye/products/QXJ-1007/qa/pdf-new-color-export/page-2.png"
+    ],
+    "visual_check_status": "passed",
+    "color_check_report": "chanpinye/products/QXJ-1007/qa/new-color-pdf-check.json",
+    "applied_color_system": "Graphite + Deep Teal + Copper Amber"
+  },
+  "structure_checks": {
+    "has_single_h1": true,
+    "has_two_pdf_like_pages": true,
+    "has_page_1_two_column_layout": true,
+    "has_page_1_vertical_model_marker": true,
+    "has_page_2_mechanical_specifications": true,
+    "has_page_2_dimension_placeholder_area": true,
+    "has_page_2_regional_contact_footer": true,
+    "has_mobile_scaled_pdf_preview": true,
+    "has_product_image": true,
+    "has_application_section": true,
+    "has_specification_section": true,
+    "has_features_section": true,
+    "has_design_considerations_section": true,
+    "has_standards_section": true,
+    "has_part_number_table": true,
+    "has_copyright_safe_boundary_note": true
+  },
+  "recommended_next_actions": [
+    "User reviews whether this closer two-page PDF specification layout matches the expected Leviton-style reference direction.",
+    "If approved, create a reusable spec-sheet template for other Keystone Jack models before expanding to Patch Panel and PDU categories.",
+    "Request watermark-free product photos and certificate files from the factory before finalizing public claims.",
+    "Request CAD or dimension drawings to replace the page-2 placeholders.",
+    "Add downloadable PDF export after the content structure is approved."
+  ],
+  "human_review_required": true,
+  "real_external_actions_executed": false,
+  "publish_allowed": false
+}

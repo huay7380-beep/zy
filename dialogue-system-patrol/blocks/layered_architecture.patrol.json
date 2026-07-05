@@ -1,0 +1,138 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "layered_architecture",
+  "display_name": "分层架构",
+  "owner": "process_tree",
+  "source_dir": "docs",
+  "process_tree_node_id": "layered_architecture",
+  "registration_status": "process_tree_status:confirmed_boundary",
+  "gate": "system_patrol_coverage_gate",
+  "compass": "system_patrol.layered_architecture",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "ready",
+  "updated_at": "2026-07-01T11:39:08.902Z",
+  "ttl_ms": 604800000,
+  "change_session_id": "system_patrol_blocks_init_20260701",
+  "data_flow": {
+    "inputs": [
+      "docs/15-系统流程树与扩展问题台账.md",
+      "docs/16-多来源信息接入与受控发送目标实现文档.md",
+      "专项方案-分层规格驱动Agent系统/项目方案.md",
+      "docs/12-人物与事件存储方案.md",
+      "docs/08-权重决策与技能接口.md",
+      "packages/intake-runtime/**",
+      "packages/tool-runtime/**"
+    ],
+    "processing": [
+      "把第一阶段 B2B 商务沟通闭环抽象为可扩展的系统层级，明确输入接收、标准化转译、解析识别、图谱记忆、上下文编排、目标策略、能力库、反馈更新、思维图谱和心跳调度的职责边界。"
+    ],
+    "outputs": [
+      "LayeredArchitectureBoundary",
+      "SourceAdapterBoundary",
+      "TranslationBoundary",
+      "ContextOrchestrationBoundary",
+      "CapabilityLibraryBoundary",
+      "MindGraphBoundary",
+      "HeartbeatSchedulerBoundary"
+    ],
+    "dependencies": [
+      "examples/system-process-tree.json",
+      "dialogue-system-patrol/registry/system-patrol-registry.json"
+    ]
+  },
+  "state": {
+    "headline": "分层架构: patrol block initialized from process tree status confirmed_boundary.",
+    "current_task": "Maintain summary-only patrol coverage and expose dialogue-readable state.",
+    "progress": 0.8,
+    "blockers": [],
+    "risks": [
+      "实时聊天路径仍需要 person-matching runtime，把 alias、platform_handle、conversation_title、thread_hint 和 participants_hint 映射为候选 person_id，并输出置信度、歧义项和人工确认门禁。",
+      "ContextSnapshot 当前已有文档设计，仍需要上下文编排运行时，把目标、关系快照、相关事件、风险约束、能力上下文和 prompt 组装过程写入审计。",
+      "目标状态机、专家模型选择、真实反馈驱动的专家权重校准、能力库 schema、思维图谱 schema 和 heartbeat runtime 仍是后续实现项；规则型专家权重整合已进入 decision-cluster。",
+      "直播间、发布会、演唱会等复杂群体场景当前只预留接口，不进入第一阶段实现。"
+    ],
+    "next": [
+      "Review this generated patrol block before treating it as a deep module interpretation.",
+      "Refresh validation with npm.cmd run system-patrol:validate.",
+      "Publish dialogue-readable output with npm.cmd run system-patrol:publish."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "examples/system-process-tree.json",
+      "docs/15-系统流程树与扩展问题台账.md",
+      "docs/16-多来源信息接入与受控发送目标实现文档.md",
+      "专项方案-分层规格驱动Agent系统/项目方案.md",
+      "docs/12-人物与事件存储方案.md",
+      "docs/08-权重决策与技能接口.md",
+      "packages/intake-runtime/**",
+      "packages/tool-runtime/**"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:publish",
+      "npm.cmd run process-tree:validate"
+    ],
+    "latest_validation_refs": [
+      "runtime/dialogue-system-patrol-validations/latest.json"
+    ]
+  },
+  "boundaries": {
+    "mode": "controlled_write_runtime_summary",
+    "allowed_reads": [
+      "examples/system-process-tree.json",
+      "docs/15-系统流程树与扩展问题台账.md",
+      "docs/16-多来源信息接入与受控发送目标实现文档.md",
+      "专项方案-分层规格驱动Agent系统/项目方案.md",
+      "docs/12-人物与事件存储方案.md",
+      "docs/08-权重决策与技能接口.md",
+      "packages/intake-runtime/**",
+      "packages/tool-runtime/**"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/layered_architecture.json",
+      "runtime/status-events/layered_architecture.json",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**"
+    ],
+    "forbidden_actions": [
+      "no business module rewrite from patrol initialization",
+      "no dialogue reader rewrite from patrol initialization",
+      "no external platform action",
+      "no raw private payload publication"
+    ],
+    "confirmation_gates": [
+      "user confirmation required before protocol migration",
+      "user confirmation required before process-tree and Obsidian registration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The module is represented in the process tree.",
+      "The patrol block was initialized from process-tree summary evidence.",
+      "Current status is summary-only and should cite source refs."
+    ],
+    "must_not_infer": [
+      "Do not infer raw runtime facts that are not present in evidence refs.",
+      "Do not treat generated patrol text as a full source-code review.",
+      "Do not claim external actions or business outcomes from patrol coverage alone."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "sha256:6f5fadfb6f155b6e3ebf9829a355da03886a3e202a90bb03fc9f365e0af87de4",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-05T13:12:46.780Z",
+    "source_hash_refs": [
+      "docs/08-权重决策与技能接口.md",
+      "docs/12-人物与事件存储方案.md",
+      "docs/15-系统流程树与扩展问题台账.md",
+      "docs/16-多来源信息接入与受控发送目标实现文档.md",
+      "examples/system-process-tree.json",
+      "packages/intake-runtime/**",
+      "packages/tool-runtime/**",
+      "专项方案-分层规格驱动Agent系统/项目方案.md"
+    ],
+    "source_hash_excluded_refs": []
+  }
+}

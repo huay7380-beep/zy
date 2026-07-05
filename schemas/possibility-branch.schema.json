@@ -1,0 +1,270 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PossibilityBranchAnalysis",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "branch_id",
+    "created_at",
+    "source",
+    "goal",
+    "branch_boundary",
+    "identity_hypotheses",
+    "event_hypotheses",
+    "branch_weight_matrix",
+    "processing_order",
+    "retrieval_plan",
+    "merge_policy",
+    "validation"
+  ],
+  "properties": {
+    "schema_version": { "const": "possibility_branch_analysis.v1" },
+    "branch_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "source": {
+      "type": "object",
+      "required": ["observation_id", "source_adapter_id", "platform", "content_summary", "evidence_refs"],
+      "properties": {
+        "observation_id": { "type": "string", "minLength": 1 },
+        "source_adapter_id": { "type": "string", "minLength": 1 },
+        "platform": { "type": "string", "minLength": 1 },
+        "thread_id": { "type": ["string", "null"] },
+        "captured_at": { "type": ["string", "null"] },
+        "content_summary": { "type": "string", "minLength": 1 },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": true
+    },
+    "goal": {
+      "type": "object",
+      "required": ["goal_id", "scene", "objective"],
+      "properties": {
+        "goal_id": { "type": "string", "minLength": 1 },
+        "scene": { "type": "string", "minLength": 1 },
+        "objective": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "branch_boundary": {
+      "type": "object",
+      "required": [
+        "storage_scope",
+        "main_graph_write_attempted",
+        "allowed_write_paths",
+        "prohibited_write_paths",
+        "promotion_requires_user_confirmation"
+      ],
+      "properties": {
+        "storage_scope": { "type": "string", "minLength": 1 },
+        "main_graph_write_attempted": { "type": "boolean" },
+        "allowed_write_paths": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "prohibited_write_paths": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "promotion_requires_user_confirmation": { "type": "boolean" },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "identity_hypotheses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "person_hint_id",
+          "display_name",
+          "possible_identity_bindings",
+          "dominant_binding_id",
+          "requires_user_confirmation"
+        ],
+        "properties": {
+          "person_hint_id": { "type": "string", "minLength": 1 },
+          "display_name": { "type": "string", "minLength": 1 },
+          "possible_identity_bindings": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/identity_binding" }
+          },
+          "dominant_binding_id": { "type": ["string", "null"] },
+          "requires_user_confirmation": { "type": "boolean" },
+          "evidence_refs": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "event_hypotheses": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/event_hypothesis" }
+    },
+    "branch_weight_matrix": {
+      "type": "object",
+      "required": ["identity_event_edges", "weighting_mechanism"],
+      "properties": {
+        "identity_event_edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "edge_id",
+              "person_hint_id",
+              "binding_id",
+              "event_hypothesis_id",
+              "weight",
+              "components"
+            ],
+            "properties": {
+              "edge_id": { "type": "string", "minLength": 1 },
+              "person_hint_id": { "type": "string", "minLength": 1 },
+              "binding_id": { "type": "string", "minLength": 1 },
+              "event_hypothesis_id": { "type": "string", "minLength": 1 },
+              "weight": { "type": "number", "minimum": 0, "maximum": 1 },
+              "components": { "type": "object" },
+              "read_order": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "weighting_mechanism": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+    "processing_order": {
+      "type": "object",
+      "required": ["sequential_steps", "parallel_lanes"],
+      "properties": {
+        "sequential_steps": {
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "parallel_lanes": {
+          "type": "array",
+          "items": { "type": "object" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "retrieval_plan": {
+      "type": "object",
+      "required": ["context_sufficiency_level", "read_sets", "write_sets"],
+      "properties": {
+        "context_sufficiency_level": { "type": "string", "minLength": 1 },
+        "read_sets": {
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "write_sets": {
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "short_input_policy": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "merge_policy": {
+      "type": "object",
+      "required": ["default_action", "promotion_gates", "blocked_actions"],
+      "properties": {
+        "default_action": { "type": "string", "minLength": 1 },
+        "promotion_gates": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "blocked_actions": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": true
+    },
+    "validation": {
+      "type": "object",
+      "required": ["checks", "required_failures", "gate_decision"],
+      "properties": {
+        "checks": {
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "required_failures": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "gate_decision": { "type": "string", "minLength": 1 },
+        "real_send_attempted": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "identity_binding": {
+      "type": "object",
+      "required": [
+        "binding_id",
+        "role",
+        "scene",
+        "role_weight",
+        "confidence",
+        "components",
+        "evidence_refs"
+      ],
+      "properties": {
+        "binding_id": { "type": "string", "minLength": 1 },
+        "role": { "type": "string", "minLength": 1 },
+        "scene": { "type": "string", "minLength": 1 },
+        "role_weight": { "type": "number", "minimum": 0, "maximum": 1 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "distance_tier": { "type": "string" },
+        "components": { "type": "object" },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "status": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "event_hypothesis": {
+      "type": "object",
+      "required": [
+        "event_hypothesis_id",
+        "event_type_code",
+        "event_focus_weight",
+        "confidence",
+        "participants",
+        "evidence_refs"
+      ],
+      "properties": {
+        "event_hypothesis_id": { "type": "string", "minLength": 1 },
+        "event_type_code": { "type": "string", "minLength": 1 },
+        "event_focus_weight": { "type": "number", "minimum": 0, "maximum": 1 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "participants": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "parent_event_hypothesis_id": { "type": ["string", "null"] },
+        "dependency_relation": { "type": ["string", "null"] },
+        "nested_level": { "type": "integer", "minimum": 0 },
+        "components": { "type": "object" },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "status": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

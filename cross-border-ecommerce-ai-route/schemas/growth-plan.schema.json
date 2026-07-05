@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.zhineng/cross-border-ecommerce/schemas/growth-plan.schema.json",
+  "title": "Overseas SEO GEO Ads Growth Plan",
+  "type": "object",
+  "required": ["contract", "markets", "seo", "geo", "ads", "measurement", "human_gate"],
+  "additionalProperties": false,
+  "properties": {
+    "contract": { "const": "overseas_seo_geo_ads_growth_plan.v1" },
+    "markets": { "type": "array", "items": { "type": "string" } },
+    "seo": {
+      "type": "object",
+      "required": ["keyword_clusters", "content_pages", "technical_requirements"],
+      "additionalProperties": false,
+      "properties": {
+        "keyword_clusters": { "type": "array", "items": { "type": "object" } },
+        "content_pages": { "type": "array", "items": { "type": "object" } },
+        "technical_requirements": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "geo": {
+      "type": "object",
+      "required": ["definition", "answer_engine_assets", "market_localization"],
+      "additionalProperties": false,
+      "properties": {
+        "definition": { "type": "string" },
+        "answer_engine_assets": { "type": "array", "items": { "type": "object" } },
+        "market_localization": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "ads": {
+      "type": "object",
+      "required": ["channels", "campaigns", "budget_gate"],
+      "additionalProperties": false,
+      "properties": {
+        "channels": { "type": "array", "items": { "type": "string" } },
+        "campaigns": { "type": "array", "items": { "type": "object" } },
+        "budget_gate": { "type": "string" }
+      }
+    },
+    "measurement": { "type": "array", "items": { "type": "string" } },
+    "human_gate": {
+      "type": "object",
+      "required": ["real_ads_spend_allowed", "approval_required_for"],
+      "additionalProperties": false,
+      "properties": {
+        "real_ads_spend_allowed": { "const": false },
+        "approval_required_for": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

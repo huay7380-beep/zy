@@ -1,0 +1,88 @@
+{
+  "schema_version": "capability_patrol_report.v1",
+  "patrol_id": "capability_patrol_YYYYMMDDHHMMSS",
+  "created_at": "",
+  "mode": "read_only",
+  "sources": {
+    "process_tree": "examples/system-process-tree.json",
+    "package_scripts": "package.json",
+    "manifests_dir": "capability-upgrade-registry/manifests",
+    "evaluations_dir": "capability-upgrade-registry/evaluations"
+  },
+  "execution_mode_summary": {
+    "canonical_flow": [],
+    "registered_nodes": 0,
+    "open_or_in_progress_issues": 0,
+    "candidate_modules": 0
+  },
+  "process_decompositions": [
+    {
+      "node_id": "",
+      "label": "",
+      "status": "",
+      "purpose": "",
+      "inputs": [],
+      "processing_surface": [],
+      "outputs": [],
+      "validation_commands": [],
+      "known_open_questions": [],
+      "optimization_signals": []
+    }
+  ],
+  "analogical_search_tasks": [
+    {
+      "task_id": "",
+      "target_node_id": "",
+      "target_module_paths": [],
+      "process_family": "",
+      "analogy_pattern": "",
+      "candidate_search_terms": [],
+      "confirmation_criteria": [
+        "io_contract_consistency",
+        "latency_fit",
+        "effectiveness_gain",
+        "replacement_complexity",
+        "previous_requirements_alignment"
+      ],
+      "network_action_allowed": false,
+      "replacement_allowed": false
+    }
+  ],
+  "priority_queue": [
+    {
+      "target_node_id": "",
+      "priority": "low_or_medium_or_high",
+      "reason": "",
+      "next_action": "write_project_card_or_search_candidates_or_write_evaluation"
+    }
+  ],
+  "skill_creation_gate_standard": {
+    "schema": "skill_creation_gate.v1",
+    "default_decision_order": [
+      "reuse_existing_skill_or_tool",
+      "wrap_or_adapt_existing_capability",
+      "install_or_request_existing_plugin_or_connector_when_explicitly_requested",
+      "create_new_skill_only_after_reuse_search_fails"
+    ],
+    "required_search_sources": [
+      "available_session_skills",
+      "local_codex_skills",
+      "installed_plugins_and_connectors",
+      "tool_search_when_available",
+      "repository_modules_and_scripts",
+      "capability-upgrade-registry",
+      "local_tool_catalogs_such_as_cli_anything",
+      "reputable_external_software_or_open_source_projects_when_network_research_is_appropriate"
+    ],
+    "creation_allowed_only_after_gate_record": true,
+    "gate_template": "capability-upgrade-registry/templates/skill-creation-gate.template.json"
+  },
+  "boundaries": [
+    "read_only",
+    "no_download_by_default",
+    "no_external_code_execution",
+    "no_main_system_mutation",
+    "no_skill_creation_without_reuse_search",
+    "no_replacement_without_full_gate"
+  ]
+}

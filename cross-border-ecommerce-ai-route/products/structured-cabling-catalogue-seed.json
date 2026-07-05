@@ -1,0 +1,164 @@
+{
+  "schema_version": "structured_cabling_catalogue_seed.v1",
+  "status": "visual_seed_needs_ocr_or_manual_review",
+  "source_files": [
+    {
+      "path": "cross-border-ecommerce-ai-route/2024 NEW PRODUCT CATALOGUE.pdf",
+      "pages": 6,
+      "observed_brand": "QX network / Qixiang Network",
+      "text_extraction": "image_only_pdf_no_embedded_text"
+    },
+    {
+      "path": "cross-border-ecommerce-ai-route/ELECTRONIC CATALOGUE.pdf",
+      "pages": 50,
+      "observed_brand": "QX network / Cixi Qixiang Telecommunication Equipments Co., Ltd.",
+      "text_extraction": "image_only_pdf_no_embedded_text"
+    }
+  ],
+  "business_domain": "structured_cabling_and_telecommunication_accessories",
+  "positioning": "B2B structured cabling components for distributors, installers, data-center contractors, telecom rooms, low-voltage integrators, and OEM/ODM private-label buyers.",
+  "brand_policy": {
+    "factory_brand_visible_in_source": true,
+    "public_brand_should_be_replaced": true,
+    "factory_model_codes_internal_only_until_rebrand_mapping_confirmed": true,
+    "certificate_claims_require_factory_authorization_or_reissued_reports": true
+  },
+  "families": [
+    {
+      "family_id": "keystone_jack",
+      "en_name": "Keystone Jack",
+      "zh_name": "信息模块 / Keystone Jack",
+      "source_pages": {
+        "electronic_catalogue": "01-08",
+        "new_product_catalogue": "01-04"
+      },
+      "observed_model_prefixes": ["QXKJ"],
+      "observed_grade_options": ["CAT5E", "CAT6", "CAT6A", "CAT7", "CAT8"],
+      "variant_axes": ["shielding", "grade", "termination", "angle", "shutter", "inline_coupler", "color"],
+      "quote_required_fields": ["grade", "shielding", "quantity", "color", "packing", "certificate_request"],
+      "site_category": "Keystone Jacks",
+      "compliance_profile": "passive_network_component"
+    },
+    {
+      "family_id": "patch_panel",
+      "en_name": "Patch Panel",
+      "zh_name": "配线架 / Patch Panel",
+      "source_pages": {
+        "electronic_catalogue": "09-18",
+        "new_product_catalogue": "05-06"
+      },
+      "observed_model_prefixes": ["QXPP"],
+      "observed_grade_options": ["blank", "CAT5E", "CAT6", "CAT6A"],
+      "variant_axes": ["ports", "rack_unit", "shielding", "loaded_or_blank", "cable_manager", "shutter", "modular_removable"],
+      "quote_required_fields": ["ports", "rack_unit", "grade", "shielding", "loaded_or_blank", "quantity"],
+      "site_category": "Patch Panels",
+      "compliance_profile": "passive_network_component"
+    },
+    {
+      "family_id": "cable_management",
+      "en_name": "Cable Management",
+      "zh_name": "理线架 / Cable Management",
+      "source_pages": {
+        "electronic_catalogue": "19-20"
+      },
+      "observed_model_prefixes": ["QXPP"],
+      "variant_axes": ["rack_unit", "ring_type", "brush_panel", "blank_panel", "material"],
+      "quote_required_fields": ["rack_unit", "style", "material", "quantity"],
+      "site_category": "Cable Management",
+      "compliance_profile": "rack_accessory"
+    },
+    {
+      "family_id": "110_cabling_system",
+      "en_name": "110 Cabling System",
+      "zh_name": "110 配线系统",
+      "source_pages": {
+        "electronic_catalogue": "21-22"
+      },
+      "observed_model_prefixes": ["QXPP"],
+      "variant_axes": ["pair_count", "wiring_block_type", "with_leg", "mounting"],
+      "quote_required_fields": ["pair_count", "mounting_type", "quantity"],
+      "site_category": "110 Cabling System",
+      "compliance_profile": "telecommunication_accessory"
+    },
+    {
+      "family_id": "face_plate",
+      "en_name": "Face Plate",
+      "zh_name": "面板 / Face Plate",
+      "source_pages": {
+        "electronic_catalogue": "23-34",
+        "new_product_catalogue": "08"
+      },
+      "observed_model_prefixes": ["QXFP"],
+      "variant_axes": ["country_type", "size", "ports", "angle", "material", "color", "label_window"],
+      "quote_required_fields": ["country_type", "size", "ports", "material", "color", "quantity"],
+      "site_category": "Face Plates",
+      "compliance_profile": "passive_network_component"
+    },
+    {
+      "family_id": "surface_mount_box",
+      "en_name": "Surface Mount Box",
+      "zh_name": "明装盒 / Surface Mount Box",
+      "source_pages": {
+        "electronic_catalogue": "35-36"
+      },
+      "observed_model_prefixes": ["QXFP"],
+      "variant_axes": ["ports", "blank_or_loaded", "grade", "material", "color"],
+      "quote_required_fields": ["ports", "blank_or_loaded", "grade", "quantity"],
+      "site_category": "Surface Mount Boxes",
+      "compliance_profile": "passive_network_component"
+    },
+    {
+      "family_id": "plug_patch_cord",
+      "en_name": "Plug & Patch Cord",
+      "zh_name": "水晶头与跳线 / Plug & Patch Cord",
+      "source_pages": {
+        "electronic_catalogue": "37-40",
+        "new_product_catalogue": "07"
+      },
+      "observed_model_prefixes": ["QXPG", "QXPC"],
+      "observed_grade_options": ["CAT5E", "CAT6", "CAT6A", "CAT7", "CAT8"],
+      "variant_axes": ["grade", "shielding", "toolless", "length", "jacket", "color", "wire_gauge", "plug_type"],
+      "quote_required_fields": ["grade", "shielding", "length", "color", "jacket", "quantity"],
+      "site_category": "Patch Cords & RJ45 Plugs",
+      "compliance_profile": "network_cable_or_connector"
+    },
+    {
+      "family_id": "telecommunication_accessories",
+      "en_name": "Telecommunication Accessories",
+      "zh_name": "通信附件",
+      "source_pages": {
+        "electronic_catalogue": "41-43"
+      },
+      "observed_model_prefixes": ["QXTL"],
+      "variant_axes": ["pair_count", "module_type", "mounting_frame", "profile"],
+      "quote_required_fields": ["pair_count", "module_type", "quantity"],
+      "site_category": "Telecommunication Accessories",
+      "compliance_profile": "telecommunication_accessory"
+    },
+    {
+      "family_id": "power_distribution_unit",
+      "en_name": "Power Distribution Unit",
+      "zh_name": "PDU 电源分配单元",
+      "source_pages": {
+        "electronic_catalogue": "44-45"
+      },
+      "observed_model_prefixes": ["PDU"],
+      "variant_axes": ["plug_country_type", "outlet_count", "rack_unit", "cable_length", "rated_voltage", "rated_current", "protection"],
+      "quote_required_fields": ["target_country", "plug_country_type", "rated_voltage", "rated_current", "outlet_count", "certificate_request", "quantity"],
+      "site_category": "Power Distribution Units",
+      "compliance_profile": "electrical_power_product_high_review"
+    }
+  ],
+  "standard_status_flow": [
+    "source_received",
+    "visual_extracted",
+    "ocr_or_manual_review_required",
+    "product_master_drafted",
+    "brand_mapping_required",
+    "compliance_review_required",
+    "pricing_required",
+    "content_required",
+    "ready_for_site_review",
+    "ready_for_rfq"
+  ]
+}

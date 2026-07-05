@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-event-stream-health.schema.json",
+  "title": "pt028_event_stream_health.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "health_id",
+    "created_at",
+    "gate_decision",
+    "source_stream_path",
+    "low_latency_thresholds",
+    "stream_summary",
+    "checks",
+    "required_failures",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "writes_real_feedback_target"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_event_stream_health.v1" },
+    "health_id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "gate_decision": { "type": "string" },
+    "source_stream_path": { "type": ["string", "null"] },
+    "low_latency_thresholds": {
+      "type": "object",
+      "required": [
+        "max_target_dispatch_latency_ms",
+        "max_debounce_ms",
+        "max_fallback_poll_interval_ms"
+      ],
+      "properties": {
+        "max_target_dispatch_latency_ms": { "type": "integer", "minimum": 1 },
+        "max_debounce_ms": { "type": "integer", "minimum": 0 },
+        "max_fallback_poll_interval_ms": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": true
+    },
+    "stream_summary": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "gate_decision",
+        "event_count",
+        "unique_window_count",
+        "unique_target_count",
+        "input_mode"
+      ],
+      "properties": {
+        "schema_version": { "type": ["string", "null"] },
+        "gate_decision": { "type": ["string", "null"] },
+        "event_count": { "type": "integer", "minimum": 0 },
+        "unique_window_count": { "type": "integer", "minimum": 0 },
+        "unique_target_count": { "type": "integer", "minimum": 0 },
+        "input_mode": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "status", "required", "evidence"],
+        "properties": {
+          "check_id": { "type": "string" },
+          "status": { "enum": ["passed", "failed"] },
+          "required": { "type": "boolean" },
+          "evidence": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": { "type": "array", "items": { "type": "string" } },
+    "real_execution_allowed": { "type": "boolean" },
+    "real_send_attempted": { "type": "boolean" },
+    "writes_real_feedback_target": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}

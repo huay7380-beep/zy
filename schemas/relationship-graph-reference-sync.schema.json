@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RelationshipGraphReferenceSync",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "sync_id",
+    "gate_decision",
+    "history_preserved",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "person_id_map",
+    "relationship_id_map",
+    "changed",
+    "indexes_rebuilt"
+  ],
+  "properties": {
+    "schema_version": { "const": "relationship_graph_reference_sync.v1" },
+    "sync_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string" },
+    "gate_decision": { "const": "relationship_graph_references_synced" },
+    "history_preserved": { "const": true },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "person_id_map": { "type": "object" },
+    "relationship_id_map": { "type": "object" },
+    "changed": {
+      "type": "object",
+      "required": ["raw_events", "semantic_events"],
+      "properties": {
+        "raw_events": { "type": "integer", "minimum": 0 },
+        "semantic_events": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "indexes_rebuilt": { "type": "boolean" },
+    "storage_paths": { "type": "object" }
+  },
+  "additionalProperties": true
+}

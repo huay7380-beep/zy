@@ -1,0 +1,58 @@
+{
+  "schema": "module_os_particle_projection.v0.draft",
+  "generated_at": "YYYY-MM-DDTHH:mm:ss+08:00",
+  "source_only": true,
+  "writes_fact_state": false,
+  "projection_enabled": true,
+  "module_id": "<module_id>",
+  "display_name": "<Human readable module name>",
+  "projection": {
+    "node_id": "<particle_node_id>",
+    "sector_hint": "input | evidence | state | reasoning | decision | action | feedback | self",
+    "sector_status": "draft",
+    "layer_role": "inner_logic | outer_delivery | port | project | runtime_status",
+    "kind": "package | project | port | demand | patrol_governance | visual_surface",
+    "importance_hint": 0.5,
+    "relevance_hint": 0.5,
+    "risk_hint": 0.0,
+    "activity_hint": 0.0
+  },
+  "io": {
+    "input_refs": [],
+    "output_refs": [],
+    "status_feedback_refs": [
+      "runtime/status-cards/<module_id>.json",
+      "runtime/status-events/<module_id>.json",
+      "runtime/dialogue-system-patrol/dialogue-read-index.json"
+    ],
+    "source_refs": []
+  },
+  "allowed_operation_intents": [
+    "inspect",
+    "expand",
+    "open_evidence"
+  ],
+  "forbidden_operations": [
+    "write_fact_state",
+    "mutate_business_data",
+    "execute_external_action",
+    "send_message",
+    "replace_module"
+  ],
+  "boundaries": [
+    "source-only projection",
+    "display/status reference only",
+    "dialogue state must route through patrol outputs",
+    "no direct business module execution from 3D display"
+  ],
+  "patrol": {
+    "module_gate_required": true,
+    "source_drift_check_required": true,
+    "dialogue_read_surface": "runtime/dialogue-system-patrol/dialogue-read-index.json"
+  },
+  "notes": [
+    "This file declares how the module may be displayed in the 3D Particle OS.",
+    "It is not the module source of truth.",
+    "It must not be used by the dialogue module to bypass system patrol outputs."
+  ]
+}

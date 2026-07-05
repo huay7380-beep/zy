@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "cross-border-ecommerce-ai-route/schemas/universal-product-intake.schema.json",
+  "title": "Universal Product Intake",
+  "type": "object",
+  "required": ["contract", "intake_id", "submitted_at", "source", "product", "supplier", "commercial", "media", "compliance", "automation_request"],
+  "properties": {
+    "contract": { "const": "universal_product_intake.v1" },
+    "intake_id": { "type": "string" },
+    "submitted_at": { "type": "string" },
+    "source": {
+      "type": "object",
+      "required": ["source_type", "source_files"],
+      "properties": {
+        "source_type": { "enum": ["manual_description", "pdf_catalogue", "spreadsheet", "website", "supplier_package", "mixed"] },
+        "source_files": { "type": "array", "items": { "type": "string" } },
+        "source_language": { "type": "string" },
+        "source_confidence": { "enum": ["unreviewed", "visual_seed", "ocr_reviewed", "supplier_confirmed", "lab_confirmed"] }
+      }
+    },
+    "product": {
+      "type": "object",
+      "required": ["name", "description", "category_hint", "use_cases", "specifications"],
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "category_hint": { "type": "string" },
+        "brand_status": { "enum": ["factory_brand", "private_label_required", "own_brand_ready", "unknown"] },
+        "use_cases": { "type": "array", "items": { "type": "string" } },
+        "target_buyers_hint": { "type": "array", "items": { "type": "string" } },
+        "specifications": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "materials": { "type": "array", "items": { "type": "string" } },
+            "dimensions": { "type": "string" },
+            "net_weight": { "type": "string" },
+            "gross_weight": { "type": "string" },
+            "color_options": { "type": "array", "items": { "type": "string" } },
+            "power_or_battery": { "type": "string" },
+            "chemical_or_food_contact": { "type": "string" },
+            "children_or_medical_use": { "type": "string" },
+            "wireless_or_radio": { "type": "string" }
+          }
+        }
+      }
+    },
+    "supplier": {
+      "type": "object",
+      "required": ["supplier_name", "private_label_permission", "image_usage_permission"],
+      "properties": {
+        "supplier_name": { "type": "string" },
+        "factory_model": { "type": "string" },
+        "private_label_permission": { "enum": ["yes", "no", "pending"] },
+        "image_usage_permission": { "enum": ["yes", "no", "pending"] },
+        "contact": { "type": "string" }
+      }
+    },
+    "commercial": {
+      "type": "object",
+      "required": ["cost_status", "moq_status", "lead_time_status"],
+      "properties": {
+        "cost_status": { "enum": ["provided", "missing", "estimated"] },
+        "unit_cost": { "type": "string" },
+        "currency": { "type": "string" },
+        "moq_status": { "enum": ["provided", "missing", "estimated"] },
+        "moq": { "type": "string" },
+        "sample_available": { "type": "boolean" },
+        "sample_cost": { "type": "string" },
+        "lead_time_status": { "enum": ["provided", "missing", "estimated"] },
+        "sample_lead_time": { "type": "string" },
+        "bulk_lead_time": { "type": "string" },
+        "target_margin_floor": { "type": "string" }
+      }
+    },
+    "packaging_logistics": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "unit_pack": { "type": "string" },
+        "carton_qty": { "type": "string" },
+        "carton_size_cm": { "type": "string" },
+        "carton_gw_kg": { "type": "string" },
+        "battery_or_magnet_or_liquid": { "type": "string" },
+        "fragile_or_oversize": { "type": "string" },
+        "temperature_sensitive": { "type": "string" }
+      }
+    },
+    "media": {
+      "type": "object",
+      "required": ["source_images", "image_rights_status"],
+      "properties": {
+        "source_images": { "type": "array", "items": { "type": "string" } },
+        "videos": { "type": "array", "items": { "type": "string" } },
+        "image_rights_status": { "enum": ["approved", "pending", "not_allowed", "unknown"] },
+        "needs_reshoot": { "type": "boolean" },
+        "labeling_required": { "type": "boolean" }
+      }
+    },
+    "compliance": {
+      "type": "object",
+      "required": ["certificate_files", "claims_made_by_supplier"],
+      "properties": {
+        "certificate_files": { "type": "array", "items": { "type": "string" } },
+        "test_reports": { "type": "array", "items": { "type": "string" } },
+        "claims_made_by_supplier": { "type": "array", "items": { "type": "string" } },
+        "target_markets_hint": { "type": "array", "items": { "type": "string" } },
+        "known_restrictions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "automation_request": {
+      "type": "object",
+      "required": ["desired_outputs", "allowed_actions"],
+      "properties": {
+        "desired_outputs": { "type": "array", "items": { "type": "string" } },
+        "allowed_actions": {
+          "type": "object",
+          "properties": {
+            "generate_drafts": { "type": "boolean" },
+            "edit_images_locally": { "type": "boolean" },
+            "publish_site": { "type": "boolean" },
+            "send_customer_messages": { "type": "boolean" },
+            "spend_ad_budget": { "type": "boolean" }
+          }
+        },
+        "human_review_required": { "type": "boolean" }
+      }
+    }
+  }
+}

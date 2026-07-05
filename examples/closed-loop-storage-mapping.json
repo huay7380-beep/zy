@@ -1,0 +1,1427 @@
+{
+  "schema_version": "0.1.0",
+  "purpose": "Map docs/10 three closed-loop checks to docs/12 storage objects.",
+  "closed_loops": [
+    {
+      "loop_id": "loop_client_a_tech_review",
+      "run_id": "run_loop_client_a_001",
+      "initial_goal": "推动张总进入技术评审",
+      "docs10_step_mapping": {
+        "step_1_person": [
+          "person_client_a",
+          "person_tech_lead_a"
+        ],
+        "step_3_raw_event": [
+          "raw_client_a_budget_objection",
+          "raw_client_a_review_invite_sent"
+        ],
+        "step_5_relationship": [
+          "rel_user_client_a"
+        ],
+        "step_6_decision": "decision_client_a_low_commitment_review",
+        "step_7_trigger": "trigger_client_a_review_invite",
+        "step_9_feedback": "feedback_client_a_review_confirmed",
+        "step_10_writeback_event": "semantic_client_a_review_confirmed",
+        "step_11_chain_ids": {
+          "event_id": "semantic_client_a_review_confirmed",
+          "decision_id": "decision_client_a_low_commitment_review",
+          "trigger_id": "trigger_client_a_review_invite",
+          "feedback_id": "feedback_client_a_review_confirmed"
+        }
+      },
+      "people": [
+        {
+          "person_id": "person_client_a",
+          "display_name": "张总",
+          "aliases": [
+            "张经理"
+          ],
+          "roles": [
+            "客户采购负责人"
+          ],
+          "tags": [
+            "客户",
+            "重点客户"
+          ],
+          "source": "fixture"
+        },
+        {
+          "person_id": "person_tech_lead_a",
+          "display_name": "李工",
+          "roles": [
+            "客户技术负责人"
+          ],
+          "tags": [
+            "技术评审参与人"
+          ],
+          "source": "fixture"
+        }
+      ],
+      "relationships": [
+        {
+          "relationship_id": "rel_user_client_a",
+          "from_person_id": "user",
+          "to_person_id": "person_client_a",
+          "type_code": "client",
+          "phase": "exploring",
+          "trust_level": "low",
+          "health_score": 0.58,
+          "recent_event_ids": [
+            "semantic_client_a_budget_objection"
+          ]
+        }
+      ],
+      "raw_events": [
+        {
+          "event_id": "raw_client_a_intro_need",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-01T09:10:00+08:00",
+          "participants": [
+            "user",
+            "person_client_a"
+          ],
+          "content": "张总说现在先确认接口能不能覆盖现有流程，预算还没有完全定下来。",
+          "content_summary": "客户先关注接口覆盖和预算未定。",
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "evidence_refs": [
+            "chat_log_A_001"
+          ]
+        },
+        {
+          "event_id": "raw_client_a_industry_context",
+          "event_kind": "raw_interaction",
+          "source": "web_note",
+          "occurred_at": "2026-06-01T14:20:00+08:00",
+          "participants": [
+            "user",
+            "person_client_a"
+          ],
+          "content": "公开招聘信息显示客户近期在招聘运维和数据岗位，可能正在推进内部数字化项目。",
+          "content_summary": "网页线索显示客户有数字化投入迹象。",
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "evidence_refs": [
+            "web_clue_A_001"
+          ]
+        },
+        {
+          "event_id": "raw_client_a_pain_point",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-02T10:05:00+08:00",
+          "participants": [
+            "user",
+            "person_client_a"
+          ],
+          "content": "张总要求先把技术方案发给李工，李工更关心部署风险。",
+          "content_summary": "客户技术负责人关注部署风险。",
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "evidence_refs": [
+            "chat_log_A_004"
+          ]
+        },
+        {
+          "event_id": "raw_client_a_stakeholder_hint",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-02T15:40:00+08:00",
+          "participants": [
+            "user",
+            "person_client_a"
+          ],
+          "content": "用户回复可以先发轻量方案，只覆盖接口、部署方式和风险清单，不涉及报价承诺。",
+          "content_summary": "用户将沟通边界限定为轻量评审。",
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "evidence_refs": [
+            "chat_log_A_005"
+          ]
+        },
+        {
+          "event_id": "raw_client_a_timing_hint",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-03T11:30:00+08:00",
+          "participants": [
+            "user",
+            "person_client_a"
+          ],
+          "content": "张总反馈李工可以先看，但会议不要太长，最好控制在半小时。",
+          "content_summary": "客户倾向半小时轻量会议。",
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "evidence_refs": [
+            "chat_log_A_007"
+          ]
+        },
+        {
+          "event_id": "raw_client_a_competitor_hint",
+          "event_kind": "raw_interaction",
+          "source": "manual_note",
+          "occurred_at": "2026-06-03T16:00:00+08:00",
+          "participants": [
+            "user",
+            "person_client_a"
+          ],
+          "content": "张总提到价格会和另一家供应商比较，所以暂时不要讲太满。",
+          "content_summary": "客户存在竞品比较。",
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "evidence_refs": [
+            "sales_note_A_002"
+          ]
+        },
+        {
+          "event_id": "raw_client_a_internal_process",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-04T10:25:00+08:00",
+          "participants": [
+            "user",
+            "person_client_a"
+          ],
+          "content": "用户确认本次先按风险澄清和适配度评审准备，不把报价作为会议重点。",
+          "content_summary": "用户主动降低报价压力。",
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "evidence_refs": [
+            "chat_log_A_009"
+          ]
+        },
+        {
+          "event_id": "raw_client_a_material_request",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-04T17:10:00+08:00",
+          "participants": [
+            "user",
+            "person_client_a"
+          ],
+          "content": "张总询问下周二上午是否方便，并表示先确认李工时间。",
+          "content_summary": "客户开始协调技术评审时间。",
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "evidence_refs": [
+            "chat_log_A_010"
+          ]
+        },
+        {
+          "event_id": "raw_client_a_budget_objection",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-05T09:00:00+08:00",
+          "participants": [
+            "user",
+            "person_client_a"
+          ],
+          "content": "客户说预算需要内部确认，技术负责人还没有参与。",
+          "content_summary": "客户提出预算和技术评审参与人未确认。",
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "evidence_refs": [
+            "聊天记录第 12 条"
+          ]
+        },
+        {
+          "event_id": "raw_client_a_review_invite_sent",
+          "event_kind": "raw_interaction",
+          "source": "manual_feedback",
+          "occurred_at": "2026-06-05T11:20:00+08:00",
+          "participants": [
+            "user",
+            "person_client_a"
+          ],
+          "content": "已发送低承诺技术评审邀请。",
+          "content_summary": "用户执行低承诺评审邀请。",
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "decision_id": "decision_client_a_low_commitment_review",
+          "trigger_id": "trigger_client_a_review_invite",
+          "evidence_refs": [
+            "用户执行记录"
+          ]
+        }
+      ],
+      "semantic_events": [
+        {
+          "event_id": "semantic_client_a_intro_interest",
+          "raw_event_ids": [
+            "raw_client_a_intro_need"
+          ],
+          "event_type_code": "business_meeting",
+          "event_level": "P3",
+          "status": "confirmed",
+          "tags": [
+            "接口覆盖",
+            "预算未定"
+          ],
+          "weight": 0.52,
+          "confidence": 0.72,
+          "evidence": [
+            "客户先确认接口覆盖，预算尚未完全确定。"
+          ],
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "occurred_at": "2026-06-01T09:10:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_a_pain_point",
+          "raw_event_ids": [
+            "raw_client_a_pain_point"
+          ],
+          "event_type_code": "help",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "部署风险",
+            "技术负责人",
+            "痛点"
+          ],
+          "weight": 0.68,
+          "confidence": 0.79,
+          "evidence": [
+            "客户让李工先看方案，并强调部署风险。"
+          ],
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "occurred_at": "2026-06-02T10:05:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_a_stakeholder_hint",
+          "raw_event_ids": [
+            "raw_client_a_stakeholder_hint"
+          ],
+          "event_type_code": "business_meeting",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "技术负责人",
+            "轻量评审",
+            "低承诺"
+          ],
+          "weight": 0.7,
+          "confidence": 0.81,
+          "evidence": [
+            "李工可参与，但会议需要控制在半小时。"
+          ],
+          "linked_person_ids": [
+            "person_client_a",
+            "person_tech_lead_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "occurred_at": "2026-06-02T15:40:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_a_material_request",
+          "raw_event_ids": [
+            "raw_client_a_material_request"
+          ],
+          "event_type_code": "business_meeting",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "材料请求",
+            "会议时间"
+          ],
+          "weight": 0.74,
+          "confidence": 0.83,
+          "evidence": [
+            "客户开始协调李工时间并询问下周二上午。"
+          ],
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "occurred_at": "2026-06-04T17:10:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_a_budget_objection",
+          "raw_event_ids": [
+            "raw_client_a_budget_objection"
+          ],
+          "event_type_code": "payment_transaction",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "预算",
+            "异议",
+            "技术评审"
+          ],
+          "weight": 0.72,
+          "confidence": 0.8,
+          "evidence": [
+            "客户说预算需要内部确认"
+          ],
+          "linked_person_ids": [
+            "person_client_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "occurred_at": "2026-06-05T09:00:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_a_review_confirmed",
+          "raw_event_ids": [
+            "raw_client_a_review_invite_sent"
+          ],
+          "event_type_code": "business_meeting",
+          "event_level": "P2",
+          "status": "candidate",
+          "tags": [
+            "预约",
+            "技术评审",
+            "客户推进"
+          ],
+          "weight": 0.78,
+          "confidence": 0.82,
+          "evidence": [
+            "对方确认可安排技术评审"
+          ],
+          "linked_person_ids": [
+            "person_client_a",
+            "person_tech_lead_a"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_a"
+          ],
+          "occurred_at": "2026-06-05T11:20:00+08:00",
+          "decision_id": "decision_client_a_low_commitment_review",
+          "trigger_id": "trigger_client_a_review_invite",
+          "feedback_id": "feedback_client_a_review_confirmed",
+          "requires_confirmation": false
+        }
+      ],
+      "decision": {
+        "decision_id": "decision_client_a_low_commitment_review",
+        "recommended_option": "发送低承诺技术评审邀请",
+        "evidence_event_ids": [
+          "semantic_client_a_budget_objection"
+        ],
+        "risk_notes": [
+          "不直接催签",
+          "不制造虚假紧迫感"
+        ]
+      },
+      "trigger": {
+        "trigger_id": "trigger_client_a_review_invite",
+        "trigger_type": "user_initiated",
+        "status": "waiting_confirmation",
+        "skill_steps": [
+          "communication.message.draft",
+          "human_process.meeting_path",
+          "reminder.create"
+        ]
+      },
+      "feedback": {
+        "feedback_id": "feedback_client_a_review_confirmed",
+        "decision_id": "decision_client_a_low_commitment_review",
+        "trigger_id": "trigger_client_a_review_invite",
+        "executed": true,
+        "reply_received": true,
+        "goal_progress": 0.8,
+        "relationship_change": 0.2,
+        "user_rating": 5,
+        "new_event_candidate_ids": [
+          "semantic_client_a_review_confirmed"
+        ],
+        "notes": "对方愿意拉技术负责人参与评审。"
+      }
+    },
+    {
+      "loop_id": "loop_client_b_quote_followup",
+      "run_id": "run_loop_client_b_001",
+      "initial_goal": "推动王总回复报价后的下一步",
+      "docs10_step_mapping": {
+        "step_1_person": [
+          "person_client_b"
+        ],
+        "step_3_raw_event": [
+          "raw_client_b_quote_seen",
+          "raw_client_b_followup_sent"
+        ],
+        "step_5_relationship": [
+          "rel_user_client_b"
+        ],
+        "step_6_decision": "decision_client_b_value_followup",
+        "step_7_trigger": "trigger_client_b_quote_followup",
+        "step_9_feedback": "feedback_client_b_replied_competitor",
+        "step_10_writeback_event": "semantic_client_b_competitor_compare",
+        "step_11_chain_ids": {
+          "event_id": "semantic_client_b_competitor_compare",
+          "decision_id": "decision_client_b_value_followup",
+          "trigger_id": "trigger_client_b_quote_followup",
+          "feedback_id": "feedback_client_b_replied_competitor"
+        }
+      },
+      "people": [
+        {
+          "person_id": "person_client_b",
+          "display_name": "王总",
+          "roles": [
+            "客户决策人"
+          ],
+          "tags": [
+            "客户",
+            "报价后停滞"
+          ],
+          "source": "fixture"
+        }
+      ],
+      "relationships": [
+        {
+          "relationship_id": "rel_user_client_b",
+          "from_person_id": "user",
+          "to_person_id": "person_client_b",
+          "type_code": "client",
+          "phase": "stagnant",
+          "trust_level": "medium",
+          "health_score": 0.52,
+          "recent_event_ids": [
+            "semantic_client_b_quote_seen"
+          ]
+        }
+      ],
+      "raw_events": [
+        {
+          "event_id": "raw_client_b_first_contact",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-01T10:00:00+08:00",
+          "participants": [
+            "user",
+            "person_client_b"
+          ],
+          "content": "王总首次沟通时表示想先了解整体报价和实施周期。",
+          "content_summary": "客户关注报价和周期。",
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "evidence_refs": [
+            "chat_log_B_001"
+          ]
+        },
+        {
+          "event_id": "raw_client_b_budget_range",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-01T15:30:00+08:00",
+          "participants": [
+            "user",
+            "person_client_b"
+          ],
+          "content": "王总说预算区间有限，需要看到节省成本或提升效率的 ROI 依据。",
+          "content_summary": "客户要求预算和 ROI 依据。",
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "evidence_refs": [
+            "chat_log_B_002"
+          ]
+        },
+        {
+          "event_id": "raw_client_b_decision_process",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-02T09:20:00+08:00",
+          "participants": [
+            "user",
+            "person_client_b"
+          ],
+          "content": "王总说明最终还需要财务和业务负责人一起看材料。",
+          "content_summary": "客户决策链涉及财务和业务。",
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "evidence_refs": [
+            "chat_log_B_003"
+          ]
+        },
+        {
+          "event_id": "raw_client_b_use_case",
+          "event_kind": "raw_interaction",
+          "source": "manual_note",
+          "occurred_at": "2026-06-02T13:15:00+08:00",
+          "participants": [
+            "user",
+            "person_client_b"
+          ],
+          "content": "销售记录显示客户重点使用场景是售后工单和客户回访统计。",
+          "content_summary": "客户关注售后工单和回访统计。",
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "evidence_refs": [
+            "sales_note_B_001"
+          ]
+        },
+        {
+          "event_id": "raw_client_b_quote_sent",
+          "event_kind": "raw_interaction",
+          "source": "manual_feedback",
+          "occurred_at": "2026-06-03T11:45:00+08:00",
+          "participants": [
+            "user",
+            "person_client_b"
+          ],
+          "content": "用户已发送报价和基础方案，并说明报价可按模块拆分。",
+          "content_summary": "报价已发送且可拆分。",
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "evidence_refs": [
+            "user_action_log_B_001"
+          ]
+        },
+        {
+          "event_id": "raw_client_b_seen_no_reply_day1",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-03T18:20:00+08:00",
+          "participants": [
+            "user",
+            "person_client_b"
+          ],
+          "content": "报价发出一天后客户已读未回复，未给出明确异议。",
+          "content_summary": "客户已读未回复。",
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "evidence_refs": [
+            "chat_log_B_006"
+          ]
+        },
+        {
+          "event_id": "raw_client_b_internal_compare_hint",
+          "event_kind": "raw_interaction",
+          "source": "manual_note",
+          "occurred_at": "2026-06-04T09:35:00+08:00",
+          "participants": [
+            "user",
+            "person_client_b"
+          ],
+          "content": "公开信息显示客户近期也在接触另一家同类供应商。",
+          "content_summary": "客户可能正在做竞品比较。",
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "evidence_refs": [
+            "public_clue_B_001"
+          ]
+        },
+        {
+          "event_id": "raw_client_b_value_asset_ready",
+          "event_kind": "raw_interaction",
+          "source": "manual_feedback",
+          "occurred_at": "2026-06-04T14:50:00+08:00",
+          "participants": [
+            "user",
+            "person_client_b"
+          ],
+          "content": "用户准备了售后工单效率提升和人工成本节省的 ROI 对比表。",
+          "content_summary": "用户已准备 ROI 价值材料。",
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "evidence_refs": [
+            "user_action_log_B_002"
+          ]
+        },
+        {
+          "event_id": "raw_client_b_quote_seen",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-04T16:30:00+08:00",
+          "participants": [
+            "user",
+            "person_client_b"
+          ],
+          "content": "报价已发，对方已读但没有回复。",
+          "content_summary": "报价后客户已读未回复。",
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "evidence_refs": [
+            "聊天记录第 8 条"
+          ]
+        },
+        {
+          "event_id": "raw_client_b_followup_sent",
+          "event_kind": "raw_interaction",
+          "source": "manual_feedback",
+          "occurred_at": "2026-06-05T10:10:00+08:00",
+          "participants": [
+            "user",
+            "person_client_b"
+          ],
+          "content": "已发送价值澄清和低承诺问题。",
+          "content_summary": "用户执行报价后价值跟进。",
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "decision_id": "decision_client_b_value_followup",
+          "trigger_id": "trigger_client_b_quote_followup",
+          "evidence_refs": [
+            "用户执行记录"
+          ]
+        }
+      ],
+      "semantic_events": [
+        {
+          "event_id": "semantic_client_b_budget_limited",
+          "raw_event_ids": [
+            "raw_client_b_budget_range"
+          ],
+          "event_type_code": "payment_transaction",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "预算有限",
+            "ROI"
+          ],
+          "weight": 0.7,
+          "confidence": 0.8,
+          "evidence": [
+            "客户要求看到成本节省或效率提升的 ROI 依据。"
+          ],
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "occurred_at": "2026-06-01T15:30:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_b_finance_involved",
+          "raw_event_ids": [
+            "raw_client_b_decision_process"
+          ],
+          "event_type_code": "business_meeting",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "财务",
+            "业务",
+            "决策链"
+          ],
+          "weight": 0.64,
+          "confidence": 0.76,
+          "evidence": [
+            "客户说明财务和业务负责人都需要看材料。"
+          ],
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "occurred_at": "2026-06-02T09:20:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_b_after_sale_concern",
+          "raw_event_ids": [
+            "raw_client_b_use_case"
+          ],
+          "event_type_code": "help",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "售后工单",
+            "回访统计"
+          ],
+          "weight": 0.62,
+          "confidence": 0.73,
+          "evidence": [
+            "客户重点使用场景是售后工单和客户回访统计。"
+          ],
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "occurred_at": "2026-06-02T13:15:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_b_quote_sent",
+          "raw_event_ids": [
+            "raw_client_b_quote_sent"
+          ],
+          "event_type_code": "payment_transaction",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "报价",
+            "模块拆分"
+          ],
+          "weight": 0.66,
+          "confidence": 0.82,
+          "evidence": [
+            "用户已发送报价和基础方案，并说明可按模块拆分。"
+          ],
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "occurred_at": "2026-06-03T11:45:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_b_quote_seen",
+          "raw_event_ids": [
+            "raw_client_b_quote_seen"
+          ],
+          "event_type_code": "payment_transaction",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "报价",
+            "未回复",
+            "停滞"
+          ],
+          "weight": 0.66,
+          "confidence": 0.78,
+          "evidence": [
+            "报价已发，对方已读但没有回复"
+          ],
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "occurred_at": "2026-06-04T16:30:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_b_competitor_compare",
+          "raw_event_ids": [
+            "raw_client_b_followup_sent"
+          ],
+          "event_type_code": "business_meeting",
+          "event_level": "P2",
+          "status": "candidate",
+          "tags": [
+            "竞品比较",
+            "价值澄清",
+            "客户推进"
+          ],
+          "weight": 0.63,
+          "confidence": 0.74,
+          "evidence": [
+            "对方回复正在和另一家比较"
+          ],
+          "linked_person_ids": [
+            "person_client_b"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_b"
+          ],
+          "occurred_at": "2026-06-05T10:10:00+08:00",
+          "decision_id": "decision_client_b_value_followup",
+          "trigger_id": "trigger_client_b_quote_followup",
+          "feedback_id": "feedback_client_b_replied_competitor",
+          "requires_confirmation": false
+        }
+      ],
+      "decision": {
+        "decision_id": "decision_client_b_value_followup",
+        "recommended_option": "把价格问题转成价值澄清问题",
+        "evidence_event_ids": [
+          "semantic_client_b_quote_seen"
+        ],
+        "risk_notes": [
+          "不连续催促",
+          "不压迫对方立即表态"
+        ]
+      },
+      "trigger": {
+        "trigger_id": "trigger_client_b_quote_followup",
+        "trigger_type": "scheduled",
+        "status": "waiting_confirmation",
+        "skill_steps": [
+          "communication.message.draft",
+          "reminder.create",
+          "notification.user.send"
+        ]
+      },
+      "feedback": {
+        "feedback_id": "feedback_client_b_replied_competitor",
+        "decision_id": "decision_client_b_value_followup",
+        "trigger_id": "trigger_client_b_quote_followup",
+        "executed": true,
+        "reply_received": true,
+        "goal_progress": 0.55,
+        "relationship_change": 0.05,
+        "user_rating": 4,
+        "new_event_candidate_ids": [
+          "semantic_client_b_competitor_compare"
+        ],
+        "notes": "客户回复正在比较竞品，下一步应补价值证据。"
+      }
+    },
+    {
+      "loop_id": "loop_client_c_risk_repair",
+      "run_id": "run_loop_client_c_001",
+      "initial_goal": "修复赵总对交付风险的担忧",
+      "docs10_step_mapping": {
+        "step_1_person": [
+          "person_client_c"
+        ],
+        "step_3_raw_event": [
+          "raw_client_c_delivery_concern",
+          "raw_client_c_repair_message_sent"
+        ],
+        "step_5_relationship": [
+          "rel_user_client_c"
+        ],
+        "step_6_decision": "decision_client_c_risk_repair",
+        "step_7_trigger": "trigger_client_c_risk_repair",
+        "step_9_feedback": "feedback_client_c_risk_reduced",
+        "step_10_writeback_event": "semantic_client_c_risk_reduced",
+        "step_11_chain_ids": {
+          "event_id": "semantic_client_c_risk_reduced",
+          "decision_id": "decision_client_c_risk_repair",
+          "trigger_id": "trigger_client_c_risk_repair",
+          "feedback_id": "feedback_client_c_risk_reduced"
+        }
+      },
+      "people": [
+        {
+          "person_id": "person_client_c",
+          "display_name": "赵总",
+          "roles": [
+            "客户项目负责人"
+          ],
+          "tags": [
+            "客户",
+            "交付风险敏感"
+          ],
+          "source": "fixture"
+        }
+      ],
+      "relationships": [
+        {
+          "relationship_id": "rel_user_client_c",
+          "from_person_id": "user",
+          "to_person_id": "person_client_c",
+          "type_code": "client",
+          "phase": "risk_review",
+          "trust_level": "medium",
+          "health_score": 0.48,
+          "recent_event_ids": [
+            "semantic_client_c_delivery_concern"
+          ]
+        }
+      ],
+      "raw_events": [
+        {
+          "event_id": "raw_client_c_initial_interest",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-01T09:40:00+08:00",
+          "participants": [
+            "user",
+            "person_client_c"
+          ],
+          "content": "赵总最初表示对方案方向认可，但担心后续落地。",
+          "content_summary": "客户有兴趣但担心落地。",
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "evidence_refs": [
+            "chat_log_C_001"
+          ]
+        },
+        {
+          "event_id": "raw_client_c_previous_delay",
+          "event_kind": "raw_interaction",
+          "source": "manual_note",
+          "occurred_at": "2026-06-01T16:15:00+08:00",
+          "participants": [
+            "user",
+            "person_client_c"
+          ],
+          "content": "历史项目记录显示客户上次合作中对交付延期较敏感。",
+          "content_summary": "历史合作存在延期记忆。",
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "evidence_refs": [
+            "history_note_C_001"
+          ]
+        },
+        {
+          "event_id": "raw_client_c_acceptance_focus",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-02T10:50:00+08:00",
+          "participants": [
+            "user",
+            "person_client_c"
+          ],
+          "content": "赵总强调这次必须提前说清楚验收标准和交付边界。",
+          "content_summary": "客户关注验收标准。",
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "evidence_refs": [
+            "chat_log_C_004"
+          ]
+        },
+        {
+          "event_id": "raw_client_c_team_pressure",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-02T17:05:00+08:00",
+          "participants": [
+            "user",
+            "person_client_c"
+          ],
+          "content": "客户团队内部担心上线后需要额外投入大量人力维护。",
+          "content_summary": "客户团队有维护压力。",
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "evidence_refs": [
+            "chat_log_C_006"
+          ]
+        },
+        {
+          "event_id": "raw_client_c_scope_question",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-03T09:25:00+08:00",
+          "participants": [
+            "user",
+            "person_client_c"
+          ],
+          "content": "赵总追问哪些内容包含在首期范围，哪些需要二期处理。",
+          "content_summary": "客户关注范围边界。",
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "evidence_refs": [
+            "chat_log_C_008"
+          ]
+        },
+        {
+          "event_id": "raw_client_c_case_request",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-03T15:35:00+08:00",
+          "participants": [
+            "user",
+            "person_client_c"
+          ],
+          "content": "客户要求补一个相似行业案例，最好能看到验收拆分方式。",
+          "content_summary": "客户要求案例和验收拆分。",
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "evidence_refs": [
+            "chat_log_C_010"
+          ]
+        },
+        {
+          "event_id": "raw_client_c_internal_risk_note",
+          "event_kind": "raw_interaction",
+          "source": "manual_note",
+          "occurred_at": "2026-06-04T11:00:00+08:00",
+          "participants": [
+            "user",
+            "person_client_c"
+          ],
+          "content": "内部评审记录提示本次推进的主要风险是交付承诺过满。",
+          "content_summary": "内部提示避免过度承诺。",
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "evidence_refs": [
+            "internal_review_C_001"
+          ]
+        },
+        {
+          "event_id": "raw_client_c_boundary_asset_ready",
+          "event_kind": "raw_interaction",
+          "source": "manual_feedback",
+          "occurred_at": "2026-06-04T18:30:00+08:00",
+          "participants": [
+            "user",
+            "person_client_c"
+          ],
+          "content": "用户准备了交付边界、验收拆分和风险责任划分的一页说明。",
+          "content_summary": "用户已准备边界说明材料。",
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "evidence_refs": [
+            "user_action_log_C_001"
+          ]
+        },
+        {
+          "event_id": "raw_client_c_delivery_concern",
+          "event_kind": "raw_interaction",
+          "source": "manual_chat",
+          "occurred_at": "2026-06-05T08:45:00+08:00",
+          "participants": [
+            "user",
+            "person_client_c"
+          ],
+          "content": "客户担心交付周期和验收风险。",
+          "content_summary": "客户表达交付和验收风险担忧。",
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "evidence_refs": [
+            "聊天记录第 15 条"
+          ]
+        },
+        {
+          "event_id": "raw_client_c_repair_message_sent",
+          "event_kind": "raw_interaction",
+          "source": "manual_feedback",
+          "occurred_at": "2026-06-05T12:40:00+08:00",
+          "participants": [
+            "user",
+            "person_client_c"
+          ],
+          "content": "已发送交付边界、风险清单和验收拆分建议。",
+          "content_summary": "用户执行风险澄清与关系修复消息。",
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "decision_id": "decision_client_c_risk_repair",
+          "trigger_id": "trigger_client_c_risk_repair",
+          "evidence_refs": [
+            "用户执行记录"
+          ]
+        }
+      ],
+      "semantic_events": [
+        {
+          "event_id": "semantic_client_c_previous_delay_memory",
+          "raw_event_ids": [
+            "raw_client_c_previous_delay"
+          ],
+          "event_type_code": "conflict",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "延期记忆",
+            "信任风险"
+          ],
+          "weight": 0.67,
+          "confidence": 0.75,
+          "evidence": [
+            "历史项目记录显示客户对交付延期敏感。"
+          ],
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "occurred_at": "2026-06-01T16:15:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_c_acceptance_focus",
+          "raw_event_ids": [
+            "raw_client_c_acceptance_focus"
+          ],
+          "event_type_code": "business_meeting",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "验收标准",
+            "交付边界"
+          ],
+          "weight": 0.72,
+          "confidence": 0.81,
+          "evidence": [
+            "客户要求提前说清楚验收标准和交付边界。"
+          ],
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "occurred_at": "2026-06-02T10:50:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_c_team_pressure",
+          "raw_event_ids": [
+            "raw_client_c_team_pressure"
+          ],
+          "event_type_code": "help",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "维护压力",
+            "团队顾虑"
+          ],
+          "weight": 0.64,
+          "confidence": 0.74,
+          "evidence": [
+            "客户团队担心上线后需要额外投入维护人力。"
+          ],
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "occurred_at": "2026-06-02T17:05:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_c_scope_boundary",
+          "raw_event_ids": [
+            "raw_client_c_scope_question"
+          ],
+          "event_type_code": "business_meeting",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "范围边界",
+            "二期"
+          ],
+          "weight": 0.71,
+          "confidence": 0.8,
+          "evidence": [
+            "客户追问首期包含内容和二期处理内容。"
+          ],
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "occurred_at": "2026-06-03T09:25:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_c_delivery_concern",
+          "raw_event_ids": [
+            "raw_client_c_delivery_concern"
+          ],
+          "event_type_code": "business_meeting",
+          "event_level": "P2",
+          "status": "confirmed",
+          "tags": [
+            "交付风险",
+            "验收",
+            "信任修复"
+          ],
+          "weight": 0.69,
+          "confidence": 0.77,
+          "evidence": [
+            "客户担心交付周期和验收风险"
+          ],
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "occurred_at": "2026-06-05T08:45:00+08:00",
+          "requires_confirmation": false
+        },
+        {
+          "event_id": "semantic_client_c_risk_reduced",
+          "raw_event_ids": [
+            "raw_client_c_repair_message_sent"
+          ],
+          "event_type_code": "help",
+          "event_level": "P3",
+          "status": "candidate",
+          "tags": [
+            "风险澄清",
+            "关系修复",
+            "验收拆分"
+          ],
+          "weight": 0.58,
+          "confidence": 0.72,
+          "evidence": [
+            "对方接受拆分验收方案，要求补一页说明"
+          ],
+          "linked_person_ids": [
+            "person_client_c"
+          ],
+          "linked_relationship_ids": [
+            "rel_user_client_c"
+          ],
+          "occurred_at": "2026-06-05T12:40:00+08:00",
+          "decision_id": "decision_client_c_risk_repair",
+          "trigger_id": "trigger_client_c_risk_repair",
+          "feedback_id": "feedback_client_c_risk_reduced",
+          "requires_confirmation": false
+        }
+      ],
+      "decision": {
+        "decision_id": "decision_client_c_risk_repair",
+        "recommended_option": "先承认风险，再给出验收拆分和边界说明",
+        "evidence_event_ids": [
+          "semantic_client_c_delivery_concern"
+        ],
+        "risk_notes": [
+          "不过度承诺交付",
+          "保留合同和验收边界"
+        ]
+      },
+      "trigger": {
+        "trigger_id": "trigger_client_c_risk_repair",
+        "trigger_type": "graph_signal",
+        "status": "waiting_confirmation",
+        "skill_steps": [
+          "communication.message.draft",
+          "human_process.meeting_path",
+          "reminder.create"
+        ]
+      },
+      "feedback": {
+        "feedback_id": "feedback_client_c_risk_reduced",
+        "decision_id": "decision_client_c_risk_repair",
+        "trigger_id": "trigger_client_c_risk_repair",
+        "executed": true,
+        "reply_received": true,
+        "goal_progress": 0.65,
+        "relationship_change": 0.15,
+        "user_rating": 4,
+        "new_event_candidate_ids": [
+          "semantic_client_c_risk_reduced"
+        ],
+        "notes": "客户风险感下降，要求补充一页验收说明。"
+      }
+    }
+  ]
+}

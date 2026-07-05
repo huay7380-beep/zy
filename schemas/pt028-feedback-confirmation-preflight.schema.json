@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-feedback-confirmation-preflight.schema.json",
+  "title": "pt028_feedback_confirmation_preflight.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "preflight_id",
+    "created_at",
+    "gate_decision",
+    "ready_for_controlled_target_write",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "writes_real_feedback_target",
+    "target_feedback_path",
+    "checks",
+    "required_failures",
+    "placeholder_or_missing_field_groups",
+    "next_commands",
+    "boundary_policy"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_feedback_confirmation_preflight.v1" },
+    "preflight_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "enum": [
+        "confirmation_decision_needs_attention",
+        "confirmation_decision_ready_for_controlled_target_write"
+      ]
+    },
+    "ready_for_controlled_target_write": { "type": "boolean" },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "writes_real_feedback_target": { "const": false },
+    "target_feedback_path": { "type": ["string", "null"] },
+    "target_feedback_exists": { "type": "boolean" },
+    "source": {
+      "type": "object",
+      "properties": {
+        "root": { "type": "string" },
+        "decision_path": { "type": ["string", "null"] },
+        "confirmation_result_gate": { "type": "string" },
+        "output_dir": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "operator_confirmation_status": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "readiness_summary": {
+      "type": "object",
+      "properties": {
+        "gate_decision": { "type": "string" },
+        "calibration_ready": { "type": "boolean" },
+        "final_acceptance_ready": { "type": "boolean" },
+        "required_failures": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "window_count": { "type": "number" },
+        "unique_target_count": { "type": "number" },
+        "human_special_review_ready": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "status", "severity", "evidence"],
+        "properties": {
+          "check_id": { "type": "string" },
+          "status": { "enum": ["passed", "open"] },
+          "severity": { "type": "string" },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "placeholder_or_missing_field_groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["failure_id", "fields_or_actions"],
+        "properties": {
+          "failure_id": { "type": "string" },
+          "fields_or_actions": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "next_commands": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "boundary_policy": {
+      "type": "object",
+      "required": [
+        "preflight_never_writes_real_feedback_target",
+        "controlled_target_writer",
+        "real_execution_allowed",
+        "real_send_attempted",
+        "candidate_observations_are_not_final_feedback"
+      ],
+      "properties": {
+        "preflight_never_writes_real_feedback_target": { "const": true },
+        "controlled_target_writer": { "type": "string" },
+        "real_execution_allowed": { "const": false },
+        "real_send_attempted": { "const": false },
+        "candidate_observations_are_not_final_feedback": { "const": true }
+      },
+      "additionalProperties": true
+    },
+    "output_paths": {
+      "type": "object",
+      "properties": {
+        "json_path": { "type": "string" },
+        "markdown_path": { "type": "string" },
+        "latest_path": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

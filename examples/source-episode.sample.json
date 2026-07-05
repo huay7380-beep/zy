@@ -1,0 +1,16 @@
+{
+  "schema_version": "source_episode.v1",
+  "episode_id": "source_episode_sample",
+  "source_archive_id": "source_archive_sample",
+  "source_type": "manual",
+  "platform": "operator_note",
+  "thread_id": "manual:sample",
+  "captured_at": "2026-07-01T20:00:00+08:00",
+  "time_window": "2026-07-01",
+  "participants_hint": ["user", "target"],
+  "source_identity_hints": [],
+  "raw_event_ids": ["raw_event_sample"],
+  "content_fingerprint": "sha256:sample",
+  "status": "ready_for_raw_event_mapping",
+  "metadata": {}
+}

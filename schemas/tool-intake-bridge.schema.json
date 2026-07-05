@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ToolIntakeBridge",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "bridge_id",
+    "created_at",
+    "capability_summary",
+    "source_adapter_init",
+    "gate_decision",
+    "real_execution_allowed",
+    "command_executed",
+    "next_steps"
+  ],
+  "properties": {
+    "schema_version": { "const": "tool_intake_bridge.v1" },
+    "bridge_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "operator": { "type": "string" },
+    "capability_summary": {
+      "type": "object",
+      "required": [
+        "capability_id",
+        "provider",
+        "name",
+        "display_name",
+        "risk_level",
+        "can_read_external_data",
+        "can_send_message"
+      ],
+      "properties": {
+        "capability_id": { "type": "string", "minLength": 1 },
+        "provider": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "display_name": { "type": "string", "minLength": 1 },
+        "category": { "type": "string" },
+        "risk_level": { "type": "string" },
+        "can_read_external_data": { "type": "boolean" },
+        "can_send_message": { "type": "boolean" },
+        "can_modify_external_state": { "type": "boolean" },
+        "requires_credentials": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "source_adapter_init": { "type": "object" },
+    "source_adapter_init_path": { "type": "string" },
+    "source_adapter_capability_template_path": { "type": "string" },
+    "source_adapter_observation_template_path": { "type": "string" },
+    "send_command_template": { "type": ["object", "null"] },
+    "send_command_template_path": { "type": ["string", "null"] },
+    "dry_run_send_result": { "type": ["object", "null"] },
+    "dry_run_send_result_path": { "type": ["string", "null"] },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "tool_bridge_ready_for_intake_only",
+        "tool_bridge_ready_with_blocked_send_template"
+      ]
+    },
+    "real_execution_allowed": { "const": false },
+    "command_executed": { "const": false },
+    "required_before_real_execution": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_steps": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": true
+}

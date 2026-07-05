@@ -1,0 +1,630 @@
+{
+  "schema_version": "p1_review_pack.v1",
+  "generated_at": "2026-07-05T13:56:00.017Z",
+  "source": "scripts/write-p1-review-pack.mjs",
+  "write_mode": "write",
+  "current_phase": "P1_JSON_Schema_Draft",
+  "current_phase_state": "p1_validated_pending_user_review",
+  "p1_ready_for_user_review": true,
+  "p1_approved_for_p2_fixture_only": false,
+  "p2_entry_allowed": false,
+  "remaining_gate": "user_review_decision",
+  "next_allowed_action": "wait_for_user_review_decision_or_revise_P1",
+  "p2_entry_blockers": [
+    "decision_state_not_approved_for_p2_fixture_only"
+  ],
+  "reviewed_artifacts": [
+    {
+      "path": "18-P1-JSONSchemaDraft.v1-图谱核心对象草案.md",
+      "purpose": "P1 schema draft boundary and review checklist"
+    },
+    {
+      "path": "schema-drafts/P1-GraphCore.schema.json",
+      "purpose": "Merged graph core schema draft"
+    },
+    {
+      "path": "scripts/validate-p1-schema.mjs",
+      "purpose": "P1 schema structure validator"
+    },
+    {
+      "path": "scripts/validate-p1-json-schema-contract.mjs",
+      "purpose": "P1 in-memory JSON Schema contract validator; checks positive and negative samples without generating P2 fixtures"
+    },
+    {
+      "path": "scripts/validate-p1-evidence-readback-coverage.mjs",
+      "purpose": "P1 evidence and source readback coverage validator"
+    },
+    {
+      "path": "scripts/validate-full-roadmap-and-particle-sync.mjs",
+      "purpose": "Full roadmap and particle sync validator"
+    },
+    {
+      "path": "scripts/validate-p0-p12-stage-control.mjs",
+      "purpose": "P0-P12 stage input/output/boundary/drift/test control validator"
+    },
+    {
+      "path": "scripts/validate-current-phase-state.mjs",
+      "purpose": "Current phase preflight validator"
+    },
+    {
+      "path": "scripts/validate-p1-completion-audit.mjs",
+      "purpose": "P1 completion audit validator"
+    },
+    {
+      "path": "scripts/validate-p2-preparation-boundary.mjs",
+      "purpose": "P2 preparation-only boundary validator; proves fixture/runtime/real-data outputs have not started before approval"
+    },
+    {
+      "path": "scripts/validate-p2-fixture-contract.mjs",
+      "purpose": "P2 fixture execution contract validator; checks fixture/reverse-readback/mocking contract without generating fixture data"
+    },
+    {
+      "path": "scripts/validate-generated-artifacts-freshness.mjs",
+      "purpose": "Generated review/control artifact freshness validator; compares current check-mode outputs without creating fixtures or runtime files"
+    },
+    {
+      "path": "scripts/validate-p2-entry-gate.mjs",
+      "purpose": "Top-level P2 entry hard gate; blocks P2 until user approval and all P1 validations pass"
+    }
+  ],
+  "required_validation": [
+    {
+      "command": "node .\\validate-p1-schema.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS"
+    },
+    {
+      "command": "node .\\validate-p1-json-schema-contract.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P1_JSON_SCHEMA_CONTRACT"
+    },
+    {
+      "command": "node .\\validate-p1-evidence-readback-coverage.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_EVIDENCE_READBACK_COVERAGE"
+    },
+    {
+      "command": "node .\\validate-full-roadmap-and-particle-sync.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS"
+    },
+    {
+      "command": "node .\\validate-p0-p12-stage-control.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P0_P12_STAGE_CONTROL"
+    },
+    {
+      "command": "node .\\validate-p0-p12-stage-control.mjs --self-test",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P0_P12_STAGE_CONTROL_SELF_TEST"
+    },
+    {
+      "command": "node .\\validate-p1-review-decision.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_PENDING_OR_PASS_APPROVED"
+    },
+    {
+      "command": "node .\\validate-p1-review-decision.mjs --self-test",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_REVIEW_GATE_STATE_MACHINE"
+    },
+    {
+      "command": "node .\\validate-current-phase-state.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_CURRENT_PHASE_STATE"
+    },
+    {
+      "command": "node .\\validate-p1-completion-audit.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P1_COMPLETION_AUDIT_PENDING_USER_REVIEW_OR_APPROVED_FOR_P2_FIXTURE_ONLY"
+    },
+    {
+      "command": "node .\\validate-p2-preparation-boundary.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P2_PREPARATION_BOUNDARY_BLOCKED_PENDING_USER_DECISION_OR_APPROVED_FOR_FIXTURE_ONLY"
+    },
+    {
+      "command": "node .\\validate-p2-fixture-contract.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P2_FIXTURE_CONTRACT_READY"
+    },
+    {
+      "command": "node .\\validate-p2-fixture-contract.mjs --self-test",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P2_FIXTURE_CONTRACT_SELF_TEST"
+    },
+    {
+      "command": "node .\\validate-generated-artifacts-freshness.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_GENERATED_ARTIFACTS_FRESHNESS"
+    },
+    {
+      "command": "node .\\validate-p2-entry-gate.mjs --self-test",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P2_ENTRY_GATE_SELF_TEST"
+    },
+    {
+      "command": "node .\\validate-p2-entry-gate.mjs",
+      "workdir": "D:\\zhineng\\tupu\\11-人物事件时间标签检索与原文核对方案\\scripts",
+      "expected_status": "PASS_P2_ENTRY_BLOCKED_PENDING_USER_DECISION_OR_APPROVED_FOR_FIXTURE_ONLY"
+    }
+  ],
+  "review_checklist": [
+    {
+      "id": "source_archive_and_evidence_anchor_are_fact_source",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 1"
+    },
+    {
+      "id": "semantic_event_granularity_is_acceptable",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 2"
+    },
+    {
+      "id": "indexes_support_person_event_time_source_tag_feature_evidence",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 3"
+    },
+    {
+      "id": "narrative_objects_do_not_write_relationship_state",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 4"
+    },
+    {
+      "id": "context_and_causal_layers_do_not_replace_facts",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 5"
+    },
+    {
+      "id": "context_snapshot_is_only_model_context_package",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 6"
+    },
+    {
+      "id": "weight_and_confirmation_gate_do_not_auto_promote",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 7"
+    },
+    {
+      "id": "particle_projection_is_read_only",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 8"
+    },
+    {
+      "id": "boundary_flags_remain_false_for_high_risk_actions",
+      "status": "pending",
+      "evidence_ref": "18-P1 section 9.2 item 9"
+    },
+    {
+      "id": "p1_schema_validator_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p1-schema.mjs"
+    },
+    {
+      "id": "p1_json_schema_contract_validator_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p1-json-schema-contract.mjs"
+    },
+    {
+      "id": "p1_evidence_readback_coverage_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p1-evidence-readback-coverage.mjs"
+    },
+    {
+      "id": "full_roadmap_and_particle_sync_validator_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-full-roadmap-and-particle-sync.mjs"
+    },
+    {
+      "id": "particle_sync_drift_gate_and_checkpoint_checked",
+      "status": "pending",
+      "evidence_ref": "00-总目标与执行控制台.md section 16.5-16.6"
+    },
+    {
+      "id": "p0_p12_stage_control_validator_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p0-p12-stage-control.mjs"
+    },
+    {
+      "id": "p0_p12_stage_control_self_test_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p0-p12-stage-control.mjs --self-test"
+    },
+    {
+      "id": "p1_review_gate_state_machine_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p1-review-decision.mjs --self-test"
+    },
+    {
+      "id": "current_phase_preflight_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-current-phase-state.mjs"
+    },
+    {
+      "id": "p1_completion_audit_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p1-completion-audit.mjs"
+    },
+    {
+      "id": "p2_preparation_boundary_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p2-preparation-boundary.mjs"
+    },
+    {
+      "id": "p2_fixture_contract_self_test_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p2-fixture-contract.mjs --self-test"
+    },
+    {
+      "id": "p2_fixture_contract_output_checks_reviewed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p2-entry-gate.mjs output p2_fixture_contract_output_checks"
+    },
+    {
+      "id": "particle_stage_followup_required_reviewed",
+      "status": "pending",
+      "evidence_ref": "ROOT section 12.7 and 00 section 16.7"
+    },
+    {
+      "id": "generated_artifacts_freshness_passed",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-generated-artifacts-freshness.mjs"
+    },
+    {
+      "id": "p2_entry_gate_passed_or_blocks_pending_user_decision",
+      "status": "pending",
+      "evidence_ref": "scripts/validate-p2-entry-gate.mjs"
+    },
+    {
+      "id": "p2_scope_remains_fixture_only",
+      "status": "pending",
+      "evidence_ref": "00-总目标与执行控制台.md section 20.4"
+    }
+  ],
+  "allowed_outputs_if_approved": [
+    "sales_customer_progress_simulated_fixture",
+    "romantic_relationship_maintenance_simulated_fixture",
+    "public_case_style_complex_multisource_simulated_fixture",
+    "tag_person_event_time_evidence_reverse_validation_report",
+    "mock_particle_projection_readback_validation_report",
+    "p2_gap_backwrite_record"
+  ],
+  "forbidden_outputs": [
+    "real_business_data",
+    "runtime_write",
+    "real_source_ingestion",
+    "relationship_state_write",
+    "identity_merge",
+    "external_action",
+    "learning_weight_promotion",
+    "particle_write_back"
+  ],
+  "boundary_assertions": {
+    "runtime_entry": "still_blocked",
+    "real_source_entry": "still_blocked",
+    "relationship_state_write": "blocked",
+    "identity_merge": "blocked",
+    "external_action": "blocked",
+    "learning_weight_promotion": "blocked",
+    "particle_write_back": "blocked"
+  },
+  "particle_sync_protocol": {
+    "drift_gate": "projection_sync_drift_gate_active",
+    "checkpoint_object": "ParticleSyncCheckpoint",
+    "required_chain": [
+      "GraphObjectChange",
+      "ProjectionDecision",
+      "ParticleProjectionDelta",
+      "ProjectionValidationReport",
+      "ParticleSyncCheckpoint"
+    ],
+    "checkpoint_required_fields": [
+      "stage_id",
+      "graph_changes",
+      "projection_decisions",
+      "particle_projection_delta",
+      "object_ref_coverage",
+      "evidence_anchor_coverage",
+      "source_archive_readback_coverage",
+      "blocked_write_checks",
+      "drift_risk",
+      "next_stage_particle_entry"
+    ],
+    "forbidden_projection_results": [
+      "particle_fact_write",
+      "particle_relationship_state_write",
+      "particle_identity_merge",
+      "particle_external_action",
+      "particle_learning_weight_promotion",
+      "visual_weight_as_truth"
+    ]
+  },
+  "approval_transition_requirements": {
+    "purpose": "records the exact P1-to-P2 fixture approval transition requirements; this object does not approve P2 by itself",
+    "allowed_decision_states_for_p2": [
+      "approved_for_p2_fixture_only",
+      "approved_with_minor_notes_for_p2_fixture_only"
+    ],
+    "required_decision_fields": [
+      "decision_state in allowed_decision_states_for_p2",
+      "reviewer is non-empty",
+      "decided_at is an ISO timestamp",
+      "all checklist items are accepted or accepted_with_minor_notes",
+      "boundary_assertions keep runtime, real source, relationship state write, identity merge, external action, learning weight promotion, and particle write-back blocked"
+    ],
+    "required_validation_statuses": [
+      {
+        "id": "p1_schema",
+        "command": "node validate-p1-schema.mjs",
+        "required_status": "PASS"
+      },
+      {
+        "id": "p1_json_schema_contract",
+        "command": "node validate-p1-json-schema-contract.mjs",
+        "required_status": "PASS_P1_JSON_SCHEMA_CONTRACT"
+      },
+      {
+        "id": "p1_evidence_readback_coverage",
+        "command": "node validate-p1-evidence-readback-coverage.mjs",
+        "required_status": "PASS_EVIDENCE_READBACK_COVERAGE"
+      },
+      {
+        "id": "full_roadmap_and_particle_sync",
+        "command": "node validate-full-roadmap-and-particle-sync.mjs",
+        "required_status": "PASS"
+      },
+      {
+        "id": "p0_p12_stage_control",
+        "command": "node validate-p0-p12-stage-control.mjs",
+        "required_status": "PASS_P0_P12_STAGE_CONTROL"
+      },
+      {
+        "id": "p0_p12_stage_control_self_test",
+        "command": "node validate-p0-p12-stage-control.mjs --self-test",
+        "required_status": "PASS_P0_P12_STAGE_CONTROL_SELF_TEST"
+      },
+      {
+        "id": "p1_review_decision",
+        "command": "node validate-p1-review-decision.mjs",
+        "required_status": "PASS_APPROVED_FOR_P2_FIXTURE_ONLY"
+      },
+      {
+        "id": "current_phase_state",
+        "command": "node validate-current-phase-state.mjs",
+        "required_status": "PASS_CURRENT_PHASE_STATE with p2_entry_allowed=true"
+      },
+      {
+        "id": "p1_completion_audit",
+        "command": "node validate-p1-completion-audit.mjs",
+        "required_status": "PASS_P1_COMPLETION_AUDIT_APPROVED_FOR_P2_FIXTURE_ONLY"
+      },
+      {
+        "id": "p2_preparation_boundary",
+        "command": "node validate-p2-preparation-boundary.mjs",
+        "required_status": "PASS_P2_PREPARATION_BOUNDARY_APPROVED_FOR_FIXTURE_ONLY"
+      },
+      {
+        "id": "p2_fixture_contract",
+        "command": "node validate-p2-fixture-contract.mjs",
+        "required_status": "PASS_P2_FIXTURE_CONTRACT_READY"
+      },
+      {
+        "id": "p2_fixture_contract_self_test",
+        "command": "node validate-p2-fixture-contract.mjs --self-test",
+        "required_status": "PASS_P2_FIXTURE_CONTRACT_SELF_TEST"
+      },
+      {
+        "id": "generated_artifacts_freshness",
+        "command": "node validate-generated-artifacts-freshness.mjs",
+        "required_status": "PASS_GENERATED_ARTIFACTS_FRESHNESS"
+      },
+      {
+        "id": "p1_review_pack",
+        "command": "node write-p1-review-pack.mjs --check",
+        "required_status": "PASS_P1_REVIEW_PACK_APPROVED_FOR_P2_FIXTURE_ONLY"
+      },
+      {
+        "id": "p2_entry_gate_self_test",
+        "command": "node validate-p2-entry-gate.mjs --self-test",
+        "required_status": "PASS_P2_ENTRY_GATE_SELF_TEST"
+      },
+      {
+        "id": "p2_entry_gate",
+        "command": "node validate-p2-entry-gate.mjs",
+        "required_status": "PASS_P2_ENTRY_APPROVED_FOR_FIXTURE_ONLY"
+      }
+    ],
+    "required_hard_gate_outputs": [
+      "approval_transition_checks",
+      "p2_fixture_contract_output_checks",
+      "scope_checks",
+      "high_risk_boundaries",
+      "validation_runs"
+    ],
+    "required_fixture_contract_output_checks": [
+      "p2_fixture_contract_validation_status_ready",
+      "p2_fixture_contract_has_trace_checkpoint_checks",
+      "p2_fixture_contract_has_scenario_trace_checks",
+      "p2_fixture_contract_has_quality_gate_checks",
+      "p2_fixture_contract_has_scenario_quality_checks",
+      "p2_fixture_contract_preserves_non_write_flags",
+      "p2_fixture_contract_preserves_high_risk_boundaries"
+    ],
+    "required_particle_stage_followup_outputs": [
+      "ProjectionDecisionDraft",
+      "ReadbackRouteDraft",
+      "VisualSemanticsDraft",
+      "ForbiddenWriteDraft",
+      "ParticleSyncCheckpoint",
+      "ProjectionValidationReport"
+    ],
+    "current_transition_state": {
+      "decision_state": "pending_user_decision",
+      "review_validation_status": "PASS_PENDING_USER_DECISION",
+      "current_phase_state": "p1_validated_pending_user_review",
+      "completion_validation_status": "PASS_P1_COMPLETION_AUDIT_PENDING_USER_REVIEW",
+      "p1_ready_for_user_review": true,
+      "p1_approved_for_p2_fixture_only": false,
+      "p2_entry_allowed": false,
+      "remaining_gate": "user_review_decision",
+      "p2_entry_blockers": [
+        "decision_state_not_approved_for_p2_fixture_only"
+      ]
+    },
+    "first_allowed_p2_outputs": [
+      "sales_customer_progress_simulated_fixture",
+      "romantic_relationship_maintenance_simulated_fixture",
+      "public_case_style_complex_multisource_simulated_fixture",
+      "tag_person_event_time_evidence_reverse_validation_report",
+      "mock_particle_projection_readback_validation_report",
+      "p2_gap_backwrite_record"
+    ],
+    "forbidden_outputs": [
+      "real_business_data",
+      "runtime_write",
+      "real_source_ingestion",
+      "relationship_state_write",
+      "identity_merge",
+      "external_action",
+      "learning_weight_promotion",
+      "particle_write_back"
+    ],
+    "non_authorized_even_after_p2_approval": [
+      "runtime_write",
+      "real_source_ingestion",
+      "real_business_data",
+      "relationship_state_write",
+      "identity_merge",
+      "external_action",
+      "learning_weight_promotion",
+      "particle_write_back"
+    ],
+    "particle_sync_invariants": {
+      "projection_is_read_only": true,
+      "particle_write_back_allowed": false,
+      "particle_layer_is_not_fact_source": true,
+      "visual_weight_is_not_truth": true,
+      "p2_allows_mock_particle_readback_report_only": true
+    }
+  },
+  "validation_runs": [
+    {
+      "id": "p1_schema",
+      "command": "node validate-p1-schema.mjs",
+      "exit_code": 0,
+      "stdout_parse_ok": true,
+      "validation_status": "PASS",
+      "expected_pass": true,
+      "stderr": null
+    },
+    {
+      "id": "p1_json_schema_contract",
+      "command": "node validate-p1-json-schema-contract.mjs",
+      "exit_code": 0,
+      "stdout_parse_ok": true,
+      "validation_status": "PASS_P1_JSON_SCHEMA_CONTRACT",
+      "expected_pass": true,
+      "stderr": null
+    },
+    {
+      "id": "p1_evidence_readback_coverage",
+      "command": "node validate-p1-evidence-readback-coverage.mjs",
+      "exit_code": 0,
+      "stdout_parse_ok": true,
+      "validation_status": "PASS_EVIDENCE_READBACK_COVERAGE",
+      "expected_pass": true,
+      "stderr": null
+    },
+    {
+      "id": "full_roadmap_and_particle_sync",
+      "command": "node validate-full-roadmap-and-particle-sync.mjs",
+      "exit_code": 0,
+      "stdout_parse_ok": true,
+      "validation_status": "PASS",
+      "expected_pass": true,
+      "stderr": null
+    },
+    {
+      "id": "p0_p12_stage_control",
+      "command": "node validate-p0-p12-stage-control.mjs",
+      "exit_code": 0,
+      "stdout_parse_ok": true,
+      "validation_status": "PASS_P0_P12_STAGE_CONTROL",
+      "expected_pass": true,
+      "stderr": null
+    },
+    {
+      "id": "p0_p12_stage_control_self_test",
+      "command": "node validate-p0-p12-stage-control.mjs --self-test",
+      "exit_code": 0,
+      "stdout_parse_ok": true,
+      "validation_status": "PASS_P0_P12_STAGE_CONTROL_SELF_TEST",
+      "expected_pass": true,
+      "stderr": null
+    },
+    {
+      "id": "p1_review_decision",
+      "command": "node validate-p1-review-decision.mjs",
+      "exit_code": 0,
+      "stdout_parse_ok": true,
+      "validation_status": "PASS_PENDING_USER_DECISION",
+      "expected_pass": true,
+      "stderr": null
+    },
+    {
+      "id": "p1_review_gate_state_machine",
+      "command": "node validate-p1-review-decision.mjs --self-test",
+      "exit_code": 0,
+      "stdout_parse_ok": true,
+      "validation_status": "PASS_REVIEW_GATE_STATE_MACHINE",
+      "expected_pass": true,
+      "stderr": null
+    },
+    {
+      "id": "current_phase_state",
+      "command": "node validate-current-phase-state.mjs",
+      "exit_code": 0,
+      "stdout_parse_ok": true,
+      "validation_status": "PASS_CURRENT_PHASE_STATE",
+      "expected_pass": true,
+      "stderr": null
+    },
+    {
+      "id": "p1_completion_audit",
+      "command": "node validate-p1-completion-audit.mjs",
+      "exit_code": 0,
+      "stdout_parse_ok": true,
+      "validation_status": "PASS_P1_COMPLETION_AUDIT_PENDING_USER_REVIEW",
+      "expected_pass": true,
+      "stderr": null
+    },
+    {
+      "id": "p2_preparation_boundary",
+      "command": "node validate-p2-preparation-boundary.mjs",
+      "exit_code": 0,
+      "stdout_parse_ok": true,
+      "validation_status": "PASS_P2_PREPARATION_BOUNDARY_BLOCKED_PENDING_USER_DECISION",
+      "expected_pass": true,
+      "stderr": null
+    },
+    {
+      "id": "p2_fixture_contract",
+      "command": "node validate-p2-fixture-contract.mjs",
+      "exit_code": 0,
+      "stdout_parse_ok": true,
+      "validation_status": "PASS_P2_FIXTURE_CONTRACT_READY",
+      "expected_pass": true,
+      "stderr": null
+    },
+    {
+      "id": "p2_fixture_contract_self_test",
+      "command": "node validate-p2-fixture-contract.mjs --self-test",
+      "exit_code": 0,
+      "stdout_parse_ok": true,
+      "validation_status": "PASS_P2_FIXTURE_CONTRACT_SELF_TEST",
+      "expected_pass": true,
+      "stderr": null
+    }
+  ],
+  "validation_status": "PASS_P1_REVIEW_PACK_PENDING_USER_DECISION"
+}

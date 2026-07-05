@@ -1,0 +1,68 @@
+{
+  "contract": "structured_cabling_quote_draft.v1",
+  "quote_id": "{{quote_id}}",
+  "inquiry_id": "{{inquiry_id}}",
+  "status": "draft_only",
+  "quote_type": "{{standard_sku_quote|bom_quote|private_label_quote|sample_quote}}",
+  "customer": {
+    "company": "{{company}}",
+    "contact": "{{contact}}",
+    "country": "{{country}}",
+    "email": "{{email}}",
+    "buyer_type": "{{installer|distributor|system_integrator|project_contractor|oem_private_label|unknown}}"
+  },
+  "line_items": [
+    {
+      "item_no": "1",
+      "product_ref": "{{public_sku_or_product_master_id}}",
+      "family_id": "{{family_id}}",
+      "description": "{{english_description}}",
+      "technical_spec": {
+        "grade": "{{CAT6|CAT6A|CAT7|CAT8|blank|na}}",
+        "shielding": "{{UTP|STP|FTP|SFTP|na}}",
+        "ports": "{{ports}}",
+        "rack_unit": "{{rack_unit}}",
+        "length": "{{length}}",
+        "color": "{{color}}",
+        "plug_country_type": "{{for_pdu_only}}"
+      },
+      "quantity": "{{quantity}}",
+      "unit_price": {
+        "currency": "USD",
+        "amount": "{{unit_price}}"
+      },
+      "packing": "{{packing}}",
+      "lead_time": "{{lead_time}}",
+      "remarks": "{{remarks}}"
+    }
+  ],
+  "commercial_terms": {
+    "incoterms": "{{EXW|FOB|CIF|DAP}}",
+    "place": "{{place}}",
+    "payment_terms": "{{payment_terms}}",
+    "valid_until": "{{yyyy-mm-dd}}",
+    "sample_policy": "{{sample_policy}}",
+    "private_label_cost": "{{private_label_cost_or_na}}",
+    "freight_assumption": "{{freight_assumption_or_na}}"
+  },
+  "source_refs": [
+    "cross-border-ecommerce-ai-route/templates/structured-cabling-product-master.template.json",
+    "cross-border-ecommerce-ai-route/templates/rfq-field-map.structured-cabling.template.json"
+  ],
+  "risk_checks": {
+    "product_master_exists": false,
+    "cost_source_exists": false,
+    "margin_floor_passed": false,
+    "compliance_claims_verified": false,
+    "pdu_high_review_required": false,
+    "blocked_reasons": [
+      "Replace placeholders and approve price before external sending."
+    ]
+  },
+  "gate": {
+    "real_send_allowed": false,
+    "approved_by_human": false,
+    "approval_ref": "",
+    "notes": "Draft only. Do not send before human approval."
+  }
+}

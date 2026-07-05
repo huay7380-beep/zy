@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ControlledSendCommandPreflight",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "preflight_id",
+    "gate_decision",
+    "ready_for_prepare_controlled",
+    "real_send_attempted",
+    "command_path",
+    "command_exists",
+    "command_template_path",
+    "placeholder_paths",
+    "box_regions_path",
+    "box_regions_exists",
+    "box_regions_ready",
+    "box_regions_required",
+    "box_regions_template_path",
+    "box_regions_failures",
+    "box_regions_required_failures",
+    "required_failures",
+    "warnings",
+    "next_commands",
+    "next_actions",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "controlled_send_command_preflight.v1" },
+    "preflight_id": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "type": "string",
+      "enum": [
+        "controlled_send_command_missing",
+        "controlled_send_command_needs_attention",
+        "controlled_send_command_ready_for_prepare_controlled"
+      ]
+    },
+    "ready_for_prepare_controlled": { "type": "boolean" },
+    "real_send_attempted": { "const": false },
+    "command_path": { "type": "string", "minLength": 1 },
+    "command_exists": { "type": "boolean" },
+    "command_template_path": { "type": "string", "minLength": 1 },
+    "command_read_error": { "type": ["string", "null"] },
+    "placeholder_paths": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "box_regions_path": { "type": "string", "minLength": 1 },
+    "box_regions_exists": { "type": "boolean" },
+    "box_regions_ready": { "type": "boolean" },
+    "box_regions_required": { "type": "boolean" },
+    "box_regions_template_path": { "type": "string", "minLength": 1 },
+    "box_regions_failures": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "box_regions_required_failures": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "box_regions_read_error": { "type": ["string", "null"] },
+    "box_regions_summary": { "type": ["object", "null"] },
+    "command": { "type": ["object", "null"] },
+    "dry_run_send_result": { "type": ["object", "null"] },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "next_commands": {
+      "type": "object",
+      "required": ["prepare_controlled", "handoff"],
+      "properties": {
+        "prepare_controlled": { "type": "string", "minLength": 1 },
+        "handoff": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "next_actions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "created_at": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}

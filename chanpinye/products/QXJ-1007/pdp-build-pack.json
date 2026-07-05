@@ -1,0 +1,70 @@
+{
+  "contract": "pdp_site_responsive_build_pack.v1",
+  "generated_at": "2026-07-03T12:33:23+08:00",
+  "product_id": "QXKJ-1007",
+  "product_folder_id": "QXJ-1007",
+  "implementation_target": "chanpinye_standard_product_page",
+  "page_files": [
+    "chanpinye/products/QXJ-1007/index.html",
+    "chanpinye/products/QXJ-1007/product-spec-page-data.json",
+    "chanpinye/products/QXJ-1007/qa/qa-report.json",
+    "chanpinye/products/QXJ-1007/standard-page-manifest.json"
+  ],
+  "component_inventory": [
+    "pdf_like_page_shell",
+    "page_1_specification_header",
+    "page_1_two_column_layout",
+    "page_1_product_image_pair",
+    "page_1_vertical_model_marker",
+    "application_section",
+    "specification_section",
+    "features_and_benefits_section",
+    "design_considerations_section",
+    "standards_and_regulations_section",
+    "country_of_origin_section",
+    "page_2_mechanical_specifications",
+    "page_2_warranty_information",
+    "page_2_dimension_placeholder_area",
+    "page_2_part_number_table",
+    "page_2_regional_contact_footer"
+  ],
+  "data_contracts": [
+    "pdp_site_copy_pack.v1",
+    "pdp_site_responsive_build_pack.v1",
+    "pdp_site_design_qa_report.v1"
+  ],
+  "breakpoints": {
+    "desktop": ">= 901px",
+    "tablet": "561px to 900px",
+    "mobile": "<= 560px"
+  },
+  "accessibility_requirements": [
+    "single h1 on page 1",
+    "alt text for product images",
+    "semantic tables for part-number data",
+    "print-friendly page sections",
+    "visible copyright-safe boundary note"
+  ],
+  "seo_requirements": [
+    "product code in title and h1",
+    "product specification page title",
+    "source-confirmed specification language",
+    "no invented certificate claims",
+    "reference structure separated from protected copy"
+  ],
+  "analytics_events": [
+    "view_page_1_application",
+    "view_page_1_specification",
+    "view_page_2_mechanical_specifications",
+    "view_part_number_table"
+  ],
+  "blocked_external_actions": [
+    "publish_to_live_site",
+    "send_to_customer",
+    "claim_certification_without_files",
+    "submit_external_form"
+  ],
+  "human_review_required": true,
+  "real_external_actions_executed": false,
+  "publish_allowed": false
+}

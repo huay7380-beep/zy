@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ControlledSendMaterialKit",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "kit_id",
+    "gate_decision",
+    "real_send_attempted",
+    "command_target_path",
+    "box_regions_target_path",
+    "command_template_path",
+    "box_regions_template_path",
+    "user_input_command_template_path",
+    "user_input_box_regions_template_path",
+    "operator_checklist_path",
+    "kit_json_path",
+    "kit_markdown_path",
+    "command_template",
+    "box_regions_template",
+    "next_commands",
+    "operator_checklist",
+    "safety_gates",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "controlled_send_material_kit.v1" },
+    "kit_id": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "const": "controlled_send_materials_ready_for_operator_fill"
+    },
+    "real_send_attempted": { "const": false },
+    "command_target_path": { "type": "string", "minLength": 1 },
+    "box_regions_target_path": { "type": "string", "minLength": 1 },
+    "command_template_path": { "type": "string", "minLength": 1 },
+    "box_regions_template_path": { "type": "string", "minLength": 1 },
+    "user_input_command_template_path": { "type": "string", "minLength": 1 },
+    "user_input_box_regions_template_path": { "type": "string", "minLength": 1 },
+    "operator_checklist_path": { "type": "string", "minLength": 1 },
+    "kit_json_path": { "type": "string", "minLength": 1 },
+    "kit_markdown_path": { "type": "string", "minLength": 1 },
+    "command_template": { "type": "object" },
+    "box_regions_template": { "type": "object" },
+    "next_commands": {
+      "type": "object",
+      "required": [
+        "copy_instruction",
+        "command_check_with_box_regions",
+        "command_check_without_box_regions",
+        "prepare_with_box_regions",
+        "prepare_without_box_regions",
+        "readiness_with_box_regions",
+        "readiness_without_box_regions",
+        "handoff",
+        "docs16_status"
+      ],
+      "properties": {
+        "copy_instruction": { "type": "string", "minLength": 1 },
+        "command_check_with_box_regions": { "type": "string", "minLength": 1 },
+        "command_check_without_box_regions": { "type": "string", "minLength": 1 },
+        "prepare_with_box_regions": { "type": "string", "minLength": 1 },
+        "prepare_without_box_regions": { "type": "string", "minLength": 1 },
+        "readiness_with_box_regions": { "type": "string", "minLength": 1 },
+        "readiness_without_box_regions": { "type": "string", "minLength": 1 },
+        "handoff": { "type": "string", "minLength": 1 },
+        "docs16_status": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "operator_checklist": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "safety_gates": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "created_at": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}

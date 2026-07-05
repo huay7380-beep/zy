@@ -1,0 +1,44 @@
+{
+  "schema": "dialogue_system_patrol_os_projection.v1",
+  "generated_at": "2026-07-05T13:13:02.334Z",
+  "source_only": true,
+  "module_id": "dialogue_system_patrol",
+  "label": "Dialogue System Patrol",
+  "status": "dialogue_patrol_readable",
+  "projection": {
+    "region_id": "self",
+    "node_id": "dialogue-system-patrol",
+    "kind": "patrol_governance",
+    "reads": [
+      "runtime/dialogue-system-patrol/dialogue-read-index.json",
+      "runtime/dialogue-system-patrol-validations/latest.json",
+      "runtime/dialogue-system-patrol-module-gates/latest.json",
+      "runtime/dialogue-system-patrol-source-drift/latest.json",
+      "runtime/module-build-timelines/**"
+    ],
+    "writes": [
+      "runtime/status-cards/**",
+      "runtime/status-events/**",
+      "runtime/module-build-timelines/**",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**",
+      "runtime/dialogue-system-patrol-module-gates/**"
+    ]
+  },
+  "source_refs": [
+    "dialogue-system-patrol/registry/system-patrol-registry.json",
+    "runtime/dialogue-system-patrol-validations/latest.json",
+    "runtime/dialogue-system-patrol-module-gates/latest.json",
+    "runtime/dialogue-system-patrol-source-drift/latest.json",
+    "runtime/module-build-timelines/**",
+    "runtime/dialogue-system-patrol/dialogue-read-index.json"
+  ],
+  "boundaries": [
+    "source-only projection",
+    "display/status reference only",
+    "no ipc connection",
+    "no world-model write",
+    "no business module mutation",
+    "no external action"
+  ]
+}

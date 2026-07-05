@@ -1,0 +1,29 @@
+{
+  "contract": "pdp_site_design_qa_report.v1",
+  "generated_at": "2026-07-04T00:00:00+08:00",
+  "product_folder_id": "QXJ-1007",
+  "source_product_id": "QXKJ-1007",
+  "check": "chanpinye_migration_validation",
+  "passed": true,
+  "validated_items": {
+    "standard_files_created": true,
+    "product_page_copied": true,
+    "product_image_copied": true,
+    "pdf_export_copied": true,
+    "qa_assets_copied": true,
+    "json_files_parse_as_utf8": true,
+    "html_old_source_image_paths_removed": true,
+    "html_old_reference_primary_colors_removed": true,
+    "local_html_image_path_present": true
+  },
+  "render_validation": {
+    "status": "completed_via_chrome_headless_and_poppler",
+    "pdf_path": "D:/zhineng/chanpinye/products/QXJ-1007/exports/QXKJ-1007-product-specification-draft.pdf",
+    "rendered_pages": [
+      "D:/zhineng/chanpinye/products/QXJ-1007/qa/pdf-new-color-export/page-1.png",
+      "D:/zhineng/chanpinye/products/QXJ-1007/qa/pdf-new-color-export/page-2.png"
+    ],
+    "color_check_report": "D:/zhineng/chanpinye/products/QXJ-1007/qa/new-color-pdf-check.json"
+  },
+  "real_external_actions_executed": false
+}

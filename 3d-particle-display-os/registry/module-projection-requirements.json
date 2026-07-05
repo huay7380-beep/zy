@@ -1,0 +1,60 @@
+{
+  "schema": "particle_module_projection_requirements.v1",
+  "status": "current_governance_constraint",
+  "updated_at": "2026-07-05T00:00:00+08:00",
+  "required_for": "system-visible modules that should be visible to dialogue, patrol, or 3D particle display surfaces",
+  "module_must_provide_one_of": [
+    "os-particle-projection.json",
+    "explicit_projection_exemption"
+  ],
+  "minimum_projection_fields": [
+    "schema",
+    "module_id",
+    "display_name",
+    "projection_enabled",
+    "source_only",
+    "writes_fact_state",
+    "sector_hint",
+    "layer_role",
+    "source_refs",
+    "status_feedback_refs",
+    "boundaries",
+    "allowed_operation_intents",
+    "forbidden_operations"
+  ],
+  "minimum_exemption_fields": [
+    "module_id",
+    "projection_enabled",
+    "exempt_reason",
+    "review_after"
+  ],
+  "status_feedback_must_route_through": [
+    "runtime/status-cards/<module_id>.json",
+    "runtime/status-events/<module_id>.json",
+    "runtime/dialogue-system-patrol/dialogue-read-index.json"
+  ],
+  "hard_constraints": [
+    {
+      "id": "dialogue_no_direct_module_read",
+      "rule": "Dialogue module must read module state through patrol outputs, not business module internals."
+    },
+    {
+      "id": "projection_no_fact_write",
+      "rule": "3D projection files and snapshots must not write fact state or business state."
+    },
+    {
+      "id": "module_no_runtime_rendering_requirement",
+      "rule": "Business modules are not required to run Three.js or construct particles at runtime."
+    },
+    {
+      "id": "patrol_validates_projection_presence",
+      "rule": "Patrol gate should validate projection declaration or exemption after the gate is extended."
+    }
+  ],
+  "recommended_commands": [
+    "npm run system-patrol:scaffold -- --module-id=<module_id> --verify",
+    "npm run system-patrol:source-drift -- --update --module-id=<module_id>",
+    "npm run system-patrol:maintain -- --module-id=<module_id>",
+    "npm run system-patrol:enforce"
+  ]
+}

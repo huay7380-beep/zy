@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MvpUserFeedback",
+  "type": "object",
+  "required": [
+    "feedback_id",
+    "reviewer_role",
+    "scores"
+  ],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "feedback_id": { "type": "string", "minLength": 1 },
+    "source_run_id": { "type": ["string", "null"] },
+    "reviewer_role": { "type": "string", "minLength": 1 },
+    "reviewed_at": { "type": "string" },
+    "scores": {
+      "type": "object",
+      "properties": {
+        "goal_matches_user_intent": { "type": "number", "minimum": 1, "maximum": 5 },
+        "relationship_context_is_correct": { "type": "number", "minimum": 1, "maximum": 5 },
+        "recommendation_feels_natural": { "type": "number", "minimum": 1, "maximum": 5 },
+        "evidence_is_sufficient": { "type": "number", "minimum": 1, "maximum": 5 },
+        "action_is_executable": { "type": "number", "minimum": 1, "maximum": 5 },
+        "feedback_form_is_lightweight": { "type": "number", "minimum": 1, "maximum": 5 }
+      },
+      "additionalProperties": false
+    },
+    "flags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "message_too_generic",
+          "evidence_missing",
+          "action_too_aggressive",
+          "wrong_relationship_stage",
+          "platform_flow_unclear",
+          "feedback_too_heavy",
+          "other"
+        ]
+      }
+    },
+    "stop_signal": { "type": "boolean" },
+    "comments": {
+      "type": "object",
+      "properties": {
+        "most_useful": { "type": "string" },
+        "least_realistic": { "type": "string" },
+        "suggested_change": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

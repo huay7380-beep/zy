@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/nebula-projection.schema.json",
+  "title": "NebulaProjection",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "projection_id",
+    "source_run_id",
+    "created_at",
+    "source_only",
+    "writes_fact_state",
+    "allowed_node_types",
+    "allowed_operation_intents",
+    "forbidden_operations",
+    "nodes",
+    "edges",
+    "visual_profiles",
+    "visual_operation_intent"
+  ],
+  "properties": {
+    "schema_version": { "const": "nebula_projection.v1" },
+    "projection_id": { "type": "string", "minLength": 1 },
+    "source_run_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string" },
+    "source_only": { "const": true },
+    "writes_fact_state": { "const": false },
+    "allowed_node_types": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["person", "source", "event", "tag", "confirmation_gate"] }
+    },
+    "allowed_operation_intents": { "type": "array", "items": { "type": "string" } },
+    "forbidden_operations": { "type": "array", "items": { "type": "string" } },
+    "nodes": { "type": "array", "items": { "type": "object" } },
+    "edges": { "type": "array", "items": { "type": "object" } },
+    "visual_profiles": { "type": "array", "items": { "type": "object" } },
+    "visual_operation_intent": { "type": "object" }
+  },
+  "additionalProperties": true
+}

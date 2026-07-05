@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pt028-real-feedback-finalization.schema.json",
+  "title": "pt028_real_feedback_finalization.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "finalization_id",
+    "created_at",
+    "gate_decision",
+    "ready_for_final_acceptance",
+    "real_execution_allowed",
+    "real_send_attempted",
+    "writes_real_feedback_target",
+    "target_feedback_path",
+    "target_feedback_exists",
+    "source",
+    "steps",
+    "required_failures",
+    "boundary_policy"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_real_feedback_finalization.v1" },
+    "finalization_id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "gate_decision": {
+      "enum": [
+        "pt028_real_feedback_finalization_passed",
+        "pt028_real_feedback_finalization_blocked"
+      ]
+    },
+    "ready_for_final_acceptance": { "type": "boolean" },
+    "real_execution_allowed": { "const": false },
+    "real_send_attempted": { "const": false },
+    "writes_real_feedback_target": { "type": "boolean" },
+    "target_feedback_path": { "type": "string" },
+    "target_feedback_exists": { "type": "boolean" },
+    "source": {
+      "type": "object",
+      "required": ["decision_path", "session_path", "output_dir"],
+      "properties": {
+        "decision_path": { "type": ["string", "null"] },
+        "session_path": { "type": ["string", "null"] },
+        "audit_path": { "type": ["string", "null"] },
+        "output_dir": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step_id", "ok", "gate_decision", "required_failures"],
+        "properties": {
+          "step_id": { "type": "string" },
+          "ok": { "type": "boolean" },
+          "gate_decision": { "type": ["string", "null"] },
+          "required_failures": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "warning_failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_commands": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "boundary_policy": {
+      "type": "object",
+      "required": [
+        "runner_never_sends_messages",
+        "controlled_target_writer",
+        "requires_collection_coverage_ready",
+        "requires_preflight_ready",
+        "real_execution_allowed",
+        "real_send_attempted"
+      ],
+      "properties": {
+        "runner_never_sends_messages": { "const": true },
+        "controlled_target_writer": { "type": "string" },
+        "requires_collection_coverage_ready": { "const": true },
+        "requires_preflight_ready": { "const": true },
+        "real_execution_allowed": { "const": false },
+        "real_send_attempted": { "const": false }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

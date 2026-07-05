@@ -1,0 +1,124 @@
+{
+  "version": "0.2.0",
+  "agents": [
+    { "agent_id": "goal_agent", "role": "判断目标和最小成功标准" },
+    { "agent_id": "relationship_agent", "role": "读取关系类型、阶段、健康度和行为准则" },
+    { "agent_id": "event_agent", "role": "提取事件候选、近期线索和证据强度" },
+    { "agent_id": "norm_agent", "role": "检查隐私、合规、日常行为准则和越界风险" },
+    { "agent_id": "option_agent", "role": "生成多种行动选项" },
+    { "agent_id": "skill_agent", "role": "把行动映射到系统技能或人类流程技能" },
+    { "agent_id": "roi_agent", "role": "估算成本、收益、风险和反馈可观测性" },
+    { "agent_id": "evidence_agent", "role": "输出依据、证据和待验证假设" },
+    { "agent_id": "feedback_agent", "role": "设计复盘指标和回写规则" }
+  ],
+  "specialist_experts": [
+    {
+      "expert_id": "sales_strategy_expert",
+      "role": "B2B sales path specialist",
+      "trigger_tags": ["business", "advance", "commercial_close"],
+      "priority": 0.9
+    },
+    {
+      "expert_id": "customer_success_expert",
+      "role": "Customer follow-up and service recovery specialist",
+      "trigger_tags": ["maintain", "repair", "customer_success"],
+      "priority": 0.76
+    },
+    {
+      "expert_id": "relationship_boundary_expert",
+      "role": "Relationship boundary and pressure-risk specialist",
+      "trigger_tags": ["all", "risk", "repair"],
+      "priority": 0.88
+    },
+    {
+      "expert_id": "compliance_risk_expert",
+      "role": "Privacy, compliance, contract and money-risk specialist",
+      "trigger_tags": ["all", "budget", "privacy", "contract"],
+      "priority": 0.92
+    },
+    {
+      "expert_id": "desktop_send_safety_expert",
+      "role": "Desktop controlled-send and target verification specialist",
+      "trigger_tags": ["wechat", "desktop", "direct_execution"],
+      "priority": 0.86
+    },
+    {
+      "expert_id": "identity_context_expert",
+      "role": "Identity resolution and person-linking specialist",
+      "trigger_tags": ["identity_unmatched", "identity_requires_user_confirmation", "desktop"],
+      "priority": 0.84
+    },
+    {
+      "expert_id": "culture_context_expert",
+      "role": "Culture, tone, timing and meeting etiquette specialist",
+      "trigger_tags": ["gift", "meeting", "culture", "invitation"],
+      "priority": 0.72
+    },
+    {
+      "expert_id": "evidence_quality_expert",
+      "role": "Evidence sufficiency and assumption-control specialist",
+      "trigger_tags": ["all", "low_evidence"],
+      "priority": 0.8
+    },
+    {
+      "expert_id": "relationship_stage_expert",
+      "role": "Romantic relationship R0-R6/RX stage specialist",
+      "trigger_tags": ["personal_social", "intimacy"],
+      "priority": 0.89
+    },
+    {
+      "expert_id": "attachment_psychology_expert",
+      "role": "Attachment psychology and emotional-safety specialist",
+      "trigger_tags": ["personal_social", "intimacy", "repair"],
+      "priority": 0.87
+    },
+    {
+      "expert_id": "game_theory_signal_expert",
+      "role": "Romantic repeated-interaction and signal specialist",
+      "trigger_tags": ["personal_social", "intimacy"],
+      "priority": 0.84
+    },
+    {
+      "expert_id": "logic_and_evidence_expert",
+      "role": "Romantic evidence chain and counterfactual specialist",
+      "trigger_tags": ["personal_social", "intimacy", "low_evidence"],
+      "priority": 0.85
+    },
+    {
+      "expert_id": "consent_and_boundary_expert",
+      "role": "Consent, boundary and autonomy review specialist",
+      "trigger_tags": ["personal_social", "intimacy", "risk"],
+      "priority": 0.91
+    },
+    {
+      "expert_id": "coercion_and_pua_risk_expert",
+      "role": "Target-to-user coercion, PUA and manipulation-risk specialist",
+      "trigger_tags": ["personal_social", "intimacy", "risk"],
+      "priority": 0.93
+    },
+    {
+      "expert_id": "privacy_and_safety_expert",
+      "role": "Romantic privacy, platform and real-world safety specialist",
+      "trigger_tags": ["personal_social", "intimacy", "privacy"],
+      "priority": 0.9
+    },
+    {
+      "expert_id": "communication_pragmatics_expert",
+      "role": "Romantic communication pragmatics and low-pressure wording specialist",
+      "trigger_tags": ["personal_social", "intimacy", "wechat", "message"],
+      "priority": 0.83
+    },
+    {
+      "expert_id": "feedback_learning_expert",
+      "role": "Romantic feedback learning and future-weight calibration specialist",
+      "trigger_tags": ["personal_social", "intimacy", "maintain"],
+      "priority": 0.82
+    },
+    {
+      "expert_id": "user_side_manipulation_reviewer",
+      "role": "Separate user-side draft, goal and send-action safety reviewer",
+      "trigger_tags": ["personal_social", "intimacy", "risk"],
+      "priority": 0.88
+    }
+  ]
+}

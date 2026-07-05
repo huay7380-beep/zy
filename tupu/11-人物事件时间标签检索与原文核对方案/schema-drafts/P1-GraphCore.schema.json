@@ -1,0 +1,1170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zhineng.local/tupu/P1-GraphCore.schema.json",
+  "title": "TUPU P1 Graph Core Schema Draft",
+  "description": "Consolidated draft schema for TUPU P1 graph objects. This schema defines structure only and does not enable runtime, real source intake, relationship writes, identity merges, external actions, or learning weight promotion.",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "#/$defs/SourceArchive" },
+    { "$ref": "#/$defs/SourceEpisode" },
+    { "$ref": "#/$defs/EvidenceAnchor" },
+    { "$ref": "#/$defs/RawEvent" },
+    { "$ref": "#/$defs/SemanticEvent" },
+    { "$ref": "#/$defs/NestedEvent" },
+    { "$ref": "#/$defs/ConflictSet" },
+    { "$ref": "#/$defs/TagDefinition" },
+    { "$ref": "#/$defs/TagAssignment" },
+    { "$ref": "#/$defs/PersonIndexEntry" },
+    { "$ref": "#/$defs/TimelineIndexEntry" },
+    { "$ref": "#/$defs/EventIndexEntry" },
+    { "$ref": "#/$defs/SourceIndexEntry" },
+    { "$ref": "#/$defs/TagIndexEntry" },
+    { "$ref": "#/$defs/FeatureIndexEntry" },
+    { "$ref": "#/$defs/EvidenceIndexEntry" },
+    { "$ref": "#/$defs/NarrativeIndexEntry" },
+    { "$ref": "#/$defs/TrajectoryRecord" },
+    { "$ref": "#/$defs/PhaseSegment" },
+    { "$ref": "#/$defs/TurningPoint" },
+    { "$ref": "#/$defs/PatternClaim" },
+    { "$ref": "#/$defs/ContextFrame" },
+    { "$ref": "#/$defs/SourcePerspective" },
+    { "$ref": "#/$defs/CausalHypothesis" },
+    { "$ref": "#/$defs/RetrievalHitPackage" },
+    { "$ref": "#/$defs/ContextSnapshotRankingPolicy" },
+    { "$ref": "#/$defs/ContextSnapshotRankingDecision" },
+    { "$ref": "#/$defs/SummaryShard" },
+    { "$ref": "#/$defs/ContextSnapshot" },
+    { "$ref": "#/$defs/NarrativeContextSnapshot" },
+    { "$ref": "#/$defs/WeightProfile" },
+    { "$ref": "#/$defs/ConfirmationGate" },
+    { "$ref": "#/$defs/ParticleProjectionEntry" }
+  ],
+  "$defs": {
+    "Status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "candidate",
+        "needs_review",
+        "blocked",
+        "superseded",
+        "tombstoned_by_user",
+        "invalid",
+        "orphaned"
+      ]
+    },
+    "TimeCertainty": {
+      "type": "string",
+      "enum": ["explicit", "inferred_from_context", "ambiguous", "unknown"]
+    },
+    "EvidenceStrength": {
+      "type": "string",
+      "enum": ["none", "weak", "medium", "strong", "direct_original"]
+    },
+    "ReadbackStatus": {
+      "type": "string",
+      "enum": ["pending", "passed", "failed", "user_deleted_source", "not_required"]
+    },
+    "VisualWeightLevel": {
+      "type": "string",
+      "enum": ["V0", "V1", "V2", "V3", "V4", "V5"]
+    },
+    "ObjectRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["object_type", "object_id"],
+      "properties": {
+        "object_type": {
+          "type": "string",
+          "enum": [
+            "SourceArchive",
+            "SourceEpisode",
+            "EvidenceAnchor",
+            "RawEvent",
+            "SemanticEvent",
+            "NestedEvent",
+            "AtomicFact",
+            "Signal",
+            "ConflictSet",
+            "TagDefinition",
+            "TagAssignment",
+            "PersonIndexEntry",
+            "TimelineIndexEntry",
+            "EventIndexEntry",
+            "SourceIndexEntry",
+            "TagIndexEntry",
+            "FeatureIndexEntry",
+            "EvidenceIndexEntry",
+            "NarrativeIndexEntry",
+            "TrajectoryRecord",
+            "PhaseSegment",
+            "TurningPoint",
+            "PatternClaim",
+            "ContextFrame",
+            "SourcePerspective",
+            "CausalHypothesis",
+            "RetrievalHitPackage",
+            "ContextSnapshot",
+            "NarrativeContextSnapshot",
+            "SummaryShard",
+            "WeightProfile",
+            "ConfirmationGate",
+            "ParticleProjectionEntry"
+          ]
+        },
+        "object_id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "SubjectRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject_type", "subject_id", "identity_status"],
+      "properties": {
+        "subject_type": {
+          "type": "string",
+          "enum": ["mention", "source_identity", "person", "relationship", "organization"]
+        },
+        "subject_id": { "type": "string", "minLength": 1 },
+        "identity_status": {
+          "type": "string",
+          "enum": [
+            "mention_only",
+            "source_identity_only",
+            "confirmed",
+            "conflict_pending_user_confirmation"
+          ]
+        }
+      }
+    },
+    "SourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_archive_id"],
+      "properties": {
+        "source_archive_id": { "type": "string", "minLength": 1 },
+        "source_episode_id": { "type": "string" },
+        "raw_text_ref": { "type": "string" },
+        "content_hash": { "type": "string" }
+      }
+    },
+    "TimeRefs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["time_certainty"],
+      "properties": {
+        "source_captured_at": { "type": ["string", "null"], "format": "date-time" },
+        "event_occurred_at": { "type": ["string", "null"], "format": "date-time" },
+        "event_target_time": { "type": ["string", "null"], "format": "date-time" },
+        "time_bucket": { "type": ["string", "null"] },
+        "time_certainty": { "$ref": "#/$defs/TimeCertainty" }
+      }
+    },
+    "BoundaryFlags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relationship_state_write_allowed",
+        "identity_merge_allowed",
+        "external_action_allowed",
+        "learning_weight_promotion_allowed"
+      ],
+      "properties": {
+        "relationship_state_write_allowed": { "const": false },
+        "identity_merge_allowed": { "const": false },
+        "external_action_allowed": { "const": false },
+        "learning_weight_promotion_allowed": { "const": false }
+      }
+    },
+    "ConfidenceProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["overall"],
+      "properties": {
+        "overall": { "type": "number", "minimum": 0, "maximum": 1 },
+        "basis": { "type": "array", "items": { "type": "string" } },
+        "limits": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "TimeRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "type": ["string", "null"] },
+        "end": { "type": ["string", "null"] },
+        "precision": { "type": "string" },
+        "boundary_confidence": {
+          "type": "object",
+          "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "baseline_window": { "$ref": "#/$defs/TimeRange" }
+      }
+    },
+    "SummaryBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "short": { "type": "string" },
+        "summary_type": { "type": "string" },
+        "summary_source": { "type": "string" },
+        "summary_version": { "type": "string" }
+      }
+    },
+    "ConfirmationGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "confirmation_gate_id", "gate_type", "status", "evidence_anchor_ids"],
+      "properties": {
+        "schema": { "const": "ConfirmationGate.v1" },
+        "confirmation_gate_id": { "type": "string", "minLength": 1 },
+        "gate_type": {
+          "type": "string",
+          "enum": [
+            "none",
+            "needs_review",
+            "requires_user_confirmation",
+            "blocked",
+            "confirmed"
+          ]
+        },
+        "reason": { "type": "string" },
+        "evidence_anchor_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "blocked_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "relationship_state_write",
+              "identity_merge",
+              "external_action",
+              "learning_weight_promotion"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "SourceArchive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "source_archive_id",
+        "source_type",
+        "captured_at",
+        "content_hash",
+        "delete_state",
+        "status"
+      ],
+      "properties": {
+        "schema": { "const": "SourceArchive.v1" },
+        "source_archive_id": { "type": "string", "minLength": 1 },
+        "source_type": {
+          "type": "string",
+          "enum": ["desktop", "browser", "api", "file", "ocr", "webhook", "manual"]
+        },
+        "platform": { "type": "string" },
+        "adapter_id": { "type": "string" },
+        "captured_at": { "type": "string", "format": "date-time" },
+        "raw_text_ref": { "type": ["string", "null"] },
+        "raw_payload_ref": { "type": ["string", "null"] },
+        "artifact_refs": { "type": "array", "items": { "type": "string" } },
+        "content_hash": { "type": "string", "minLength": 1 },
+        "privacy_level": { "type": "string" },
+        "delete_state": { "type": "string", "enum": ["active", "tombstoned_by_user"] },
+        "metadata": { "type": "object" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "SourceEpisode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "source_episode_id", "source_archive_id", "captured_at", "status"],
+      "properties": {
+        "schema": { "const": "SourceEpisode.v1" },
+        "source_episode_id": { "type": "string", "minLength": 1 },
+        "source_archive_id": { "type": "string", "minLength": 1 },
+        "source_type": { "type": "string" },
+        "platform": { "type": "string" },
+        "thread_id": { "type": "string" },
+        "captured_at": { "type": "string", "format": "date-time" },
+        "time_window": { "$ref": "#/$defs/TimeRefs" },
+        "participants_hint": { "type": "array", "items": { "type": "string" } },
+        "source_identity_hints": { "type": "array", "items": { "type": "string" } },
+        "raw_event_ids": { "type": "array", "items": { "type": "string" } },
+        "content_fingerprint": { "type": "string" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "EvidenceAnchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "evidence_anchor_id",
+        "source_archive_id",
+        "evidence_type",
+        "evidence_strength",
+        "readback_status",
+        "status"
+      ],
+      "properties": {
+        "schema": { "const": "EvidenceAnchor.v1" },
+        "evidence_anchor_id": { "type": "string", "minLength": 1 },
+        "source_archive_id": { "type": "string", "minLength": 1 },
+        "source_episode_id": { "type": "string" },
+        "raw_text_ref": { "type": ["string", "null"] },
+        "offset_start": { "type": ["integer", "null"], "minimum": 0 },
+        "offset_end": { "type": ["integer", "null"], "minimum": 0 },
+        "quote_snippet": { "type": ["string", "null"] },
+        "content_hash": { "type": ["string", "null"] },
+        "evidence_type": {
+          "type": "string",
+          "enum": ["direct_original", "ocr_text", "asr_text", "artifact", "summary_ref", "model_inference"]
+        },
+        "evidence_strength": { "$ref": "#/$defs/EvidenceStrength" },
+        "readback_status": { "$ref": "#/$defs/ReadbackStatus" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "RawEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "raw_event_id",
+        "source_archive_id",
+        "source_episode_id",
+        "evidence_anchor_ids",
+        "extraction_status",
+        "status"
+      ],
+      "properties": {
+        "schema": { "const": "RawEvent.v1" },
+        "raw_event_id": { "type": "string", "minLength": 1 },
+        "source_archive_id": { "type": "string", "minLength": 1 },
+        "source_episode_id": { "type": "string", "minLength": 1 },
+        "time_refs": { "$ref": "#/$defs/TimeRefs" },
+        "participants_hint": { "type": "array", "items": { "type": "string" } },
+        "source_identity_hints": { "type": "array", "items": { "type": "string" } },
+        "content_fingerprint": { "type": "string" },
+        "evidence_anchor_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "tag_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "extraction_status": {
+          "type": "string",
+          "enum": ["extraction_pending", "extracted", "needs_review"]
+        },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "SemanticEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "semantic_event_id",
+        "raw_event_ids",
+        "event_type",
+        "evidence_anchor_ids",
+        "confirmation_gate",
+        "status"
+      ],
+      "properties": {
+        "schema": { "const": "SemanticEvent.v1" },
+        "semantic_event_id": { "type": "string", "minLength": 1 },
+        "raw_event_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "event_type": { "type": "string", "minLength": 1 },
+        "domain_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "subject_refs": { "type": "array", "items": { "$ref": "#/$defs/SubjectRef" } },
+        "time_refs": { "$ref": "#/$defs/TimeRefs" },
+        "tag_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "feature_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "evidence_anchor_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "confirmation_gate": { "$ref": "#/$defs/ConfirmationGate" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "NestedEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "nested_event_id",
+        "parent_event_ref",
+        "event_type",
+        "evidence_anchor_ids",
+        "split_reason",
+        "status"
+      ],
+      "properties": {
+        "schema": { "const": "NestedEvent.v1" },
+        "nested_event_id": { "type": "string", "minLength": 1 },
+        "parent_event_ref": { "$ref": "#/$defs/ObjectRef" },
+        "event_type": { "type": "string", "minLength": 1 },
+        "semantic_role": { "type": "string" },
+        "subject_refs": { "type": "array", "items": { "$ref": "#/$defs/SubjectRef" } },
+        "tag_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "feature_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "evidence_anchor_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "split_reason": { "type": "string", "minLength": 1 },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "Claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "claim_status", "evidence_anchor_ids"],
+      "properties": {
+        "claim_id": { "type": "string", "minLength": 1 },
+        "claim_text_summary": { "type": "string" },
+        "source_perspective_ref": { "$ref": "#/$defs/ObjectRef" },
+        "object_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" } },
+        "evidence_anchor_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "claim_status": {
+          "type": "string",
+          "enum": ["asserted", "disputed", "resolved", "needs_review"]
+        }
+      }
+    },
+    "ConflictSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "conflict_set_id", "claim_refs", "status"],
+      "properties": {
+        "schema": { "const": "ConflictSet.v1" },
+        "conflict_set_id": { "type": "string", "minLength": 1 },
+        "conflict_type": { "type": "string" },
+        "claim_refs": { "type": "array", "items": { "$ref": "#/$defs/Claim" }, "minItems": 2 },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "TagDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "tag_id", "namespace", "applies_to", "status", "version"],
+      "properties": {
+        "schema": { "const": "TagDefinition.v1" },
+        "tag_id": { "type": "string", "minLength": 1 },
+        "namespace": { "type": "string", "minLength": 1 },
+        "dimension": { "type": "string" },
+        "value": { "type": "string" },
+        "label_zh": { "type": "string" },
+        "description": { "type": "string" },
+        "applies_to": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "allowed_assignment_methods": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["rule", "model", "manual", "sensor"] },
+          "uniqueItems": true
+        },
+        "status": { "$ref": "#/$defs/Status" },
+        "version": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "TagAssignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "tag_assignment_id", "tag_id", "subject_ref", "evidence_anchor_ids", "assigned_by", "status"],
+      "properties": {
+        "schema": { "const": "TagAssignment.v1" },
+        "tag_assignment_id": { "type": "string", "minLength": 1 },
+        "tag_id": { "type": "string", "minLength": 1 },
+        "subject_ref": { "$ref": "#/$defs/ObjectRef" },
+        "evidence_anchor_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "assigned_by": { "type": "string", "enum": ["rule", "model", "manual", "sensor"] },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "review_state": { "type": "string", "enum": ["not_required", "pending", "approved", "rejected"] },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "PersonIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "person_index_entry_id", "subject_ref", "object_refs", "evidence_anchor_ids", "status"],
+      "properties": {
+        "schema": { "const": "PersonIndexEntry.v1" },
+        "person_index_entry_id": { "type": "string", "minLength": 1 },
+        "subject_ref": { "$ref": "#/$defs/SubjectRef" },
+        "alias_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "object_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" }, "minItems": 1 },
+        "tag_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "time_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "rebuild_required": { "type": "boolean" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "TimelineIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "timeline_index_entry_id", "time_refs", "object_refs", "evidence_anchor_ids", "status"],
+      "properties": {
+        "schema": { "const": "TimelineIndexEntry.v1" },
+        "timeline_index_entry_id": { "type": "string", "minLength": 1 },
+        "time_refs": { "$ref": "#/$defs/TimeRefs" },
+        "object_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" }, "minItems": 1 },
+        "source_refs": { "type": "array", "items": { "$ref": "#/$defs/SourceRef" } },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "EventIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "event_index_entry_id", "event_ref", "event_type", "evidence_anchor_ids", "status"],
+      "properties": {
+        "schema": { "const": "EventIndexEntry.v1" },
+        "event_index_entry_id": { "type": "string", "minLength": 1 },
+        "event_ref": { "$ref": "#/$defs/ObjectRef" },
+        "event_type": { "type": "string", "minLength": 1 },
+        "domain_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "parent_event_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" } },
+        "child_event_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" } },
+        "thread_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "subject_refs": { "type": "array", "items": { "$ref": "#/$defs/SubjectRef" } },
+        "tag_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "feature_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "SourceIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "source_index_entry_id", "source_archive_id", "delete_state", "evidence_anchor_ids", "status"],
+      "properties": {
+        "schema": { "const": "SourceIndexEntry.v1" },
+        "source_index_entry_id": { "type": "string", "minLength": 1 },
+        "source_archive_id": { "type": "string", "minLength": 1 },
+        "source_episode_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "platform": { "type": "string" },
+        "source_type": { "type": "string" },
+        "captured_at": { "type": ["string", "null"], "format": "date-time" },
+        "raw_text_ref": { "type": ["string", "null"] },
+        "content_hash": { "type": ["string", "null"] },
+        "delete_state": { "type": "string", "enum": ["active", "tombstoned_by_user"] },
+        "object_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" } },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "TagIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "tag_index_entry_id", "tag_id", "subject_ref", "evidence_anchor_ids", "status"],
+      "properties": {
+        "schema": { "const": "TagIndexEntry.v1" },
+        "tag_index_entry_id": { "type": "string", "minLength": 1 },
+        "tag_id": { "type": "string", "minLength": 1 },
+        "subject_ref": { "$ref": "#/$defs/ObjectRef" },
+        "subject_refs": { "type": "array", "items": { "$ref": "#/$defs/SubjectRef" } },
+        "time_refs": { "$ref": "#/$defs/TimeRefs" },
+        "source_refs": { "type": "array", "items": { "$ref": "#/$defs/SourceRef" } },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "assignment_ref": { "type": "string" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "FeatureIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "feature_index_entry_id", "feature_key", "subject_ref", "evidence_anchor_ids", "status"],
+      "properties": {
+        "schema": { "const": "FeatureIndexEntry.v1" },
+        "feature_index_entry_id": { "type": "string", "minLength": 1 },
+        "feature_key": { "type": "string", "minLength": 1 },
+        "feature_value": {},
+        "feature_bucket": { "type": "string" },
+        "unit": { "type": ["string", "null"] },
+        "subject_ref": { "$ref": "#/$defs/ObjectRef" },
+        "source_object_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" } },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "EvidenceIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "evidence_index_entry_id", "evidence_anchor_id", "source_archive_id", "readback_status", "status"],
+      "properties": {
+        "schema": { "const": "EvidenceIndexEntry.v1" },
+        "evidence_index_entry_id": { "type": "string", "minLength": 1 },
+        "evidence_anchor_id": { "type": "string", "minLength": 1 },
+        "source_archive_id": { "type": "string", "minLength": 1 },
+        "source_episode_id": { "type": "string" },
+        "raw_text_ref": { "type": ["string", "null"] },
+        "offset_start": { "type": ["integer", "null"], "minimum": 0 },
+        "offset_end": { "type": ["integer", "null"], "minimum": 0 },
+        "quote_snippet": { "type": ["string", "null"] },
+        "content_hash": { "type": ["string", "null"] },
+        "evidence_type": { "type": "string" },
+        "evidence_strength": { "$ref": "#/$defs/EvidenceStrength" },
+        "readback_status": { "$ref": "#/$defs/ReadbackStatus" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "NarrativeIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "narrative_index_entry_id", "subject_refs", "evidence_anchor_ids", "status"],
+      "properties": {
+        "schema": { "const": "NarrativeIndexEntry.v1" },
+        "narrative_index_entry_id": { "type": "string", "minLength": 1 },
+        "subject_refs": { "type": "array", "items": { "$ref": "#/$defs/SubjectRef" } },
+        "query_domains": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "tag_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "feature_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "trajectory_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "phase_segment_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "turning_point_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "pattern_claim_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "context_frame_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "source_perspective_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "causal_hypothesis_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "TrajectoryRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "trajectory_id", "subject_refs", "scope", "evidence_anchor_ids", "boundary_flags", "status"],
+      "properties": {
+        "schema": { "const": "TrajectoryRecord.v1" },
+        "trajectory_id": { "type": "string", "minLength": 1 },
+        "subject_refs": { "type": "array", "items": { "$ref": "#/$defs/SubjectRef" }, "minItems": 1 },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["domain"],
+          "properties": {
+            "domain": { "type": "string", "minLength": 1 },
+            "description": { "type": "string" },
+            "time_range": { "$ref": "#/$defs/TimeRange" }
+          }
+        },
+        "goal_domain": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "phase_segment_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "turning_point_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "pattern_claim_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "event_thread_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "trajectory_summary": { "$ref": "#/$defs/SummaryBlock" },
+        "confidence": { "$ref": "#/$defs/ConfidenceProfile" },
+        "boundary_flags": { "$ref": "#/$defs/BoundaryFlags" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "PhaseSegment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "phase_segment_id", "trajectory_id", "phase_type", "evidence_anchor_ids", "boundary_flags", "status"],
+      "properties": {
+        "schema": { "const": "PhaseSegment.v1" },
+        "phase_segment_id": { "type": "string", "minLength": 1 },
+        "trajectory_id": { "type": "string", "minLength": 1 },
+        "phase_type": { "type": "string", "minLength": 1 },
+        "phase_label": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "system_label": { "type": "string" },
+            "source_label": { "type": ["string", "null"] },
+            "label_origin": { "type": "string", "enum": ["source", "analyst_rule", "model_candidate", "manual"] }
+          }
+        },
+        "time_range": { "$ref": "#/$defs/TimeRange" },
+        "entry_conditions": { "type": "array", "items": { "type": "string" } },
+        "exit_conditions": { "type": "array", "items": { "type": "string" } },
+        "representative_event_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" } },
+        "dominant_tag_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "overlap_with": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["phase_segment_id", "overlap_type", "evidence_anchor_ids"],
+            "properties": {
+              "phase_segment_id": { "type": "string", "minLength": 1 },
+              "overlap_type": { "type": "string" },
+              "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true }
+            }
+          }
+        },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "phase_summary": { "$ref": "#/$defs/SummaryBlock" },
+        "confidence": { "$ref": "#/$defs/ConfidenceProfile" },
+        "boundary_flags": { "$ref": "#/$defs/BoundaryFlags" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "TurningPoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "turning_point_id", "source_event_refs", "change_dimension", "before_state", "after_state", "evidence_anchor_ids", "boundary_flags", "status"],
+      "properties": {
+        "schema": { "const": "TurningPoint.v1" },
+        "turning_point_id": { "type": "string", "minLength": 1 },
+        "trajectory_id": { "type": "string" },
+        "source_event_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" }, "minItems": 1 },
+        "turning_point_type": { "type": "string" },
+        "change_dimension": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "before_state": { "$ref": "#/$defs/NarrativeStateBlock" },
+        "after_state": { "$ref": "#/$defs/NarrativeStateBlock" },
+        "counter_evidence": { "type": "array", "items": { "$ref": "#/$defs/CounterEvidence" } },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "confidence": { "$ref": "#/$defs/ConfidenceProfile" },
+        "boundary_flags": { "$ref": "#/$defs/BoundaryFlags" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "NarrativeStateBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_anchor_ids"],
+      "properties": {
+        "phase": { "type": "string" },
+        "dominant_goal": { "type": "string" },
+        "risk_level": { "type": "string" },
+        "state_summary": { "type": "string" },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true }
+      }
+    },
+    "CounterEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["object_ref", "reason"],
+      "properties": {
+        "object_ref": { "$ref": "#/$defs/ObjectRef" },
+        "reason": { "type": "string", "minLength": 1 },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "PatternClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "pattern_claim_id", "pattern_type", "claim_text", "supporting_event_refs", "evidence_anchor_ids", "boundary_flags", "status"],
+      "properties": {
+        "schema": { "const": "PatternClaim.v1" },
+        "pattern_claim_id": { "type": "string", "minLength": 1 },
+        "trajectory_id": { "type": "string" },
+        "pattern_type": { "type": "string", "minLength": 1 },
+        "claim_text": { "type": "string", "minLength": 1 },
+        "claim_origin": { "type": "string", "enum": ["source_direct", "derived_by_rule", "model_candidate", "manual"] },
+        "evidence_window": { "$ref": "#/$defs/TimeRange" },
+        "supporting_event_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" }, "minItems": 1 },
+        "counterexample_event_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" } },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "minimum_occurrences": { "type": "integer", "minimum": 1 },
+        "observed_count": { "type": "integer", "minimum": 0 },
+        "dimensions": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "confidence": { "$ref": "#/$defs/ConfidenceProfile" },
+        "inference_level": { "type": "string", "enum": ["tag_only", "candidate_pattern", "pattern_inference", "source_claim_only"] },
+        "boundary_flags": { "$ref": "#/$defs/BoundaryFlags" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "ContextFrame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "context_frame_id", "applies_to_object_refs", "context_types", "evidence_anchor_ids", "boundary_flags", "status"],
+      "properties": {
+        "schema": { "const": "ContextFrame.v1" },
+        "context_frame_id": { "type": "string", "minLength": 1 },
+        "applies_to_object_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" }, "minItems": 1 },
+        "context_types": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "interaction_setting": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "channel": { "type": "string" },
+            "visibility": { "type": "string" },
+            "synchrony": { "type": "string" },
+            "participants": { "type": "array", "items": { "$ref": "#/$defs/SubjectRef" } }
+          }
+        },
+        "emic_labels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["label", "evidence_anchor_id"],
+            "properties": {
+              "label": { "type": "string", "minLength": 1 },
+              "speaker_ref": { "$ref": "#/$defs/SubjectRef" },
+              "evidence_anchor_id": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "etic_labels": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "local_norms_or_rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["description", "basis", "evidence_anchor_ids"],
+            "properties": {
+              "description": { "type": "string", "minLength": 1 },
+              "basis": { "type": "string" },
+              "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true }
+            }
+          }
+        },
+        "interpretation_scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "allowed": { "type": "array", "items": { "type": "string" } },
+            "forbidden": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "confidence": { "$ref": "#/$defs/ConfidenceProfile" },
+        "boundary_flags": { "$ref": "#/$defs/BoundaryFlags" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "SourcePerspective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "source_perspective_id", "source_ref", "claim_voice", "applies_to_evidence_anchor_ids", "boundary_flags", "status"],
+      "properties": {
+        "schema": { "const": "SourcePerspective.v1" },
+        "source_perspective_id": { "type": "string", "minLength": 1 },
+        "source_ref": { "$ref": "#/$defs/SourceRef" },
+        "speaker_or_author_ref": { "$ref": "#/$defs/SubjectRef" },
+        "position_or_role": { "type": "string" },
+        "claim_voice": {
+          "type": "string",
+          "enum": [
+            "direct",
+            "reported",
+            "quoted",
+            "interpreted",
+            "summarized",
+            "rumor",
+            "official_statement",
+            "legal_or_formal_document",
+            "user_manual_note",
+            "model_derived"
+          ]
+        },
+        "statement_types": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "applies_to_evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "interest_or_incentive": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "known": { "type": "boolean" },
+            "description": { "type": ["string", "null"] },
+            "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+          }
+        },
+        "reliability_profile": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source_type": { "type": "string" },
+            "directness": { "type": "string", "enum": ["primary", "secondary", "tertiary", "model_derived", "unknown"] },
+            "verification_status": { "type": "string" },
+            "known_limits": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "perspective_summary": { "type": "string" },
+        "boundary_flags": { "$ref": "#/$defs/BoundaryFlags" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "CausalHypothesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "causal_hypothesis_id", "hypothesis_text", "cause_candidate_refs", "effect_candidate_refs", "evidence_anchor_ids", "causal_status", "boundary_flags", "status"],
+      "properties": {
+        "schema": { "const": "CausalHypothesis.v1" },
+        "causal_hypothesis_id": { "type": "string", "minLength": 1 },
+        "trajectory_id": { "type": "string" },
+        "hypothesis_text": { "type": "string", "minLength": 1 },
+        "cause_candidate_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" }, "minItems": 1 },
+        "effect_candidate_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" }, "minItems": 1 },
+        "related_turning_point_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "supporting_event_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" } },
+        "counter_evidence_event_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" } },
+        "source_perspective_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "causal_status": {
+          "type": "string",
+          "enum": ["hypothesis", "supported", "disputed", "rejected", "unknown", "source_claim_only", "model_candidate_only"]
+        },
+        "inference_strength": { "$ref": "#/$defs/ConfidenceProfile" },
+        "forbidden_upgrade_without_confirmation": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["supported", "relationship_state_change", "external_action_recommendation"]
+          },
+          "uniqueItems": true
+        },
+        "boundary_flags": { "$ref": "#/$defs/BoundaryFlags" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "RetrievalHitPackage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "retrieval_hit_id", "hit_type", "object_refs", "evidence_anchor_ids", "answerability", "boundary_flags", "status"],
+      "properties": {
+        "schema": { "const": "RetrievalHitPackage.v1" },
+        "retrieval_hit_id": { "type": "string", "minLength": 1 },
+        "query_plan_ref": { "type": "string" },
+        "hit_type": { "type": "string", "enum": ["tag", "feature", "evidence", "narrative", "person", "event", "source", "time"] },
+        "object_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" }, "minItems": 1 },
+        "tag_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "feature_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "source_refs": { "type": "array", "items": { "$ref": "#/$defs/SourceRef" } },
+        "summary_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "conflict_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "answerability": {
+          "type": "string",
+          "enum": ["answerable_with_evidence", "needs_cold_read", "not_answerable", "blocked"]
+        },
+        "requires_cold_read": { "type": "boolean" },
+        "boundary_flags": { "$ref": "#/$defs/BoundaryFlags" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "ContextSnapshotRankingPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "ranking_policy_id", "dedup_keys", "ranking_signals", "budgets", "status"],
+      "properties": {
+        "schema": { "const": "ContextSnapshotRankingPolicy.v1" },
+        "ranking_policy_id": { "type": "string", "minLength": 1 },
+        "dedup_keys": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "ranking_signals": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "budgets": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "high_risk_requires_cold_read": { "type": "boolean" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "ContextSnapshotRankingDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "ranking_decision_id", "selected_hits", "deferred_hits", "excluded_hits", "answerability", "status"],
+      "properties": {
+        "schema": { "const": "ContextSnapshotRankingDecision.v1" },
+        "ranking_decision_id": { "type": "string", "minLength": 1 },
+        "query_plan_ref": { "type": "string" },
+        "selected_hits": { "type": "array", "items": { "$ref": "#/$defs/RankedHit" } },
+        "deferred_hits": { "type": "array", "items": { "$ref": "#/$defs/DeferredHit" } },
+        "excluded_hits": { "type": "array", "items": { "$ref": "#/$defs/ExcludedHit" } },
+        "overflow_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "answerability": {
+          "type": "string",
+          "enum": ["answerable_with_evidence", "needs_cold_read", "not_answerable", "blocked"]
+        },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "RankedHit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hit_ref", "rank", "selected_for", "ranking_reasons", "evidence_anchor_ids"],
+      "properties": {
+        "hit_ref": { "type": "string", "minLength": 1 },
+        "rank": { "type": "integer", "minimum": 1 },
+        "selected_for": { "type": "string" },
+        "ranking_reasons": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "DeferredHit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hit_ref", "defer_reason"],
+      "properties": {
+        "hit_ref": { "type": "string", "minLength": 1 },
+        "defer_reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "ExcludedHit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hit_ref", "exclude_reason"],
+      "properties": {
+        "hit_ref": { "type": "string", "minLength": 1 },
+        "exclude_reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "SummaryShard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "summary_shard_id", "summary_type", "covered_object_refs", "evidence_anchor_ids", "status"],
+      "properties": {
+        "schema": { "const": "SummaryShard.v1" },
+        "summary_shard_id": { "type": "string", "minLength": 1 },
+        "summary_type": { "type": "string", "enum": ["person", "event", "time_window", "goal_domain", "tag", "thread"] },
+        "summary_text": { "type": "string" },
+        "covered_object_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" }, "minItems": 1 },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "generated_at": { "type": ["string", "null"], "format": "date-time" },
+        "invalidated_by_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" } },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "ContextSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "context_snapshot_id", "ranking_decision_ref", "selected_hit_refs", "evidence_anchor_ids", "boundary_flags", "status"],
+      "properties": {
+        "schema": { "const": "ContextSnapshot.v1" },
+        "context_snapshot_id": { "type": "string", "minLength": 1 },
+        "query_intent": { "type": "string" },
+        "ranking_decision_ref": { "type": "string", "minLength": 1 },
+        "selected_hit_refs": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "summary_shard_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "risk_notes": { "type": "array", "items": { "type": "string" } },
+        "confirmation_gate_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "boundary_flags": { "$ref": "#/$defs/BoundaryFlags" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "NarrativeContextSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "narrative_context_snapshot_id", "narrative_index_refs", "representative_event_refs", "evidence_anchor_ids", "boundary_flags", "status"],
+      "properties": {
+        "schema": { "const": "NarrativeContextSnapshot.v1" },
+        "narrative_context_snapshot_id": { "type": "string", "minLength": 1 },
+        "query_intent": { "type": "string" },
+        "narrative_index_refs": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "representative_event_refs": { "type": "array", "items": { "$ref": "#/$defs/ObjectRef" }, "minItems": 1 },
+        "trajectory_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "phase_segment_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "pattern_claim_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "causal_hypothesis_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "boundary_flags": { "$ref": "#/$defs/BoundaryFlags" },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "WeightProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "weight_profile_id", "target_ref", "visual_weight_level", "calculation_basis", "status"],
+      "properties": {
+        "schema": { "const": "WeightProfile.v1" },
+        "weight_profile_id": { "type": "string", "minLength": 1 },
+        "target_ref": { "$ref": "#/$defs/ObjectRef" },
+        "intrinsic_weight": { "type": "number", "minimum": 0, "maximum": 1 },
+        "contextual_weight": { "type": "number", "minimum": 0, "maximum": 1 },
+        "visual_weight": { "type": "number", "minimum": 0, "maximum": 1 },
+        "visual_weight_level": { "$ref": "#/$defs/VisualWeightLevel" },
+        "evidence_strength": { "$ref": "#/$defs/EvidenceStrength" },
+        "calculation_basis": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "status": { "$ref": "#/$defs/Status" }
+      }
+    },
+    "ParticleEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["edge_type", "target_ref", "edge_status"],
+      "properties": {
+        "edge_type": { "type": "string" },
+        "target_ref": { "$ref": "#/$defs/ObjectRef" },
+        "edge_status": { "type": "string", "enum": ["active", "candidate", "blocked"] }
+      }
+    },
+    "ParticleProjectionEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "projection_id",
+        "object_ref",
+        "particle_type",
+        "label",
+        "status",
+        "visual_weight_level",
+        "evidence_state",
+        "write_back_allowed",
+        "updated_at"
+      ],
+      "properties": {
+        "schema": { "const": "ParticleProjectionEntry.v1" },
+        "projection_id": { "type": "string", "minLength": 1 },
+        "object_ref": { "$ref": "#/$defs/ObjectRef" },
+        "particle_type": {
+          "type": "string",
+          "enum": [
+            "SourceParticle",
+            "PersonParticle",
+            "EventParticle",
+            "TagParticle",
+            "EvidenceParticle",
+            "ConflictParticle",
+            "TrajectoryParticle",
+            "PhaseParticle",
+            "PatternParticle",
+            "ContextParticle",
+            "WeightParticle",
+            "GateParticle"
+          ]
+        },
+        "label": { "type": "string", "minLength": 1 },
+        "status": { "$ref": "#/$defs/Status" },
+        "visual_weight_level": { "$ref": "#/$defs/VisualWeightLevel" },
+        "evidence_state": { "$ref": "#/$defs/ReadbackStatus" },
+        "confirmation_gate": { "$ref": "#/$defs/ConfirmationGate" },
+        "source_refs": { "type": "array", "items": { "$ref": "#/$defs/SourceRef" } },
+        "evidence_anchor_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "related_edges": { "type": "array", "items": { "$ref": "#/$defs/ParticleEdge" } },
+        "blocked_reason": { "type": ["string", "null"] },
+        "write_back_allowed": { "const": false },
+        "updated_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

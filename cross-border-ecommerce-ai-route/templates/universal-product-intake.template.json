@@ -1,0 +1,93 @@
+{
+  "contract": "universal_product_intake.v1",
+  "intake_id": "{{auto_or_manual_id}}",
+  "submitted_at": "{{yyyy-mm-ddThh:mm:ss+08:00}}",
+  "source": {
+    "source_type": "{{manual_description|pdf_catalogue|spreadsheet|website|supplier_package|mixed}}",
+    "source_files": ["{{path_to_product_description_or_catalogue}}"],
+    "source_language": "{{zh|en|mixed}}",
+    "source_confidence": "unreviewed"
+  },
+  "product": {
+    "name": "{{product_name}}",
+    "description": "{{detailed_product_description}}",
+    "category_hint": "{{known_or_guessed_category}}",
+    "brand_status": "{{factory_brand|private_label_required|own_brand_ready|unknown}}",
+    "use_cases": ["{{use_case_1}}", "{{use_case_2}}"],
+    "target_buyers_hint": ["{{distributor|installer|retailer|system_integrator|brand_owner|project_contractor|other}}"],
+    "specifications": {
+      "materials": ["{{material}}"],
+      "dimensions": "{{l_w_h_or_na}}",
+      "net_weight": "{{net_weight_or_na}}",
+      "gross_weight": "{{gross_weight_or_na}}",
+      "color_options": ["{{color}}"],
+      "power_or_battery": "{{none|mains_power|battery|usb|unknown}}",
+      "chemical_or_food_contact": "{{none|chemical|food_contact|cosmetic|unknown}}",
+      "children_or_medical_use": "{{none|children|medical|unknown}}",
+      "wireless_or_radio": "{{none|bluetooth|wifi|rfid|cellular|unknown}}"
+    }
+  },
+  "supplier": {
+    "supplier_name": "{{supplier_or_factory_name}}",
+    "factory_model": "{{factory_model_internal_only}}",
+    "private_label_permission": "pending",
+    "image_usage_permission": "pending",
+    "contact": "{{supplier_contact}}"
+  },
+  "commercial": {
+    "cost_status": "{{provided|missing|estimated}}",
+    "unit_cost": "{{cost}}",
+    "currency": "CNY",
+    "moq_status": "{{provided|missing|estimated}}",
+    "moq": "{{moq}}",
+    "sample_available": true,
+    "sample_cost": "{{sample_cost}}",
+    "lead_time_status": "{{provided|missing|estimated}}",
+    "sample_lead_time": "{{days}}",
+    "bulk_lead_time": "{{days}}",
+    "target_margin_floor": "{{margin_percent}}"
+  },
+  "packaging_logistics": {
+    "unit_pack": "{{bag|box|carton|pallet|unknown}}",
+    "carton_qty": "{{qty}}",
+    "carton_size_cm": "{{l_w_h}}",
+    "carton_gw_kg": "{{kg}}",
+    "battery_or_magnet_or_liquid": "{{none|battery|magnet|liquid|unknown}}",
+    "fragile_or_oversize": "{{none|fragile|oversize|unknown}}",
+    "temperature_sensitive": "{{yes|no|unknown}}"
+  },
+  "media": {
+    "source_images": ["{{image_path_or_url}}"],
+    "videos": ["{{video_path_or_url}}"],
+    "image_rights_status": "pending",
+    "needs_reshoot": true,
+    "labeling_required": true
+  },
+  "compliance": {
+    "certificate_files": ["{{certificate_path_if_any}}"],
+    "test_reports": ["{{test_report_path_if_any}}"],
+    "claims_made_by_supplier": ["{{RoHS|REACH|CE|UL|FCC|FDA|LFGB|none|other}}"],
+    "target_markets_hint": ["{{EU|US|Middle East|Africa|Southeast Asia|other}}"],
+    "known_restrictions": ["{{restriction_or_unknown}}"]
+  },
+  "automation_request": {
+    "desired_outputs": [
+      "classification",
+      "market_recommendation",
+      "image_rebuild_plan",
+      "product_page_draft",
+      "pricing_plan",
+      "logistics_comparison",
+      "rfq_fields",
+      "quote_draft"
+    ],
+    "allowed_actions": {
+      "generate_drafts": true,
+      "edit_images_locally": true,
+      "publish_site": false,
+      "send_customer_messages": false,
+      "spend_ad_budget": false
+    },
+    "human_review_required": true
+  }
+}

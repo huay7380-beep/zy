@@ -1,0 +1,437 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/pt028-operator-next-step.schema.json",
+  "title": "pt028_operator_next_step.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "next_step_id",
+    "created_at",
+    "gate_decision",
+    "pt028_fully_accepted_for_production",
+    "source_artifacts",
+    "queue",
+    "current_action",
+    "current_action_instruction",
+    "objective_progress",
+    "target_status",
+    "next_commands",
+    "boundary_policy",
+    "output_paths"
+  ],
+  "properties": {
+    "schema_version": { "const": "pt028_operator_next_step.v1" },
+    "next_step_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "gate_decision": {
+      "enum": [
+        "operator_next_step_waiting_for_human_action",
+        "operator_next_step_needs_handoff_refresh",
+        "pt028_operator_next_step_complete"
+      ]
+    },
+    "pt028_fully_accepted_for_production": { "type": "boolean" },
+    "source_artifacts": {
+      "type": "object",
+      "required": [
+        "refresh_chain_path",
+        "operator_handoff_path",
+        "acceptance_status_path",
+        "real_feedback_finalization_path"
+      ],
+      "properties": {
+        "refresh_chain_path": { "type": ["string", "null"] },
+        "operator_handoff_path": { "type": ["string", "null"] },
+        "acceptance_status_path": { "type": ["string", "null"] },
+        "real_feedback_finalization_path": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "queue": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "source_schema_version",
+        "source",
+        "queue_status",
+        "current_action_id",
+        "next_blocking_action_id",
+        "pending_action_count",
+        "actions",
+        "boundary_policy"
+      ],
+      "properties": {
+        "schema_version": { "const": "pt028_operator_next_step_queue.v1" },
+        "source_schema_version": { "type": ["string", "null"] },
+        "source": { "type": ["string", "null"] },
+        "queue_status": {
+          "enum": [
+            "operator_action_required",
+            "final_acceptance_complete"
+          ]
+        },
+        "current_action_id": { "type": ["string", "null"] },
+        "next_blocking_action_id": { "type": ["string", "null"] },
+        "pending_action_count": { "type": "integer", "minimum": 0 },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "action_id",
+              "label",
+              "status",
+              "open_path",
+              "fallback_open_path",
+              "target_path",
+              "command",
+              "writes_target_file",
+              "writes_real_feedback_target",
+              "real_send_allowed",
+              "prompt_only_required"
+            ],
+            "properties": {
+              "action_id": { "type": "string" },
+              "label": { "type": "string" },
+              "status": { "type": "string" },
+              "open_path": { "type": ["string", "null"] },
+              "fallback_open_path": { "type": ["string", "null"] },
+              "target_path": { "type": ["string", "null"] },
+              "command": { "type": ["string", "null"] },
+              "writes_target_file": { "type": "boolean" },
+              "writes_real_feedback_target": { "type": "boolean" },
+              "real_send_allowed": { "const": false },
+              "prompt_only_required": { "const": true }
+            },
+            "additionalProperties": false
+          }
+        },
+        "boundary_policy": {
+          "type": "object",
+          "required": [
+            "queue_is_read_only",
+            "writes_real_user_input_files",
+            "writes_real_feedback_target",
+            "real_execution_allowed",
+            "real_send_attempted",
+            "prompt_only_required"
+          ],
+          "properties": {
+            "queue_is_read_only": { "const": true },
+            "writes_real_user_input_files": { "const": false },
+            "writes_real_feedback_target": { "const": false },
+            "real_execution_allowed": { "const": false },
+            "real_send_attempted": { "const": false },
+            "prompt_only_required": { "const": true }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "current_action": {
+      "type": ["object", "null"]
+    },
+    "current_action_instruction": { "type": "string" },
+    "objective_progress": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "objective",
+        "overall_status",
+        "tracks",
+        "completion_gate",
+        "target_status",
+        "source_gate_decision"
+      ],
+      "properties": {
+        "schema_version": { "const": "pt028_operator_objective_progress.v1" },
+        "objective": {
+          "type": "object",
+          "required": [
+            "low_latency_event_stream",
+            "real_multi_window_feedback_calibration",
+            "final_special_acceptance"
+          ],
+          "properties": {
+            "low_latency_event_stream": { "const": true },
+            "real_multi_window_feedback_calibration": { "const": true },
+            "final_special_acceptance": { "const": true }
+          },
+          "additionalProperties": false
+        },
+        "overall_status": {
+          "enum": [
+            "complete",
+            "open_waiting_for_real_human_feedback"
+          ]
+        },
+        "tracks": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "object",
+            "required": [
+              "track_id",
+              "status",
+              "passed",
+              "requirement_ids",
+              "evidence",
+              "next_action",
+              "current_counts"
+            ],
+            "properties": {
+              "track_id": {
+                "enum": [
+                  "low_latency_event_stream",
+                  "real_multi_window_feedback_calibration",
+                  "final_special_acceptance"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "passed",
+                  "missing_evidence",
+                  "waiting_for_filled_human_review",
+                  "waiting_for_real_feedback",
+                  "needs_operator_action"
+                ]
+              },
+              "passed": { "type": "boolean" },
+              "requirement_ids": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "evidence": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "next_action": { "type": ["string", "null"] },
+              "current_counts": {
+                "type": "object",
+                "required": [
+                  "event_count",
+                  "unique_window_count",
+                  "unique_target_count",
+                  "input_mode",
+                  "target_dispatch_latency_ms"
+                ],
+                "properties": {
+                  "event_count": { "type": ["integer", "null"], "minimum": 0 },
+                  "unique_window_count": { "type": ["integer", "null"], "minimum": 0 },
+                  "unique_target_count": { "type": ["integer", "null"], "minimum": 0 },
+                  "input_mode": { "type": ["string", "null"] },
+                  "target_dispatch_latency_ms": { "type": ["integer", "null"], "minimum": 0 }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "completion_gate": {
+          "type": "object",
+          "required": [
+            "schema_version",
+            "ready_to_mark_goal_complete",
+            "pt028_fully_accepted_for_production",
+            "required_track_ids",
+            "passed_track_ids",
+            "missing_track_ids",
+            "required_target_files",
+            "missing_target_file_ids",
+            "blocking_diagnostics",
+            "fail_on_incomplete_supported",
+            "next_action"
+          ],
+          "properties": {
+            "schema_version": { "const": "pt028_operator_completion_gate.v1" },
+            "ready_to_mark_goal_complete": { "type": "boolean" },
+            "pt028_fully_accepted_for_production": { "type": "boolean" },
+            "required_track_ids": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "low_latency_event_stream",
+                  "real_multi_window_feedback_calibration",
+                  "final_special_acceptance"
+                ]
+              }
+            },
+            "passed_track_ids": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "low_latency_event_stream",
+                  "real_multi_window_feedback_calibration",
+                  "final_special_acceptance"
+                ]
+              }
+            },
+            "missing_track_ids": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "low_latency_event_stream",
+                  "real_multi_window_feedback_calibration",
+                  "final_special_acceptance"
+                ]
+              }
+            },
+            "required_target_files": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["target_id", "path", "exists"],
+                "properties": {
+                  "target_id": {
+                    "enum": [
+                      "filled_human_review_sheet",
+                      "real_multi_window_operator_feedback"
+                    ]
+                  },
+                  "path": { "type": "string" },
+                  "exists": { "type": "boolean" }
+                },
+                "additionalProperties": false
+              }
+            },
+            "missing_target_file_ids": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "filled_human_review_sheet",
+                  "real_multi_window_operator_feedback"
+                ]
+              }
+            },
+            "blocking_diagnostics": {
+              "type": "object",
+              "required": [
+                "schema_version",
+                "source_finalization_id",
+                "source_gate_decision",
+                "diagnostics",
+                "top_failure_ids"
+              ],
+              "properties": {
+                "schema_version": { "const": "pt028_operator_blocking_diagnostics.v1" },
+                "source_finalization_id": { "type": ["string", "null"] },
+                "source_gate_decision": { "type": ["string", "null"] },
+                "diagnostics": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "diagnostic_id",
+                      "source",
+                      "scope",
+                      "gate_decision",
+                      "failure_ids"
+                    ],
+                    "properties": {
+                      "diagnostic_id": { "type": "string" },
+                      "source": { "type": "string" },
+                      "scope": { "type": "string" },
+                      "gate_decision": { "type": ["string", "null"] },
+                      "failure_ids": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "top_failure_ids": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              },
+              "additionalProperties": false
+            },
+            "fail_on_incomplete_supported": { "const": true },
+            "next_action": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "target_status": {
+          "type": "object",
+          "required": [
+            "filled_review_sheet_target_exists",
+            "real_feedback_target_exists"
+          ],
+          "properties": {
+            "filled_review_sheet_target_exists": { "type": "boolean" },
+            "real_feedback_target_exists": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        "source_gate_decision": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "target_status": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "filled_review_sheet_target_path",
+        "filled_review_sheet_target_exists",
+        "real_feedback_target_path",
+        "real_feedback_target_exists"
+      ],
+      "properties": {
+        "schema_version": { "const": "pt028_operator_next_step_target_status.v1" },
+        "filled_review_sheet_target_path": { "type": "string" },
+        "filled_review_sheet_target_exists": { "type": "boolean" },
+        "real_feedback_target_path": { "type": "string" },
+        "real_feedback_target_exists": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "next_commands": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "boundary_policy": {
+      "type": "object",
+      "required": [
+        "report_is_read_only",
+        "writes_real_user_input_files",
+        "writes_real_feedback_target",
+        "runs_feedback_finalization",
+        "approves_human_review",
+        "real_execution_allowed",
+        "real_send_attempted",
+        "prompt_only_required"
+      ],
+      "properties": {
+        "report_is_read_only": { "const": true },
+        "writes_real_user_input_files": { "const": false },
+        "writes_real_feedback_target": { "const": false },
+        "runs_feedback_finalization": { "const": false },
+        "approves_human_review": { "const": false },
+        "real_execution_allowed": { "const": false },
+        "real_send_attempted": { "const": false },
+        "prompt_only_required": { "const": true }
+      },
+      "additionalProperties": false
+    },
+    "output_paths": {
+      "type": "object",
+      "required": [
+        "json_path",
+        "markdown_path",
+        "html_path",
+        "latest_path"
+      ],
+      "properties": {
+        "json_path": { "type": "string" },
+        "markdown_path": { "type": "string" },
+        "html_path": { "type": "string" },
+        "latest_path": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

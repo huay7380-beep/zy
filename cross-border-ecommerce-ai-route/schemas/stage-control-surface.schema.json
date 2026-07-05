@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "cross-border-ecommerce-ai-route/schemas/stage-control-surface.schema.json",
+  "title": "Cross Border Stage Control Surface",
+  "type": "object",
+  "required": [
+    "contract",
+    "project_id",
+    "stage_id",
+    "stage_label",
+    "state",
+    "view",
+    "actions",
+    "gates",
+    "artifacts",
+    "audit"
+  ],
+  "properties": {
+    "contract": { "const": "cross_border_stage_control_surface.v1" },
+    "project_id": { "const": "cross_border_ecommerce_ai_route" },
+    "stage_id": { "type": "string", "minLength": 1 },
+    "stage_label": { "type": "string", "minLength": 1 },
+    "stage_layer": { "type": "string" },
+    "state": {
+      "type": "object",
+      "required": ["status", "execution_mode", "progress", "updated_at"],
+      "properties": {
+        "status": {
+          "enum": [
+            "not_started",
+            "draft_ready",
+            "needs_user_input",
+            "needs_external_review",
+            "blocked",
+            "ready_for_local_execution",
+            "running",
+            "review_pack_ready",
+            "completed_draft",
+            "controlled_execution_ready",
+            "completed_controlled"
+          ]
+        },
+        "execution_mode": {
+          "enum": [
+            "inspect_only",
+            "validate_only",
+            "draft_local",
+            "simulate",
+            "review_pack",
+            "controlled_real_execution_blocked",
+            "controlled_real_execution_allowed"
+          ]
+        },
+        "progress": { "type": "number", "minimum": 0, "maximum": 1 },
+        "blockers": { "type": "array", "items": { "type": "string" } },
+        "next_actions": { "type": "array", "items": { "type": "string" } },
+        "updated_at": { "type": "string" }
+      }
+    },
+    "view": {
+      "type": "object",
+      "required": ["summary", "source_refs", "runtime_refs"],
+      "properties": {
+        "summary": { "type": "string" },
+        "source_refs": { "type": "array", "items": { "type": "string" } },
+        "runtime_refs": { "type": "array", "items": { "type": "string" } },
+        "graph_node_id": { "type": "string" },
+        "lens_tags": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "label",
+          "kind",
+          "allowed",
+          "requires_user_confirmation",
+          "command"
+        ],
+        "properties": {
+          "action_id": { "type": "string", "minLength": 1 },
+          "label": { "type": "string", "minLength": 1 },
+          "kind": {
+            "enum": [
+              "inspect",
+              "validate",
+              "generate_draft",
+              "run_demo",
+              "build_review_pack",
+              "prepare_controlled_execution",
+              "external_real_action"
+            ]
+          },
+          "allowed": { "type": "boolean" },
+          "requires_user_confirmation": { "type": "boolean" },
+          "risk_level": { "enum": ["low", "medium", "high", "critical"] },
+          "command": {
+            "type": "object",
+            "required": ["runner", "args", "writes_to"],
+            "properties": {
+              "runner": { "type": "string" },
+              "args": { "type": "array", "items": { "type": "string" } },
+              "writes_to": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          "blocked_until": { "type": "array", "items": { "type": "string" } },
+          "expected_output_contracts": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gate_id", "status", "owner", "required_for"],
+        "properties": {
+          "gate_id": { "type": "string", "minLength": 1 },
+          "status": {
+            "enum": ["open", "pending_user", "pending_external", "blocked", "approved", "not_required"]
+          },
+          "owner": { "type": "string" },
+          "required_for": { "type": "array", "items": { "type": "string" } },
+          "evidence_refs": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "input_contracts": { "type": "array", "items": { "type": "string" } },
+        "output_contracts": { "type": "array", "items": { "type": "string" } },
+        "runtime_output_root": { "type": "string" },
+        "latest_report": { "type": "string" }
+      }
+    },
+    "audit": {
+      "type": "object",
+      "required": ["event_contracts", "writeback_required", "real_execution_allowed"],
+      "properties": {
+        "event_contracts": { "type": "array", "items": { "type": "string" } },
+        "writeback_required": { "type": "boolean" },
+        "real_execution_allowed": { "type": "boolean" },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

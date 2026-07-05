@@ -1,0 +1,115 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "writeback",
+  "display_name": "回写",
+  "owner": "process_tree",
+  "source_dir": "examples",
+  "process_tree_node_id": "writeback",
+  "registration_status": "process_tree_status:implemented_skeleton",
+  "gate": "system_patrol_coverage_gate",
+  "compass": "system_patrol.writeback",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "validated",
+  "updated_at": "2026-07-01T11:39:08.902Z",
+  "ttl_ms": 604800000,
+  "change_session_id": "system_patrol_blocks_init_20260701",
+  "data_flow": {
+    "inputs": [
+      "examples/closed-loop-storage-mapping.json",
+      "docs/14-闭环样例映射与流程一致性审查.md",
+      "packages/storage-runtime/tests/storage-runtime.test.mjs"
+    ],
+    "processing": [
+      "根据反馈生成新事件候选，必要时更新关系摘要或进入确认队列。"
+    ],
+    "outputs": [
+      "new_event_candidate_ids",
+      "SemanticEvent"
+    ],
+    "dependencies": [
+      "examples/system-process-tree.json",
+      "dialogue-system-patrol/registry/system-patrol-registry.json"
+    ]
+  },
+  "state": {
+    "headline": "回写: patrol block initialized from process tree status implemented_skeleton.",
+    "current_task": "Maintain summary-only patrol coverage and expose dialogue-readable state.",
+    "progress": 1,
+    "blockers": [],
+    "risks": [
+      "关系摘要更新目前还停留在结构层，尚未实现正式权重调参。",
+      "P1 高风险事件确认队列还需要更完整的 UI 或人工确认流程。"
+    ],
+    "next": [
+      "Review this generated patrol block before treating it as a deep module interpretation.",
+      "Refresh validation with npm.cmd run system-patrol:validate.",
+      "Publish dialogue-readable output with npm.cmd run system-patrol:publish."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "examples/system-process-tree.json",
+      "examples/closed-loop-storage-mapping.json",
+      "docs/14-闭环样例映射与流程一致性审查.md",
+      "packages/storage-runtime/tests/storage-runtime.test.mjs"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:publish",
+      "npm.cmd run process-tree:validate"
+    ],
+    "latest_validation_refs": [
+      "runtime/dialogue-system-patrol-validations/latest.json"
+    ]
+  },
+  "boundaries": {
+    "mode": "controlled_write_runtime_summary",
+    "allowed_reads": [
+      "examples/system-process-tree.json",
+      "examples/closed-loop-storage-mapping.json",
+      "docs/14-闭环样例映射与流程一致性审查.md",
+      "packages/storage-runtime/tests/storage-runtime.test.mjs"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/writeback.json",
+      "runtime/status-events/writeback.json",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**"
+    ],
+    "forbidden_actions": [
+      "no business module rewrite from patrol initialization",
+      "no dialogue reader rewrite from patrol initialization",
+      "no external platform action",
+      "no raw private payload publication"
+    ],
+    "confirmation_gates": [
+      "user confirmation required before protocol migration",
+      "user confirmation required before process-tree and Obsidian registration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The module is represented in the process tree.",
+      "The patrol block was initialized from process-tree summary evidence.",
+      "Current status is summary-only and should cite source refs."
+    ],
+    "must_not_infer": [
+      "Do not infer raw runtime facts that are not present in evidence refs.",
+      "Do not treat generated patrol text as a full source-code review.",
+      "Do not claim external actions or business outcomes from patrol coverage alone."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "sha256:c725e96f7d6d7516bec106d971309293e2b77f9e093a53ead90146b838154285",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-05T13:12:46.780Z",
+    "source_hash_refs": [
+      "docs/14-闭环样例映射与流程一致性审查.md",
+      "examples/closed-loop-storage-mapping.json",
+      "examples/system-process-tree.json",
+      "packages/storage-runtime/tests/storage-runtime.test.mjs"
+    ],
+    "source_hash_excluded_refs": []
+  }
+}

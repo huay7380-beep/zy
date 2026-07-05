@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.1.0",
+  "feedback_id": "mvp_user_feedback_client_a_001",
+  "source_run_id": null,
+  "reviewer_role": "b2b_sales_user",
+  "reviewed_at": "2026-06-05T15:30:00+08:00",
+  "scores": {
+    "goal_matches_user_intent": 4,
+    "relationship_context_is_correct": 4,
+    "recommendation_feels_natural": 3,
+    "evidence_is_sufficient": 4,
+    "action_is_executable": 3,
+    "feedback_form_is_lightweight": 4
+  },
+  "flags": [
+    "message_too_generic",
+    "platform_flow_unclear"
+  ],
+  "stop_signal": false,
+  "comments": {
+    "most_useful": "能看到目标、证据和触发阻断，便于判断是否继续。",
+    "least_realistic": "推荐动作还像模板，缺少贴近张总当前语气的表达。",
+    "suggested_change": "下一轮先把建议改成一条可直接人工确认的低承诺微信草稿。"
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "schema": "module_patrol_block.v1",
+  "module_id": "three_layer_audit",
+  "display_name": "三层审计",
+  "owner": "process_tree",
+  "source_dir": "docs",
+  "process_tree_node_id": "three_layer_audit",
+  "registration_status": "process_tree_status:configured_boundary",
+  "gate": "system_patrol_coverage_gate",
+  "compass": "system_patrol.three_layer_audit",
+  "patrol_contract_version": "0.1.0",
+  "lifecycle": "ready",
+  "updated_at": "2026-07-01T11:39:08.902Z",
+  "ttl_ms": 604800000,
+  "change_session_id": "system_patrol_blocks_init_20260701",
+  "data_flow": {
+    "inputs": [
+      "docs/15-系统流程树与扩展问题台账.md",
+      "tupu/03-理论与工程实现代码对齐篇.md",
+      "tupu/04-当前目标架构树.md",
+      "tupu/06-代码层工程实现与理论对齐说明.md",
+      "schemas/theory-code-alignment-audit-agents.schema.json",
+      "knowledge/audit-agents/theory-code-alignment-audit-agents.json",
+      "docs/17-目标流程代码一致性与专家评估矩阵材料.md"
+    ],
+    "processing": [
+      "把项目实现规则固定为理论层、代码层、理论/代码对齐层，并为每层配置可审计代理，检查读取证据、检查项、输出项和硬退出条件。"
+    ],
+    "outputs": [
+      "TheoryCodeAlignmentAuditAgents",
+      "theory_layer_audit_plan",
+      "code_layer_audit_plan",
+      "alignment_layer_audit_plan",
+      "project_gap_review"
+    ],
+    "dependencies": [
+      "examples/system-process-tree.json",
+      "dialogue-system-patrol/registry/system-patrol-registry.json"
+    ]
+  },
+  "state": {
+    "headline": "三层审计: patrol block initialized from process tree status configured_boundary.",
+    "current_task": "Maintain summary-only patrol coverage and expose dialogue-readable state.",
+    "progress": 0.8,
+    "blockers": [],
+    "risks": [
+      "当前已有三层审计代理配置，但还没有自动读取该配置并输出 theory_code_alignment_audit_report.v1 的 runtime。",
+      "理论层仍缺思维图谱、能力库、心跳调度和复杂群体场景的 schema/runtime/test。",
+      "代码层仍缺实时 person matching、生产级 ContextSnapshot 编排器、目标状态机和能力库执行注册表；规则型专家并行分析、目标对象四时间窗分析和专家权重整合已接入，后续需要真实反馈校准和更细的模型化权重。",
+      "对齐层仍缺实时输入链路、真实图谱回写、专家权重校准和心跳调度行为的对齐回测。"
+    ],
+    "next": [
+      "Review this generated patrol block before treating it as a deep module interpretation.",
+      "Refresh validation with npm.cmd run system-patrol:validate.",
+      "Publish dialogue-readable output with npm.cmd run system-patrol:publish."
+    ]
+  },
+  "evidence": {
+    "source_refs": [
+      "examples/system-process-tree.json",
+      "docs/15-系统流程树与扩展问题台账.md",
+      "tupu/03-理论与工程实现代码对齐篇.md",
+      "tupu/04-当前目标架构树.md",
+      "tupu/06-代码层工程实现与理论对齐说明.md",
+      "schemas/theory-code-alignment-audit-agents.schema.json",
+      "knowledge/audit-agents/theory-code-alignment-audit-agents.json",
+      "docs/17-目标流程代码一致性与专家评估矩阵材料.md"
+    ],
+    "validation_commands": [
+      "npm.cmd run system-patrol:validate",
+      "npm.cmd run system-patrol:publish",
+      "npm.cmd run process-tree:validate"
+    ],
+    "latest_validation_refs": [
+      "runtime/dialogue-system-patrol-validations/latest.json"
+    ]
+  },
+  "boundaries": {
+    "mode": "controlled_write_runtime_summary",
+    "allowed_reads": [
+      "examples/system-process-tree.json",
+      "docs/15-系统流程树与扩展问题台账.md",
+      "tupu/03-理论与工程实现代码对齐篇.md",
+      "tupu/04-当前目标架构树.md",
+      "tupu/06-代码层工程实现与理论对齐说明.md",
+      "schemas/theory-code-alignment-audit-agents.schema.json",
+      "knowledge/audit-agents/theory-code-alignment-audit-agents.json",
+      "docs/17-目标流程代码一致性与专家评估矩阵材料.md"
+    ],
+    "allowed_writes": [
+      "runtime/status-cards/three_layer_audit.json",
+      "runtime/status-events/three_layer_audit.json",
+      "runtime/dialogue-system-patrol/**",
+      "runtime/dialogue-system-patrol-validations/**"
+    ],
+    "forbidden_actions": [
+      "no business module rewrite from patrol initialization",
+      "no dialogue reader rewrite from patrol initialization",
+      "no external platform action",
+      "no raw private payload publication"
+    ],
+    "confirmation_gates": [
+      "user confirmation required before protocol migration",
+      "user confirmation required before process-tree and Obsidian registration"
+    ]
+  },
+  "dialogue_limits": {
+    "may_say": [
+      "The module is represented in the process tree.",
+      "The patrol block was initialized from process-tree summary evidence.",
+      "Current status is summary-only and should cite source refs."
+    ],
+    "must_not_infer": [
+      "Do not infer raw runtime facts that are not present in evidence refs.",
+      "Do not treat generated patrol text as a full source-code review.",
+      "Do not claim external actions or business outcomes from patrol coverage alone."
+    ]
+  },
+  "versioning": {
+    "supersedes": [],
+    "source_hash": "sha256:aa77c74dc0179af3ed509a73a7654c290c9276058a87e7bc6a378e75fc11c445",
+    "source_hash_algorithm": "patrol-source-v1:sha256",
+    "source_hash_generated_at": "2026-07-05T13:12:46.780Z",
+    "source_hash_refs": [
+      "docs/15-系统流程树与扩展问题台账.md",
+      "docs/17-目标流程代码一致性与专家评估矩阵材料.md",
+      "examples/system-process-tree.json",
+      "knowledge/audit-agents/theory-code-alignment-audit-agents.json",
+      "schemas/theory-code-alignment-audit-agents.schema.json",
+      "tupu/03-理论与工程实现代码对齐篇.md",
+      "tupu/04-当前目标架构树.md",
+      "tupu/06-代码层工程实现与理论对齐说明.md"
+    ],
+    "source_hash_excluded_refs": []
+  }
+}

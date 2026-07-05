@@ -1,0 +1,97 @@
+{
+  "schema_version": "learning_weight_shadow_report.v1",
+  "shadow_report_id": "learning_weight_shadow_report_sample",
+  "source_phase_run_id": "relationship_event_graph_phase_run_sample",
+  "created_at": "2026-07-01T00:00:00.000Z",
+  "mode": "shadow_only",
+  "status": "shadow_ready_pending_learning_weight_promotion_confirmation",
+  "baseline_rule_version": "relationship_event_graph_rules.v1",
+  "shadow_model": {
+    "model_id": "relationship_event_learning_weight_shadow.v0",
+    "training_enabled": false,
+    "writeback_enabled": false,
+    "promotion_enabled": false,
+    "training_data_status": "insufficient_real_feedback_for_promotion",
+    "calculation_mode": "deterministic_shadow_replay"
+  },
+  "input_refs": {
+    "rule_weight_profile_ids": ["weight_profile_nested_event_sample"],
+    "pending_confirmation_gate_ids": ["confirmation_gate_learning_weight_promotion_sample"],
+    "user_feedback_refs": [],
+    "replay_eval_refs": []
+  },
+  "comparison": [
+    {
+      "subject_ref": "nested_event_sample",
+      "subject_type": "nested_event",
+      "rule_weight_profile_id": "weight_profile_nested_event_sample",
+      "rule_version": "relationship_event_graph_rules.v1",
+      "rule_visual_weight": 0.72,
+      "rule_weight_level": "V3",
+      "shadow_visual_weight": 0.715,
+      "shadow_weight_level": "V3",
+      "shadow_delta": -0.005,
+      "delta_band": "stable",
+      "reason_codes": ["source_reliability_stable", "no_confirmation_demotion"],
+      "source_refs": ["runtime/sample/source-archives/sample/raw.txt"],
+      "applied_to_weight_profile": false,
+      "allowed_effect": "report_only"
+    }
+  ],
+  "aggregate": {
+    "subject_count": 1,
+    "max_abs_delta": 0.005,
+    "changed_level_count": 0,
+    "high_delta_count": 0,
+    "review_subject_refs": []
+  },
+  "read_only_consumers": {
+    "context_snapshot_uses_shadow": false,
+    "nebula_projection_uses_shadow": false,
+    "weight_profile_mutation_allowed": false
+  },
+  "rollback_plan": {
+    "default_authority": "rule_weight_profile",
+    "rollback_mode": "ignore_or_delete_shadow_report",
+    "recovery_command": "npm.cmd run relationship-event:phases",
+    "blocked_outputs": [
+      "WeightProfile mutation",
+      "ContextSnapshot selection changes",
+      "NebulaProjection visual weight changes",
+      "RelationshipState writes",
+      "identity merge writes",
+      "external actions"
+    ]
+  },
+  "promotion_confirmation_gate": {
+    "schema_version": "confirmation_gate.v1",
+    "gate_id": "confirmation_gate_learning_weight_promotion_sample",
+    "gate_type": "learning_weight_promotion",
+    "subject_ref": "learning_weight_shadow_report_sample",
+    "proposed_change": {
+      "action": "promote_learning_weight_from_shadow_to_limited_trial",
+      "current_scope": "shadow_report_only"
+    },
+    "evidence_refs": ["runtime/sample/source-archives/sample/raw.txt"],
+    "verification_refs": [],
+    "required_confirmations": ["multi_verification_passed", "user_final_confirmation"],
+    "status": "blocked_pending_user_confirmation",
+    "allowed_operations": [],
+    "created_at": "2026-07-01T00:00:00.000Z",
+    "expires_at": null,
+    "decided_by": null,
+    "decision": null,
+    "apply_once_token": null,
+    "audit_refs": []
+  },
+  "writes_fact_state": false,
+  "allowed_effects": ["report_only", "manual_review_prompt"],
+  "forbidden_effects": [
+    "modify_weight_profile",
+    "write_relationship_state",
+    "confirm_identity",
+    "execute_external_action",
+    "affect_nebula_visual_weight",
+    "affect_context_snapshot_selection"
+  ]
+}
