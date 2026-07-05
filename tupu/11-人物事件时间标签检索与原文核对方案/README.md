@@ -79,7 +79,7 @@ D:\zhineng\tupu\11-人物事件时间标签检索与原文核对方案\00-总目
 | `scripts/validate-p1-json-schema-contract.mjs` | P1 schema 内存合同验证脚本，生成正/反样例验证 `required`、`const`、`enum`、`additionalProperties`、`oneOf`、只读粒子边界，不生成 P2 fixture |
 | `scripts/validate-p1-evidence-readback-coverage.mjs` | P1 证据链与原文反读覆盖静态验证脚本，检查 SourceArchive、EvidenceAnchor、索引、上下文、确认门和粒子投影的反读边界 |
 | `scripts/validate-full-roadmap-and-particle-sync.mjs` | 完整构建路线图与 3D 粒子同步可重复验证脚本，检查 P0-P12 是否都有输入、输出、边界、3D 说明、验证、进入条件、3D 粒子阶段跟随说明、projection_sync_drift_gate 防偏离门和 ParticleSyncCheckpoint |
-| `scripts/validate-p0-p12-stage-control.mjs` | P0-P12 阶段节点控制验证脚本，检查每个阶段是否同时具备输入、输出、边界、目标偏离检测、3D 粒子说明、ParticleSyncCheckpoint、测试验证和进入条件；`--self-test` 会用临时副本验证缺阶段、缺 drift term、缺粒子检查点和缺 projection sync gate 会被阻断 |
+| `scripts/validate-p0-p12-stage-control.mjs` | P0-P12 阶段节点控制验证脚本，检查每个阶段是否同时具备输入、输出、边界、目标偏离检测、3D 粒子说明、ParticleSyncCheckpoint、测试验证和进入条件；`--self-test` 会用临时副本验证缺阶段、缺 drift term、缺输入结构块、缺目标偏离判定、缺验证块、缺进入下一阶段条件、缺粒子检查点和缺 projection sync gate 会被阻断 |
 | `review-gates/P1-review-decision.template.json` | P1 到 P2 的用户审查确认状态模板；默认 `pending_user_decision`，不放行 P2 |
 | `scripts/validate-p1-review-decision.mjs` | P1 用户审查确认状态验证脚本，区分 pending、approved、needs_revision、rejected 四类有效状态 |
 | `scripts/validate-current-phase-state.mjs` | 当前阶段总预检脚本，汇总 P1 schema、完整路线图/3D 同步、P1 review-gate 三类验证并输出 P2 是否可进入 |
@@ -340,4 +340,4 @@ EvidenceAnchor / AtomicFact / NestedEvent / ConflictSet
 当前 P1 schema 草案已纳入第二批叙事层对象。下一阶段只允许在 P1 审查门通过后进入 P2 模拟 fixture 与反推验证。
 ## P0-P12 Stage Control Self-Test
 
-`scripts/validate-p0-p12-stage-control.mjs --self-test` must return `PASS_P0_P12_STAGE_CONTROL_SELF_TEST` before P2 entry. It uses temporary copied control files to prove missing P2 phase, missing P3 drift term, missing P7 `ParticleSyncCheckpoint`, and missing `projection_sync_drift_gate_active` are blocked. It does not create P2 fixture, runtime, real-data, or particle-runtime artifacts.
+`scripts/validate-p0-p12-stage-control.mjs --self-test` must return `PASS_P0_P12_STAGE_CONTROL_SELF_TEST` before P2 entry. It uses temporary copied control files to prove missing P2 phase, missing P3 drift term, missing P4 input block, missing P5 drift verdict, missing P8 next-gate block, missing P10 validation block, missing P7 `ParticleSyncCheckpoint`, and missing `projection_sync_drift_gate_active` are blocked. It does not create P2 fixture, runtime, real-data, or particle-runtime artifacts.

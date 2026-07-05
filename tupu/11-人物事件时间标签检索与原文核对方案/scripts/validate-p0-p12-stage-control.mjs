@@ -186,6 +186,16 @@ function removePhase(text, phase) {
   );
 }
 
+function removeHeadingBlockFromPhase(text, phase, heading) {
+  const escapedHeading = heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return replacePhase(text, phase, (body) =>
+    body.replace(
+      new RegExp(`\\n${escapedHeading}\\s*\\n\\s*\`\`\`text\\n[\\s\\S]*?\\n\`\`\``),
+      "\n"
+    )
+  );
+}
+
 function runValidatorInTemp(controlText) {
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "tupu-stage-control-"));
   const tempPlanDir = path.join(tempRoot, "plan");
@@ -237,6 +247,48 @@ function runSelfTest() {
         report.validation_status === "FAIL_P0_P12_STAGE_CONTROL" &&
         report.stage_checks.some(
           (stage) => stage.phase === "P3" && stage.missing_drift_terms.includes("SQLite")
+        ),
+    },
+    {
+      id: "missing_p4_input_block_blocks",
+      mutate: (text) => removeHeadingBlockFromPhase(text, "P4", "输入："),
+      expect: (report) =>
+        report.validation_status === "FAIL_P0_P12_STAGE_CONTROL" &&
+        report.stage_checks.some(
+          (stage) => stage.phase === "P4" && stage.missing_structural_blocks.includes("输入")
+        ),
+    },
+    {
+      id: "missing_p5_drift_verdict_blocks",
+      mutate: (text) =>
+        replacePhase(text, "P5", (body) =>
+          body.replaceAll("判定为目标偏离", "drift_verdict_REMOVED")
+        ),
+      expect: (report) =>
+        report.validation_status === "FAIL_P0_P12_STAGE_CONTROL" &&
+        report.stage_checks.some(
+          (stage) => stage.phase === "P5" && stage.hard_failures.includes("drift_verdict_not_explicit")
+        ),
+    },
+    {
+      id: "missing_p8_next_gate_blocks",
+      mutate: (text) =>
+        removeHeadingBlockFromPhase(text, "P8", "进入下一阶段条件："),
+      expect: (report) =>
+        report.validation_status === "FAIL_P0_P12_STAGE_CONTROL" &&
+        report.stage_checks.some(
+          (stage) =>
+            stage.phase === "P8" &&
+            stage.hard_failures.some((failure) => failure.includes("进入下一阶段条件"))
+        ),
+    },
+    {
+      id: "missing_p10_validation_block_blocks",
+      mutate: (text) => removeHeadingBlockFromPhase(text, "P10", "验证："),
+      expect: (report) =>
+        report.validation_status === "FAIL_P0_P12_STAGE_CONTROL" &&
+        report.stage_checks.some(
+          (stage) => stage.phase === "P10" && stage.missing_structural_blocks.includes("验证")
         ),
     },
     {

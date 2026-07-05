@@ -241,7 +241,7 @@ JSON Schema 草案阶段仍然禁止：
 11. 3D 粒子同步跟进规则、阶段跟随说明与 projection_sync_drift_gate 防偏离门已写入 ROOT 第 12 节，三维粒子 OS 仍只能作为只读投影。
 12. 11 目录 00 总控已补全 P0-P12 完整构建路线图，每阶段必须具备输入、输出、边界、3D 粒子说明、验证项和进入条件。
 13. 完整路线图与 3D 同步可重复验证脚本已建立：scripts/validate-full-roadmap-and-particle-sync.mjs。
-14. P0-P12 阶段节点控制验证脚本已建立：scripts/validate-p0-p12-stage-control.mjs，应返回 PASS_P0_P12_STAGE_CONTROL；scripts/validate-p0-p12-stage-control.mjs --self-test 应返回 PASS_P0_P12_STAGE_CONTROL_SELF_TEST，用于证明缺 P2 阶段、缺 P3 drift term、缺 P7 ParticleSyncCheckpoint 或缺 projection_sync_drift_gate_active 会被阻断；追加 `--write-report` 时会生成 `review-gates/generated/P0-P12-stage-control.generated.json` 和 `review-gates/generated/P0-P12-stage-control.generated.md`，作为只读阶段契约地图，不授权 P2、runtime、真实数据接入、关系写入、身份合并、外部动作、学习权重转正或粒子反写。
+14. P0-P12 阶段节点控制验证脚本已建立：scripts/validate-p0-p12-stage-control.mjs，应返回 PASS_P0_P12_STAGE_CONTROL；scripts/validate-p0-p12-stage-control.mjs --self-test 应返回 PASS_P0_P12_STAGE_CONTROL_SELF_TEST，用于证明缺 P2 阶段、缺 P3 drift term、缺 P4 输入结构块、缺 P5 目标偏离判定、缺 P8 进入下一阶段条件、缺 P10 验证块、缺 P7 ParticleSyncCheckpoint 或缺 projection_sync_drift_gate_active 会被阻断；追加 `--write-report` 时会生成 `review-gates/generated/P0-P12-stage-control.generated.json` 和 `review-gates/generated/P0-P12-stage-control.generated.md`，作为只读阶段契约地图，不授权 P2、runtime、真实数据接入、关系写入、身份合并、外部动作、学习权重转正或粒子反写。
 15. P1 用户审查确认门已建立，并新增机器可读确认状态对象：review-gates/P1-review-decision.template.json。
 16. P1 审查确认状态验证脚本已建立：scripts/validate-p1-review-decision.mjs，并支持 pending、approved、needs_revision、rejected 四类有效状态；状态机自测试已通过。
 17. 当前阶段总预检脚本已建立：scripts/validate-current-phase-state.mjs，用于汇总 P1 schema、证据链反读覆盖、路线图/3D 同步、P0-P12 阶段控制和 review-gate 状态。
